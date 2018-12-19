@@ -1,0 +1,15 @@
+title = "ECHO RESONANCE Paper 1 - data description"
+authors = ["Kevin S. Bonham", "Sophie Rowland", "Vanja Klepac-Ceraj"]
+description = """\
+              This file contains machine-readable information about data files\
+              and repositories (eg DataDeps) used in these notebooks. Wherever\
+              possible, these data are in publically accessible locations,\
+              though some data are sensitive and are therefore restricted.
+              """
+
+[tables]
+
+    [tables.metadata.raw]
+    path="data/metadata/test.csv"
+    name="FileMaker Pro raw export"
+    date="2018-12-19T10:34:13"
