@@ -42,7 +42,7 @@ end
 
 function setup_logs!(loglevel, logpath; dryrun=false)
     glog = SimpleLogger(stderr, loglevel)
-    if logpath === Nothing || dryrun
+    if logpath === nothing || dryrun
         global_logger(glog)
     else
         global_logger(DemuxLogger(
@@ -76,6 +76,7 @@ function main()
 
     meta = CSV.File(args["input"], delim=args["delim"]) |> DataFrame
 
+    # Remove columns where all values are missing
     for n in names(meta)
         if all(ismissing, meta[n])
             @info "All entries for column $n are missing, removing"
@@ -83,8 +84,21 @@ function main()
         end
     end
 
+    # Remove rows where all values are missing
     filter!(rowmissingfilter, meta)
 
+    # Rename columns to remove double :: and spaces
+    for name in names(meta)
+        new_name = replace(string(name), " "=>"_")
+        new_name = replace(new_name, "::"=>"__") |> Symbol
+
+        @info "Changing column $name to $new_name"
+        if !args["dry-run"]
+            rename!(meta, name => new_name)
+        else
+            @info("Just kidding! this is a dry run")
+         end
+    end
 
     args["output"] === Nothing ? out = args["input"] : out = args["output"]
     out = abspath(expanduser(out))

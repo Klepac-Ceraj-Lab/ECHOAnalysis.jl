@@ -7,9 +7,38 @@ description = """\
               though some data are sensitive and are therefore restricted.
               """
 
-[tables]
+[tables.metadata]
 
-    [tables.metadata.raw]
-    path="data/metadata/test.csv"
-    name="FileMaker Pro raw export"
-    date="2018-12-19T10:34:13"
+    [timepointinfo]
+    path="data/metadata/timepointinfo.csv"
+    name="Timepoint Info"
+    description="""\
+                Exported all fields under TimepointInfo,\
+                then ran simple_scrub.jl"""
+    date="2018-12-19"
+
+    [basic]
+    path="data/metadata/basicfamilyandchild.csv"
+    name="Basic Family and Child"
+    description="""\
+                Exported all fields under "BasicFamilyAndChild", \
+                then ran simple_scrub.jl"""
+    date="2018-12-19"
+
+    [bfdelivery]
+    path="data/metadata/bfdelivery.csv"
+    name="Breastfeeding and delivery"
+    description="""\
+                Exported all fields under "BreastfeedingStill", \
+                "BreastfeedingDone", and "Delivery" \
+                then ran simple_scrub.jl"""
+    date="2018-12-19"
+
+    [fecal]
+    path="data/metadata/fecal_samples.csv"
+    name="Fecal Samples"
+    description="""\
+                Exported all fields under "FecalSampleCollection" \
+                and "Fecal with Ethanol" \
+                then ran simple_scrub.jl"""
+    date="2018-12-19"
