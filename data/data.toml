@@ -9,7 +9,7 @@ description = """\
 
 [tables.metadata]
 
-    [timepointinfo]
+    [tables.metadata.timepointinfo]
     path="data/metadata/timepointinfo.csv"
     name="Timepoint Info"
     description="""\
@@ -18,7 +18,7 @@ description = """\
     log="data/metadata/timepointinfo.log"
     date="2018-12-27"
 
-    [basic]
+    [tables.metadata.basic]
     path="data/metadata/basicfamilyandchild.csv"
     name="Basic Family and Child"
     description="""\
@@ -27,7 +27,7 @@ description = """\
     log="data/metadata/basicfamilyandchild.log"
     date="2018-12-27"
 
-    [bfdelivery]
+    [tables.metadata.bfdelivery]
     path="data/metadata/bfdelivery.csv"
     name="Breastfeeding and delivery"
     description="""\
@@ -37,7 +37,7 @@ description = """\
     log="data/metadata/bfdelivery.log"
     date="2018-12-27"
 
-    [fecal]
+    [tables.metadata.fecal]
     path="data/metadata/fecal_samples.csv"
     name="Fecal Samples"
     description="""\
@@ -46,3 +46,17 @@ description = """\
                 then ran simple_scrub.jl"""
     log="data/metadata/fecal_samples.log"
     date="2018-12-27"
+
+[tables.biobakery]
+
+    [tables.biobakery.kneaddata]
+    path="data/biobakery/kneaddata/"
+    name="Kneaddata read counts"
+
+    [tables.biobakery.metaphlan2]
+    path="data/biobakery/metaphlan2/"
+    name="Metaphlan 2 tables folder"
+
+    [tables.biobakery.humann2]
+    path="data/biobakery/humann2/"
+    name="Humann 2 tables folder"
