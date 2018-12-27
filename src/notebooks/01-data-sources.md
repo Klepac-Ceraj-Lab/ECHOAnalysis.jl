@@ -95,3 +95,66 @@ Additional transformations of the metadata to get it into a usable form
 can be found in the next notebook.
 
 ## Metagenome data
+
+Compressed quality-scored sequencing files (`.fastq.gz`)
+from the sequencing facility were concatenated
+and run through the bioBakery metagenome workflow.
+Each sample was sequenced on 4 lanes of Illumina {{TODO: add info about Illumina}}
+generating paired-end reads.
+
+### Concatenating raw sequencing files
+
+Each set of 4 forward and reverse reads
+were concatenated using the `catfastq.jl` script.
+
+```
+$ julia --project=@. bin/catfastq.jl --help
+usage: catfastq.jl [-i IN-FOLDER] [--delete] [-o OUTPUT-FOLDER]
+                   [--dry-run] [--debug] [-v] [-q] [-l LOG] [-h]
+
+optional arguments:
+  -i, --in-folder IN-FOLDER
+                        Folder containing fastq files (default: ".")
+  --delete              set to remove original files after
+                        concatenation
+  -o, --output-folder OUTPUT-FOLDER
+                        destination folder for concatenated files
+                        (default: "./")
+  --dry-run             print messages but do nothing
+  --debug               Show @debug level logging messages
+  -v, --verbose         Show @info level logging messages
+  -q, --quiet           Only show @error logging messages
+  -l, --log LOG         Write logs to this file. Default - no file
+  -h, --help            show this help message and exit
+```
+
+To run, assuming you have a folder containing the `fastq.gz` files
+from the sequencing facility in a folder called `rawfastq/`:
+
+```
+$ julia --project=@. bin/catfastq.jl -i rawfastq/ -o catfastq/ -vl batch001_concatenate.log
+```
+
+### Running the bioBakery workflow
+
+The bioBakery `wmgx` workflow was used on all samples
+with the following software versions:
+
+- Anadama2 v0.5
+- bioBakery Workflows v0.10
+- kneaddata v0.7
+- metaphlan2 v2.2
+- humann2 v0.11.1
+
+The following command was run on the `regal` compute cluster from Harvard
+research computing (a Centos7 environment).
+
+```
+$ biobakery_workflows wmgx --input catfastq/ --output analysis/ \
+  --bypass-strain-profiling --pair-identifier .1 \
+  --grid-jobs 96 --grid-partition serial_requeue,shared,240 # grid options
+```
+
+## 16S data
+
+<!-- TODO: Add info about 16S analysis -->
