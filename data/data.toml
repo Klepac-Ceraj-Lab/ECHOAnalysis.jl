@@ -15,7 +15,8 @@ description = """\
     description="""\
                 Exported all fields under TimepointInfo,\
                 then ran simple_scrub.jl"""
-    date="2018-12-19"
+    log="data/metadata/timepointinfo.log"
+    date="2018-12-27"
 
     [basic]
     path="data/metadata/basicfamilyandchild.csv"
@@ -23,7 +24,8 @@ description = """\
     description="""\
                 Exported all fields under "BasicFamilyAndChild", \
                 then ran simple_scrub.jl"""
-    date="2018-12-19"
+    log="data/metadata/basicfamilyandchild.log"
+    date="2018-12-27"
 
     [bfdelivery]
     path="data/metadata/bfdelivery.csv"
@@ -32,7 +34,8 @@ description = """\
                 Exported all fields under "BreastfeedingStill", \
                 "BreastfeedingDone", and "Delivery" \
                 then ran simple_scrub.jl"""
-    date="2018-12-19"
+    log="data/metadata/bfdelivery.log"
+    date="2018-12-27"
 
     [fecal]
     path="data/metadata/fecal_samples.csv"
@@ -41,4 +44,5 @@ description = """\
                 Exported all fields under "FecalSampleCollection" \
                 and "Fecal with Ethanol" \
                 then ran simple_scrub.jl"""
-    date="2018-12-19"
+    log="data/metadata/fecal_samples.log"
+    date="2018-12-27"

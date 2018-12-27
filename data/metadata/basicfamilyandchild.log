@@ -1,0 +1,129 @@
+┌ Info: All entries for column BasicFamilyAndChild::studyName are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:82
+┌ Warning: `delete!(df::AbstractDataFrame, cols::Any)` is deprecated, use `deletecols!(df, cols)` instead.
+│   caller = main() at simple_scrub.jl:83
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:83
+┌ Info: All entries for column BasicFamilyAndChild::adoptionAgeYears are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:82
+┌ Info: All entries for column BasicFamilyAndChild::timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:82
+┌ Info: All entries for row 71 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 557 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 564 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 619 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 659 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 672 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 676 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 704 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 705 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 711 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 715 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 718 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 719 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 734 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 735 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 736 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 754 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 791 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 796 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 797 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 798 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 824 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 828 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 845 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 916 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 930 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 979 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 992 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 995 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: All entries for row 1007 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:56
+┌ Info: Changing column BasicFamilyAndChild::studyID to BasicFamilyAndChild__studyID
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::active to BasicFamilyAndChild__active
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::adopted to BasicFamilyAndChild__adopted
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::adoptionAgeMonths to BasicFamilyAndChild__adoptionAgeMonths
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::APOE to BasicFamilyAndChild__APOE
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::changedStudies to BasicFamilyAndChild__changedStudies
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::childEthnicity to BasicFamilyAndChild__childEthnicity
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::childGender to BasicFamilyAndChild__childGender
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::childRace to BasicFamilyAndChild__childRace
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::combinedSES to BasicFamilyAndChild__combinedSES
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::fatherBiologicallyRelated to BasicFamilyAndChild__fatherBiologicallyRelated
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::fatherEducation to BasicFamilyAndChild__fatherEducation
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::fatherHeight to BasicFamilyAndChild__fatherHeight
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::fatherLiveWith to BasicFamilyAndChild__fatherLiveWith
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::fatherOccupation to BasicFamilyAndChild__fatherOccupation
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::fatherSES to BasicFamilyAndChild__fatherSES
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::fosterChild to BasicFamilyAndChild__fosterChild
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::futureStudies to BasicFamilyAndChild__futureStudies
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::geneticsComplete to BasicFamilyAndChild__geneticsComplete
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::motherBiologicallyRelated to BasicFamilyAndChild__motherBiologicallyRelated
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::motherEducation to BasicFamilyAndChild__motherEducation
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::motherHeight to BasicFamilyAndChild__motherHeight
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::motherLiveWith to BasicFamilyAndChild__motherLiveWith
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::motherOccupation to BasicFamilyAndChild__motherOccupation
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::motherSES to BasicFamilyAndChild__motherSES
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::samesex to BasicFamilyAndChild__samesex
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::siblingInStudy to BasicFamilyAndChild__siblingInStudy
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::siblingNumberInStudy to BasicFamilyAndChild__siblingNumberInStudy
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Changing column BasicFamilyAndChild::timestampAcct to BasicFamilyAndChild__timestampAcct
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:95
+┌ Info: Writing scrubbed file to /Users/ksb/repos/lab_repos/echo_analysis/data/metadata/basicfamilyandchild.csv
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:105
