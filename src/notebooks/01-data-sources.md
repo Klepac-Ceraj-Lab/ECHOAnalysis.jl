@@ -19,7 +19,7 @@ export the relevant sections of the database as `.xlsx` (MS Excel) files.
 First, make sure all records are being displayed
 by clicking the `Show All` button (if it is not greyed out).
 
-![Show all button](src/img/01.showall.png)
+![Show all button](../img/01.showall.png)
 
 Next, export one section as an excel file.
 The following demonstrates the steps
@@ -36,15 +36,15 @@ to get the metadata associated with timepoints,
         In this example, we'll select `Timpointinfo`
     1. Then click `Move All`, then `Export`
 
-![Export](src/img/01.export.png)
+![Export](../img/01.export.png)
 
-![Save](src/img/01.save.png)
+![Save](../img/01.save.png)
 
-![Clear previous](src/img/01.clearall.png)
+![Clear previous](../img/01.clearall.png)
 
-![Table select](src/img/01.tableselect.png)
+![Table select](../img/01.tableselect.png)
 
-![Move all and export](src/img/01.moveexport.png)
+![Move all and export](../img/01.moveexport.png)
 
 ### Simple Scrub
 
