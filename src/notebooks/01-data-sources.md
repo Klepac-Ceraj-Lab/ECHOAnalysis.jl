@@ -1,5 +1,10 @@
 # Data for Analysis
 
+```@contents
+Pages=["01-data-sources.md"]
+Depth=2
+```
+
 ## Description
 
 Raw data for this paper can be found here **link to OSF repo**

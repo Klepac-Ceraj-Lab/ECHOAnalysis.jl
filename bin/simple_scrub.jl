@@ -54,9 +54,9 @@ end
 function rowmissingfilter(r::DataFrameRow)
     if all(ismissing, values(r))
         @info "All entries for row $(DataFrames.row(r)) are missing, removing"
-        return true
-    else
         return false
+    else
+        return true
     end
 end
 
