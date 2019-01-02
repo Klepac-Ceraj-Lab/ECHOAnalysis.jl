@@ -10,42 +10,69 @@ description = """\
 [tables.metadata]
 
     [tables.metadata.timepointinfo]
-    path="data/metadata/timepointinfo.csv"
+    path="data/metadata/TimepointInfo.csv"
     name="Timepoint Info"
     description="""\
                 Exported all fields under TimepointInfo,\
                 then ran simple_scrub.jl"""
-    log="data/metadata/timepointinfo.log"
-    date="2018-12-27"
+    log="data/metadata/TimepointInfo.log"
+    date="2019-01-02"
 
     [tables.metadata.basic]
-    path="data/metadata/basicfamilyandchild.csv"
+    path="data/metadata/BasicFamilyandChild.csv"
     name="Basic Family and Child"
     description="""\
                 Exported all fields under "BasicFamilyAndChild", \
                 then ran simple_scrub.jl"""
-    log="data/metadata/basicfamilyandchild.log"
-    date="2018-12-27"
+    log="data/metadata/BasicFamilyandChild.log"
+    date="2019-01-02"
 
-    [tables.metadata.bfdelivery]
-    path="data/metadata/bfdelivery.csv"
-    name="Breastfeeding and delivery"
+    [tables.metadata.bfdone]
+    path="data/metadata/BreastfeedingDone.csv"
+    name="Breastfeeding Done"
+    description="""\
+                Exported all fields under "BreastfeedingDone" \
+                then ran simple_scrub.jl"""
+    log="data/metadata/BreastfeedingDone.log"
+    date="2019-01-02"
+
+    [tables.metadata.bfstill]
+    path="data/metadata/BreastfeedingStill.csv"
+    name="Breastfeeding Still"
     description="""\
                 Exported all fields under "BreastfeedingStill", \
-                "BreastfeedingDone", and "Delivery" \
                 then ran simple_scrub.jl"""
-    log="data/metadata/bfdelivery.log"
-    date="2018-12-27"
+    log="data/metadata/BreastfeedingStill.log"
+    date="2019-01-02"
 
-    [tables.metadata.fecal]
-    path="data/metadata/fecal_samples.csv"
+    [tables.metadata.delivery]
+    path="data/metadata/Delivery.csv"
+    name="Delivery"
+    description="""\
+                Exported all fields under "Delivery" \
+                then ran simple_scrub.jl"""
+    log="data/metadata/Delivery.log"
+    date="2019-01-02"
+
+
+    [tables.metadata.fecalgenotech]
+    path="data/metadata/FecalSampleCollection.csv"
     name="Fecal Samples"
     description="""\
                 Exported all fields under "FecalSampleCollection" \
                 and "Fecal with Ethanol" \
                 then ran simple_scrub.jl"""
-    log="data/metadata/fecal_samples.log"
-    date="2018-12-27"
+    log="data/metadata/FecalSampleCollection.log"
+    date="2019-01-02"
+
+    [tables.metadata.fecaletoh]
+    path="data/metadata/Fecal_with_Ethanol.csv"
+    name="Fecal Samples"
+    description="""\
+                Exported all fields under "Fecal with Ethanol" \
+                then ran simple_scrub.jl"""
+    log="data/metadata/Fecal_with_Ethanol.log"
+    date="2019-01-02"
 
 [tables.biobakery]
 

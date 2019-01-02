@@ -30,7 +30,8 @@ function parse_commandline()
             help = "Show logging, but take no action. Most useful with --verbose"
             action= :store_true
         "--output", "-o"
-            help = "write to this file instead of overwriting original"
+            help = "Output folder (defaults to current working directory)"
+            default = "./"
             arg_type = String
         "input"
             help = "Table to be scrubbed. By default, this will be overwritten"
@@ -60,6 +61,18 @@ function rowmissingfilter(r::DataFrameRow)
     end
 end
 
+function splitheader(h::AbstractString)
+    h = replace(h, " "=>"_")
+    h = replace(h, "::"=>"__")
+    return Tuple(String.(split(h, "__")))
+end
+
+function splitheader(h::Symbol)
+    h = string(h)
+    return splitheader(h)
+end
+
+
 function main()
     args = parse_commandline()
 
@@ -76,11 +89,27 @@ function main()
 
     meta = CSV.File(args["input"], delim=args["delim"]) |> DataFrame
 
+    parent_tables = Set(map(n-> splitheader(n)[1], names(meta)))
+    if length(parent_tables) != 1
+        @error "There should only be one parent table, instead found: " parent_tables
+        throw(ErrorException(""))
+    end
+
+    table_name = Tuple(parent_tables)[1]
+    @info "Table Name: $table_name"
+
+    cols = map(n-> splitheader(n)[2], names(meta))
+    if length(unique(cols)) != length(cols)
+        @error "Column names are not unique"
+        throw(ErrorException(""))
+    end
+    names!(meta, Symbol.(map(n-> splitheader(n)[2], names(meta))))
+
     # Remove columns where all values are missing
     for n in names(meta)
         if all(ismissing, meta[n])
             @info "All entries for column $n are missing, removing"
-            delete!(meta, n)
+            deletecols!(meta, n)
         end
     end
 
@@ -89,19 +118,21 @@ function main()
 
     # Rename columns to remove double :: and spaces
     for name in names(meta)
-        new_name = replace(string(name), " "=>"_")
-        new_name = replace(new_name, "::"=>"__") |> Symbol
 
-        @info "Changing column $name to $new_name"
-        if !args["dry-run"]
-            rename!(meta, name => new_name)
-        else
-            @info("Just kidding! this is a dry run")
-         end
+        if occursin(" ", string(name))
+            new_name = replace(string(name), " "=>"_")
+            @info "Changing column $name to $new_name"
+            if !args["dry-run"]
+                rename!(meta, name => new_name)
+            else
+                @info("Just kidding! this is a dry run")
+            end
+        end
     end
 
-    args["output"] === Nothing ? out = args["input"] : out = args["output"]
-    out = abspath(expanduser(out))
+    out = joinpath(expanduser(args["output"]), table_name * ".csv")
+
+    out = abspath(out)
     @info "Writing scrubbed file to $out"
     if !args["dry-run"]
         CSV.write(out, meta, delim=args["delim"])

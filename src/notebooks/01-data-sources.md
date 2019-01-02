@@ -41,6 +41,10 @@ to get the metadata associated with timepoints,
         In this example, we'll select `Timpointinfo`
     1. Then click `Move All`, then `Export`
 
+For future steps to work, it's important to only export one table at a time.
+In other words,
+all headers should have the same thing prior to the `::`.
+
 ![Export](../img/01.export.png)
 
 ![Save](../img/01.save.png)
@@ -60,7 +64,10 @@ Once you have a `.csv` file,
 run the `simple_scrub.jl` script contained in the `bin/` folder.
 This script does a few simple things.
 first, it renames the headers to be a bit easier to work with,
-replacing spaces with underscores and `::` with two underscores.
+replacing spaces with underscores and removing the stuff before the `::`
+in each table.
+We can get that information back since it's the name of the csv file
+(and we only have one per table at this stage).
 Second, it removes empty columns and rows
 (that is, columns and rows that have only missing values).
 
@@ -83,8 +90,8 @@ optional arguments:
   --delim DELIM         (default: ",")
   --dry-run            Show logging, but take no action. Most useful
                        with --verbose
-  -o, --output OUTPUT  write to this file instead of overwriting
-                       original
+  -o, --output OUTPUT  Output folder (defaults to current working
+                       directory) (default: "./")
   -h, --help           show this help message and exit
 ```
 
@@ -92,8 +99,8 @@ For example, to run this script on our example above:
 
 ```sh
 $ julia --project=@. bin/simple_scrub.jl ~/Desktop/timepoints.csv \
-  -o data/metadata/timepoints.csv \
-  -vl data/metadata/timepoints.log
+  -o data/metadata/TimePointInfo.csv \
+  -vl data/metadata/
 ```
 
 Additional transformations of the metadata to get it into a usable form
