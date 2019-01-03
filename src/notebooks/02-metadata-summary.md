@@ -81,18 +81,13 @@ end
 using Dates
 
 fecaletoh[:timestamp] = map(x-> DateTime(x, dateformat"m/d/y H:M:S"), fecaletoh[:timestamp])
-
 fecaletoh[:date] = map(x-> DateTime(x, dateformat"m/d/y"),  fecaletoh[:CollectionDate])
-deletecols!(fecaletoh, :CollectionDate)
+# collectionNum is equivalent to timepoint
+fecaletoh[:timepoint] = fecaletoh[:CollectionNum]
+deletecols!(fecaletoh, [:CollectionDate, :CollectionNum])
 
-fecaletoh = melt(fecaletoh, [:studyID, :date], variable_name=:metadatum)
+fecaletoh = melt(fecaletoh, [:studyID, :date, :timepoint], variable_name=:metadatum)
 fecaletoh[:parent_table] = "Fecal_with_Ethanol.csv"
-
-
-# This table doesn't have "timepoint", so I'll add an empty column for now
-# and eventually I'll get it from the date.
-
-fecaletoh[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(fecaletoh)))
 ```
 
 It's mostly the same for Genotech ethanol samples.
@@ -104,15 +99,11 @@ println(parent_table)
 fecal = CSV.File(metapaths[2]) |> DataFrame
 
 fecal[:date] = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  fecal[:collectionDate])
-deletecols!(fecal, :collectionDate)
+fecal[:timepoint] = fecal[:collectionNum]
+deletecols!(fecal, [:collectionDate, :collectionNum])
 
-fecal = melt(fecal, [:studyID, :date], variable_name=:metadatum)
+fecal = melt(fecal, [:studyID, :date, :timepoint], variable_name=:metadatum)
 fecal[:parent_table] = parent_table
-
-# This table doesn't have "timepoint", so I'll add an empty column for now
-# and eventually I'll get it from the date.
-
-fecal[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(fecal)))
 ```
 
 Now we can merge these tables together pretty easily
@@ -190,15 +181,25 @@ allmeta = vcat(allmeta, tpi)
 In addition to the FilemakerPro database,
 we also have metdata info stored for each of the samples that are processed.
 
+In this case, however, `studyID`, `date` and `timepoint`
+do not uniquely identify our "observations",
+since each timepoint may be associated with multiple samples.
+However, the `SampleID` should be unique.
+
 ```julia
 samples = CSV.read(files["tables"]["samples"]["path"]) |> DataFrame
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID])
 
-samples = melt(samples, [:studyID, :date, :timepoint], variable_name=:metadatum)
+samples = melt(samples, [:SampleID, :studyID, :date, :timepoint], variable_name=:metadatum)
 samples[:parent_table] = "fecal_processing.csv"
+```
 
-allmeta = vcat(allmeta, samples)
+We can only concatenate tables if they all have the same columns,
+so I'll add a missing `SampleID` to all of the other observations
+(another option would be to give those observations a `SampleID`
+that's a combination of the `studyID` and `parent_table` or something)
 
+```julia
 # show a random assortment of ~ 20 rows
 @show allmeta[rand(nrow(allmeta)) .< 20 / nrow(allmeta), :]
 ```
@@ -289,5 +290,79 @@ timepoints = @linq allmeta |>
     orderby(:studyID, :timepoint) |>
     unique
 
-first(timepoints, 5)
+sample_timepoints = @linq allmeta |>
+    where(:parent_table .== "fecal_processing.csv",
+          :metadatum .== "SampleID",
+          .!ismissing.(:studyID)) |>
+    select(:studyID, :timepoint, :date, :value) |>
+    orderby(:studyID, :timepoint) |>
+    unique
+
+sample_collection = @linq allmeta |>
+    where(:parent_table .== "FecalSampleCollection.csv",
+          :metadatum .== "collectionNum",
+          .!ismissing.(:studyID)) |>
+    select(:studyID, :timepoint, :date, :value) |>
+    orderby(:studyID, :timepoint) |>
+    unique
+
+
+let set = Set(skipmissing(sample_timepoints[:studyID]))
+    filter!(r-> r[:studyID] in set, timepoints)
+end
+
+first(timepoints, 6)
+```
+
+```julia
+first(sample_timepoints, 5)
+```
+
+So we can see that for at least `studyID`s 5 and 16,
+the timepoint associated with the fecal sample
+is definitely the one closest to the sample collection
+(though they aren't necessarily identical)
+
+Formally, we can subtract the fecal sample from the timepoint
+and find the one with the lowest absolute value.
+
+```julia
+any(ismissing, timepoints[:date])
+
+timepoints[findall(ismissing, timepoints[:date]), :]
+findall(ismissing, sample_timepoints[:date])
+
+
+function findtimepoint(studyID, date, timepoints::AbstractDataFrame)
+    tp = filter(r-> r[:studyID] == studyID, timepoints)
+    ismissing(date) && @error "Missing date value for $studyID"
+
+    if any(ismissing, tp[:date])
+        @warn "studyID $studyID has timepoints with missing dates"
+        filter!(row-> !ismissing(row[:date]), tp)
+    end
+
+    if nrow(tp) == 0
+        @error "No timepoints assoiated with  studyID $studyID"
+        return 0
+    end
+
+    # get a vector of absolute differences in dates
+    offsets = abs.(date .- tp[:date])
+
+    return timepoints[argmin(offsets), :timepoint]
+end
+
+findtimepoint(sample_timepoints[1, :studyID], sample_timepoints[1, :date], timepoints)
+```
+
+Applying this to every row:
+
+```julia`
+sample_timepoints = @transform(sample_timepoints,
+    tp_calc = findtimepoint.(:studyID, :date, Ref(timepoints)))
+
+CSV.write("timepoint_discrepancies.csv", @where(sample_timepoints, :timepoint .!= :tp_calc))
+
+
 ```
