@@ -74,6 +74,14 @@ description = """\
     log="data/metadata/Fecal_with_Ethanol.log"
     date="2019-01-02"
 
+[tables.samples]
+    path="data/metadata/fecal_processing.csv"
+    name="Fecal Samples DNA processing"
+    description="""\
+                Downloaded "Everything" view from AirTable"""
+    date="2019-01-02"
+
+
 [tables.biobakery]
 
     [tables.biobakery.kneaddata]

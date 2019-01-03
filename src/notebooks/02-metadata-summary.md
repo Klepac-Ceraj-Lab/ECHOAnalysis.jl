@@ -92,7 +92,7 @@ fecaletoh[:parent_table] = "Fecal_with_Ethanol.csv"
 # This table doesn't have "timepoint", so I'll add an empty column for now
 # and eventually I'll get it from the date.
 
-fecaletoh[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, size(fecaletoh,1)))
+fecaletoh[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(fecaletoh)))
 ```
 
 It's mostly the same for Genotech ethanol samples.
@@ -112,7 +112,7 @@ fecal[:parent_table] = parent_table
 # This table doesn't have "timepoint", so I'll add an empty column for now
 # and eventually I'll get it from the date.
 
-fecal[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, size(fecal,1)))
+fecal[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(fecal)))
 ```
 
 Now we can merge these tables together pretty easily
@@ -136,8 +136,8 @@ bfc = CSV.File(metapaths[3]) |> DataFrame
 bfc = melt(bfc, :studyID, variable_name=:metadatum)
 
 ### In this case, the date and timepoint are irrelevant
-bfc[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, size(bfc,1)))
-bfc[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, size(bfc,1)))
+bfc[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, nrow(bfc)))
+bfc[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(bfc)))
 bfc[:parent_table] = parent_table
 
 allmeta = vcat(allmeta, bfc)
@@ -152,8 +152,8 @@ delivery = melt(delivery, :studyID, variable_name=:metadatum)
 
 ### In this case, timepoint is irrelevant, but it would be nice to have the date.
 ### The closest we have is dueDate, but very few rows have it. Will leave missing for now
-delivery[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, size(delivery,1)))
-delivery[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, size(delivery,1)))
+delivery[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, nrow(delivery)))
+delivery[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(delivery)))
 delivery[:parent_table] = parent_table
 
 allmeta = vcat(allmeta, delivery)
@@ -166,8 +166,8 @@ bfd = CSV.File(metapaths[5]) |> DataFrame
 
 bfd = melt(bfd, :studyID, variable_name=:metadatum)
 
-bfd[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, size(bfd,1)))
-bfd[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, size(bfd,1)))
+bfd[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, nrow(bfd)))
+bfd[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(bfd)))
 bfd[:parent_table] = parent_table
 
 allmeta = vcat(allmeta, bfd)
@@ -185,11 +185,109 @@ tpi = melt(tpi, [:studyID, :date, :timepoint], variable_name=:metadatum)
 tpi[:parent_table] = parent_table
 
 allmeta = vcat(allmeta, tpi)
+```
+
+In addition to the FilemakerPro database,
+we also have metdata info stored for each of the samples that are processed.
+
+```julia
+samples = CSV.read(files["tables"]["samples"]["path"]) |> DataFrame
+rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID])
+
+samples = melt(samples, [:studyID, :date, :timepoint], variable_name=:metadatum)
+samples[:parent_table] = "fecal_processing.csv"
+
+allmeta = vcat(allmeta, samples)
 
 # show a random assortment of ~ 20 rows
-@show allmeta[rand(size(allmeta, 1)) .< 20 / size(allmeta, 1), :]
+@show allmeta[rand(nrow(allmeta)) .< 20 / nrow(allmeta), :]
 ```
+
 
 ```julia
 CSV.write("data/metadata/merged.csv", allmeta)
+```
+
+
+## Getting Data
+
+Now that we have the metadata in this form,
+it's a bit easier to query it for the stuff we want.
+I'm using the macros available from the [DataFramesMeta](https://github.com/JuliaData/DataFramesMeta.jl) package.
+
+As an example, how many unique subjects do we have at least one sample for?
+
+```julia
+using DataFramesMeta
+
+allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
+
+@linq allmeta |>
+    where(:metadatum .== "SampleID") |>
+    select(:studyID) |>
+    unique |> nrow
+```
+
+Or, how many subjects have two or more fecal samples?
+
+```julia
+sampleinfo = @linq allmeta |>
+    where(:metadatum .== "SampleID") |>
+    by(:studyID, nsamples = length(:studyID))
+
+using Makie
+using StatsMakie
+
+scene = Scene(resolution = (800, 800))
+plot!(histogram, sampleinfo[:nsamples])
+scene[Axis][:names, :axisnames] = ("# of fecal samples", "# of subjects")
+scene
+```
+
+Wow - there are a couple of subjects that have a lot of samples.
+Taking a look to see what's going on there:
+
+```julia
+# Which subjects are those?
+highsamplers = @linq allmeta |>
+    where(:metadatum .== "SampleID") |>
+    by(:studyID, nsamples = length(:studyID)) |>
+    where(:nsamples .> 5) |>
+    select(:studyID)
+
+highsamplers = @linq filter(r->
+    !ismissing(r[:studyID]) &&
+    r[:studyID] in highsamplers[:studyID],
+    allmeta) |>
+        where(:metadatum .== "SampleID") |>
+        orderby(:studyID)
+
+first(highsamplers, 10)
+```
+
+So a bunch of these are where timepoints have multiple aliquots,
+and/or both genotech and enthanol samples.
+
+
+## Timepoint Corrections
+
+A lot of the brain data are linked to the timepoint,
+so that dates can be compressed a bit
+(eg a fecal sample collected 3 days after a brain scan
+is still associated with that brainscan).
+There's timepoint info for fecal samples in the `fecal_processing` master table,
+but not in the FilemakerPro database.
+
+I want to make sure that what's in the `fecal_processing` table
+corresponds with the info in FilemakerPro.
+First, I'll get a table that has all of the timepoints and their associated dates.
+
+```julia
+timepoints = @linq allmeta |>
+    where(:parent_table .== "TimepointInfo.csv") |>
+    select(:studyID, :timepoint, :date) |>
+    orderby(:studyID, :timepoint) |>
+    unique
+
+first(timepoints, 5)
 ```
