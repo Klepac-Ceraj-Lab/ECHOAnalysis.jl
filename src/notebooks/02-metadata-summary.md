@@ -200,8 +200,13 @@ so I'll add a missing `SampleID` to all of the other observations
 that's a combination of the `studyID` and `parent_table` or something)
 
 ```julia
+allmeta[:SampleID] = missing
+allmeta = vcat(allmeta, samples)
+
 # show a random assortment of ~ 20 rows
 @show allmeta[rand(nrow(allmeta)) .< 20 / nrow(allmeta), :]
+
+allmeta = allmeta[[:studyID, :timepoint, :date, :SampleID, :metadatum, :value, :parent_table]]
 ```
 
 
@@ -219,12 +224,14 @@ I'm using the macros available from the [DataFramesMeta](https://github.com/Juli
 As an example, how many unique subjects do we have at least one sample for?
 
 ```julia
+using CSV
+using DataFrames
 using DataFramesMeta
 
 allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
 
 @linq allmeta |>
-    where(:metadatum .== "SampleID") |>
+    where(.!ismissing.(:SampleID)) |>
     select(:studyID) |>
     unique |> nrow
 ```
@@ -233,11 +240,12 @@ Or, how many subjects have two or more fecal samples?
 
 ```julia
 sampleinfo = @linq allmeta |>
-    where(:metadatum .== "SampleID") |>
+    where(.!ismissing.(:SampleID), :metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
 
 using Makie
 using StatsMakie
+AbstractPlotting.inline!(true)
 
 scene = Scene(resolution = (800, 800))
 plot!(histogram, sampleinfo[:nsamples])
@@ -251,7 +259,7 @@ Taking a look to see what's going on there:
 ```julia
 # Which subjects are those?
 highsamplers = @linq allmeta |>
-    where(:metadatum .== "SampleID") |>
+    where(.!ismissing.(:SampleID), :metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID)) |>
     where(:nsamples .> 5) |>
     select(:studyID)
@@ -270,99 +278,27 @@ So a bunch of these are where timepoints have multiple aliquots,
 and/or both genotech and enthanol samples.
 
 
-## Timepoint Corrections
+## Metagenomes
 
-A lot of the brain data are linked to the timepoint,
-so that dates can be compressed a bit
-(eg a fecal sample collected 3 days after a brain scan
-is still associated with that brainscan).
-There's timepoint info for fecal samples in the `fecal_processing` master table,
-but not in the FilemakerPro database.
-
-I want to make sure that what's in the `fecal_processing` table
-corresponds with the info in FilemakerPro.
-First, I'll get a table that has all of the timepoints and their associated dates.
+At this stage, what I care about are samples with metagenomes,
+which are inidcated by the `DOM` metadatum.
+To find all of the studyID/timepoint combos that have that have metagenomes:
 
 ```julia
-timepoints = @linq allmeta |>
-    where(:parent_table .== "TimepointInfo.csv") |>
-    select(:studyID, :timepoint, :date) |>
-    orderby(:studyID, :timepoint) |>
-    unique
-
-sample_timepoints = @linq allmeta |>
-    where(:parent_table .== "fecal_processing.csv",
-          :metadatum .== "SampleID",
-          .!ismissing.(:studyID)) |>
-    select(:studyID, :timepoint, :date, :value) |>
-    orderby(:studyID, :timepoint) |>
-    unique
-
-sample_collection = @linq allmeta |>
-    where(:parent_table .== "FecalSampleCollection.csv",
-          :metadatum .== "collectionNum",
-          .!ismissing.(:studyID)) |>
-    select(:studyID, :timepoint, :date, :value) |>
-    orderby(:studyID, :timepoint) |>
+mgxsamples = @linq allmeta |>
+    where(.!ismissing.(:SampleID), :metadatum .== "DOM") |>
+    select(:studyID, :timepoint) |>
     unique
 
 
-let set = Set(skipmissing(sample_timepoints[:studyID]))
-    filter!(r-> r[:studyID] in set, timepoints)
+mgxmeta = let pairs = Set(zip(mgxsamples[:studyID], mgxsamples[:timepoint])), sids = Set(mgxsamples[:studyID])
+    filter(row-> (ismissing(row[:timepoint]) && row[:studyID] in sids) || # this captures metadata that's not linked to timepoints
+                 (row[:studyID], row[:timepoint]) in pairs,
+                 allmeta)
 end
 
-first(timepoints, 6)
-```
+# show a random assortment of ~ 20 rows
+@show mgxmeta[rand(nrow(mgxmeta)) .< 20 / nrow(mgxmeta), :]
 
-```julia
-first(sample_timepoints, 5)
-```
-
-So we can see that for at least `studyID`s 5 and 16,
-the timepoint associated with the fecal sample
-is definitely the one closest to the sample collection
-(though they aren't necessarily identical)
-
-Formally, we can subtract the fecal sample from the timepoint
-and find the one with the lowest absolute value.
-
-```julia
-any(ismissing, timepoints[:date])
-
-timepoints[findall(ismissing, timepoints[:date]), :]
-findall(ismissing, sample_timepoints[:date])
-
-
-function findtimepoint(studyID, date, timepoints::AbstractDataFrame)
-    tp = filter(r-> r[:studyID] == studyID, timepoints)
-    ismissing(date) && @error "Missing date value for $studyID"
-
-    if any(ismissing, tp[:date])
-        @warn "studyID $studyID has timepoints with missing dates"
-        filter!(row-> !ismissing(row[:date]), tp)
-    end
-
-    if nrow(tp) == 0
-        @error "No timepoints assoiated with  studyID $studyID"
-        return 0
-    end
-
-    # get a vector of absolute differences in dates
-    offsets = abs.(date .- tp[:date])
-
-    return timepoints[argmin(offsets), :timepoint]
-end
-
-findtimepoint(sample_timepoints[1, :studyID], sample_timepoints[1, :date], timepoints)
-```
-
-Applying this to every row:
-
-```julia`
-sample_timepoints = @transform(sample_timepoints,
-    tp_calc = findtimepoint.(:studyID, :date, Ref(timepoints)))
-
-CSV.write("timepoint_discrepancies.csv", @where(sample_timepoints, :timepoint .!= :tp_calc))
-
-
+CSV.write("data/metadata/mgxmetadata.csv", mgxmeta)
 ```

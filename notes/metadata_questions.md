@@ -9,6 +9,7 @@
   Related to the preceding question, subject 426 as an example
   has stool samples linked to timepoint 5, but in the database there's no date on tp 5.
 - Are "collection#"s associated with fecal samples equivalent to timepoints?
+- Same question for lead levels "testNumber"
 - What are the `timestamp` and `timestamp_acct` fields?
   They seems to be mostly empty.
 - Lots of babies have missing `dueDate`s in the `Delivery` section.
