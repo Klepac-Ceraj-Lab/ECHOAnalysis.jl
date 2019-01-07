@@ -13,66 +13,73 @@ description = """\
     path="data/metadata/TimepointInfo.csv"
     name="Timepoint Info"
     description="""\
-                Exported all fields under TimepointInfo,\
+                Using FilemakerPro Database 11.14.2018 \
+                Exported all fields under TimepointInfo, \
                 then ran simple_scrub.jl"""
     log="data/metadata/TimepointInfo.log"
-    date="2019-01-02"
+    date="2019-01-07"
 
     [tables.metadata.basic]
     path="data/metadata/BasicFamilyandChild.csv"
     name="Basic Family and Child"
     description="""\
+                Using FilemakerPro Database 11.14.2018 \
                 Exported all fields under "BasicFamilyAndChild", \
                 then ran simple_scrub.jl"""
     log="data/metadata/BasicFamilyandChild.log"
-    date="2019-01-02"
+    date="2019-01-07"
 
     [tables.metadata.bfdone]
     path="data/metadata/BreastfeedingDone.csv"
     name="Breastfeeding Done"
     description="""\
+                Using FilemakerPro Database 11.14.2018 \
                 Exported all fields under "BreastfeedingDone" \
                 then ran simple_scrub.jl"""
     log="data/metadata/BreastfeedingDone.log"
-    date="2019-01-02"
+    date="2019-01-07"
 
     [tables.metadata.bfstill]
     path="data/metadata/BreastfeedingStill.csv"
     name="Breastfeeding Still"
     description="""\
+                Using FilemakerPro Database 11.14.2018 \
                 Exported all fields under "BreastfeedingStill", \
                 then ran simple_scrub.jl"""
     log="data/metadata/BreastfeedingStill.log"
-    date="2019-01-02"
+    date="2019-01-07"
 
     [tables.metadata.delivery]
     path="data/metadata/Delivery.csv"
     name="Delivery"
     description="""\
+                Using FilemakerPro Database 11.14.2018 \
                 Exported all fields under "Delivery" \
                 then ran simple_scrub.jl"""
     log="data/metadata/Delivery.log"
-    date="2019-01-02"
+    date="2019-01-07"
 
 
     [tables.metadata.fecalgenotech]
     path="data/metadata/FecalSampleCollection.csv"
     name="Fecal Samples"
     description="""\
+                Using FilemakerPro Database 11.14.2018 \
                 Exported all fields under "FecalSampleCollection" \
                 and "Fecal with Ethanol" \
                 then ran simple_scrub.jl"""
     log="data/metadata/FecalSampleCollection.log"
-    date="2019-01-02"
+    date="2019-01-07"
 
     [tables.metadata.fecaletoh]
     path="data/metadata/Fecal_with_Ethanol.csv"
     name="Fecal Samples"
     description="""\
+                Using FilemakerPro Database 11.14.2018 \
                 Exported all fields under "Fecal with Ethanol" \
                 then ran simple_scrub.jl"""
     log="data/metadata/Fecal_with_Ethanol.log"
-    date="2019-01-02"
+    date="2019-01-07"
 
 [tables.samples]
     path="data/metadata/fecal_processing.csv"

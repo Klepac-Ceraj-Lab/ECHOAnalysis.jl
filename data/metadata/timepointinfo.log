@@ -1,87 +1,36 @@
-┌ Info: All entries for column finishassessment are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:109
-┌ Warning: `delete!(df::AbstractDataFrame, cols::Any)` is deprecated, use `deletecols!(df, cols)` instead.
-│   caller = main() at simple_scrub.jl:110
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:110
+┌ Info: Table Name: TimepointInfo
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:99
 ┌ Info: All entries for column importVarDummy are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:109
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:111
 ┌ Info: All entries for column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:109
-┌ Info: All entries for row 225 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:111
+┌ Info: All entries for row 1332 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1320 are missing, removing
+┌ Info: All entries for row 1337 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1325 are missing, removing
+┌ Info: All entries for row 1344 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1331 are missing, removing
+┌ Info: All entries for row 1355 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1338 are missing, removing
+┌ Info: All entries for row 1363 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1343 are missing, removing
+┌ Info: All entries for row 1397 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1351 are missing, removing
+┌ Info: All entries for row 1424 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1381 are missing, removing
+┌ Info: All entries for row 1431 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1383 are missing, removing
+┌ Info: All entries for row 1432 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1391 are missing, removing
+┌ Info: All entries for row 1451 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1406 are missing, removing
+┌ Info: All entries for row 1603 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1413 are missing, removing
+┌ Info: All entries for row 1623 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1414 are missing, removing
+┌ Info: All entries for row 1730 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1433 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1455 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1471 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1585 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1586 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1589 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1607 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1613 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1614 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1615 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1643 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1703 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1713 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1714 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1715 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1722 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1755 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1763 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1800 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1923 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1924 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1944 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 1945 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 2017 are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
-┌ Info: All entries for row 2032 are missing, removing
+┌ Info: All entries for row 2081 are missing, removing
 └ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:57
 ┌ Info: Writing scrubbed file to /Users/ksb/repos/lab_repos/echo_analysis/data/metadata/TimepointInfo.csv
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:134
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/simple_scrub.jl:136
