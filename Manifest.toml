@@ -201,9 +201,9 @@ version = "0.21.0"
 
 [[EcoBase]]
 deps = ["Compat", "RecipesBase"]
-git-tree-sha1 = "a5deb04ba67db3c21360f01bbbb6e16a9f5c582e"
+git-tree-sha1 = "7d05be63ecb77148b3807c89b8977d6397499618"
 uuid = "a58aae7d-b440-5a11-b283-399458f99aac"
-version = "0.0.2"
+version = "0.0.4"
 
 [[FFTW]]
 deps = ["AbstractFFTs", "BinaryProvider", "Compat", "Conda", "Libdl", "LinearAlgebra", "Reexport", "Test"]
@@ -234,10 +234,10 @@ deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[GR]]
-deps = ["Base64", "DelimitedFiles", "Pkg", "Random", "Serialization", "Sockets", "Test"]
-git-tree-sha1 = "d12425c0187189a6f2fabc5eea9f22f25d365049"
+deps = ["Base64", "DelimitedFiles", "LinearAlgebra", "Pkg", "Printf", "Random", "Serialization", "Sockets", "Test"]
+git-tree-sha1 = "3c62c19ddf86ff016829fdac1663cd3c75558c34"
 uuid = "28b8d3ca-fb5f-59d9-8090-bfdbd6d07a71"
-version = "0.36.0"
+version = "0.37.0"
 
 [[Highlights]]
 deps = ["DocStringExtensions", "InteractiveUtils", "REPL", "Test"]
@@ -425,9 +425,9 @@ version = "0.5.5"
 
 [[Plots]]
 deps = ["Base64", "Contour", "Dates", "FixedPointNumbers", "GR", "JSON", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "Reexport", "Requires", "Showoff", "SparseArrays", "StaticArrays", "Statistics", "StatsBase", "Test", "UUIDs"]
-git-tree-sha1 = "3a7d51ca722a7e4a9bc71d6688045289d52ed65b"
+git-tree-sha1 = "dc72ad71469363aa49140c405b9b590d0a9abb59"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "0.22.2"
+version = "0.22.4"
 
 [[PositiveFactorizations]]
 deps = ["LinearAlgebra", "Test"]
@@ -462,6 +462,18 @@ uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 [[Random]]
 deps = ["Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[[RandomBooleanMatrices]]
+deps = ["Random", "RandomNumbers", "SparseArrays", "StatsBase", "Test"]
+git-tree-sha1 = "c13963a90c579b3bc241d858e4d063d778deeef5"
+uuid = "9ae346a0-3d16-5633-ad70-ddb60ab77eac"
+version = "0.1.1"
+
+[[RandomNumbers]]
+deps = ["Libdl", "Printf", "Random", "Test"]
+git-tree-sha1 = "0687ea782f88706ef7969bc298f170e1ac7cb606"
+uuid = "e6cf234a-135c-5ec9-84dd-332b85af5143"
+version = "1.0.3"
 
 [[Ratios]]
 deps = ["Compat"]
@@ -523,10 +535,10 @@ deps = ["LinearAlgebra", "Random"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[SpatialEcology]]
-deps = ["DataFrames", "EcoBase", "Random", "RecipesBase", "SparseArrays", "Statistics", "StatsBase", "Test"]
-git-tree-sha1 = "10fd0fb0f593615aa97a8f25ff23cecf7fee97e9"
+deps = ["DataFrames", "DataFramesMeta", "EcoBase", "Random", "RandomBooleanMatrices", "RandomNumbers", "RecipesBase", "SparseArrays", "Statistics", "StatsBase", "Test"]
+git-tree-sha1 = "9326b26b5e9d3f488f11372794dc50d4582c816b"
 uuid = "348f2d5d-71a3-5ad4-b565-8af070f99681"
-version = "0.5.0"
+version = "0.6.0"
 
 [[SpecialFunctions]]
 deps = ["BinDeps", "BinaryProvider", "Libdl", "Test"]

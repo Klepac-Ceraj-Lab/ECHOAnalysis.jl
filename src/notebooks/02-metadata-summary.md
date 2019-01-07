@@ -87,7 +87,7 @@ fecaletoh[:timepoint] = fecaletoh[:CollectionNum]
 deletecols!(fecaletoh, [:CollectionDate, :CollectionNum])
 
 fecaletoh = melt(fecaletoh, [:studyID, :date, :timepoint], variable_name=:metadatum)
-fecaletoh[:parent_table] = "Fecal_with_Ethanol.csv"
+fecaletoh[:parent_table] = parent_table
 ```
 
 It's mostly the same for Genotech ethanol samples.
@@ -163,7 +163,7 @@ bfd[:parent_table] = parent_table
 
 allmeta = vcat(allmeta, bfd)
 
-## Delivery
+## Timepoint info
 parent_table = basename(metapaths[6])
 println(parent_table)
 
@@ -243,14 +243,12 @@ sampleinfo = @linq allmeta |>
     where(.!ismissing.(:SampleID), :metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
 
-using Makie
-using StatsMakie
-AbstractPlotting.inline!(true)
+using Plots
+using StatPlots
 
-scene = Scene(resolution = (800, 800))
-plot!(histogram, sampleinfo[:nsamples])
-scene[Axis][:names, :axisnames] = ("# of fecal samples", "# of subjects")
-scene
+histogram(sampleinfo[:nsamples], legend=false,
+    title="Samples per Subject",
+    xlabel="# of fecal samples", ylabel="# of subjects")
 ```
 
 Wow - there are a couple of subjects that have a lot of samples.
@@ -261,15 +259,15 @@ Taking a look to see what's going on there:
 highsamplers = @linq allmeta |>
     where(.!ismissing.(:SampleID), :metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID)) |>
-    where(:nsamples .> 5) |>
+    where(:nsamples .>= 5) |>
     select(:studyID)
 
 highsamplers = @linq filter(r->
     !ismissing(r[:studyID]) &&
     r[:studyID] in highsamplers[:studyID],
     allmeta) |>
-        where(:metadatum .== "SampleID") |>
-        orderby(:studyID)
+        where(:metadatum .== "DOM") |>
+        orderby(:studyID, :timepoint)
 
 first(highsamplers, 10)
 ```
