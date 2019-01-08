@@ -25,6 +25,10 @@ These are in order of most challenging from a computational perspective to least
 - studyID 66 has two fecal sample collections listed under "collection 6" with
   different dates.
   - If these are different collections, can they have different collection numbers?
+- Under delivery method, several subjects have "multiple pregnancies" and then
+  vaginal or cesarean.
+  - Is it possible to stick to just "vaginal" and "cesarean"
+    and perhaps record the multiple pregnancies elsewhere?
 - Some headers have odd symbols like `#`
   - Sticking to alphanumeric is better (eg NumberOfSamples or NumSamples)
 - Most parent fields are pascal case, eg `FecalSampleCollection`, but
