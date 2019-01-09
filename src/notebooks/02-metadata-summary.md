@@ -13,36 +13,17 @@ Parsing this file gives a set of nested key:value pairs.
 using Pkg.TOML: parsefile
 
 files = parsefile("data/data.toml")
-keys(files)
+println.(keys(files))
+files["description"]
 ```
 
 The metadata tables are found under `["tables"]["metadata"]`
 
-```julia
-println.(k for k in keys(files["tables"]["metadata"]))
-```
-
-
-
-```julia
-metapaths = [files["tables"]["metadata"][k]["path"]
-                for k in keys(files["tables"]["metadata"])]
-
-for p in metapaths
-    println(p)
-end
-```
 
 ## Long form data
 
-At the moment, the data has one subject or timepoint per row (wide-form).
-To make things a bit easier to reshape and combine,
-I'm going to convert it to long-form,
-where each observation (metadatum) is on one row.
+The `metascrub`
 
-But we need a few pieces of info associated with each metadatum for them to
-have meaning. In particular, we need the date of the observation,
-the ID of the subject, and the timepoint number (if applicable).
 
 ```julia
 using CSV
@@ -61,10 +42,6 @@ first(fecaletoh, 5)
 Each table has it's own peculiarities,
 but the end goal is to have a table where the columns are as follows:
 
-| studyID        | timepoint           | date          | metadatum | value    | parent_table |
-|----------------|---------------------|---------------|-----------|----------|--------------|
-| Int - required | Int - if applicable | if applicable | required  | required | required     |
-|                |                     |               |           |          |              |
 
 For example:
 
@@ -81,7 +58,6 @@ end
 using Dates
 
 fecaletoh[:timestamp] = map(x-> DateTime(x, dateformat"m/d/y H:M:S"), fecaletoh[:timestamp])
-fecaletoh[:date] = map(x-> DateTime(x, dateformat"m/d/y"),  fecaletoh[:CollectionDate])
 # collectionNum is equivalent to timepoint
 fecaletoh[:timepoint] = fecaletoh[:CollectionNum]
 deletecols!(fecaletoh, [:CollectionDate, :CollectionNum])

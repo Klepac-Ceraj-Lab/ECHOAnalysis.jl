@@ -39,11 +39,8 @@ to get the metadata associated with timepoints,
         by clicking `Clear All`
     1. Select a table to export.
         In this example, we'll select `Timpointinfo`
-    1. Then click `Move All`, then `Export`
-
-For future steps to work, it's important to only export one table at a time.
-In other words,
-all headers should have the same thing prior to the `::`.
+    1. Then click `Move All`
+    1. Repeat for additional tables/fields, then `Export`
 
 ![Export](../img/01.export.png)
 
@@ -55,28 +52,41 @@ all headers should have the same thing prior to the `::`.
 
 ![Move all and export](../img/01.moveexport.png)
 
-### Simple Scrub
+### Metadata Scrub
 
 The next step is to convert this file to a `.csv`.
 This can be done using software like MS Excel, Apple Numbers, or OpenOffice Calc.
 
 Once you have a `.csv` file,
-run the `simple_scrub.jl` script contained in the `bin/` folder.
-This script does a few simple things.
-first, it renames the headers to be a bit easier to work with,
-replacing spaces with underscores and removing the stuff before the `::`
-in each table.
-We can get that information back since it's the name of the csv file
-(and we only have one per table at this stage).
+run the `metascrub.jl` script contained in the `bin/` folder.
+This script does a few things. First, it separates each parent table
+(that is, the stuff before the `::`, eg `TimepointInfo`).
 Second, it removes empty columns and rows
 (that is, columns and rows that have only missing values).
+
+Third, some custom processing is done for certain tables -
+for example,
+`collectionNum` in `FecalSampleCollection` and `testNumber` in `LeadHemoglobin`
+are renamed to `timepoint` to be consistent with other tables.
+See the `customprocess()` function to see the table-specific steps.
+
+Finally, the data is converted to long form.
+
+
+| studyID  | timepoint | metadatum | value    | parent_table |
+|----------|-----------|-----------|----------|--------------|
+| Int      | Int       | String    | Any      | String       |
+
+NOTE: Metadata from tables that don't have timepoints
+(ie things that are the same at all timepoints)
+are given a timepoint of `0`.
 
 For more information, run the script with the `--help`:
 
 ```
-$ julia --project=@. bin/simple_scrub.jl --help
-usage: simple_scrub.jl [-d] [-v] [-q] [-l LOG] [--delim DELIM]
-                       [--dry-run] [-o OUTPUT] [-h] input
+$ julia --project=@. bin/metascrub.jl --help
+usage: metascrub.jl [-d] [-v] [-q] [-l LOG] [--delim DELIM]
+                    [--dry-run] [-o OUTPUT] [-h] input
 
 positional arguments:
   input                Table to be scrubbed. By default, this will be
@@ -90,15 +100,15 @@ optional arguments:
   --delim DELIM         (default: ",")
   --dry-run            Show logging, but take no action. Most useful
                        with --verbose
-  -o, --output OUTPUT  Output folder (defaults to current working
-                       directory) (default: "./")
+  -o, --output OUTPUT  Output for scrubbed file (defaults to
+                       overwriting input)
   -h, --help           show this help message and exit
 ```
 
 For example, to run this script on our example above:
 
 ```sh
-$ julia --project=@. bin/simple_scrub.jl ~/Desktop/timepoints.csv \
+$ julia --project=@. bin/metascrub.jl ~/Desktop/timepoints.csv \
   -o data/metadata/TimePointInfo.csv \
   -vl data/metadata/
 ```

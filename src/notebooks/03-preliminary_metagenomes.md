@@ -248,9 +248,9 @@ CSV.write("problems.csv",
     DataFrame(sample_id=samplenames(comm),
              studyid = map(x-> getmeta(x, :studyID, samplemeta), samplenames(comm)),
              timepoint = map(x-> getmeta(x, :timepoint, samplemeta), samplenames(comm)),
-             age = map(x-> getmeta(x, "childCorrectedAgeMonths", samplemeta), samplenames(comm))),
+             age = map(x-> getmeta(x, "childCorrectedAgeMonths", samplemeta), samplenames(comm)),
+             cesarean=csec)
              )
-
 
 
 ```

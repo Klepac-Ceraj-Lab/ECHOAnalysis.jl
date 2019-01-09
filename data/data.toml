@@ -1,92 +1,32 @@
 title = "ECHO RESONANCE Paper 1 - data description"
 authors = ["Kevin S. Bonham", "Sophie Rowland", "Vanja Klepac-Ceraj"]
 description = """\
-              This file contains machine-readable information about data files\
-              and repositories (eg DataDeps) used in these notebooks. Wherever\
-              possible, these data are in publically accessible locations,\
+              This file contains machine-readable information about data files \
+              and repositories (eg DataDeps) used in these notebooks. Wherever \
+              possible, these data are in publically accessible locations, \
               though some data are sensitive and are therefore restricted.
               """
 
 [tables.metadata]
 
-    [tables.metadata.timepointinfo]
-    path="data/metadata/TimepointInfo.csv"
-    name="Timepoint Info"
+    [tables.metadata.filemakerdb]
+    path="data/metadata/filemakerdb.csv"
+    name="FilemakerPro Database Export"
     description="""\
                 Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under TimepointInfo, \
-                then ran simple_scrub.jl"""
-    log="data/metadata/TimepointInfo.log"
-    date="2019-01-07"
+                Exported all fields under "TimepointInfo", "BasicFamilyAndChild", \
+                "BreastfeedingDone", "BreastfeedingStill", "Delivery", \
+                "FecalSampleCollection", "Fecal with Ethanol", "Mullen", \
+                and "LeadHemoglobin" ran metascrub.jl"""
+    log="data/metadata/filemakerdb.log"
+    date="2018-11-14"
 
-    [tables.metadata.basic]
-    path="data/metadata/BasicFamilyandChild.csv"
-    name="Basic Family and Child"
-    description="""\
-                Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under "BasicFamilyAndChild", \
-                then ran simple_scrub.jl"""
-    log="data/metadata/BasicFamilyandChild.log"
-    date="2019-01-07"
-
-    [tables.metadata.bfdone]
-    path="data/metadata/BreastfeedingDone.csv"
-    name="Breastfeeding Done"
-    description="""\
-                Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under "BreastfeedingDone" \
-                then ran simple_scrub.jl"""
-    log="data/metadata/BreastfeedingDone.log"
-    date="2019-01-07"
-
-    [tables.metadata.bfstill]
-    path="data/metadata/BreastfeedingStill.csv"
-    name="Breastfeeding Still"
-    description="""\
-                Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under "BreastfeedingStill", \
-                then ran simple_scrub.jl"""
-    log="data/metadata/BreastfeedingStill.log"
-    date="2019-01-07"
-
-    [tables.metadata.delivery]
-    path="data/metadata/Delivery.csv"
-    name="Delivery"
-    description="""\
-                Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under "Delivery" \
-                then ran simple_scrub.jl"""
-    log="data/metadata/Delivery.log"
-    date="2019-01-07"
-
-
-    [tables.metadata.fecalgenotech]
-    path="data/metadata/FecalSampleCollection.csv"
-    name="Fecal Samples"
-    description="""\
-                Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under "FecalSampleCollection" \
-                and "Fecal with Ethanol" \
-                then ran simple_scrub.jl"""
-    log="data/metadata/FecalSampleCollection.log"
-    date="2019-01-07"
-
-    [tables.metadata.fecaletoh]
-    path="data/metadata/Fecal_with_Ethanol.csv"
-    name="Fecal Samples"
-    description="""\
-                Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under "Fecal with Ethanol" \
-                then ran simple_scrub.jl"""
-    log="data/metadata/Fecal_with_Ethanol.log"
-    date="2019-01-07"
-
-[tables.samples]
+    [tables.metadata.samples]
     path="data/metadata/fecal_processing.csv"
     name="Fecal Samples DNA processing"
     description="""\
                 Downloaded "Everything" view from AirTable"""
-    date="2019-01-02"
+    date="2019-01-09"
 
 
 [tables.biobakery]
