@@ -34,6 +34,10 @@ function parse_commandline()
         "--output", "-o"
             help = "Output for scrubbed file (defaults to overwriting input)"
             arg_type = String
+        "--samples", "-s"
+            help = "Path to sample metadata to be included (optional)"
+            default = nothing
+            arg_type = String
         "input"
             help = "Table to be scrubbed. By default, this will be overwritten"
             required = true
@@ -83,14 +87,15 @@ function getsubtable(df, parent)
 end
 
 
-function elongate(df; idcol=:studyID, tpcol=nothing)
-    if tpcol === nothing
-        df[:timepoint] = missing
-    elseif tpcol != :timepoint
-        rename!(df, tpcol=>:timepoint)
+function elongate(df; idcol=:studyID, tpcol=:timepoint)
+    table = copy(df)
+    if tpcol != :timepoint
+        rename!(table, tpcol=>:timepoint)
     end
 
-    melt(df, [idcol, tpcol], variable_name=:metadatum)
+    table = melt(table, [idcol, tpcol], variable_name=:metadatum)
+    filter!(r-> !ismissing(r[tpcol]), table)
+    return table
 end
 
 const special_cases = Set(["Fecal_with_Ethanol", "FecalSampleCollection", "TimepointInfo", "LeadHemoglobin","Delivery"])

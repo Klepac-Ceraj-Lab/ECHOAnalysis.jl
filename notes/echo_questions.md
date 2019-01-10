@@ -9,3 +9,10 @@
   - Can we link to other types of analysis (eg microbiome stuff)
   - Goal: not having to track down responsible party
   - Good use of OSF?
+- Lead
+
+## Cog assessment
+
+- Bayley
+- Mullen
+- WASI

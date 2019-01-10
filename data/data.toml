@@ -22,7 +22,7 @@ description = """\
     date="2018-11-14"
 
     [tables.metadata.samples]
-    path="data/metadata/fecal_processing.csv"
+    path="data/metadata/fecal_samples.csv"
     name="Fecal Samples DNA processing"
     description="""\
                 Downloaded "Everything" view from AirTable"""

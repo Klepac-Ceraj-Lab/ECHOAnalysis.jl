@@ -22,171 +22,84 @@ The metadata tables are found under `["tables"]["metadata"]`
 
 ## Long form data
 
-The `metascrub`
+The `metascrubjl` script generates a table in long-form,
+meaning each metadatum has its own row.
 
 
 ```julia
 using CSV
 using DataFrames
 
-parent_table = basename(metapaths[1])
-println(parent_table)
+allmeta = CSV.File(files["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
+
+@show allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :]
 ```
 
-```julia
-fecaletoh = CSV.File(metapaths[1]) |> DataFrame
-
-first(fecaletoh, 5)
-```
-
-Each table has it's own peculiarities,
-but the end goal is to have a table where the columns are as follows:
-
-
-For example:
+The script tries to find `timepoint` values for everything, and if it can't,
+it assumes that the matadatum applies to all timepoints for that subject.
+These are marked with `timepoint = 0`.
+Let's look at which variables that applies to:
 
 ```julia
-for n in names(fecaletoh)
-    s = string(n)
-    if occursin("Fecalwethanol", s)
-        s = replace(s, "Fecalwethanol"=>"")
-    end
-    s = replace(s, "#"=> "Num")
-    rename!(fecaletoh, n=> Symbol(s))
+by(allmeta[allmeta[:timepoint] .== 0, [:metadatum, :parent_table]], :metadatum) do df
+    println("$(df[1,:parent_table]) : $(df[1,:metadatum])")
 end
-
-using Dates
-
-fecaletoh[:timestamp] = map(x-> DateTime(x, dateformat"m/d/y H:M:S"), fecaletoh[:timestamp])
-# collectionNum is equivalent to timepoint
-fecaletoh[:timepoint] = fecaletoh[:CollectionNum]
-deletecols!(fecaletoh, [:CollectionDate, :CollectionNum])
-
-fecaletoh = melt(fecaletoh, [:studyID, :date, :timepoint], variable_name=:metadatum)
-fecaletoh[:parent_table] = parent_table
 ```
 
-It's mostly the same for Genotech ethanol samples.
+Those all look reasonable!
 
-```julia
-parent_table = basename(metapaths[2])
-println(parent_table)
-
-fecal = CSV.File(metapaths[2]) |> DataFrame
-
-fecal[:date] = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  fecal[:collectionDate])
-fecal[:timepoint] = fecal[:collectionNum]
-deletecols!(fecal, [:collectionDate, :collectionNum])
-
-fecal = melt(fecal, [:studyID, :date, :timepoint], variable_name=:metadatum)
-fecal[:parent_table] = parent_table
-```
-
-Now we can merge these tables together pretty easily
-
-```julia
-allmeta = vcat(fecal, fecaletoh)
-
-@show first(allmeta, 3)
-@show last(allmeta, 3)
-```
-
-Now for the other tables.
-
-```julia
-## Basic Family and Child Info
-parent_table = basename(metapaths[3])
-println(parent_table)
-
-bfc = CSV.File(metapaths[3]) |> DataFrame
-
-bfc = melt(bfc, :studyID, variable_name=:metadatum)
-
-### In this case, the date and timepoint are irrelevant
-bfc[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, nrow(bfc)))
-bfc[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(bfc)))
-bfc[:parent_table] = parent_table
-
-allmeta = vcat(allmeta, bfc)
-
-## Delivery
-parent_table = basename(metapaths[4])
-println(parent_table)
-
-delivery = CSV.File(metapaths[4]) |> DataFrame
-
-delivery = melt(delivery, :studyID, variable_name=:metadatum)
-
-### In this case, timepoint is irrelevant, but it would be nice to have the date.
-### The closest we have is dueDate, but very few rows have it. Will leave missing for now
-delivery[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, nrow(delivery)))
-delivery[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(delivery)))
-delivery[:parent_table] = parent_table
-
-allmeta = vcat(allmeta, delivery)
-
-## Delivery
-parent_table = basename(metapaths[5])
-println(parent_table)
-
-bfd = CSV.File(metapaths[5]) |> DataFrame
-
-bfd = melt(bfd, :studyID, variable_name=:metadatum)
-
-bfd[:date] = Vector{Union{Dates.Date, Missing}}(fill(missing, nrow(bfd)))
-bfd[:timepoint] = Vector{Union{Int, Missing}}(fill(missing, nrow(bfd)))
-bfd[:parent_table] = parent_table
-
-allmeta = vcat(allmeta, bfd)
-
-## Timepoint info
-parent_table = basename(metapaths[6])
-println(parent_table)
-
-tpi = CSV.File(metapaths[6]) |> DataFrame
-tpi[:date] = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  tpi[:scanDate])
-deletecols!(tpi, :scanDate)
-
-tpi = melt(tpi, [:studyID, :date, :timepoint], variable_name=:metadatum)
-
-tpi[:parent_table] = parent_table
-
-allmeta = vcat(allmeta, tpi)
-```
+## Sample Metadata
 
 In addition to the FilemakerPro database,
 we also have metdata info stored for each of the samples that are processed.
-
-In this case, however, `studyID`, `date` and `timepoint`
-do not uniquely identify our "observations",
-since each timepoint may be associated with multiple samples.
-However, the `SampleID` should be unique.
+In this case, `timepoint` and `studyID` do not uniquely identify samples,
+since we can have multiple samples per timepoint.
+`sampleID`s should be unique though.
 
 ```julia
-samples = CSV.read(files["tables"]["samples"]["path"]) |> DataFrame
-rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID])
+samples = CSV.File(files["tables"]["metadata"]["samples"]["path"]) |> DataFrame
+rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
-samples = melt(samples, [:SampleID, :studyID, :date, :timepoint], variable_name=:metadatum)
-samples[:parent_table] = "fecal_processing.csv"
+samples = melt(samples, [:studyID, :timepoint, :sampleID], variable_name=:metadatum)
+filter!(r-> !ismissing(r[:studyID]) && !ismissing(r[:sampleID]), samples)
+samples[:parent_table] = "FecalProcessing"
 ```
 
 We can only concatenate tables if they all have the same columns,
-so I'll add a missing `SampleID` to all of the other observations
-(another option would be to give those observations a `SampleID`
-that's a combination of the `studyID` and `parent_table` or something)
+so I'll add a `sampleID` to all of the other observations.
+The fecal sample `sampleID`s are build from the subjectID and timepoint,
+so I'll do the same for other observations
 
 ```julia
-allmeta[:SampleID] = missing
+allmeta[:sampleID] = map(r->
+        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+        eachrow(allmeta))
+
 allmeta = vcat(allmeta, samples)
-
 # show a random assortment of ~ 20 rows
-@show allmeta[rand(nrow(allmeta)) .< 20 / nrow(allmeta), :]
+@show allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :]
 
-allmeta = allmeta[[:studyID, :timepoint, :date, :SampleID, :metadatum, :value, :parent_table]]
+allmeta = allmeta[[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
+filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID], r[:timepoint], r[:metadatum]]), allmeta)
 ```
 
+A some of the `:value` fields have quotes or newlines in the field,
+which screws up parsing later. For now I will just replace them.
 
 ```julia
+for i in eachindex(allmeta[:value])
+    v = allmeta[i, :value]
+    ismissing(v) && continue
+    if isa(v, AbstractString) && occursin(r"\n", v)
+        v = replace(v, r"\n"=>"___")
+        allmeta[i, :value] = v
+    elseif isa(v, AbstractString) && occursin(r"\"", v)
+        v = replace(v, r"\""=>"'")
+        allmeta[i, :value] = v
+    end
+end
+
+
 CSV.write("data/metadata/merged.csv", allmeta)
 ```
 
@@ -207,16 +120,19 @@ using DataFramesMeta
 allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
 
 @linq allmeta |>
-    where(.!ismissing.(:SampleID)) |>
     select(:studyID) |>
     unique |> nrow
+
+
+
+
 ```
 
 Or, how many subjects have two or more fecal samples?
 
 ```julia
 sampleinfo = @linq allmeta |>
-    where(.!ismissing.(:SampleID), :metadatum .== "CollectionRep") |>
+    where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
 
 using Plots
@@ -233,15 +149,12 @@ Taking a look to see what's going on there:
 ```julia
 # Which subjects are those?
 highsamplers = @linq allmeta |>
-    where(.!ismissing.(:SampleID), :metadatum .== "CollectionRep") |>
+    where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID)) |>
     where(:nsamples .>= 5) |>
     select(:studyID)
 
-highsamplers = @linq filter(r->
-    !ismissing(r[:studyID]) &&
-    r[:studyID] in highsamplers[:studyID],
-    allmeta) |>
+highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) |>
         where(:metadatum .== "DOM") |>
         orderby(:studyID, :timepoint)
 
@@ -260,13 +173,14 @@ To find all of the studyID/timepoint combos that have that have metagenomes:
 
 ```julia
 mgxsamples = @linq allmeta |>
-    where(.!ismissing.(:SampleID), :metadatum .== "DOM") |>
+    where(:metadatum .== "DOM") |>
     select(:studyID, :timepoint) |>
     unique
 
+sort!(mgxsamples, :studyID)
 
 mgxmeta = let pairs = Set(zip(mgxsamples[:studyID], mgxsamples[:timepoint])), sids = Set(mgxsamples[:studyID])
-    filter(row-> (ismissing(row[:timepoint]) && row[:studyID] in sids) || # this captures metadata that's not linked to timepoints
+    filter(row-> (row[:studyID] in sids && row[:timepoint] == 0) || # this captures metadata that's not linked to timepoints
                  (row[:studyID], row[:timepoint]) in pairs,
                  allmeta)
 end
@@ -274,5 +188,65 @@ end
 # show a random assortment of ~ 20 rows
 @show mgxmeta[rand(nrow(mgxmeta)) .< 20 / nrow(mgxmeta), :]
 
+sort!(mgxmeta, [:studyID, :timepoint])
+
 CSV.write("data/metadata/mgxmetadata.csv", mgxmeta)
+```
+
+```julia
+mgxmeta = CSV.read("data/metadata/mgxmetadata.csv") |> DataFrame
+
+widedf = unstack(mgxmeta, [:studyID, :timepoint, :sampleID], :metadatum, :value)
+
+widefilled = by(widedf, :sampleID) do df
+    alltp = filter(r-> r[:timepoint] .== 0, df)
+    nrow(alltp) == 0 && return df
+
+    
+    tpdict = Dict(n=>alltp[1,n] for n in names(alltp) if !ismissing(alltp[1,n]))
+
+    for k in keys(tpdict)
+        k == :timepoint && continue
+        df[k] = tpdict[k]
+    end
+    return df
+end
+
+CSV.write("wide.csv", widefilled[[:studyID, :timepoint, :birthType, :childGender, :childGestationalPeriodWeeks, :combinedSES, :exclusivelyNursed,
+            :correctedScanAge, :correctedAgeDays, :leadLevel, :childWeight, :childHeight, :height, :childHeadCircumference,
+            :bodyDensity, :bodyMass, :bodyVolume, :fatFreeMass, :fatMass]])
+
+
+
+CSV.write("data/metadata/mgxmetadatawide.csv", widedf)
+
+tp0 = filter(r-> r[:timepoint] == 0, widedf)
+tp0 = tp0[[:studyID, :timepoint, :birthType, :childGender, :childGestationalPeriodWeeks, :combinedSES, :exclusivelyNursed]]
+for n in names(tp0)
+    println("Column $n: $(sum(ismissing, tp0[n]) / nrow(tp0))")
+end
+
+sum(complete_cases(tp0))
+
+
+tps = filter(r-> r[:timepoint] != 0, widedf)
+tps = tps[[:studyID, :timepoint, ]]
+
+
+
+
+
+missingage = @linq tps |>
+    where(:timepoint .!= 0)
+
+CSV.write("missingage3.csv", missingage)
+
+
+
+lead = by(tps, :studyID) do df
+    any(!ismissing, df[:leadLevel])
+end
+
+sum(lead[:x1]) / nrow(lead)
+
 ```
