@@ -18,6 +18,9 @@ function parse_commandline()
     "--output-folder", "-o"
         help="destination folder for concatenated files"
         default="./"
+    "--overwrite"
+        help="Set to write new file even if a file of the same name exists"
+        action=:store_true
     "--dry-run"
         help="print messages but do nothing"
         action=:store_true
@@ -51,17 +54,21 @@ function setup_logs!(loglevel, logpath; dryrun=false)
     end
 end
 
-function catfiles(files::Vector{String}, outpath::String; keep=true, dryrun=false)
+function catfiles(files::Vector{String}, outpath::String; keep=true, dryrun=false, overwrite=false)
     @info "Concatenating:\n  $files\nto $outpath"
     if dryrun; @debug "Part of a dryrun, skipping"; return end
 
-    open(outpath, "w") do outf
-        for stream in open.(files)
-            write(outf, stream)
-            close(stream)
+    if !isfile(outpath) || overwrite
+        open(outpath, "w") do outf
+            for stream in open.(files)
+                write(outf, stream)
+                close(stream)
+            end
         end
+        (keep || dryrun) || rm.(files)
+    else
+        @info "Output path already exists, skipping (use --overwrite to create new file anyway)"
     end
-    (keep || dryrun) || rm.(files)
 end
 
 function main()
@@ -102,10 +109,10 @@ function main()
 
         catfiles(pair1,
             joinpath(args["output-folder"], "$pid.1.fastq.gz"),
-            keep=k, dryrun=args["dry-run"])
+            keep=k, dryrun=args["dry-run"], overwrite=args["overwrite"])
         catfiles(pair2,
             joinpath(args["output-folder"], "$pid.2.fastq.gz"),
-            keep=k, dryrun=args["dry-run"])
+            keep=k, dryrun=args["dry-run"], overwrite=args["overwrite"])
     end
 end
 
