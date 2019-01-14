@@ -13,19 +13,20 @@ description = """\
     path="data/metadata/filemakerdb.csv"
     name="FilemakerPro Database Export"
     description="""\
-                Using FilemakerPro Database 11.14.2018 \
-                Exported all fields under "TimepointInfo", "BasicFamilyAndChild", \
-                "BreastfeedingDone", "BreastfeedingStill", "Delivery", \
-                "FecalSampleCollection", "Fecal with Ethanol", "Mullen", \
-                and "LeadHemoglobin" ran metascrub.jl"""
+                Using FilemakerPro Database from {{date}} \
+                Exported all fields under "AntibioticsPrescriptions", \
+                "BasicFamilyAndChild", "BreastfeedingDone", "BreastfeedingStill", \
+                "Delivery", "FecalSampleCollection", "Fecal with Ethanol", \
+                "LeadHemoglobin", and "TimepointInfo", \
+                then ran metascrub.jl"""
     log="data/metadata/filemakerdb.log"
-    date="2018-11-14"
+    date="2019-01-10"
 
     [tables.metadata.samples]
     path="data/metadata/fecal_samples.csv"
     name="Fecal Samples DNA processing"
     description="""\
-                Downloaded "Everything" view from AirTable"""
+                Downloaded "Everything" view from AirTable database"""
     date="2019-01-09"
 
 

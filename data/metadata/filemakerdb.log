@@ -1,73 +1,65 @@
 ┌ Info: Reading file from /Users/ksb/Desktop/all.csv
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:159
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:163
 ┌ Info: Processing parent tables
-│   parents = ["TimepointInfo", "BasicFamilyAndChild", "Delivery", "Fecal_with_Ethanol", "FecalSampleCollection", "ChildBodyComposition", "Mullen", "LeadHemoglobin", "BreastfeedingDone", "BreastfeedingStill"]
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:164
-┌ Info: Table Name: TimepointInfo
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable TimepointInfo column importVarDummy are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: All entries for subtable TimepointInfo column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+│   parents = ["AntibioticsPrescriptions", "BasicFamilyAndChild", "BreastfeedingDone", "BreastfeedingStill", "Fecal_with_Ethanol", "FecalSampleCollection", "LeadHemoglobin", "Delivery", "TimepointInfo"]
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:168
+┌ Info: Table Name: AntibioticsPrescriptions
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
 ┌ Info: Table Name: BasicFamilyAndChild
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable BasicFamilyAndChild column adoptionAgeYears are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
 ┌ Info: All entries for subtable BasicFamilyAndChild column studyName are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
 ┌ Info: All entries for subtable BasicFamilyAndChild column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
 ┌ Warning: No timpoint column detected for BasicFamilyAndChild, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:200
-┌ Info: Table Name: Delivery
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable Delivery column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: All entries for subtable Delivery column whyLaborInducedOtherSpecify are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Warning: No timpoint column detected for Delivery, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:200
-┌ Info: Table Name: Fecal_with_Ethanol
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol-30Freezerdate are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30Freezerdate are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30FreezerInitials are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: Table Name: FecalSampleCollection
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable FecalSampleCollection column date30freezer are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: All entries for subtable FecalSampleCollection column initials30freezer are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: All entries for subtable FecalSampleCollection column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: Table Name: ChildBodyComposition
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable ChildBodyComposition column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: Table Name: Mullen
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable Mullen column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
-┌ Info: Table Name: LeadHemoglobin
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
-┌ Info: All entries for subtable LeadHemoglobin column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:204
 ┌ Info: Table Name: BreastfeedingDone
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
 ┌ Info: All entries for subtable BreastfeedingDone column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
 ┌ Warning: No timpoint column detected for BreastfeedingDone, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:200
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:204
 ┌ Info: Table Name: BreastfeedingStill
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:174
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
 ┌ Info: All entries for subtable BreastfeedingStill column babyHaveSolidFood are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
 ┌ Info: All entries for subtable BreastfeedingStill column babyHaveSolidFoodTimesPerDay are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
 ┌ Info: All entries for subtable BreastfeedingStill column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:179
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: Table Name: Fecal_with_Ethanol
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
+┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol-30Freezerdate are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30Freezerdate are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30FreezerInitials are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: Table Name: FecalSampleCollection
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
+┌ Info: All entries for subtable FecalSampleCollection column date30freezer are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: All entries for subtable FecalSampleCollection column initials30freezer are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: All entries for subtable FecalSampleCollection column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: Table Name: LeadHemoglobin
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
+┌ Info: All entries for subtable LeadHemoglobin column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: Table Name: Delivery
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
+┌ Info: All entries for subtable Delivery column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: All entries for subtable Delivery column whyLaborInducedOtherSpecify are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Warning: No timpoint column detected for Delivery, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:204
+┌ Info: Table Name: TimepointInfo
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:178
+┌ Info: All entries for subtable TimepointInfo column importVarDummy are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
+┌ Info: All entries for subtable TimepointInfo column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:183
 ┌ Info: Writing scrubbed file to /Users/ksb/repos/lab_repos/echo_analysis/data/metadata/filemakerdb.csv
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:211
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:226

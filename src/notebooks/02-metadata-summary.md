@@ -61,7 +61,7 @@ samples = CSV.File(files["tables"]["metadata"]["samples"]["path"]) |> DataFrame
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
 samples = melt(samples, [:studyID, :timepoint, :sampleID], variable_name=:metadatum)
-filter!(r-> !ismissing(r[:studyID]) && !ismissing(r[:sampleID]), samples)
+filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID]]), samples)
 samples[:parent_table] = "FecalProcessing"
 ```
 
@@ -122,10 +122,6 @@ allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
 @linq allmeta |>
     select(:studyID) |>
     unique |> nrow
-
-
-
-
 ```
 
 Or, how many subjects have two or more fecal samples?
@@ -185,68 +181,49 @@ mgxmeta = let pairs = Set(zip(mgxsamples[:studyID], mgxsamples[:timepoint])), si
                  allmeta)
 end
 
+sort!(mgxmeta, [:studyID, :timepoint])
 # show a random assortment of ~ 20 rows
 @show mgxmeta[rand(nrow(mgxmeta)) .< 20 / nrow(mgxmeta), :]
 
-sort!(mgxmeta, [:studyID, :timepoint])
 
 CSV.write("data/metadata/mgxmetadata.csv", mgxmeta)
 ```
 
+Just checking that it reads in properly:
+
 ```julia
 mgxmeta = CSV.read("data/metadata/mgxmetadata.csv") |> DataFrame
+```
 
-widedf = unstack(mgxmeta, [:studyID, :timepoint, :sampleID], :metadatum, :value)
+Not all of this metadata is useful for the first batch of samplese.
+In addition, I want to subset the metadata into that that's relevant for
+all timpoints, vs that that's timepoint-specific.
 
-widefilled = by(widedf, :sampleID) do df
-    alltp = filter(r-> r[:timepoint] .== 0, df)
-    nrow(alltp) == 0 && return df
-
-    
-    tpdict = Dict(n=>alltp[1,n] for n in names(alltp) if !ismissing(alltp[1,n]))
-
-    for k in keys(tpdict)
-        k == :timepoint && continue
-        df[k] = tpdict[k]
-    end
-    return df
-end
-
-CSV.write("wide.csv", widefilled[[:studyID, :timepoint, :birthType, :childGender, :childGestationalPeriodWeeks, :combinedSES, :exclusivelyNursed,
-            :correctedScanAge, :correctedAgeDays, :leadLevel, :childWeight, :childHeight, :height, :childHeadCircumference,
-            :bodyDensity, :bodyMass, :bodyVolume, :fatFreeMass, :fatMass]])
-
-
-
+```julia
+widedf = unstack(mgxmeta, [:studyID, :timepoint], :metadatum, :value)
 CSV.write("data/metadata/mgxmetadatawide.csv", widedf)
 
+# timpoint 0 for all timepoint data
 tp0 = filter(r-> r[:timepoint] == 0, widedf)
-tp0 = tp0[[:studyID, :timepoint, :birthType, :childGender, :childGestationalPeriodWeeks, :combinedSES, :exclusivelyNursed]]
+# some relevant info
+tp0 = tp0[[:studyID, :timepoint, :birthType, :childGender, :childGestationalPeriodWeeks, :motherSES, :exclusivelyNursed]]
+CSV.write("data/metadata/mgxtp0.csv", tp0)
+
+# What percent of subjects have each metadatum?
 for n in names(tp0)
     println("Column $n: $(sum(ismissing, tp0[n]) / nrow(tp0))")
 end
 
-sum(complete_cases(tp0))
+# how many subjects have all metadata?
+sum(completecases(tp0))
+```
 
-
+```julia
+# Everything that's NOT timpepoint 0
 tps = filter(r-> r[:timepoint] != 0, widedf)
-tps = tps[[:studyID, :timepoint, ]]
+# relevant metadata
+tps = tps[[:studyID, :timepoint, :correctedScanAge, :correctedAgeDays, :leadLevel,
+            :childWeight, :childHeight, :childHeadCircumference]]
 
-
-
-
-
-missingage = @linq tps |>
-    where(:timepoint .!= 0)
-
-CSV.write("missingage3.csv", missingage)
-
-
-
-lead = by(tps, :studyID) do df
-    any(!ismissing, df[:leadLevel])
-end
-
-sum(lead[:x1]) / nrow(lead)
-
+CSV.write("data/metadata/mgxtps.csv", tps)
 ```

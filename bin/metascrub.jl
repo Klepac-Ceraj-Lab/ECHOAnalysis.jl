@@ -204,11 +204,22 @@ function main(args)
             @warn "No timpoint column detected for $p, treating as all-timepoint variable"
             subtable[:timepoint] = 0
         end
+
         subtable = elongate(subtable, idcol=:studyID, tpcol=:timepoint)
         subtable[:parent_table] = p
 
         tables = vcat(tables, subtable)
     end
+
+    for i in eachindex(tables[:value])
+        isa(tables[i,:value], AbstractString) || continue
+        s = tables[i,:value]
+        s = replace(s, r"\n"=>"___")
+        s = replace(s, r"\""=>"'")
+        s = replace(s, r","=>";")
+        tables[i, :value] = s
+    end
+
 
     args["output"] === nothing ? outputpath = inputpath : outputpath = abspath(expanduser(args["output"]))
 
