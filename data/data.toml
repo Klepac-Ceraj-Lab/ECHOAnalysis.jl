@@ -29,6 +29,15 @@ description = """\
                 Downloaded "Everything" view from AirTable database"""
     date="2019-01-09"
 
+    [tables.metadata.merged_metadata]
+    path="data/metadata/merged.csv"
+    name="Merged Metadata"
+    description="""\
+                See Notebook 2 -
+                Contains metadata from filemaker and sample collection \
+                database, merged into long format."""
+    date="2019-01-14"
+
 
 [tables.biobakery]
 
@@ -43,3 +52,21 @@ description = """\
     [tables.biobakery.humann2]
     path="data/biobakery/humann2/"
     name="Humann 2 tables folder"
+
+[tables.mgxmetadata]
+
+    [tables.mgxmetadata.all_long]
+    path="data/biobakery/mgxmetadata/mgxmetadata.csv"
+    name="See Notebook 2 - All metadata for mgx samples in long format"
+
+    [tables.mgxmetadata.all_wide]
+    path="data/biobakery/mgxmetadata/mgxmetadatawide.csv"
+    name="See Notebook 2 - All metadata for mgx samples in wide format"
+
+    [tables.mgxmetadata.tp0]
+    path="data/biobakery/mgxmetadata/mgxtp0.csv"
+    name="See Notebook 2 - Wide table of timpoint-independent metadata for mgx samples"
+
+    [tables.mgxmetadata.tps]
+    path="data/biobakery/mgxmetadata/mgxtps.csv"
+    name="See Notebook 2 - Wide table of timepoint-specific metadata for mgx samples"

@@ -185,14 +185,14 @@ sort!(mgxmeta, [:studyID, :timepoint])
 # show a random assortment of ~ 20 rows
 @show mgxmeta[rand(nrow(mgxmeta)) .< 20 / nrow(mgxmeta), :]
 
-
-CSV.write("data/metadata/mgxmetadata.csv", mgxmeta)
+isdir("data/biobakery/mgxmetadata/") || mkdir("data/biobakery/mgxmetadata/")
+CSV.write("data/biobakery/mgxmetadata/mgxmetadata.csv", mgxmeta)
 ```
 
 Just checking that it reads in properly:
 
 ```julia
-mgxmeta = CSV.read("data/metadata/mgxmetadata.csv") |> DataFrame
+mgxmeta = CSV.read("data/biobakery/mgxmetadata/ mgxmetadata.csv") |> DataFrame
 ```
 
 Not all of this metadata is useful for the first batch of samplese.
@@ -201,13 +201,13 @@ all timpoints, vs that that's timepoint-specific.
 
 ```julia
 widedf = unstack(mgxmeta, [:studyID, :timepoint], :metadatum, :value)
-CSV.write("data/metadata/mgxmetadatawide.csv", widedf)
+CSV.write("data/biobakery/mgxmetadata/mgxmetadatawide.csv", widedf)
 
 # timpoint 0 for all timepoint data
 tp0 = filter(r-> r[:timepoint] == 0, widedf)
 # some relevant info
 tp0 = tp0[[:studyID, :timepoint, :birthType, :childGender, :childGestationalPeriodWeeks, :motherSES, :exclusivelyNursed]]
-CSV.write("data/metadata/mgxtp0.csv", tp0)
+CSV.write("data/biobakery/mgxmetadata/mgxtp0.csv", tp0)
 
 # What percent of subjects have each metadatum?
 for n in names(tp0)
@@ -225,5 +225,5 @@ tps = filter(r-> r[:timepoint] != 0, widedf)
 tps = tps[[:studyID, :timepoint, :correctedScanAge, :correctedAgeDays, :leadLevel,
             :childWeight, :childHeight, :childHeadCircumference]]
 
-CSV.write("data/metadata/mgxtps.csv", tps)
+CSV.write("data/biobakery/mgxmetadata/mgxtps.csv", tps)
 ```
