@@ -3,22 +3,17 @@
 ## Quality control
 
 ```julia
+using Revise
 using Pkg.TOML: parsefile
 using CSV, DataFrames
 using DataFramesMeta
 
-biobakery = parsefile("data/data.toml")["tables"]["biobakery"]
+tables = parsefile("data/data.toml")["tables"]
+biobakery = tables["biobakery"]
 
-kneadtables = joinpath.(biobakery["kneaddata"]["path"],
-                      readdir(biobakery["kneaddata"]["path"]))
-
-qc = vcat(map(t-> CSV.File(t, delim='\t') |> DataFrame, kneadtables))
+qc = CSV.File(biobakery["kneaddata"]["path"]) |> DataFrame
 
 names!(qc, map(n-> Symbol(replace(string(n), " "=> "_")), names(qc)))
-
-println.(names(qc))
-
-println.(qc[:Sample])
 
 qc = @linq qc |>
   transform(raw = :raw_pair1 .+ :raw_pair2,
@@ -63,62 +58,14 @@ using Microbiome
 using BiobakeryUtils
 using MicrobiomePlots
 
-mgxmeta = CSV.File("data/metadata/mgxmetadata.csv") |> DataFrame
+tp0 = CSV.File(tables["mgxmetadata"]["tp0"]["path"]) |> DataFrame
+tps = CSV.File(tables["mgxmetadata"]["tps"]["path"]) |> DataFrame
 
-@linq mgxmeta |>
-    where(.!ismissing.(:SampleID), .!ismissing.(:value)) |>
-    where(:metadatum .== "Mgx_batch") |>
-    where((:value .== "Batch 1") .| (:value .== "Batch 2") .|
-          (:value .== "Batch 3") .| (:value .== "Batch 4")) |>
-    select(:SampleID) |>
-    unique
+tax = import_abundance_table.(tables["biobakery"]["metaphlan2"]["path"], delim=',')
+names!(tax, map(x-> Symbol(replace(string(x), "_taxonomic_profile"=>"")), names(tax)))
+rename!(tax, names(tax)[1]=>:taxon)
 
-samples = unique(skipmissing(mgxmeta[:SampleID]))
-sids = unique(map(x-> String(split(x, "_")[1]), samples))
-
-dfs = import_abundance_table.(joinpath.("data/biobakery/metaphlan2/",
-        readdir("data/biobakery/metaphlan2/")))
-
-samples = Set(Symbol[])
-tax = DataFrame(SampleID=String[])
-
-for (i, df) in enumerate(dfs)
-    @info "batch $i"
-    n = Set(names(df[2:end]))
-    overlap = samples ∩ n
-    deletecols!(df, [s for s in overlap])
-
-    rename!(df, :col1=>:SampleID)
-    global tax = join(tax, df, on=:SampleID, kind=:outer)
-
-    global samples = samples ∪ n
-end
-
-for n in names(tax[2:end])
-    tax[n] = Float64.(coalesce.(tax[n], 0.))
-end
-
-
-names!(tax, map(n-> replace(string(n), "_taxonomic_profile"=>"") |> Symbol, names(tax)))
-names!(tax, map(n-> replace(string(n), "-"=>"_") |> Symbol, names(tax)))
-
-names!(tax, let x = []
-        for name in String.(names(tax))
-            try
-                (pre, id, post) = match(r"([MC])(\d+)(_.+)", name).captures
-                if length(id) == 3
-                    id = "0" * id
-                end
-                push!(x, pre * id * post)
-            catch e
-                println(name)
-                push!(x, name)
-            end
-        end
-        Symbol.(x)
-    end, makeunique=true)
-
-taxfilter!(tax)
+taxfilter!(tax, :species)
 
 comm = abundancetable(tax)
 
@@ -130,127 +77,70 @@ plot(pco, legend=false)
 
 ```julia
 
-filter!(r-> all(!ismissing, [r[:studyID], r[:metadatum]]), mgxmeta)
+samples = samplenames(comm)
+samples_match = map(s-> match(r"([CM])(\d+)-(\d)", s), samples)
+samples_id = [x === nothing ? (0,0) : parse.(Int, (x.captures[2], x.captures[3])) for x in samples_match]
 
-samplemeta = let meta = Dict{String, Dict}()
-    by(filter(r-> !ismissing(r[:SampleID]), mgxmeta), [:SampleID, :metadatum]) do df
-        s = df[1,:SampleID]
-        tp = df[1,:timepoint]
-        id = df[1,:studyID]
-        if !ismissing(s)
-            if !haskey(meta, s)
-                meta[s] = Dict{Any,Any}(:studyID => id, :timepoint=>tp)
-            end
+metadict = Dict(parse.(Int, (x.captures[2], x.captures[3]))=>
+                Dict{Symbol, Any}(:subject_type=>string(x.captures[1])) for x in samples_match if x !== nothing
+                )
 
-            m = Symbol(df[1,:metadatum])
-            v = df[1,:value]
-            nrow(df) > 1 && @warn ("too many rows for $s: $m") df
+for r in eachrow(tps)
+    global metadict
+    sid = (r[:studyID], Int(r[:timepoint]))
+    !in(sid, keys(metadict)) && continue
 
-            if haskey(meta[s], m) && meta[s][m] != v
-                error("duplicate entry for sample $s, metadatum $m, values: $(meta[s][m]) and $v")
-            end
-
-            meta[s][m] = v
-        end
-    end
-    meta
-end
-
-by(filter(r-> ismissing(r[:SampleID]), mgxmeta), [:studyID, :timepoint, :metadatum]) do df
-    id = df[1, :studyID]
-    tp = df[1, :timepoint]
-
-    entries = filter(k-> !ismissing(samplemeta[k][:studyID]) && samplemeta[k][:studyID] == id, keys(samplemeta))
-    if !ismissing(tp)
-        filter!(e-> !ismissing(samplemeta[e][:timepoint]) && samplemeta[e][:timepoint]== tp, entries)
-    end
-
-    m = df[1,:metadatum]
-
-    if nrow(df) > 1
-        u = unique(skipmissing(df[:value]))
-        if length(u) == 0
-            v = missing
-        else
-            length(u) > 1 && @warn ("too many rows for $id, $tp: $m") df
-            v = u[1]
-        end
-    else
-        v = df[1,:value]
-    end
-
-    for k in entries
-        if haskey(samplemeta[k], m) && !ismissing(v)
-            old = samplemeta[k][m]
-            if !ismissing(old) && old != v
-                if isa(old, Vector)
-                    push!(samplemeta[k][m], v)
-                else
-                    samplemeta[k][m] = [old, v]
-                end
-                continue
-            end
-        end
-
-        samplemeta[k][m] = v
+    for n in names(r)
+        metadict[sid][n] = r[n]
     end
 end
 
-println.(sort(collect(keys(samplemeta))))
-println.(samplenames(comm))
+for r in eachrow(tp0)
+    global metadict
+    sid = r[:studyID]
+    ks = filter(k-> k[1] == sid, keys(metadict))
+    for n in names(r[3:end])
+        for k in ks
+            metadict[k][n] = r[n]
+        end
+    end
+end
 
 using ColorBrewer
 
-c1 = ColorBrewer.palette("Set1", 9)
+set1 = ColorBrewer.palette("Set1", 9)
+set2 = ColorBrewer.palette("Set2", 8)
 
-function getmeta(sampleid, metadatum, metadict)
-    !haskey(metadict, sampleid) && return missing
-    !haskey(metadict[sampleid], metadatum) && return missing
-    return metadict[sampleid][metadatum]
-end
+plot(pco, group=[s == (0,0) ? "ZymoControl" : metadict[s][:subject_type] for s in samples_id],
+    legend=:topleft, color=[set1[4] set1[3] set1[9]], title="Taxonomic profiles - all samples")
+savefig("data/figures/03-pcoa-mothers-children.svg")
 
-function getcolors(vec, metadatum, metadict, colors)
-    m = map(x-> getmeta(x, metadatum, metadict), vec)
-    u = unique(m)
-    length(u) > length(colors) && error("not enough colors")
-    d = Dict(v => colors[i] for (i, v) in enumerate(u))
-    return [d[x] for x in m]
-end
+kids = view(comm, sites = [i for i in eachindex(samples_id) if samples_id[i] != (0,0) && metadict[samples_id[i]][:subject_type] == "C"])
+kids_id = [parse.(Int, (x.captures[2], x.captures[3])) for x in map(s-> match(r"([CM])(\d+)-(\d)", s),
+    samplenames(kids))]
 
-function getcolors(vec, metadatum, metadict, colors::Dict)
-    m = map(x-> getmeta(x, metadatum, metadict), vec)
-    u = unique(m)
-    length(u) > length(colors) && error("not enough colors")
-    d = Dict(v => colors[i] for (i, v) in enumerate(u))
-    return [d[x] for x in m]
-end
+kids_dm = getdm(kids, BrayCurtis())
+kids_pco = pcoa(kids_dm)
+
+plot(pco, group=[:birthType in keys(metadict[s]) && !ismissing(metadict[s][:birthType]) ? metadict[s][:birthType] : "Missing" for s in kids_id],
+    legend=:topleft, color=[set1[2] set1[9] set1[4]], title="Taxonomic profiles - birth type")
+savefig("data/figures/03-pcoa-birthType.svg")
+
+plot(pco, group=[:childGender in keys(metadict[s]) && !ismissing(metadict[s][:childGender]) ? metadict[s][:childGender] : "Missing" for s in kids_id],
+    legend=:topleft, color=[set2[1] set2[2] set2[8]], title="Taxonomic profiles - Gender")
+savefig("data/figures/03-pcoa-childGender.svg")
 
 
-csec = map(x-> getmeta(x, "birthType", samplemeta), samplenames(comm))
-csec = map(x-> !ismissing(x) && occursin("Vaginal", x) ? "Vaginal" : x, csec)
-csec = map(x-> !ismissing(x) && occursin("Cesarean", x) ? "Cesarean" : x, csec)
-csec = map(x-> ismissing(x) ? "Missing" : x, csec)
+ages = view(comm, sites=[i for i in eachindex(samples_id) if samples_id[i] !== (0,0) &&
+                                                            haskey(metadict[samples_id[i]], :correctedAgeDays) &&
+                                                            !ismissing(metadict[samples_id[i]][:correctedAgeDays])])
+ages_id = [parse.(Int, (x.captures[2], x.captures[3])) for x in map(s-> match(r"([CM])(\d+)-(\d)", s),
+    samplenames(ages))]
 
+ages_dm = getdm(ages, BrayCurtis())
+ages_pco = pcoa(ages_dm)
 
-plot(pco, group = csec)
-
-plot(pco, group = map(x-> startswith(x, "M") ? "Mother" : "Child", samplenames(comm)))
-
-
-
-age = map(x-> getmeta(x, "childCorrectedAgeMonths", samplemeta), samplenames(comm))
-age = map(x-> ismissing(x) ? 150 / 12 : parse(Int, x) / 12, age)
-
-plot(pco, zcolor=age)
-
-
-CSV.write("problems.csv",
-    DataFrame(sample_id=samplenames(comm),
-             studyid = map(x-> getmeta(x, :studyID, samplemeta), samplenames(comm)),
-             timepoint = map(x-> getmeta(x, :timepoint, samplemeta), samplenames(comm)),
-             age = map(x-> getmeta(x, "childCorrectedAgeMonths", samplemeta), samplenames(comm)),
-             cesarean=csec)
-             )
-
-
+plot(ages_pco, zcolor = log.([metadict[s][:correctedAgeDays] / 365 * 12 for s in ages_id]),
+    title="Taxonomic profiles - Age in months (log)", color=:plasma, primary=false)
+savefig("data/figures/03-pcoa-ages.svg")
 ```

@@ -42,7 +42,7 @@ description = """\
 [tables.biobakery]
 
     [tables.biobakery.kneaddata]
-    path="data/biobakery/kneaddata/kneaddata_read_count_table"
+    path="data/biobakery/kneaddata/kneaddata_read_count_table.csv"
     name="Kneaddata read counts"
 
     [tables.biobakery.metaphlan2]
