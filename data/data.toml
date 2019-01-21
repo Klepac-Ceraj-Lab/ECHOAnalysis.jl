@@ -70,3 +70,11 @@ description = """\
     [tables.mgxmetadata.tps]
     path="data/biobakery/mgxmetadata/mgxtps.csv"
     name="See Notebook 2 - Wide table of timepoint-specific metadata for mgx samples"
+
+[tables.brain]
+
+    [tables.brain.highres]
+    path="data/highres.csv"
+    name="High res structural and behavioral data"
+    description="Table provided by Sean through Samepage"
+    date="2018-05-12"
