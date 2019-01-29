@@ -17,10 +17,10 @@ description = """\
                 Exported all fields under "AntibioticsPrescriptions", \
                 "BasicFamilyAndChild", "BreastfeedingDone", "BreastfeedingStill", \
                 "Delivery", "FecalSampleCollection", "Fecal with Ethanol", \
-                "LeadHemoglobin", and "TimepointInfo", \
+                "LeadHemoglobin", "TimepointInfo", "Mullen", "Baley's", "Wisc_V" \
                 then ran metascrub.jl"""
     log="data/metadata/filemakerdb.log"
-    date="2019-01-10"
+    date="2019-01-29"
 
     [tables.metadata.samples]
     path="data/metadata/fecal_samples.csv"
@@ -36,7 +36,7 @@ description = """\
                 See Notebook 2 -
                 Contains metadata from filemaker and sample collection \
                 database, merged into long format."""
-    date="2019-01-14"
+    date="2019-01-29"
 
 
 [tables.biobakery]

@@ -3,6 +3,7 @@ using Logging
 using LoggingExtras
 
 using CSV
+using XLSX
 using DataFrames
 using Dates
 
@@ -27,7 +28,11 @@ function parse_commandline()
 
         # Stuff to do
         "--delim"
+            help = "for tabular text files, the delimeter used (generally ',' or '\t')"
             default = ","
+        "--sheet"
+            help = "for xlsx files, the name of the sheet that data is stored on"
+            default = "Sheet1"
         "--dry-run"
             help = "Show logging, but take no action. Most useful with --verbose"
             action= :store_true
@@ -98,6 +103,15 @@ function elongate(df; idcol=:studyID, tpcol=:timepoint)
     return table
 end
 
+function scrubdate!(df, colname)
+    if eltype(df[colname]) <: AbstractString
+        df[:date] = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  df[:date])
+    elseif eltype(df[colname]) <: TimeType
+        df[:date] = df[colname]
+    end
+    colname != :date && deletecols!(df, colname)
+end
+
 const special_cases = Set(["Fecal_with_Ethanol", "FecalSampleCollection", "TimepointInfo", "LeadHemoglobin","Delivery"])
 
 function customprocess!(table, parent)
@@ -115,11 +129,10 @@ function customprocess!(table, parent)
         parent == "Fecal_with_Ethanol" && rename!(table, :CollectionDate=>:date, :CollectionNum=>:timepoint)
         parent == "FecalSampleCollection" && rename!(table, :collectionDate=>:date, :collectionNum=>:timepoint)
 
-        table[:date] = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  table[:date])
+        scrubdate!(table, :date)
 
     elseif parent == "TimepointInfo"
-        table[:date] = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  table[:scanDate])
-        deletecols!(table, :scanDate)
+        scrubdate!(table, :scanDate)
     elseif parent == "LeadHemoglobin"
         rename!(table, :testNumber=>:timepoint)
     elseif parent == "Delivery"
@@ -161,7 +174,16 @@ function main(args)
 
     inputpath = expanduser(args["input"]) |> abspath
     @info "Reading file from $inputpath"
-    meta = CSV.File(inputpath, delim=args["delim"]) |> DataFrame
+
+    if endswith(inputpath, "xlsx")
+        meta = DataFrame(
+            XLSX.readtable(inputpath, args["sheet"])...
+            )
+    else
+        meta = DataFrame(
+            CSV.File(inputpath, delim=args["delim"])
+            )
+    end
 
     parents = map(n->splitheader(n)[1], names(meta)) |> unique
 
@@ -207,6 +229,12 @@ function main(args)
 
         subtable = elongate(subtable, idcol=:studyID, tpcol=:timepoint)
         subtable[:parent_table] = p
+
+        if any(x-> x==2.5, subtable[:timepoint])
+            @warn "Removing timepoint 2.5"
+            filter!(r-> r[:timepoint] != 2.5, subtable)
+            subtable[:timepoint] = [t for t in subtable[:timepoint]]
+        end
 
         tables = vcat(tables, subtable)
     end
