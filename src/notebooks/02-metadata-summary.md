@@ -132,7 +132,7 @@ sampleinfo = @linq allmeta |>
     by(:studyID, nsamples = length(:studyID))
 
 using Plots
-using StatPlots
+using StatsPlots
 
 histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject",

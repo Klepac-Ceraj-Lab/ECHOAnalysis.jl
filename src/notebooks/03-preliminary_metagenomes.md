@@ -28,7 +28,7 @@ qc[:metadatum] = string.(qc[:metadatum])
 ```
 
 ```julia
-using Plots, StatPlots
+using Plots, StatsPlots
 
 let sids = Dict(y=>x for (x,y) in
     enumerate(unique(sort(@where(qc, :metadatum .== "raw"), :value)[:SampleID])))
