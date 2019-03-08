@@ -144,3 +144,17 @@ plot(ages_pco, zcolor = log.([metadict[s][:correctedAgeDays] / 365 * 12 for s in
     title="Taxonomic profiles - Age in months (log)", color=:plasma, primary=false)
 savefig("data/figures/03-pcoa-ages.svg")
 ```
+
+
+```julia
+using CSV
+using DataFrames
+using StatsPlots
+
+perm = CSV.File("data/permanovas.csv") |> DataFrame
+
+bar(perm[:R2], xticks=(1:nrow(perm), perm[:variable]),
+    xlabel="variable", ylabel="% variance explained", xrotation=15,
+    color=:lightgrey, title = "PERMANOVAs", legend = false)
+
+savefig("data/figures/04-permanovas.svg")

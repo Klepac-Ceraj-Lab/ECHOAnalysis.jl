@@ -13,7 +13,23 @@ tables = parsefile("data/data.toml")["tables"]
 tp0 = CSV.File(tables["mgxmetadata"]["tp0"]["path"]) |> DataFrame
 tps = CSV.File(tables["mgxmetadata"]["tps"]["path"]) |> DataFrame
 
+tps[:timepoint] = Int.(tps[:timepoint])
+
 tax = import_abundance_table.(tables["biobakery"]["metaphlan2"]["path"], delim=',')
+samples = String.(names(tax)[2:end])
+kids = filter(n-> startswith(n, "C"), samples)
+
+kids_id = Set(map(x-> parse(Int,match(r"^C(\d+)_", x).captures[1]), kids))
+
+kids_tp0 = filter(r-> r[:studyID] in kids_id, tp0)
+
+
+kids_tps = filter(r-> r[:studyID] in kids_id, tps)
+
+CSV.write("/Users/ksb/Desktop/kids_tp0.csv", kids_tp0)
+CSV.write("/Users/ksb/Desktop/kids_tps.csv", kids_tps)
+CSV.write("/Users/ksb/Desktop/kids_tp0_missing.csv", filter(r-> any(ismissing, r[2:end]), kids_tp0))
+
 names!(tax, map(x-> Symbol(replace(string(x), "_taxonomic_profile"=>"")), names(tax)))
 rename!(tax, names(tax)[1]=>:taxon)
 
