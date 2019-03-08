@@ -20,7 +20,7 @@ description = """\
                 "LeadHemoglobin", "TimepointInfo", "Mullen", "Baley's", "Wisc_V" \
                 then ran metascrub.jl"""
     log="data/metadata/filemakerdb.log"
-    date="2019-01-29"
+    date="2019-03-08"
 
     [tables.metadata.samples]
     path="data/metadata/fecal_samples.csv"
