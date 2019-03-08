@@ -44,7 +44,7 @@ function parse_commandline()
             default = nothing
             arg_type = String
         "input"
-            help = "Table to be scrubbed. By default, this will be overwritten"
+            help = "Table to be scrubbed. By default, this will be overwritten if a CSV file"
             required = true
     end
 
@@ -123,7 +123,7 @@ ParentTable(s::String) = ParentTable{Symbol(s)}()
 
 customprocess!(table, ::ParentTable) = table
 
-function customprocess!(table, ::ParentTable{Fecal_with_Ethanol})
+function customprocess!(table, ::ParentTable{:Fecal_with_Ethanol})
     for n in names(table)
         s = string(n)
 
@@ -142,24 +142,24 @@ function customprocess!(table, ::ParentTable{Fecal_with_Ethanol})
     return table
 end
 
-function customprocess!(table, ::ParentTable{FecalSampleCollection})
+function customprocess!(table, ::ParentTable{:FecalSampleCollection})
     rename!(table, :collectionDate=>:date, :collectionNum=>:timepoint)
     scrubdate!(table, :date)
     return table
 end
 
-function customprocess!(table, ::ParentTable{TimepointInfo})
+function customprocess!(table, ::ParentTable{:TimepointInfo})
     scrubdate!(table, :scanDate)
     return table
 end
 
 ## Not sure this is the right thing to do - may nead to handle timepoint matching in separate script
-# function customprocess!(table, ::ParentTable{LeadHemoglobin})
+# function customprocess!(table, ::ParentTable{:LeadHemoglobin})
 #     rename!(table, :testNumber=>:timepoint)
 #     return table
 # end
 
-function customprocess!(table, ::ParentTable{Delivery})
+function customprocess!(table, ::ParentTable{:Delivery})
     table[:birthType] = let bt = Union{String,Missing}[]
         for t in table[:birthType]
             if ismissing(t)
@@ -240,7 +240,7 @@ function main(args)
         end
 
         @debug names(subtable)
-        customprocess!(subtable, p)
+        customprocess!(subtable, ParentTable(p))
 
         if !any(n-> n == :timepoint, names(subtable))
             @warn "No timpoint column detected for $p, treating as all-timepoint variable"
