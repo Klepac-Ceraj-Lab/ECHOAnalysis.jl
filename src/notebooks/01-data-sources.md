@@ -66,8 +66,8 @@ Second, it removes empty columns and rows
 
 Third, some custom processing is done for certain tables -
 for example,
-`collectionNum` in `FecalSampleCollection` and `testNumber` in `LeadHemoglobin`
-are renamed to `timepoint` to be consistent with other tables.
+`collectionNum` in `FecalSampleCollection`
+is renamed to `timepoint` to be consistent with other tables.
 See the `customprocess()` function to see the table-specific steps.
 
 Finally, the data is converted to long form.
@@ -86,31 +86,37 @@ For more information, run the script with the `--help`:
 ```
 $ julia --project=@. bin/metascrub.jl --help
 usage: metascrub.jl [-d] [-v] [-q] [-l LOG] [--delim DELIM]
-                    [--dry-run] [-o OUTPUT] [-h] input
+                    [--sheet SHEET] [--dry-run] [-o OUTPUT]
+                    [-s SAMPLES] [-h] input
 
 positional arguments:
-  input                Table to be scrubbed. By default, this will be
-                       overwritten
+  input                 Table to be scrubbed. By default, this will be
+                        overwritten if a CSV file
 
 optional arguments:
-  -d, --debug          Show @debug level logging messages
-  -v, --verbose        Show @info level logging messages
-  -q, --quiet          Only show @error logging messages
-  -l, --log LOG        Write logs to this file. Default - no file
-  --delim DELIM         (default: ",")
-  --dry-run            Show logging, but take no action. Most useful
-                       with --verbose
-  -o, --output OUTPUT  Output for scrubbed file (defaults to
-                       overwriting input)
-  -h, --help           show this help message and exit
+  -d, --debug           Show @debug level logging messages
+  -v, --verbose         Show @info level logging messages
+  -q, --quiet           Only show @error logging messages
+  -l, --log LOG         Write logs to this file. Default - no file
+  --delim DELIM         for tabular text files, the delimeter used
+                        (generally ',' or '     ') (default: ",")
+  --sheet SHEET         for xlsx files, the name of the sheet that
+                        data is stored on (default: "Sheet1")
+  --dry-run             Show logging, but take no action. Most useful
+                        with --verbose
+  -o, --output OUTPUT   Output for scrubbed file (defaults to
+                        overwriting input)
+  -s, --samples SAMPLES
+                        Path to sample metadata to be included
+                        (optional)
+  -h, --help            show this help message and exit
 ```
 
 For example, to run this script on our example above:
 
 ```sh
-$ julia --project=@. bin/metascrub.jl ~/Desktop/timepoints.csv \
-  -o data/metadata/TimePointInfo.csv \
-  -vl data/metadata/
+$ julia --project=@. bin/metascrub.jl ~/Desktop/echo_stuff/all.xlsx -vl data/metadata/filemakerdb.log -o data/metada
+ta/filemakerdb.csv
 ```
 
 Additional transformations of the metadata to get it into a usable form
