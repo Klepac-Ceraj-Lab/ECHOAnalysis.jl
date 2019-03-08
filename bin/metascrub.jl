@@ -112,52 +112,72 @@ function scrubdate!(df, colname)
     colname != :date && deletecols!(df, colname)
 end
 
-const special_cases = Set(["Fecal_with_Ethanol", "FecalSampleCollection", "TimepointInfo", "LeadHemoglobin","Delivery"])
 
-function customprocess!(table, parent)
-    !in(parent, special_cases) && return table
+# Use value types for special cases. See
+#   https://docs.julialang.org/en/v1/manual/types/#%22Value-types%22-1
+#   https://discourse.julialang.org/t/special-case-handling-alternatives-to-if-else/21608/4
+struct ParentTable{T}
+end
 
-    if parent == "Fecal_with_Ethanol" || parent == "FecalSampleCollection"
-        for n in names(table)
-            s = string(n)
-            if occursin("Fecalwethanol", s)
-                s = replace(s, "Fecalwethanol"=>"")
-            end
-            s = replace(s, "#"=> "Num")
-            rename!(table, n=> Symbol(s))
+ParentTable(s::String) = ParentTable{Symbol(s)}()
+
+customprocess!(table, ::ParentTable) = table
+
+function customprocess!(table, ::ParentTable{Fecal_with_Ethanol})
+    for n in names(table)
+        s = string(n)
+
+        # deal with headers like `Fecal_with_Ethanol::FecalwethanolShippedInitials`
+        if occursin("Fecalwethanol", s)
+            s = replace(s, "Fecalwethanol"=>"")
         end
-        parent == "Fecal_with_Ethanol" && rename!(table, :CollectionDate=>:date, :CollectionNum=>:timepoint)
-        parent == "FecalSampleCollection" && rename!(table, :collectionDate=>:date, :collectionNum=>:timepoint)
 
-        scrubdate!(table, :date)
+        # deal with headers like `Fecal_with_Ethanol::Fecalwethanol#ofsamples`
+        s = replace(s, "#"=> "Num")
 
-    elseif parent == "TimepointInfo"
-        scrubdate!(table, :scanDate)
-    elseif parent == "LeadHemoglobin"
-        rename!(table, :testNumber=>:timepoint)
-    elseif parent == "Delivery"
-        table[:birthType] = let bt = Union{String,Missing}[]
-            for t in table[:birthType]
-                if ismissing(t)
-                    push!(bt, missing)
-                elseif !occursin(r"([cC]esarean|[vV]aginal)", t)
-                    push!(bt, t)
-                elseif occursin(r"[cC]esarean", t)
-                    push!(bt, "Cesarean")
-                elseif occursin(r"[vV]aginal", t)
-                    push!(bt, "Vaginal")
-                else
-                    @error "something went wrong" t
-                end
-            end
-            bt
-        end
-    else
-        @warn "No processing code for special case $parent"
+        rename!(table, n=> Symbol(s))
     end
+    rename!(table, :CollectionDate=>:date, :CollectionNum=>:timepoint)
+    scrubdate!(table, :date)
     return table
 end
 
+function customprocess!(table, ::ParentTable{FecalSampleCollection})
+    rename!(table, :collectionDate=>:date, :collectionNum=>:timepoint)
+    scrubdate!(table, :date)
+    return table
+end
+
+function customprocess!(table, ::ParentTable{TimepointInfo})
+    scrubdate!(table, :scanDate)
+    return table
+end
+
+## Not sure this is the right thing to do - may nead to handle timepoint matching in separate script
+# function customprocess!(table, ::ParentTable{LeadHemoglobin})
+#     rename!(table, :testNumber=>:timepoint)
+#     return table
+# end
+
+function customprocess!(table, ::ParentTable{Delivery})
+    table[:birthType] = let bt = Union{String,Missing}[]
+        for t in table[:birthType]
+            if ismissing(t)
+                push!(bt, missing)
+            elseif !occursin(r"([cC]esarean|[vV]aginal)", t)
+                push!(bt, t)
+            elseif occursin(r"[cC]esarean", t)
+                push!(bt, "Cesarean")
+            elseif occursin(r"[vV]aginal", t)
+                push!(bt, "Vaginal")
+            else
+                @error "something went wrong" t
+            end
+        end
+        bt
+    end
+    return table
+end
 
 function main(args)
 
