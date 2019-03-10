@@ -84,7 +84,7 @@ end
 
 function getsubtable(df, parent)
     indices = findall(x-> occursin(parent, replace(string(x), " "=>"_")), names(df))
-    @warn indices
+    @debug "Getting subtable $parent at" indices
     table = deepcopy(df[indices])
     headers = map(x-> splitheader(x)[2], names(table))
     names!(table, Symbol.(headers), makeunique=true)
@@ -185,7 +185,7 @@ function customprocess!(table, ::ParentTable{:Delivery})
     return table
 end
 
-function loadtable(path, delim, sheet)
+function loadtable(inputpath, delim, sheet)
     if endswith(inputpath, "xlsx")
         meta = DataFrame(
             XLSX.readtable(inputpath, sheet)...
@@ -299,105 +299,16 @@ end
 #
 # ## Testing
 #
-args = Dict(
-            "input" => "~/Desktop/echo_stuff/everything2.xlsx",
-            "output" => "~/Desktop/scrubbed.csv",
-            "verbose" => true,
-            "log" => "/Users/ksb/Desktop/scrub.log",
-            "debug" => false,
-            "quiet"=> false,
-            "delim"=>",",
-            "dry-run"=>false,
-            "sheet"=>"Sheet1"
-            )
-
-if args["debug"]
-    loglevel = Logging.Debug
-elseif args["verbose"]
-    loglevel = Logging.Info
-elseif args["quiet"]
-    loglevel = Logging.Error
-else
-    loglevel = Logging.Warn
-end
-setup_logs!(loglevel, args["log"], dryrun = args["dry-run"])
-
-inputpath = expanduser(args["input"]) |> abspath
-@info "Reading file from $inputpath"
-
-meta = loadtable(inputpath, args["delim"], args["sheet"])
-parents = map(n->splitheader(n)[1], names(meta)) |> unique
-
-
-tables = DataFrame(studyID=String[],
-                    timepoint=Union{Int,Missing}[],
-                    metadatum=String[],
-                    value=Any[],
-                    parent_table=String[])
-
-for p in parents
-    subtable = getsubtable(meta, p)
-    @info "Table Name: $p"
-
-    # Remove columns where all values are missing
-    for n in names(subtable)
-        if all(ismissing, subtable[n])
-            @info "All entries for subtable $p column $n are missing, removing"
-            deletecols!(subtable, n)
-        end
-    end
-
-    # Remove rows where all values are missing
-    filter!(rowmissingfilter, subtable)
-
-    # Rename columns to remove double :: and spaces
-    for name in names(subtable)
-        if occursin(" ", string(name))
-            new_name = replace(string(name), " "=>"_")
-            @info "Changing column $name to $new_name"
-            rename!(subtable, name => new_name)
-        end
-    end
-
-    @debug names(subtable)
-    customprocess!(subtable, ParentTable(p))
-
-    if !any(n-> n == :timepoint, names(subtable))
-        @warn "No timpoint column detected for $p, treating as all-timepoint variable"
-        subtable[:timepoint] = 0
-    end
-
-    nrow(subtable) < 2 && continue
-
-    subtable = elongate(subtable, idcol=:studyID, tpcol=:timepoint)
-    subtable[:parent_table] = p
-
-    if any(x-> x==2.5, subtable[:timepoint])
-        @warn "Removing timepoint 2.5"
-        filter!(r-> r[:timepoint] != 2.5, subtable)
-        subtable[:timepoint] = [t for t in subtable[:timepoint]]
-    end
-
-    global tables = vcat(tables, subtable)
-end
-
-for i in eachindex(tables[:value])
-    isa(tables[i,:value], AbstractString) || continue
-    s = tables[i,:value]
-    s = replace(s, r"\n"=>"___")
-    s = replace(s, r"\""=>"'")
-    s = replace(s, r","=>";")
-    tables[i, :value] = s
-end
-
-
-args["output"] === nothing ? outputpath = inputpath : outputpath = abspath(expanduser(args["output"]))
-
-@info "Writing scrubbed file to $outputpath"
-if !args["dry-run"]
-    CSV.write(outputpath, tables, delim=args["delim"])
-else
-    @info "Just kidding! this is a dry run"
-end
-
-main(args)
+# args = Dict(
+#             "input" => "~/Desktop/echo_stuff/everything2.xlsx",
+#             "output" => "~/Desktop/scrubbed.csv",
+#             "verbose" => true,
+#             "log" => "/Users/ksb/Desktop/scrub.log",
+#             "debug" => false,
+#             "quiet"=> false,
+#             "delim"=>",",
+#             "dry-run"=>false,
+#             "sheet"=>"Sheet1"
+#             )
+#
+# main(args)
