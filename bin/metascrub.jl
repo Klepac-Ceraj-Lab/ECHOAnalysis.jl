@@ -84,7 +84,8 @@ end
 
 function getsubtable(df, parent)
     indices = findall(x-> occursin(parent, replace(string(x), " "=>"_")), names(df))
-    table = copy(df[indices])
+    @debug "Getting subtable $parent at" indices
+    table = deepcopy(df[indices])
     headers = map(x-> splitheader(x)[2], names(table))
     names!(table, Symbol.(headers), makeunique=true)
 
@@ -122,6 +123,11 @@ end
 ParentTable(s::String) = ParentTable{Symbol(s)}()
 
 customprocess!(table, ::ParentTable) = table
+
+function customprocess!(table, ::ParentTable{:AAB})
+    @warn "renaing subjectID"!
+    rename!(table, [:subjectID=>:studyID, :timePoint=>:timepoint])
+end
 
 function customprocess!(table, ::ParentTable{:Fecal_with_Ethanol})
     for n in names(table)
@@ -179,6 +185,20 @@ function customprocess!(table, ::ParentTable{:Delivery})
     return table
 end
 
+function loadtable(inputpath, delim, sheet)
+    if endswith(inputpath, "xlsx")
+        meta = DataFrame(
+            XLSX.readtable(inputpath, sheet)...
+            )
+    else
+        meta = DataFrame(
+            CSV.File(inputpath, delim=delim)
+            )
+    end
+    return meta
+end
+
+
 function main(args)
 
     if args["debug"]
@@ -195,15 +215,7 @@ function main(args)
     inputpath = expanduser(args["input"]) |> abspath
     @info "Reading file from $inputpath"
 
-    if endswith(inputpath, "xlsx")
-        meta = DataFrame(
-            XLSX.readtable(inputpath, args["sheet"])...
-            )
-    else
-        meta = DataFrame(
-            CSV.File(inputpath, delim=args["delim"])
-            )
-    end
+    meta = loadtable(inputpath, args["delim"], args["sheet"])
 
     parents = map(n->splitheader(n)[1], names(meta)) |> unique
 
@@ -239,13 +251,13 @@ function main(args)
             end
         end
 
-        @debug names(subtable)
         customprocess!(subtable, ParentTable(p))
 
         if !any(n-> n == :timepoint, names(subtable))
             @warn "No timpoint column detected for $p, treating as all-timepoint variable"
             subtable[:timepoint] = 0
         end
+        nrow(subtable) < 2 && continue
 
         subtable = elongate(subtable, idcol=:studyID, tpcol=:timepoint)
         subtable[:parent_table] = p
@@ -288,13 +300,15 @@ end
 # ## Testing
 #
 # args = Dict(
-#             "input" => "~/Desktop/all.csv",
+#             "input" => "~/Desktop/echo_stuff/everything2.xlsx",
 #             "output" => "~/Desktop/scrubbed.csv",
 #             "verbose" => true,
 #             "log" => "/Users/ksb/Desktop/scrub.log",
 #             "debug" => false,
 #             "quiet"=> false,
 #             "delim"=>",",
-#             "dry-run"=>false
+#             "dry-run"=>false,
+#             "sheet"=>"Sheet1"
 #             )
+#
 # main(args)
