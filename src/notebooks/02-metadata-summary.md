@@ -192,7 +192,7 @@ CSV.write("data/biobakery/mgxmetadata/mgxmetadata.csv", mgxmeta)
 Just checking that it reads in properly:
 
 ```julia
-mgxmeta = CSV.read("data/biobakery/mgxmetadata/ mgxmetadata.csv") |> DataFrame
+mgxmeta = CSV.read("data/biobakery/mgxmetadata/mgxmetadata.csv") |> DataFrame
 ```
 
 Not all of this metadata is useful for the first batch of samplese.

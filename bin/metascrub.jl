@@ -159,6 +159,24 @@ function customprocess!(table, ::ParentTable{:TimepointInfo})
     return table
 end
 
+function customprocess!(table, ::ParentTable{:GeneticOralSample})
+    scrubdate!(table, :geneticCollectionDate)
+    return table
+end
+
+function customprocess!(table, ::ParentTable{:GeneticOralSampleParent})
+    scrubdate!(table, :CollectionDate)
+    return table
+end
+
+function customprocess!(table, 
+            ::Union{ParentTable{:OralSampleCollection},ParentTable{:UrineSampleCollection}})
+    scrubdate!(table, :collectionDate)
+    return table
+end
+
+
+
 ## Not sure this is the right thing to do - may nead to handle timepoint matching in separate script
 # function customprocess!(table, ::ParentTable{:LeadHemoglobin})
 #     rename!(table, :testNumber=>:timepoint)

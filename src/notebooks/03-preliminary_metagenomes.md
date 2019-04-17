@@ -69,6 +69,13 @@ taxfilter!(tax, :species)
 
 comm = abundancetable(tax)
 
+relativeabundance!(comm)
+
+alphadiv = DataFrame(samples=String.(samplenames(comm)),
+        shannon=[shannon(vec(comm[:,i])) for i in nsamples(comm)],
+        gini=[ginisimpson(vec(comm[:,i])) for i in nsamples(comm)])
+
+
 dm = getdm(comm, BrayCurtis())
 pco = pcoa(dm)
 
