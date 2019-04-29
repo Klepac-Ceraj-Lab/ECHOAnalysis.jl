@@ -1,6 +1,5 @@
 """
-
-Parse a sample and return its components.
+Parse a sample name and return its components.
 
 Sample
 """
@@ -13,8 +12,8 @@ function resolve_sampleID(sid::Union{AbstractString,Symbol})
         return (sample=sid, subject=nothing, timepoint=nothing)
     else
         sample = String(m.captures[1])
-        subject = String(m.captures[3])
-        timepoint = String(m.captures[4])
+        subject = parse(Int, m.captures[3])
+        timepoint = parse(Int, m.captures[4])
         return (sample=sample, subject=subject, timepoint=timepoint)
     end
 end

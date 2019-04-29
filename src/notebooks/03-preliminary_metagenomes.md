@@ -7,6 +7,7 @@ using Revise
 using Pkg.TOML: parsefile
 using CSV, DataFrames
 using DataFramesMeta
+using PrettyTables
 
 tables = parsefile("data/data.toml")["tables"]
 biobakery = tables["biobakery"]
@@ -14,6 +15,9 @@ biobakery = tables["biobakery"]
 qc = CSV.File(biobakery["kneaddata"]["path"]) |> DataFrame
 
 names!(qc, map(n-> Symbol(replace(string(n), " "=> "_")), names(qc)))
+println.(qc[1])
+
+pretty_table(qc)
 
 qc = @linq qc |>
   transform(raw = :raw_pair1 .+ :raw_pair2,
