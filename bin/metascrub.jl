@@ -58,7 +58,7 @@ function setup_logs!(loglevel, logpath; dryrun=false)
     else
         logpath = abspath(expanduser(logpath))
         global_logger(DemuxLogger(
-            FileLogger(logpath, min_level=loglevel),
+            MinLevelLogger(FileLogger(logpath), loglevel),
             glog, include_current_global=false))
     end
 end
@@ -169,7 +169,7 @@ function customprocess!(table, ::ParentTable{:GeneticOralSampleParent})
     return table
 end
 
-function customprocess!(table, 
+function customprocess!(table,
             ::Union{ParentTable{:OralSampleCollection},ParentTable{:UrineSampleCollection}})
     scrubdate!(table, :collectionDate)
     return table
