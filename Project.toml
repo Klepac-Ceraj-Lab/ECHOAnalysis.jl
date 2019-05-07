@@ -1,3 +1,9 @@
+name="ECHOAnalysis"
+uuid="39b5b81a-5017-403f-bb48-824a42db2b1c"
+authors = ["kescobo <kevbonham@gmail.com"]
+version = "0.0.1"
+
+
 [deps]
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
 BiobakeryUtils = "fa5322f5-bd84-5069-834a-abf3230fb8f8"
