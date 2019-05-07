@@ -96,16 +96,17 @@ description = """\
 [tables.biobakery]
 
     [tables.biobakery.kneaddata]
-    path="data/biobakery/kneaddata/kneaddata_read_count_table.csv"
+    path="data/biobakery/"
     name="Kneaddata read counts"
+    description="need to vcat tables"
 
     [tables.biobakery.metaphlan2]
-    path="data/biobakery/metaphlan2/metaphlan2_taxonomic_profiles.csv"
-    name="Metaphlan 2 taxonomic profiles table"
+    path="data/biobakery/"
+    suffix="profile"
 
     [tables.biobakery.humann2]
-    path="data/biobakery/humann2/ecs.csv"
-    name="Humann 2 ECs table"
+    path="data/biobakery/"
+    suffix="genefamilies"
 
 [tables.mgxmetadata]
 
