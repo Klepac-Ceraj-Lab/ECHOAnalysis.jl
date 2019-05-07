@@ -14,10 +14,64 @@ description = """\
     name="FilemakerPro Database Export"
     description="""\
                 Using FilemakerPro Database from {{date}} \
-                Exported all fields under "AntibioticsPrescriptions", \
-                "BasicFamilyAndChild", "BreastfeedingDone", "BreastfeedingStill", \
-                "Delivery", "FecalSampleCollection", "Fecal with Ethanol", \
-                "LeadHemoglobin", "TimepointInfo", "Mullen", "Baley's", "Wisc_V" \
+                Exported all fields under "AAB", \
+                "Allergies", \
+                "AntibioticsPrescriptions", \
+                "BasicFamilyAndChild", \
+                "Bayley's", \
+                "Beery", \
+                "BeforePregnancy", \
+                "BITSEA", \
+                "Blood_Pressure", \
+                "BreastfeedingDone", \
+                "BreastfeedingStill", \
+                "Brief", \
+                "CBCLOlder", \
+                "CBClYounger", \
+                "CCTQ", \
+                "ChildBodyComposition", \
+                "ChildcareDynamic", \
+                "ChildcareStatic", \
+                "ChildDiagnoses", \
+                "ChildMedHistVar", \
+                "CSBS", \
+                "Ctopp2", \
+                "Delivery", \
+                "DevelopmentDynamic", \
+                "DevelopmentStatic", \
+                "EducationalHistory", \
+                "FamilyInformation", \
+                "FamilyMedicalHistory", \
+                "Fecal_with_Ethanol", \
+                "FecalSampleCollection", \
+                "Handedness", \
+                "Homes", \
+                "HouseholdComposition", \
+                "immunizationHistory", \
+                "LeadHemoglobin", \
+                "MedicalHistory", \
+                "MOM_WASI-II", \
+                "MomBodyComposition", \
+                "Mullen", \
+                "OralSampleCollection", \
+                "Parent_Demographics", \
+                "Pets", \
+                "Postnatal", \
+                "PrebioticsProbiotics", \
+                "Pregnancy", \
+                "PregnancyProbioticsVitamins", \
+                "Prenatal", \
+                "PreschoolSRS", \
+                "RelativeInformation", \
+                "ResidentialHistoryFormRecord", \
+                "SchoolageSRS", \
+                "SiblingInformation", \
+                "TimepointInfo", \
+                "WeightHeight", \
+                "WISC_IV", \
+                "Wisc_V", \
+                "WPPSI_III", \
+                and "Wppsi_IV", \
                 then ran metascrub.jl"""
     log="data/metadata/filemakerdb.log"
     date="2019-04-03"
