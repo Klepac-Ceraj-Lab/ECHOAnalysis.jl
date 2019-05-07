@@ -15,7 +15,7 @@ In order to perform the analyses outlined in the notebooks in this project,
 ## Metadata
 
 Patient metadata is kept in a FileMaker Pro database,
-and exported into a `csv` file that requires some effort to parse effectively.
+and exported into a file that requires some effort to parse effectively.
 
 ### Export from FilemakerPro
 
@@ -26,7 +26,7 @@ by clicking the `Show All` button (if it is not greyed out).
 
 ![Show all button](../img/01.showall.png)
 
-Next, export one section as an excel file.
+Next, export desired sections as an excel file.
 The following demonstrates the steps
 to get the metadata associated with timepoints,
 
@@ -54,10 +54,7 @@ to get the metadata associated with timepoints,
 
 ### Metadata Scrub
 
-The next step is to convert this file to a `.csv`.
-This can be done using software like MS Excel, Apple Numbers, or OpenOffice Calc.
-
-Once you have a `.csv` file,
+Once you have a this file,
 run the `metascrub.jl` script contained in the `bin/` folder.
 This script does a few things. First, it separates each parent table
 (that is, the stuff before the `::`, eg `TimepointInfo`).

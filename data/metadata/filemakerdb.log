@@ -1,93 +1,598 @@
 ┌ Info: Reading file from /Users/ksb/Desktop/echo_stuff/all.xlsx
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:196
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:234
 ┌ Info: Processing parent tables
-│   parents = ["AntibioticsPrescriptions", "BasicFamilyAndChild", "BreastfeedingDone", "BreastfeedingStill", "Fecal_with_Ethanol", "FecalSampleCollection", "LeadHemoglobin", "Delivery", "TimepointInfo", "Mullen", "Bayley's", "Wisc_V"]
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:210
+│   parents = ["AAB", "ABCMovement", "Allergies", "AntibioticsPrescriptions", "Basc2", "BasicFamilyAndChild", "Bayley's", "Beery", "BeforePregnancy", "BITSEA", "Blood_Pressure", "BreastfeedingDone", "BreastfeedingStill", "Brief", "CBCLOlder", "CBClYounger", "CCTQ", "ChildBodyComposition", "ChildcareDynamic", "ChildcareStatic", "ChildDiagnoses", "ChildMedHistVar", "CSBS", "Ctopp2", "Delivery", "DevelopmentDynamic", "DevelopmentStatic", "EducationalHistory", "FamilyInformation", "FamilyMedicalHistory", "Fecal_with_Ethanol", "FecalSampleCollection", "Handedness", "Homes", "HouseholdComposition", "immunizationHistory", "LeadHemoglobin", "MedicalHistory", "MOM_WASI-II", "MomBodyComposition", "Mullen", "OralSampleCollection", "Parent_Demographics", "Pets", "Postnatal", "PrebioticsProbiotics", "Pregnancy", "PregnancyProbioticsVitamins", "Prenatal", "PreschoolSRS", "RelativeInformation", "ResidentialHistoryFormRecord", "SchoolageSRS", "SiblingInformation", "TimepointInfo", "Wasi_II", "WeightHeight", "WISC_IV", "Wisc_V", "WPPSI_III", "Wppsi_IV"]
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:240
+┌ Info: Table Name: AAB
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Warning: renaing subjectID
+│   ! = !
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:128
+┌ Info: Table Name: ABCMovement
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable ABCMovement column aimingCatchingComponent are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column aimingCatchingPercentile are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column aimingCatchingStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column balanceComponent are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column balancePercentile are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column balanceStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column bestLegBalanceRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column bestLegBalanceStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column catchingBeanbagRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column catchingBeanbagStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column drawingTrailRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column drawingTrailStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column jumpingOnMatsRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column jumpingOnMatsStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column manualDesterityStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column manualDexterityComponent are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column manualDexterityPercentile are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column oneLegBalanceStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column otherLegBalanceRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column otherLegBalanceStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column postingCoinsNonPreferredHandRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column postingCoinsNonPreferredHandStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column postingCoinsPreferredHandRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column postingCoinsPreferredHandStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column postingCoinsStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column studyID are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column testPercentileRank are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column testStandardScore are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column threadingBeadsRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column threadingBeadsStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column throwingBeanbagRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column throwingBeanbagStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column timepoint are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column totalTestScore are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column uniqueID are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column walkingHeelsRaisedRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable ABCMovement column walkingHeelsRaisedStandard are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for ABCMovement, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: Allergies
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Warning: No timpoint column detected for Allergies, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
 ┌ Info: Table Name: AntibioticsPrescriptions
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: Table Name: Basc2
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Basc2 column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: Table Name: BasicFamilyAndChild
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemDateCompleted are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemLifestage are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemMode are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ1 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ3check are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ3other are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ4 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ4Native are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ4NativeOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ4OtherAsian are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ4otherAsianOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ4OtherRace are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ4Tribe are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ5 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ5a are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ5aOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ5b are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemQ5bCheck are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemRespondent are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column ChildDemSetting are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column DemographicsAQ4Native are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column DemographicsAQ4NativeOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column DemographicsBQ4AsianOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column DemographicsBQ4Native are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column DemographicsBQ7cm are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column DemographicsBQ8kg are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column DemographicsQB4NativeOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BasicFamilyAndChild column HCDaysPerMonth are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable BasicFamilyAndChild column studyName are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable BasicFamilyAndChild column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Warning: No timpoint column detected for BasicFamilyAndChild, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:246
-┌ Info: Table Name: BreastfeedingDone
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable BreastfeedingDone column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Warning: No timpoint column detected for BreastfeedingDone, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:246
-┌ Info: Table Name: BreastfeedingStill
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable BreastfeedingStill column babyHaveSolidFood are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable BreastfeedingStill column babyHaveSolidFoodTimesPerDay are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable BreastfeedingStill column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: Table Name: Fecal_with_Ethanol
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol-30Freezerdate are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30Freezerdate are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30FreezerInitials are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: Table Name: FecalSampleCollection
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable FecalSampleCollection column date30freezer are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable FecalSampleCollection column initials30freezer are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable FecalSampleCollection column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: Table Name: LeadHemoglobin
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable LeadHemoglobin column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Warning: No timpoint column detected for LeadHemoglobin, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:246
-┌ Info: Table Name: Delivery
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable Delivery column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable Delivery column whyLaborInducedOtherSpecify are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Warning: No timpoint column detected for Delivery, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:246
-┌ Info: Table Name: TimepointInfo
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable TimepointInfo column importVarDummy are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Info: All entries for subtable TimepointInfo column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
-┌ Warning: Removing timepoint 2.5
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:254
-┌ Info: Table Name: Mullen
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
-┌ Info: All entries for subtable Mullen column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
 ┌ Info: Table Name: Bayley's
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
 ┌ Info: All entries for subtable Bayley's column cuRaw are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable Bayley's column cuScaled are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable Bayley's column faRaw are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable Bayley's column faScaled are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable Bayley's column hlRaw are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable Bayley's column hlScaled are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: All entries for subtable Bayley's column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Beery
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Beery column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Beery column VMIOtherScaling are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: BeforePregnancy
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable BeforePregnancy column drinkFrequency are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BeforePregnancy column smokeFrequency are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BeforePregnancy column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for BeforePregnancy, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: BITSEA
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable BITSEA column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Blood_Pressure
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: Table Name: BreastfeedingDone
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable BreastfeedingDone column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for BreastfeedingDone, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: BreastfeedingStill
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable BreastfeedingStill column babyHaveSolidFood are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BreastfeedingStill column babyHaveSolidFoodTimesPerDay are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable BreastfeedingStill column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Brief
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: Table Name: CBCLOlder
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable CBCLOlder column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: CBClYounger
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable CBClYounger column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: CCTQ
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable CCTQ column scheduledGoesToBed_AM are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable CCTQ column scheduledReadyToFallAsleep_AM are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable CCTQ column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: ChildBodyComposition
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable ChildBodyComposition column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: ChildcareDynamic
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable ChildcareDynamic column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: ChildcareStatic
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable ChildcareStatic column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for ChildcareStatic, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: ChildDiagnoses
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable ChildDiagnoses column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for ChildDiagnoses, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: ChildMedHistVar
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable ChildMedHistVar column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: CSBS
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable CSBS column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Ctopp2
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Ctopp2 column phonene_gradeEq are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Ctopp2 column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Delivery
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Delivery column MultipleBirths are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Delivery column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Delivery column whyLaborInducedOtherSpecify are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Delivery, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: DevelopmentDynamic
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable DevelopmentDynamic column language3 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable DevelopmentDynamic column language3By are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable DevelopmentDynamic column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: DevelopmentStatic
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable DevelopmentStatic column leftHanded are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable DevelopmentStatic column leftHandedRelation are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable DevelopmentStatic column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for DevelopmentStatic, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: EducationalHistory
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable EducationalHistory column eiSpeechTherapyCurrently_Copy are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable EducationalHistory column gradeEightType are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable EducationalHistory column IEPLearningDisabilityAgeStoppedMonths are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable EducationalHistory column IEPLearningDisabilityAgeStoppedYears are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable EducationalHistory column IEPOtherAgeStoppedMonths are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable EducationalHistory column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for EducationalHistory, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: FamilyInformation
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable FamilyInformation column overallhealth are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable FamilyInformation column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: FamilyMedicalHistory
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable FamilyMedicalHistory column None are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable FamilyMedicalHistory column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for FamilyMedicalHistory, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: Fecal_with_Ethanol
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol-30Freezerdate are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30Freezerdate are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Fecal_with_Ethanol column Fecalwethanol30FreezerInitials are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: FecalSampleCollection
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable FecalSampleCollection column date30freezer are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable FecalSampleCollection column initials30freezer are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable FecalSampleCollection column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Handedness
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Handedness column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Handedness column timestampAcct are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Homes
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Homes column CheckIf are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Homes column cookingOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Homes column SpecifyCountry are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Homes column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Homes, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: HouseholdComposition
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable HouseholdComposition column ChildQ1cOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable HouseholdComposition column ChildQ1dDaysperMonth are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable HouseholdComposition column Q3Date are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: immunizationHistory
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable immunizationHistory column HepA4 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column HPV2 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column MMR4 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column Rotavirus4 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column TB1 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column TB2 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column TB3 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column TB4 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column Varicella3 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable immunizationHistory column Varicella4 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for immunizationHistory, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: LeadHemoglobin
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable LeadHemoglobin column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for LeadHemoglobin, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: MedicalHistory
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable MedicalHistory column None are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column dizzinessAgeStartYears are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column dizzinessAgeStoppedMonths are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column frequentFallsAgeStartYears are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column frequentFallsAgeStoppedMonths are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column measlesAgeStartMonths are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column measlesAgeStartYears are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column mumpsAgeStartMonths are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column mumpsAgeStartYears are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column specialEquiptment are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column specialEquiptmentSpecify are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable MedicalHistory column timestamp_1 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for MedicalHistory, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: MOM_WASI-II
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: Table Name: MomBodyComposition
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable MomBodyComposition column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Mullen
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Mullen column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: OralSampleCollection
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable OralSampleCollection column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for OralSampleCollection, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: Parent_Demographics
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Parent_Demographics column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Parent_Demographics, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: Pets
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Pets column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Pets, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: Postnatal
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Postnatal column drinkFrequency are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Postnatal column otherDrugSpecify are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Postnatal column smokeFrequency are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Postnatal column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Postnatal, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: PrebioticsProbiotics
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable PrebioticsProbiotics column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Pregnancy
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Pregnancy column drinkFrequency are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Pregnancy column smokeFrequency are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Pregnancy column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Pregnancy column timestamp_1 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Pregnancy column timestamp_2 are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Pregnancy, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: PregnancyProbioticsVitamins
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable PregnancyProbioticsVitamins column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for PregnancyProbioticsVitamins, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: Prenatal
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Prenatal column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Prenatal, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: PreschoolSRS
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable PreschoolSRS column DateCompleted are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable PreschoolSRS column LifeStage are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable PreschoolSRS column Mode are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable PreschoolSRS column Respondent are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable PreschoolSRS column Setting are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable PreschoolSRS column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: RelativeInformation
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable RelativeInformation column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for RelativeInformation, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: ResidentialHistoryFormRecord
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Warning: No timpoint column detected for ResidentialHistoryFormRecord, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: SchoolageSRS
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable SchoolageSRS column DateCompleted are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable SchoolageSRS column LifeStage are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable SchoolageSRS column Mode are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable SchoolageSRS column Respondent are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable SchoolageSRS column Setting are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable SchoolageSRS column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: SiblingInformation
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable SiblingInformation column siblingSexOther are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable SiblingInformation column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for SiblingInformation, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: TimepointInfo
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable TimepointInfo column importVarDummy are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable TimepointInfo column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: Removing timepoint 2.5
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:284
+┌ Info: Table Name: Wasi_II
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Wasi_II column fsiq are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Wasi_II column matrixRaw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Wasi_II column matrixT are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Wasi_II column studyID are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Wasi_II column timepoint are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Wasi_II column vocabraw are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable Wasi_II column vocabT are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for Wasi_II, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: WeightHeight
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable WeightHeight column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Warning: No timpoint column detected for WeightHeight, treating as all-timepoint variable
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
+┌ Info: Table Name: WISC_IV
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable WISC_IV column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable WISC_IV column timestampAcct are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: Table Name: Wisc_V
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:220
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
 ┌ Info: All entries for subtable Wisc_V column timestamp are missing, removing
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:225
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: WPPSI_III
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable WPPSI_III column FSIQ are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable WPPSI_III column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: All entries for subtable WPPSI_III column timestampAcct are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
+┌ Info: Table Name: Wppsi_IV
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:250
+┌ Info: All entries for subtable Wppsi_IV column timestamp are missing, removing
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:255
 ┌ Info: Writing scrubbed file to /Users/ksb/repos/lab_repos/echo_analysis/data/metadata/filemakerdb.csv
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:274
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:304
