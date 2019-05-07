@@ -2,20 +2,35 @@
 
 ## Quality control
 
-```julia
-using Revise
+```@example 1
 using Pkg.TOML: parsefile
 using CSV, DataFrames
 using DataFramesMeta
 using PrettyTables
+using ECHOAnalysis
 
 tables = parsefile("data/data.toml")["tables"]
 biobakery = tables["biobakery"]
 
-qc = CSV.File(biobakery["kneaddata"]["path"]) |> DataFrame
+qc_files = filter(readdir(biobakery["kneaddata"]["path"])) do f
+    occursin("read_counts", f)
+end
 
+qc_files = joinpath.(biobakery["kneaddata"]["path"], qc_files)
+qc = CSV.File(qc_files[1]) |> DataFrame!
+qc[:batch] = "batch001"
+
+for f in qc_files[2:end]
+    df = CSV.File(f) |> DataFrame!
+    df[:batch] = match(r"(batch\d+)", f).captures[1]
+    global qc = vcat(qc, df)
+end
+
+qc[:Sample] = map(qc[:Sample]) do s
+    s = replace(s, "_kneaddata"=> "")
+    resolve_sampleID(s)[:sample]
+end
 names!(qc, map(n-> Symbol(replace(string(n), " "=> "_")), names(qc)))
-println.(qc[1])
 
 pretty_table(qc)
 
@@ -26,38 +41,30 @@ qc = @linq qc |>
             final = :final_pair1 .+ :final_pair2,
             )
 
-qc = melt(qc, :Sample, variable_name=:metadatum)
 rename!(qc, :Sample=>:SampleID)
-qc[:metadatum] = string.(qc[:metadatum])
 ```
 
-```julia
+```@example 1
 using Plots, StatsPlots
 
-let sids = Dict(y=>x for (x,y) in
-    enumerate(unique(sort(@where(qc, :metadatum .== "raw"), :value)[:SampleID])))
-    qc[:sid] = [sids[x] for x in qc[:SampleID]]
-end
+sort!(qc, [:batch, :raw])
 
-
-
-@df @where(qc, in.(:metadatum, Ref(["raw", "orphan", "final"]))
-    ) bar(:sid, :value, group=:metadatum,
+bar(x=qc[:SampleID], hcat(qc[:raw], qc[:final]),
     xaxis="Samples", yaxis= "Count", legend=:topleft,
-    title = "QC from Kneaddata"
+    title = "QC from Kneaddata", label=["Raw" "Final"]
     )
+```
 
+```@example 1
 isdir("data/figures") || mkdir("data/figures")
 savefig("data/figures/03-knead-qc.svg")
 ```
-
-
 
 ## Taxonomic profiles
 
 We'll use some functions in the `Microbiome.jl` package
 
-```julia
+```@example 1
 using Microbiome
 using BiobakeryUtils
 using MicrobiomePlots
@@ -86,7 +93,7 @@ pco = pcoa(dm)
 plot(pco, legend=false)
 ```
 
-```julia
+```@example 1
 
 samples = samplenames(comm)
 samples_match = map(s-> match(r"([CM])(\d+)-(\d)", s), samples)
@@ -157,7 +164,7 @@ savefig("data/figures/03-pcoa-ages.svg")
 ```
 
 
-```julia
+```@example 1
 using CSV
 using DataFrames
 using StatsPlots
