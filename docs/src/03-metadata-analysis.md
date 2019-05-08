@@ -9,6 +9,11 @@ I'm using the macros available from the [DataFramesMeta](https://github.com/Juli
 As an example, how many unique subjects do we have at least one sample for?
 
 ```@example 1
+using ECHOAnalysis # hide
+cd(joinpath(dirname(pathof(ECHOAnalysis)), "..")) # hide
+```
+
+```@example 1
 using CSV
 using DataFrames
 using DataFramesMeta

@@ -9,6 +9,12 @@ Now, we'll get these into a more usable format for analysis.
 Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
+```@example
+using ECHOAnalysis # hide
+cd(joinpath(dirname(pathof(ECHOAnalysis)), "..")) # hide
+pwd()
+```
+
 ```@example 1
 using Pkg.TOML: parsefile
 
