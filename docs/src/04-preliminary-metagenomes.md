@@ -110,6 +110,43 @@ CSV.write("data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
 ```
 
 
+## Taxonomic Profiles
+
+Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/src).
+Each sample is run separately, and needs to be joined in a single table.
+I'll use the function [`merge_tables`]@ref
+
+```@example 1
+tax = merge_tables("data/biobakery/metaphlan/", "_profile.tsv")
+# clean up sample names
+names!(tax,
+    map(n-> Symbol(
+        resolve_sampleID(String(n))[:sample]),
+        names(tax)
+        )
+    )
+
+using Microbiome
+using MicrobiomePlots
+using BiobakeryUtils
+
+
+taxfilter!(tax)
+abt = abundancetable(tax)
+
+dm = getdm(tax, BrayCurtis())
+pco = pcoa(dm)
+
+plot(pco, legend=false, alpha=0.4)
+```
+
+```@example 1
+c = [startswith(x, "C") ? :red : :blue for x in samplenames(abt)]
+
+p = plot(pco, legend=false, marker=3,
+    color=c, primary=false)
+```
+
 
 ## Functions
 

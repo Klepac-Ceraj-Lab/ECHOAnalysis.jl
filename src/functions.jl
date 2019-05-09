@@ -66,8 +66,13 @@ function merge_tables(dir, suffix)
 
     for f in filter(x-> occursin(suffix, x), readdir(dir))
         t = CSV.File(joinpath(dir, f)) |> DataFrame!
-        rename!(t, names(t)[1]=> :col1)
+        fname = Symbol(replace(f, suffix=>""))
+        rename!(t, names(t)[1]=> :col1, names(t)[2]=>fname)
         df = join(df,t, on=:col1, kind=:outer)
     end
+    for n in names(df[2:end])
+        df[n] = coalesce.(df[n], 0.)
+    end
+    disallowmissing!(df)
     return df
 end
