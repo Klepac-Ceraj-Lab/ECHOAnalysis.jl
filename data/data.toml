@@ -96,7 +96,7 @@ description = """\
 [tables.biobakery]
 
     [tables.biobakery.kneaddata]
-    path="data/biobakery/"
+    path="data/biobakery/kneaddata"
     name="Kneaddata read counts"
     description="need to vcat tables"
 
