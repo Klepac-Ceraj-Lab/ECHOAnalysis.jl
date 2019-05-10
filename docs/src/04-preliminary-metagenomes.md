@@ -116,7 +116,16 @@ Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaph
 Each sample is run separately, and needs to be joined in a single table.
 I'll use the function [`merge_tables`]@ref
 
-```@example 1
+```@example 2
+using ECHOAnalysis
+using DataFrames
+using PrettyTables
+using CSV
+using Microbiome
+using MicrobiomePlots
+using BiobakeryUtils
+using ColorBrewer
+
 tax = merge_tables("data/biobakery/metaphlan/", "_profile.tsv")
 # clean up sample names
 names!(tax,
@@ -126,12 +135,24 @@ names!(tax,
         )
     )
 
-using Microbiome
-using MicrobiomePlots
-using BiobakeryUtils
+euk = filter(tax) do row
+    occursin(r"^k__Eukaryota", row[1])
+end
+```
 
+```@example 2
+euk = euk[map(c->
+    !(eltype(euk[c]) <: Number) || sum(euk[c]) > 0, names(euk))]
+CSV.write("euk.csv", euk)
+taxfilter!(euk)
+CSV.write("euk_sp.csv", euk)
 
+```
+
+```@example 2
 taxfilter!(tax)
+tax |> pretty_table
+
 abt = abundancetable(tax)
 
 dm = getdm(tax, BrayCurtis())
@@ -140,7 +161,7 @@ pco = pcoa(dm)
 plot(pco, legend=false, alpha=0.4)
 ```
 
-```@example 1
+```@example 2
 c = [startswith(x, "C") ? :red : :blue for x in samplenames(abt)]
 
 p = plot(pco, legend=false, marker=3,
