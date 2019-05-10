@@ -122,6 +122,7 @@ using DataFrames
 using PrettyTables
 using CSV
 using Microbiome
+using StatsPlots
 using MicrobiomePlots
 using BiobakeryUtils
 using ColorBrewer
@@ -134,39 +135,141 @@ names!(tax,
         names(tax)
         )
     )
+```
+
+Some analysis of the fungi
+
+```@example 2
 
 euk = filter(tax) do row
     occursin(r"^k__Eukaryota", row[1])
 end
-```
 
-```@example 2
+# remove columns that don't have any fungi
 euk = euk[map(c->
     !(eltype(euk[c]) <: Number) || sum(euk[c]) > 0, names(euk))]
+
 CSV.write("euk.csv", euk)
+# get a df with only species
 taxfilter!(euk)
 CSV.write("euk_sp.csv", euk)
+pretty_table(euk)
+```
 
+Those numbers are out of 100...
+so really not much fungi at all,
+at least according to metaplan.
+There are some other methods to look more specifically at fungi,
+which will have to wait for another time.
+
+### PCoA Plots
+
+For an initial overview,
+let's look at the PCoA plots using BrayCurtis dissimilarity.
+
+#### All Samples
+
+```@example 2
+spec = taxfilter(tax)
+phyla = taxfilter(tax, :phylum)
+spec |> pretty_table
 ```
 
 ```@example 2
-taxfilter!(tax)
-tax |> pretty_table
+abt = abundancetable(spec)
+pabt = abundancetable(phyla)
+relativeabundance!(abt)
+relativeabundance!(pabt)
 
-abt = abundancetable(tax)
-
-dm = getdm(tax, BrayCurtis())
+dm = getdm(spec, BrayCurtis())
 pco = pcoa(dm)
 
 plot(pco, legend=false, alpha=0.4)
 ```
 
 ```@example 2
-c = [startswith(x, "C") ? :red : :blue for x in samplenames(abt)]
+color1 = ColorBrewer.palette("Set1", 9)
+color2 = ColorBrewer.palette("Set2", 8)
 
-p = plot(pco, legend=false, marker=3,
+c = [startswith(x, "C") ? color2[1] : color2[2] for x in samplenames(abt)]
+
+p1 = plot(pco, marker=3, line=1, framestyle=1,
     color=c, primary=false)
+scatter!([],[], color=color2[1], label="kids", legend=:topleft)
+scatter!([],[], color=color2[2], label="moms", legend=:topleft)
+title!("All samples taxonomic profiles")
+
+savefig("data/figures/03-taxonomic-profiles-moms-kids.svg")
 ```
+
+```@example 2
+p2 = plot(pco, marker=3, line=1,
+    zcolor=shannon(abt), primary = false, color=:plasma,
+    title="All samples, shannon diversity")
+
+savefig("data/figures/03-taxonomic-profiles-shannon.svg")
+```
+
+```@example 2
+bacteroidetes = vec(Matrix(phyla[phyla[1] .== "Bacteroidetes", 2:end]))
+firmicutes = vec(Matrix(phyla[phyla[1] .== "Firmicutes", 2:end]))
+
+p3 = plot(pco, marker=3, line=1,
+    zcolor=bacteroidetes, primary = false, color=:plasma,
+    title="All samples, Bacteroidetes")
+
+savefig("data/figures/03-taxonomic-profiles-bacteroidetes.svg")
+
+p4 = plot(pco, marker=3, line=1,
+    zcolor=firmicutes, primary = false, color=:plasma,
+    title="All samples, Firmicutes")
+
+savefig("data/figures/03-taxonomic-profiles-firmicutes.svg")
+
+plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
+savefig("data/figures/03-taxonomic-profiles-grid.svg")
+```
+
+#### Kids
+
+```@example 2
+kids = view(abt, sites=startswith.(sitenames(abt), "C"))
+
+kids_dm = getdm(kids, BrayCurtis())
+kids_pco = pcoa(kids_dm)
+
+plot(kids_pco, primary=false)
+```
+
+```@example 2
+p5 = plot(kids_pco, marker=3, line=1,
+    zcolor=shannon(kids), primary = false, color=:plasma,
+    title="Kids, shannon diversity")
+
+savefig("data/figures/03-taxonomic-profiles-kids-shannon.svg")
+
+kids_bact = vec(collect(occurrences(view(pabt, species=occursin.("Bact", speciesnames(pabt))))))
+kids_firm = vec(collect(occurrences(view(pabt, species=occursin.("Firm", speciesnames(pabt))))))
+kids_act = vec(collect(occurrences(view(pabt, species=occursin.("Actino", speciesnames(pabt))))))
+kids_proteo = vec(collect(occurrences(view(pabt, species=occursin.("Proteo", speciesnames(pabt))))))
+
+plot(
+    plot(kids_pco, marker=2, line=1,
+        zcolor=kids_bact, primary = false, color=:plasma,
+        title="Kids, Bacteroidetes"),
+    plot(kids_pco, marker=2, line=1,
+        zcolor=kids_firm, primary = false, color=:plasma,
+        title="Kids, Firmicutes"),
+    plot(kids_pco, marker=2, line=1,
+        zcolor=kids_act, primary = false, color=:plasma,
+        title="Kids, Actinobacteria"),
+    plot(kids_pco, marker=2, line=1,
+        zcolor=kids_proteo, primary = false, color=:plasma,
+        title="Kids, Proteobacteria"),
+    )
+savefig("data/figures/03-taxonomic-profiles-kids-phyla.svg")
+```
+
 
 
 ## Functions
