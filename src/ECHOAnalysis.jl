@@ -3,7 +3,9 @@ module ECHOAnalysis
 export
     resolve_sampleID,
     add_batch_info,
-    merge_tables
+    merge_tables,
+    getmetadatum,
+    getmetadata
 
 using DataFrames
 using CSV

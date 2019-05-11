@@ -271,6 +271,44 @@ savefig("data/figures/03-taxonomic-profiles-kids-phyla.svg")
 ```
 
 
+In order to decorate these PCoA plots with other useful information,
+we need to return to the metadata.
+
+```@example 2
+allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
+
+samples = resolve_sampleID.(samplenames(kids))
+
+map(s-> getmetadatum(
+        allmeta, "correctedAgeDays", s.subject, s.timepoint, type=Int),
+    samples)
+
+ages = getmetadata(allmeta, "correctedAgeDays",
+                        [s.subject for s in samples],
+                        [s.timepoint for s in samples],
+                        type=Int)
+hasage = .!ismissing.(ages)
+
+scatter(principalcoord(kids_pco, 1)[hasage], principalcoord(kids_pco, 2)[hasage],
+    marker=3, line=1,
+    zcolor=Int64.(ages[hasage]) ./ 365, primary = false, color=:plasma,
+    title="Kids, ages")
+
+scatter(principalcoord(kids_pco, 1)[hasage], principalcoord(kids_pco, 2)[hasage],
+    marker=3, line=1,
+    zcolor=log.(Int64.(ages[hasage])), primary = false, color=:plasma,
+    title="Kids, log(age in days)")
+savefig("data/figures/03-taxonomic-profiles-kids-age.svg")
+```
+
+```@example 2
+metadata = readlines("meta.txt")
+
+metafocus = allmeta[map(m-> in(m, metadata), allmeta[:metadatum]), :]
+
+metafocus = unstack(metafocus, [:studyID, :timepoint], :metadatum, :value)
+CSV.write("data/metadata/selected_metadata_wide.csv", metafocus)
+```
 
 ## Functions
 

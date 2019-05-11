@@ -76,3 +76,42 @@ function merge_tables(dir, suffix)
     disallowmissing!(df)
     return df
 end
+
+"""
+Get the metadata value for a given subject and timepoint
+"""
+function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type=nothing)
+    m = filter(df) do row
+        row[:metadatum] == metadatum && row[:studyID] == subject && row[:timepoint] == timepoint
+    end
+
+    nrow(m) == 0 && return default
+    nrow(m) > 1 && throw(ErrorException("More than one value found"))
+
+    v = first(m[:value])
+    if type === nothing
+        return v
+    elseif ismissing(v)
+        return default
+    elseif type <: Number
+        return parse(type, v)
+    else
+        return v
+    end
+end
+
+f"""
+Get the metadata values for a given set of subjects and timepoints
+"""
+function getmetadata(df, metadatum, subjects, timepoints; default=missing, type=nothing)
+    m = filter(df) do row
+        row[:metadatum] == metadatum && row[:studyID] in subjects && row[:timepoint] in timepoints
+    end
+
+    vs = []
+    for (s, t) in zip(subjects, timepoints)
+        v = getmetadatum(df, metadatum, s, t, default=default, type=type)
+        push!(vs, v)
+    end
+    return vs
+end
