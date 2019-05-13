@@ -301,15 +301,51 @@ scatter(principalcoord(kids_pco, 1)[hasage], principalcoord(kids_pco, 2)[hasage]
 savefig("data/figures/03-taxonomic-profiles-kids-age.svg")
 ```
 
+##### Breastfeeding
+
+Information about braestfeeding is spread across 2 different parent tables.
+`BreastfeedingDone` indicates that the child is no longer breastfeeding,
+and has a lot of information about formula use, solid food etc,
+`BreastfeedingStill` is for kids that are still breastfeeding,
+and has substantially less information.
+
 ```@example 2
-metadata = readlines("meta.txt")
-
-metafocus = allmeta[map(m-> in(m, metadata), allmeta[:metadatum]), :]
-
-metafocus = unstack(metafocus, [:studyID, :timepoint], :metadatum, :value)
-CSV.write("data/metadata/selected_metadata_wide.csv", metafocus)
+filter(allmeta) do row
+    row[:parent_table] == "BreastfeedingStill"
+end[:metadatum] |> unique
 ```
 
+```@example 2
+filter(allmeta) do row
+    row[:parent_table] == "BreastfeedingDone"
+end[:metadatum] |> unique
+
+```
+
+To make it a bit easier to get a handle on,
+I created a wide-version table with only these parent tables,
+sorted by subjectID.
+The `BreastfeedingStill` values are not timepoint associated,
+while the `BreastfeedingDone` are.
+
+
+```@example 2
+bf = filter(allmeta) do row
+    row[:parent_table] == "BreastfeedingStill" || row[:parent_table] == "BreastfeedingDone"
+end
+
+bf = unstack(bf, [:studyID, :timepoint], :metadatum, :value)
+bf |> CSV.write("breastfeeding.csv")
+```
+
+
+```@example 2
+bf = filter(allmeta) do row
+    occursin("motherses", lowercase(row[:metadatum]))
+end[:parent_table]
+
+
+```
 ## Functions
 
 ```@docs
