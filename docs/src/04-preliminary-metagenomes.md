@@ -137,10 +137,9 @@ names!(tax,
     )
 ```
 
-Some analysis of the fungi
+Some analysis of the fungi:
 
 ```@example 2
-
 euk = filter(tax) do row
     occursin(r"^k__Eukaryota", row[1])
 end
@@ -269,36 +268,35 @@ plot(
     )
 savefig("data/figures/03-taxonomic-profiles-kids-phyla.svg")
 ```
-
-
 In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
+I'll use the [`getmetadata`]@ref function
+
 
 ```@example 2
-allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
-
 samples = resolve_sampleID.(samplenames(kids))
 
-map(s-> getmetadatum(
-        allmeta, "correctedAgeDays", s.subject, s.timepoint, type=Int),
-    samples)
+subjects = [s.subject for s in samples]
+timepoints = [s.timepoint for s in samples]
+metadata = ["correctedAgeDays","childGender","APOE","birthType","exclusivelyNursed","exclusiveFormulaFed","lengthExclusivelyNursedMonths","noLongerFeedBreastmilkAge","ageStartSolidFoodMonths","motherSES","childHeight","childWeight",]
 
-ages = getmetadata(allmeta, "correctedAgeDays",
-                        [s.subject for s in samples],
-                        [s.timepoint for s in samples],
-                        type=Int)
-hasage = .!ismissing.(ages)
+df = getmetadata(allmeta, subjects, timepoints, metadata)
+df[:motherSES] = map(x-> x == "9999" ? missing : parse(Int, x), df[:motherSES])
 
-scatter(principalcoord(kids_pco, 1)[hasage], principalcoord(kids_pco, 2)[hasage],
-    marker=3, line=1,
-    zcolor=Int64.(ages[hasage]) ./ 365, primary = false, color=:plasma,
-    title="Kids, ages")
+df |> CSV.write("focus2.csv") # hide
+```
 
-scatter(principalcoord(kids_pco, 1)[hasage], principalcoord(kids_pco, 2)[hasage],
-    marker=3, line=1,
-    zcolor=log.(Int64.(ages[hasage])), primary = false, color=:plasma,
-    title="Kids, log(age in days)")
-savefig("data/figures/03-taxonomic-profiles-kids-age.svg")
+##### Birth type
+
+```@example 2
+plot(kids_pco, marker=3, line=1,
+    color=metacolor(df[:birthType], color2[4:5], missing_color=color2[end]),
+    title="Kids, BirthType", primary=false)
+scatter!([],[], color=color2[4], label=unique(df[:birthType])[1])
+scatter!([],[], color=color2[5], label=unique(df[:birthType])[2])
+scatter!([],[], color=color2[end], label="missing")
+
+savefig("data/figures/03-taxonomic-profiles-kids-birth.svg")
 ```
 
 ##### Breastfeeding
@@ -309,17 +307,7 @@ and has a lot of information about formula use, solid food etc,
 `BreastfeedingStill` is for kids that are still breastfeeding,
 and has substantially less information.
 
-```@example 2
-filter(allmeta) do row
-    row[:parent_table] == "BreastfeedingStill"
-end[:metadatum] |> unique
 ```
-
-```@example 2
-filter(allmeta) do row
-    row[:parent_table] == "BreastfeedingDone"
-end[:metadatum] |> unique
-
 ```
 
 To make it a bit easier to get a handle on,
@@ -335,19 +323,13 @@ bf = filter(allmeta) do row
 end
 
 bf = unstack(bf, [:studyID, :timepoint], :metadatum, :value)
-bf |> CSV.write("breastfeeding.csv")
+bf |> CSV.write("data/metadata/breastfeeding.csv")
 ```
 
-
-```@example 2
-bf = filter(allmeta) do row
-    occursin("motherses", lowercase(row[:metadatum]))
-end[:parent_table]
-
-
-```
 ## Functions
 
 ```@docs
 resolve_sampleID
+merge_tables
+getmetadata
 ```

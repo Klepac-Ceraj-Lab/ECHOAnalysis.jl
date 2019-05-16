@@ -82,7 +82,10 @@ Get the metadata value for a given subject and timepoint
 """
 function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type=nothing)
     m = filter(df) do row
-        row[:metadatum] == metadatum && row[:studyID] == subject && row[:timepoint] == timepoint
+        !any(ismissing, [row[:metadatum], row[:studyID], row[:timepoint]]) &&
+            row[:metadatum] == metadatum &&
+            row[:studyID] == subject &&
+            row[:timepoint] == timepoint
     end
 
     nrow(m) == 0 && return default
@@ -100,18 +103,51 @@ function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type
     end
 end
 
-f"""
+"""
 Get the metadata values for a given set of subjects and timepoints
 """
-function getmetadata(df, metadatum, subjects, timepoints; default=missing, type=nothing)
-    m = filter(df) do row
-        row[:metadatum] == metadatum && row[:studyID] in subjects && row[:timepoint] in timepoints
+function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoints::Array{Int,1}, metadata::Array{<:AbstractString,1})
+    length(subjects) == length(timepoints) || throw(ErrorException("Subjects and timeponts must be the same length"))
+    ss = unique(subjects)
+    subtps = Dict(s => Set([0, timepoints[findall(isequal(s), subjects)]...]) for s in ss)
+
+    submap = Dict(s => findall(isequal(s), subjects) for s in ss)
+    tpmap = Dict(t => findall(isequal(t), timepoints) for t in unique(timepoints))
+
+    metadict = Dict{Int,Dict}()
+    notime_metadata = Set()
+    timepoint_metadata = Set()
+
+    df = DataFrame(:subject=>subjects, :timepoint=>timepoints)
+    for m in Symbol.(metadata)
+        df[m] = Array{Any}(missing, length(subjects))
     end
 
-    vs = []
-    for (s, t) in zip(subjects, timepoints)
-        v = getmetadatum(df, metadatum, s, t, default=default, type=type)
-        push!(vs, v)
+    for row in eachrow(metadf)
+        sub = row[:studyID]
+        tp = row[:timepoint]
+        md = String(row[:metadatum])
+        val = row[:value]
+        if !any(ismissing, [sub, tp, md]) && md in metadata && sub in subjects && tp in subtps[sub]
+            if tp == 0
+                rows = submap[sub]
+            else
+                rows = collect(intersect(submap[sub], tpmap[tp]))
+            end
+            df[rows, Symbol(md)] = val
+        end
     end
-    return vs
+    return df
+end
+
+
+"""
+Convert metadata into colors
+"""
+function metacolor(metadata::AbstractVector, colorlevels::AbstractVector; missing_color=colorant"gray")
+    um = unique(skipmissing(metadata))
+    length(um) <= length(colorlevels) || throw(ErrorException("Not enough colors"))
+
+    color_dict = Dict(um[i] => colorlevels[i] for i in eachindex(um))
+    return [ismissing(m) ? missing_color : color_dict[m] for m in metadata]
 end

@@ -5,10 +5,13 @@ export
     add_batch_info,
     merge_tables,
     getmetadatum,
-    getmetadata
+    getmetadata,
+    metacolor
 
 using DataFrames
 using CSV
+using Colors
+using ColorBrewer
 using PrettyTables
 
 using Microbiome
