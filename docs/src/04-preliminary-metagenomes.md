@@ -180,6 +180,15 @@ pabt = abundancetable(phyla)
 relativeabundance!(abt)
 relativeabundance!(pabt)
 
+map(s-> startswith(s, "C"), sitenames(abt)) |> sum
+map(s-> startswith(s, "M"), sitenames(abt)) |> sum
+
+map(s-> startswith(s, "C") && occursin("F", s), sitenames(abt)) |> sum
+map(s-> startswith(s, "M") && occursin("F", s), sitenames(abt)) |> sum
+
+map(s-> startswith(s, "C") && occursin("E", s), sitenames(abt)) |> sum
+map(s-> startswith(s, "M") && occursin("E", s), sitenames(abt)) |> sum
+
 dm = getdm(spec, BrayCurtis())
 pco = pcoa(dm)
 
@@ -231,8 +240,51 @@ savefig("data/figures/03-taxonomic-profiles-grid.svg")
 
 #### Kids
 
+Now, I'll focus on the kids in the group,
+the samples that were stored in Genotek
+and also remove duplicates
+(since many of the kids are sampled more than once).
+
 ```@example 2
-kids = view(abt, sites=startswith.(sitenames(abt), "C"))
+moms = view(abt, sites=map(s-> occursin(r"^M", s[:sample]) && occursin("F", s[:sample]),
+                            resolve_sampleID.(sitenames(abt))))
+unique_moms = let
+    subjects= []
+    unique = Bool[]
+    for sample in sitenames(moms)
+        s = resolve_sampleID(sample)
+        if !in(s[:subject], subjects)
+            push!(subjects, s[:subject])
+            push!(unique,true)
+        else
+            push!(unique,false)
+        end
+    end
+    unique
+end
+
+
+umoms = view(moms, sites=unique_moms)
+
+kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
+                            resolve_sampleID.(sitenames(abt))))
+unique_kids = let
+    subjects= []
+    unique = Bool[]
+    for sample in sitenames(kids)
+        s = resolve_sampleID(sample)
+        if !in(s[:subject], subjects)
+            push!(subjects, s[:subject])
+            push!(unique,true)
+        else
+            push!(unique,false)
+        end
+    end
+    unique
+end
+
+
+ukids = view(kids, sites=unique_kids)
 
 kids_dm = getdm(kids, BrayCurtis())
 kids_pco = pcoa(kids_dm)
@@ -247,10 +299,14 @@ p5 = plot(kids_pco, marker=3, line=1,
 
 savefig("data/figures/03-taxonomic-profiles-kids-shannon.svg")
 
-kids_bact = vec(collect(occurrences(view(pabt, species=occursin.("Bact", speciesnames(pabt))))))
-kids_firm = vec(collect(occurrences(view(pabt, species=occursin.("Firm", speciesnames(pabt))))))
-kids_act = vec(collect(occurrences(view(pabt, species=occursin.("Actino", speciesnames(pabt))))))
-kids_proteo = vec(collect(occurrences(view(pabt, species=occursin.("Proteo", speciesnames(pabt))))))
+pkids = view(pabt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
+                            resolve_sampleID.(sitenames(pabt))))
+upkids = view(pkids, sites=unique_kids)
+
+kids_bact = vec(collect(occurrences(view(pkids, species=occursin.("Bact", speciesnames(pkids))))))
+kids_firm = vec(collect(occurrences(view(pkids, species=occursin.("Firm", speciesnames(pkids))))))
+kids_act = vec(collect(occurrences(view(pkids, species=occursin.("Actino", speciesnames(pkids))))))
+kids_proteo = vec(collect(occurrences(view(pkids, species=occursin.("Proteo", speciesnames(pkids))))))
 
 plot(
     plot(kids_pco, marker=2, line=1,
@@ -268,9 +324,33 @@ plot(
     )
 savefig("data/figures/03-taxonomic-profiles-kids-phyla.svg")
 ```
+
 In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
-I'll use the [`getmetadata`]@ref function
+I'll use the [`getmetadata`]@ref function.
+
+#### Brain Data
+
+```@example 2
+brainvol = CSV.read("data/brain/brain_volumes.csv")
+names!(brainvol, map(names(brainvol)) do n
+                        replace(String(n), " "=>"_") |> lowercase |> Symbol
+                    end
+        )
+
+
+brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :study_id, variable_name=:metadatum)
+rename!(brainvol, :study_id => :studyID)
+
+# convert letter timepoint into number
+gettp(x) = findfirst(lowercase(String(x)), "abcdefghijklmnopqrstuvwxyz")[1]
+
+brainsid = match.(r"(\d+)([a-z])", brainvol[:studyID])
+brainvol[:studyID] = [parse(Int, String(m.captures[1])) for m in brainsid]
+brainvol[:timepoint] = [gettp(m.captures[2]) for m in brainsid]
+brainvol[:parent_table] = "brainVolume"
+allmeta = vcat(allmeta, brainvol)
+```
 
 
 ```@example 2
@@ -278,12 +358,31 @@ samples = resolve_sampleID.(samplenames(kids))
 
 subjects = [s.subject for s in samples]
 timepoints = [s.timepoint for s in samples]
-metadata = ["correctedAgeDays","childGender","APOE","birthType","exclusivelyNursed","exclusiveFormulaFed","lengthExclusivelyNursedMonths","noLongerFeedBreastmilkAge","ageStartSolidFoodMonths","motherSES","childHeight","childWeight",]
+metadata = ["correctedAgeDays", "childGender", "APOE", "birthType",
+            "exclusivelyNursed", "exclusiveFormulaFed", "lengthExclusivelyNursedMonths",
+            "amountFormulaPerFeed", "formulaTypicalType", "milkFeedingMethods",
+            "typicalNumberOfEpressedMilkFeeds", "typicalNumberOfFeedsFromBreast",
+            "noLongerFeedBreastmilkAge", "ageStartSolidFoodMonths", "motherSES",
+            "childHeight", "childWeight", "white_matter_volume", "grey_matter_volume", "csf_volume",
+            "mullen_VerbalComposite", "VCI_Percentile", "languagePercentile"]
 
-df = getmetadata(allmeta, subjects, timepoints, metadata)
-df[:motherSES] = map(x-> x == "9999" ? missing : parse(Int, x), df[:motherSES])
+focusmeta = getmetadata(allmeta, subjects, timepoints, metadata)
+focusmeta[:motherSES] = map(x-> ismissing(x) || x == "9999" ? missing : parse(Int, x), focusmeta[:motherSES])
 
-df |> CSV.write("focus2.csv") # hide
+focusmeta[:shannon] = shannon(kids)
+focusmeta[:ginisimpson] = ginisimpson(kids)
+
+focusmeta |> CSV.write("focus.csv") # hide
+
+.!ismissing.(focusmeta[:correctedAgeDays]) |> sum
+.!ismissing.(focusmeta[:white_matter_volume]) |> sum
+focusmeta[:breastfed] .| focusmeta[:formulafed] |> sum
+map(row-> any(!ismissing,
+        [row[:mullen_VerbalComposite], row[:VCI_Percentile], row[:languagePercentile]]), eachrow(focusmeta)) |> sum
+
+.!ismissing.(focusmeta[unique_kids, :motherSES]) |> sum
+.!ismissing.(focusmeta[unique_kids, :birthType]) |> sum
+.!ismissing.(focusmeta[unique_kids, :motherSES]) |> sum
 ```
 
 ##### Birth type
@@ -294,7 +393,7 @@ plot(kids_pco, marker=3, line=1,
     title="Kids, BirthType", primary=false)
 scatter!([],[], color=color2[4], label=unique(df[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(df[:birthType])[2])
-scatter!([],[], color=color2[end], label="missing")
+scatter!([],[], color=color2[end], label="missing", legend=:bottomright)
 
 savefig("data/figures/03-taxonomic-profiles-kids-birth.svg")
 ```
@@ -305,26 +404,117 @@ Information about braestfeeding is spread across 2 different parent tables.
 `BreastfeedingDone` indicates that the child is no longer breastfeeding,
 and has a lot of information about formula use, solid food etc,
 `BreastfeedingStill` is for kids that are still breastfeeding,
-and has substantially less information.
+and has different information.
 
-```
-```
+I'd like to distill all of this into:
 
-To make it a bit easier to get a handle on,
-I created a wide-version table with only these parent tables,
-sorted by subjectID.
-The `BreastfeedingStill` values are not timepoint associated,
-while the `BreastfeedingDone` are.
+1. breastfeeding: `true`/`false`,
+2. formula: `true`/`false`
 
+Both of these might be `true`.
+In principle, they shouldn't both be `false`.
 
 ```@example 2
-bf = filter(allmeta) do row
-    row[:parent_table] == "BreastfeedingStill" || row[:parent_table] == "BreastfeedingDone"
+# Make this function return `missing` instead of throwing an error
+import Base.occursin
+occursin(::String, ::Missing) = missing
+occursin(::Regex, ::Missing) = missing
+
+# make sure number rows are actually number types
+for c in [:typicalNumberOfFeedsFromBreast, :typicalNumberOfEpressedMilkFeeds,
+          :lengthExclusivelyNursedMonths, :noLongerFeedBreastmilkAge,
+          :amountFormulaPerFeed]
+    focusmeta[c] = [ismissing(x) ? missing : parse(Float64, x) for x in focusmeta[c]]
 end
 
-bf = unstack(bf, [:studyID, :timepoint], :metadatum, :value)
-bf |> CSV.write("data/metadata/breastfeeding.csv")
+
+function breastfeeding(row)
+    bf = any([
+        occursin(r"[Bb]reast", row[:milkFeedingMethods]),
+        occursin(r"[Yy]es", row[:exclusivelyNursed]),
+        row[:typicalNumberOfFeedsFromBreast] > 0,
+        row[:typicalNumberOfEpressedMilkFeeds] > 0,
+        row[:lengthExclusivelyNursedMonths] > 0,
+        row[:noLongerFeedBreastmilkAge] > 0
+        ])
+    return !ismissing(bf) && bf
+end
+
+function formulafeeding(row)
+    ff = any([
+        occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
+        occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
+        !ismissing(row[:amountFormulaPerFeed]),
+        !ismissing(row[:formulaTypicalType]),
+        row[:amountFormulaPerFeed] > 0
+        ])
+    return !ismissing(ff) && ff
+end
+
+
+focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
+focusmeta[:formulafed] = formulafeeding.(eachrow(focusmeta))
+focusmeta |> CSV.write("data/metadata/metadata_with_brain.csv") # hide
 ```
+
+```@example 2
+bfcolor = let bf = []
+    for row in eachrow(focusmeta)
+        if row[:breastfed] && row[:formulafed]
+            push!(bf, color1[1])
+        elseif row[:breastfed]
+            push!(bf, color1[2])
+        elseif row[:formulafed]
+            push!(bf, color1[3])
+        else
+            push!(bf, color1[end])
+        end
+    end
+    bf
+end
+
+plot(kids_pco, marker=3, line=1,
+    color=bfcolor,
+    title="Kids, Breastfeeding", primary=false)
+scatter!([],[], color=color1[2], label="breastfed")
+scatter!([],[], color=color1[3], label="formula fed")
+scatter!([],[], color=color1[1], label="both")
+scatter!([],[], color=color1[end], label="missing", legend=:bottomright)
+
+savefig("data/figures/03-taxonomic-profiles-kids-breastfeeding.svg")
+
+filter(focusmeta) do row
+    !row[:breastfed] && !row[:formulafed]
+end |> CSV.write("breastfeeding_missing.csv")
+```
+
+```@example 2
+focusmeta[:correctedAgeDays] = [ismissing(x) ? missing : parse(Int, x) for x in focusmeta[:correctedAgeDays]]
+
+@df focusmeta scatter(:correctedAgeDays, :white_matter_volume, label="wmv",
+    xlabel="Age in Days", ylabel="Volume")
+@df focusmeta scatter!(:correctedAgeDays, :grey_matter_volume, label="gmv")
+@df focusmeta scatter!(:correctedAgeDays, :csf_volume, label="csf", legend=:bottomright)
+title!("Brain Volumes")
+ylims!(0, 3e5)
+savefig("data/figures/03-brain-structures.svg")
+```
+
+```@example 2
+wgr = focusmeta[:white_matter_volume] ./ focusmeta[:grey_matter_volume]
+@df focusmeta scatter(:correctedAgeDays, wgr, title="White/Grey Matter Ratio", primary=false,
+    xlabel="Age in Days", ylabel="WMV / GMV")
+savefig("data/figures/03-brain-wgr.svg")
+
+gcr = focusmeta[:grey_matter_volume] ./ focusmeta[:csf_volume]
+@df focusmeta scatter(:correctedAgeDays, gcr, title="Grey Matter/CSF Ratio", primary=false,
+    xlabel="Age in Days", ylabel="GMV / CSF")
+savefig("data/figures/03-brain-gcr.svg")
+
+
+
+
+
 
 ## Functions
 

@@ -1,0 +1,3865 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 777 518" style="enable-background:new 0 0 777 518;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#000000;}
+	.st1{font-family:'ArialMT';}
+	.st2{font-size:26.9996px;}
+	.st3{font-size:21.214px;}
+	.st4{fill:#D04D72;}
+	.st5{fill:#AE2791;}
+	.st6{fill:#8004A7;}
+	.st7{fill:#7401A8;}
+	.st8{fill:#4B02A0;}
+	.st9{fill:#A31E99;}
+	.st10{fill:#B12B8F;}
+	.st11{fill:#7200A8;}
+	.st12{fill:#C23D80;}
+	.st13{fill:#7B02A7;}
+	.st14{fill:#F1844B;}
+	.st15{fill:#F99B3C;}
+	.st16{fill:#B22C8E;}
+	.st17{fill:#AB2593;}
+	.st18{fill:#CF4B74;}
+	.st19{fill:#D8586A;}
+	.st20{fill:#AD2692;}
+	.st21{fill:#C6417C;}
+	.st22{fill:#DC5D66;}
+	.st23{fill:#A31D99;}
+	.st24{fill:#8305A6;}
+	.st25{fill:#8607A6;}
+	.st26{fill:#98149F;}
+	.st27{fill:#BC3685;}
+	.st28{fill:#8506A6;}
+	.st29{fill:#ED7B51;}
+	.st30{fill:#A51F98;}
+	.st31{fill:#910EA2;}
+	.st32{fill:#8F0DA3;}
+	.st33{fill:#CD4975;}
+	.st34{fill:#AA2494;}
+	.st35{fill:#C7427B;}
+	.st36{fill:#C13B81;}
+	.st37{fill:#C23D7F;}
+	.st38{fill:#B93388;}
+	.st39{fill:#A82295;}
+	.st40{fill:#7C02A7;}
+	.st41{fill:#6900A7;}
+	.st42{fill:#BD3685;}
+	.st43{fill:#C33D7F;}
+	.st44{fill:#B12B8E;}
+	.st45{fill:#8B0AA4;}
+	.st46{fill:#C9447A;}
+	.st47{fill:#A51F97;}
+	.st48{fill:#CB4777;}
+	.st49{fill:#9B169E;}
+	.st50{fill:#BD3784;}
+	.st51{fill:#5D00A5;}
+	.st52{fill:#6D00A8;}
+	.st53{fill:#E76F59;}
+	.st54{fill:#EA7356;}
+	.st55{fill:#E16560;}
+	.st56{fill:#AC2693;}
+	.st57{fill:#7A02A8;}
+	.st58{fill:#8406A6;}
+	.st59{fill:#CD4976;}
+	.st60{fill:#6600A7;}
+	.st61{fill:#6200A6;}
+	.st62{fill:#CE4B74;}
+	.st63{fill:#9C189D;}
+	.st64{fill:#8707A6;}
+	.st65{fill:#D6556C;}
+	.st66{fill:#8205A6;}
+	.st67{fill:#C23C80;}
+	.st68{fill:#A41E98;}
+	.st69{fill:#D14F71;}
+	.st70{fill:#B32D8D;}
+	.st71{fill:#6800A7;}
+	.st72{fill:#A01A9B;}
+	.st73{fill:#DB5C67;}
+	.st74{fill:#DE6064;}
+	.st75{fill:#A41F98;}
+	.st76{fill:#BE3884;}
+	.st77{fill:#8104A7;}
+	.st78{fill:#C03A82;}
+	.st79{fill:#5501A3;}
+	.st80{fill:#7701A8;}
+	.st81{fill:#7801A8;}
+	.st82{fill:#E66C5B;}
+	.st83{fill:#D8576A;}
+	.st84{fill:#F38848;}
+	.st85{fill:#D6546D;}
+	.st86{fill:#8606A6;}
+	.st87{fill:#BF3983;}
+	.st88{fill:#CA4579;}
+	.st89{fill:#6500A7;}
+	.st90{fill:#A21D99;}
+	.st91{fill:#7B02A8;}
+	.st92{fill:#F48A47;}
+	.st93{fill:#D4526F;}
+	.st94{fill:#AC2692;}
+	.st95{fill:#E66D5B;}
+	.st96{fill:#E56C5B;}
+	.st97{fill:#F0804D;}
+	.st98{fill:#5801A4;}
+	.st99{fill:#9C179D;}
+	.st100{fill:#F58E44;}
+	.st101{fill:#F1824C;}
+	.st102{fill:#F8963F;}
+	.st103{fill:#D35170;}
+	.st104{fill:#B6308A;}
+	.st105{fill:#C13C80;}
+	.st106{fill:#D95969;}
+	.st107{fill:#D04E72;}
+	.st108{fill:#97139F;}
+	.st109{fill:#6500A6;}
+	.st110{fill:#B93288;}
+	.st111{fill:#FDB42E;}
+	.st112{fill:#8808A5;}
+	.st113{fill:#FCCA25;}
+	.st114{fill:#F8983E;}
+	.st115{fill:#FCAE31;}
+	.st116{fill:#AB2494;}
+	.st117{fill:#BB3586;}
+	.st118{fill:#9512A0;}
+	.st119{fill:#2A0593;}
+	.st120{fill:#390499;}
+	.st121{fill:#BF3A82;}
+	.st122{fill:#D25070;}
+	.st123{fill:#CC4876;}
+	.st124{fill:#F8DD24;}
+	.st125{fill:#DB5D66;}
+	.st126{fill:#FDC328;}
+	.st127{fill:#AF2891;}
+	.st128{fill:#CB4778;}
+	.st129{fill:#D3516F;}
+	.st130{fill:#DF6163;}
+	.st131{fill:#A01B9B;}
+	.st132{fill:#7F03A7;}
+	.st133{fill:#AE2891;}
+	.st134{fill:#E97157;}
+	.st135{fill:#DA5B67;}
+	.st136{fill:#A62097;}
+	.st137{fill:#9F1A9C;}
+	.st138{fill:#DA5A69;}
+	.st139{fill:#DD5E65;}
+	.st140{fill:#C8437A;}
+	.st141{fill:#BF3982;}
+	.st142{fill:#F9983E;}
+	.st143{fill:#EB7754;}
+	.st144{fill:#B52E8C;}
+	.st145{fill:#BA3387;}
+	.st146{fill:#9B179D;}
+	.st147{fill:#B7318A;}
+	.st148{fill:#DA5A68;}
+	.st149{fill:#C8447A;}
+	.st150{fill:#D4536E;}
+	.st151{fill:#8A09A4;}
+	.st152{fill:#9310A1;}
+	.st153{fill:#B83289;}
+	.st154{fill:#B02A8F;}
+	.st155{fill:#1D068D;}
+	.st156{fill:#900EA2;}
+	.st157{fill:#6F00A8;}
+	.st158{fill:#7E03A7;}
+	.st159{fill:#BD3785;}
+	.st160{fill:#BA3487;}
+	.st161{fill:#F79341;}
+	.st162{fill:#D24F71;}
+	.st163{fill:#C03B81;}
+	.st164{fill:#FCC926;}
+	.st165{fill:#ED7952;}
+	.st166{fill:#350498;}
+	.st167{fill:#43039D;}
+	.st168{fill:#19068C;}
+	.st169{fill:#8908A5;}
+	.st170{fill:#8707A5;}
+	.st171{fill:#8D0CA3;}
+	.st172{fill:#7601A8;}
+	.st173{fill:#F68F43;}
+	.st174{fill:#0C0786;}
+	.st175{fill:#99159F;}
+	.st176{fill:#0F0787;}
+	.st177{fill:#EA7555;}
+	.st178{fill:#F38749;}
+	.st179{fill:#F1834B;}
+	.st180{fill:#110788;}
+	.st181{fill:#1A068C;}
+	.st182{fill:#18068B;}
+	.st183{fill:#EF7E4F;}
+	.st184{fill:#FAA139;}
+	.st185{fill:#7000A8;}
+	.st186{fill:#42039D;}
+	.st187{fill:#46039E;}
+	.st188{fill:#47029F;}
+	.st189{fill:#F69142;}
+	.st190{fill:#E66E5A;}
+	.st191{fill:#0D0786;}
+	.st192{fill:#DF6362;}
+	.st193{fill:#C5407D;}
+	.st194{fill:#FDB030;}
+	.st195{fill:#F69043;}
+	.st196{fill:#EF7D4F;}
+	.st197{fill:#D95A69;}
+	.st198{fill:#9F1A9B;}
+	.st199{fill:#B32C8D;}
+	.st200{fill:#9A169E;}
+	.st201{fill:#130789;}
+	.st202{fill:#EE7C50;}
+	.st203{fill:#A21C9A;}
+	.st204{fill:#E3685E;}
+	.st205{fill:#7901A8;}
+	.st206{fill:#D5536E;}
+	.st207{fill:#BC3586;}
+	.st208{fill:#9410A1;}
+	.st209{fill:#A52097;}
+	.st210{fill:#9612A0;}
+	.st211{fill:#B42E8C;}
+	.st212{fill:#F68F44;}
+	.st213{fill:#E87058;}
+	.st214{fill:#E46A5C;}
+	.st215{fill:#EF7F4E;}
+	.st216{fill:#BE3883;}
+	.st217{fill:#CF4C73;}
+	.st218{fill:#F8973E;}
+	.st219{fill:#FAA039;}
+	.st220{fill:#FCAB33;}
+	.st221{fill:#FDBE29;}
+	.st222{fill:#C7427C;}
+	.st223{fill:#D5546D;}
+	.st224{fill:#A72196;}
+	.st225{fill:#5F00A6;}
+	.st226{fill:#4E02A1;}
+	.st227{fill:#F2864A;}
+	.st228{fill:#F58C46;}
+	.st229{fill:#15068A;}
+	.st230{fill:#910FA2;}
+	.st231{fill:#BA3388;}
+	.st232{fill:#F9993D;}
+	.st233{fill:#E56B5C;}
+	.st234{fill:#B7308A;}
+	.st235{fill:#C43F7E;}
+	.st236{fill:#D5536D;}
+	.st237{fill:#6E00A8;}
+	.st238{fill:#EC7753;}
+	.st239{fill:#FDBF29;}
+	.st240{fill:#C43E7E;}
+	.st241{fill:#FA9E3A;}
+	.st242{fill:#CE4A75;}
+	.st243{fill:#D4526E;}
+	.st244{fill:#D04D73;}
+	.st245{fill:#5701A4;}
+	.st246{fill:#930FA2;}
+	.st247{font-size:15.4283px;}
+	.st248{fill:#CD4A75;}
+	.st249{fill:#FDB22F;}
+	.st250{fill:#FDBD2A;}
+	.st251{fill:#EFF821;}
+	.st252{fill:#F1814C;}
+	.st253{fill:#EA7456;}
+	.st254{fill:#8E0CA3;}
+	.st255{fill:#E87158;}
+	.st256{fill:#EE7B50;}
+	.st257{fill:#F2854A;}
+	.st258{fill:#E06461;}
+	.st259{fill:#C33E7F;}
+	.st260{fill:#F58B46;}
+	.st261{fill:#FBA237;}
+	.st262{fill:#FBA437;}
+	.st263{fill:#DC5E66;}
+	.st264{fill:#FA9F39;}
+	.st265{fill:#9511A1;}
+	.st266{fill:#CA4678;}
+	.st267{fill:#D3526F;}
+	.st268{fill:#D14E72;}
+	.st269{fill:#F68E44;}
+	.st270{fill:#FBA635;}
+	.st271{fill:#FCA834;}
+	.st272{fill:#FDC427;}
+	.st273{fill:#AD2792;}
+	.st274{fill:#ED7A52;}
+	.st275{fill:#E76E5A;}
+	.st276{fill:#E16461;}
+	.st277{fill:#F9DA24;}
+	.st278{fill:#FCCD25;}
+	.st279{fill:#E4695D;}
+	.st280{fill:#B42D8C;}
+	.st281{fill:#EB7654;}
+	.st282{fill:#F79440;}
+	.st283{fill:#A92295;}
+	.st284{fill:#FCA735;}
+	.st285{fill:#EB7555;}
+	.st286{fill:#E16660;}
+	.st287{fill:#F0814D;}
+	.st288{fill:#F99A3C;}
+	.st289{fill:#F48B46;}
+	.st290{fill:#F28649;}
+	.st291{fill:#E2665F;}
+	.st292{fill:#E87157;}
+	.st293{fill:#FA9C3B;}
+	.st294{fill:#AF2890;}
+	.st295{fill:#FDB82C;}
+	.st296{fill:#DB5B67;}
+	.st297{fill:#C94579;}
+	.st298{fill:#F79142;}
+	.st299{fill:#7100A8;}
+	.st300{fill:#FCC627;}
+	.st301{fill:#FCAC32;}
+	.st302{fill:#E66D5A;}
+	.st303{fill:#B6308B;}
+	.st304{fill:#DD5F65;}
+	.st305{fill:#CC4877;}
+	.st306{fill:#3F039C;}
+	.st307{fill:#AA2394;}
+	.st308{fill:#5B00A5;}
+	.st309{fill:#EC7853;}
+	.st310{fill:#FDB130;}
+	.st311{fill:#D35070;}
+	.st312{fill:#CC4976;}
+	.st313{fill:#8D0BA4;}
+	.st314{fill:#DE6163;}
+	.st315{fill:#C7437B;}
+	.st316{fill:#F38748;}
+	.st317{fill:#300496;}
+	.st318{fill:#1C068D;}
+	.st319{fill:#DA5B68;}
+	.st320{fill:#F79241;}
+	.st321{fill:#F58D45;}
+	.st322{fill:#EA7455;}
+	.st323{fill:#FDC029;}
+	.st324{fill:#FDB52E;}
+	.st325{fill:#AD2791;}
+	.st326{fill:#900EA3;}
+	.st327{fill:#E56A5C;}
+	.st328{fill:#E46A5D;}
+	.st329{fill:#B42D8D;}
+	.st330{fill:#C8437B;}
+	.st331{fill:#AC2593;}
+	.st332{fill:#920FA2;}
+	.st333{fill:#F9983D;}
+	.st334{fill:#FDB92C;}
+	.st335{fill:#FCCB25;}
+	.st336{fill:#9713A0;}
+	.st337{fill:#7301A8;}
+	.st338{fill:#F2844A;}
+	.st339{fill:#B52F8B;}
+	.st340{fill:#4D02A1;}
+	.st341{fill:#380499;}
+	.st342{fill:#2D0494;}
+	.st343{fill:#5901A4;}
+	.st344{fill:#5C00A5;}
+	.st345{fill:#FBA337;}
+	.st346{fill:#8C0BA4;}
+	.st347{fill:#6700A7;}
+	.st348{fill:#E26660;}
+	.st349{fill:#6400A6;}
+	.st350{fill:#8D0BA3;}
+	.st351{fill:#A11C9A;}
+	.st352{fill:#0E0787;}
+	.st353{fill:#370499;}
+	.st354{fill:#D14E71;}
+	.st355{fill:#7F04A7;}
+	.st356{fill:#F07F4E;}
+	.st357{fill:#5A01A5;}
+	.st358{fill:#E87059;}
+	.st359{fill:#B02990;}
+	.st360{fill:#E2675F;}
+	.st361{fill:#6300A6;}
+	.st362{fill:#6B00A7;}
+	.st363{fill:#F5E926;}
+	.st364{fill:#8A09A5;}
+	.st365{fill:#280592;}
+	.st366{fill:#FBA636;}
+	.st367{fill:#F79242;}
+	.st368{fill:#C53F7D;}
+	.st369{fill:#5601A3;}
+	.st370{fill:#9D189D;}
+	.st371{fill:#5401A3;}
+	.st372{fill:#3D039B;}
+	.st373{fill:#41039D;}
+	.st374{fill:#3E039C;}
+	.st375{fill:#A11B9A;}
+	.st376{fill:#2F0495;}
+	.st377{fill:#2B0594;}
+	.st378{fill:#270592;}
+	.st379{fill:#2B0593;}
+	.st380{fill:#290593;}
+	.st381{fill:#240590;}
+	.st382{fill:#360498;}
+	.st383{fill:#100788;}
+	.st384{fill:#340497;}
+	.st385{fill:#300495;}
+	.st386{fill:#16068B;}
+	.st387{fill:#230590;}
+	.st388{fill:#310496;}
+	.st389{fill:#260591;}
+	.st390{fill:#290592;}
+	.st391{fill:#2E0495;}
+	.st392{fill:#39049A;}
+	.st393{fill:#3A049A;}
+	.st394{fill:#9E199C;}
+	.st395{fill:#3E039B;}
+	.st396{fill:#20058F;}
+	.st397{fill:#45039E;}
+	.st398{fill:#250591;}
+	.st399{fill:#1F058E;}
+	.st400{fill:#1B068C;}
+	.st401{fill:#21058F;}
+	.st402{fill:#40039C;}
+	.st403{fill:#4A02A0;}
+	.st404{fill:#3C039A;}
+	.st405{fill:#48029F;}
+	.st406{fill:#330497;}
+	.st407{fill:#1E068E;}
+	.st408{fill:#14068A;}
+	.st409{fill:#20058E;}
+	.st410{fill:#44039E;}
+	.st411{fill:#220590;}
+	.st412{fill:#120788;}
+	.st413{fill:#6100A6;}
+	.st414{fill:#320497;}
+	.st415{fill:#370498;}
+	.st416{fill:#5101A2;}
+	.st417{fill:#120789;}
+	.st418{fill:#22058F;}
+	.st419{fill:#5E00A5;}
+	.st420{fill:#3A039A;}
+	.st421{fill:#6C00A7;}
+	.st422{fill:#4F02A1;}
+	.st423{fill:#16068A;}
+	.st424{fill:#3B039A;}
+	.st425{fill:#320496;}
+	.st426{fill:#2C0494;}
+	.st427{fill:#4902A0;}
+	.st428{fill:#1D068E;}
+	.st429{fill:#6000A6;}
+	.st430{fill:#1B068D;}
+	.st431{fill:#4C02A1;}
+	.st432{fill:#3C039B;}
+	.st433{fill:#FDBC2A;}
+	.st434{fill:#FCAD32;}
+	.st435{fill:#FBA138;}
+	.st436{fill:#17068B;}
+	.st437{fill:#7D02A7;}
+	.st438{fill:#7501A8;}
+	.st439{fill:#FCC727;}
+	.st440{fill:#FDBA2B;}
+	.st441{fill:#FDC228;}
+	.st442{fill:#F7E125;}
+	.st443{fill:#340498;}
+	.st444{fill:#140689;}
+	.st445{fill:#0D0787;}
+	.st446{fill:#6A00A7;}
+	.st447{fill:#F48947;}
+	.st448{fill:#FAD624;}
+	.st449{fill:#FCC527;}
+	.st450{fill:#5A01A4;}
+	.st451{fill:#5002A2;}
+	.st452{fill:#4F02A2;}
+	.st453{fill:#19068B;}
+	.st454{fill:#130689;}
+	.st455{fill:#1E058E;}
+	.st456{fill:#8104A6;}
+	.st457{fill:#8405A6;}
+	.st458{fill:#41039C;}
+	.st459{fill:#43039E;}
+</style>
+<line class="st0" x1="45.5" y1="221.6" x2="283.2" y2="221.6"/>
+<line class="st0" x1="45.5" y1="221.6" x2="45.5" y2="40.4"/>
+<text transform="matrix(1 0 0 1 48.0273 23.4487)" class="st1 st2">Kids, Bacteroidetes</text>
+<text transform="matrix(1 0 0 1 91.8193 242.9746)" class="st1 st3">PCo1 (16.95%)</text>
+<text transform="matrix(6.123234e-17 -1 1 6.123234e-17 30.4453 203.541)" class="st1 st3">PCo2 (10.42%)</text>
+<circle cx="95.4" cy="80.8" r="3.2"/>
+<circle class="st4" cx="95.4" cy="80.8" r="2.2"/>
+<circle cx="63.8" cy="125.9" r="3.2"/>
+<circle class="st5" cx="63.8" cy="125.9" r="2.2"/>
+<circle cx="55.9" cy="120.6" r="3.2"/>
+<circle class="st6" cx="55.9" cy="120.6" r="2.2"/>
+<circle cx="54.6" cy="123.5" r="3.2"/>
+<circle class="st7" cx="54.6" cy="123.5" r="2.2"/>
+<circle cx="73.9" cy="130.2" r="3.2"/>
+<circle class="st8" cx="73.9" cy="130.2" r="2.2"/>
+<circle cx="60.5" cy="112.1" r="3.2"/>
+<circle class="st9" cx="60.5" cy="112.1" r="2.2"/>
+<circle cx="60.1" cy="105.3" r="3.2"/>
+<circle class="st10" cx="60.1" cy="105.3" r="2.2"/>
+<circle cx="77.2" cy="134.8" r="3.2"/>
+<circle class="st11" cx="77.2" cy="134.8" r="2.2"/>
+<circle cx="84.4" cy="85.4" r="3.2"/>
+<circle class="st12" cx="84.4" cy="85.4" r="2.2"/>
+<circle cx="91.2" cy="101.5" r="3.2"/>
+<circle class="st13" cx="91.2" cy="101.5" r="2.2"/>
+<circle cx="104.5" cy="104.6" r="3.2"/>
+<circle class="st14" cx="104.5" cy="104.6" r="2.2"/>
+<circle cx="104.1" cy="97" r="3.2"/>
+<circle class="st15" cx="104.1" cy="97" r="2.2"/>
+<circle cx="55.3" cy="154" r="3.2"/>
+<circle class="st16" cx="55.3" cy="154" r="2.2"/>
+<circle cx="53.9" cy="162.1" r="3.2"/>
+<circle class="st17" cx="53.9" cy="162.1" r="2.2"/>
+<circle cx="63.4" cy="194.4" r="3.2"/>
+<circle class="st10" cx="63.4" cy="194.4" r="2.2"/>
+<circle cx="96.4" cy="105.4" r="3.2"/>
+<circle class="st18" cx="96.4" cy="105.4" r="2.2"/>
+<circle cx="85" cy="100.7" r="3.2"/>
+<circle class="st19" cx="85" cy="100.7" r="2.2"/>
+<circle cx="83.3" cy="99.7" r="3.2"/>
+<circle class="st20" cx="83.3" cy="99.7" r="2.2"/>
+<circle cx="78.5" cy="86.1" r="3.2"/>
+<circle class="st21" cx="78.5" cy="86.1" r="2.2"/>
+<circle cx="78.2" cy="73.9" r="3.2"/>
+<circle class="st22" cx="78.2" cy="73.9" r="2.2"/>
+<circle cx="71.5" cy="107.1" r="3.2"/>
+<circle class="st23" cx="71.5" cy="107.1" r="2.2"/>
+<circle cx="58.7" cy="134.7" r="3.2"/>
+<circle class="st24" cx="58.7" cy="134.7" r="2.2"/>
+<circle cx="61" cy="133.6" r="3.2"/>
+<circle class="st25" cx="61" cy="133.6" r="2.2"/>
+<circle cx="71" cy="128" r="3.2"/>
+<circle class="st26" cx="71" cy="128" r="2.2"/>
+<circle cx="66.8" cy="119.2" r="3.2"/>
+<circle class="st27" cx="66.8" cy="119.2" r="2.2"/>
+<circle cx="63.5" cy="134.6" r="3.2"/>
+<circle class="st28" cx="63.5" cy="134.6" r="2.2"/>
+<circle cx="88.3" cy="81.6" r="3.2"/>
+<circle class="st29" cx="88.3" cy="81.6" r="2.2"/>
+<circle cx="70.7" cy="97.8" r="3.2"/>
+<circle class="st30" cx="70.7" cy="97.8" r="2.2"/>
+<circle cx="90.4" cy="95.4" r="3.2"/>
+<circle class="st31" cx="90.4" cy="95.4" r="2.2"/>
+<circle cx="94.2" cy="95.1" r="3.2"/>
+<circle class="st32" cx="94.2" cy="95.1" r="2.2"/>
+<circle cx="63.1" cy="130.9" r="3.2"/>
+<circle class="st33" cx="63.1" cy="130.9" r="2.2"/>
+<circle cx="85.8" cy="149.1" r="3.2"/>
+<circle class="st34" cx="85.8" cy="149.1" r="2.2"/>
+<circle cx="67.4" cy="102.7" r="3.2"/>
+<circle class="st35" cx="67.4" cy="102.7" r="2.2"/>
+<circle cx="101.9" cy="116.1" r="3.2"/>
+<circle class="st36" cx="101.9" cy="116.1" r="2.2"/>
+<circle cx="75.7" cy="102.9" r="3.2"/>
+<circle class="st37" cx="75.7" cy="102.9" r="2.2"/>
+<circle cx="71.7" cy="101.8" r="3.2"/>
+<circle class="st38" cx="71.7" cy="101.8" r="2.2"/>
+<circle cx="95.4" cy="85.9" r="3.2"/>
+<circle class="st19" cx="95.4" cy="85.9" r="2.2"/>
+<circle cx="71" cy="108" r="3.2"/>
+<circle class="st39" cx="71" cy="108" r="2.2"/>
+<circle cx="72.6" cy="120" r="3.2"/>
+<circle class="st32" cx="72.6" cy="120" r="2.2"/>
+<circle cx="88" cy="88.3" r="3.2"/>
+<circle class="st40" cx="88" cy="88.3" r="2.2"/>
+<circle cx="90.3" cy="91.8" r="3.2"/>
+<circle class="st41" cx="90.3" cy="91.8" r="2.2"/>
+<circle cx="109.5" cy="82.2" r="3.2"/>
+<circle class="st42" cx="109.5" cy="82.2" r="2.2"/>
+<circle cx="93.4" cy="79.3" r="3.2"/>
+<circle class="st43" cx="93.4" cy="79.3" r="2.2"/>
+<circle cx="108.9" cy="79.3" r="3.2"/>
+<circle class="st44" cx="108.9" cy="79.3" r="2.2"/>
+<circle cx="68.3" cy="105.6" r="3.2"/>
+<circle class="st45" cx="68.3" cy="105.6" r="2.2"/>
+<circle cx="65.9" cy="90.2" r="3.2"/>
+<circle class="st46" cx="65.9" cy="90.2" r="2.2"/>
+<circle cx="62.2" cy="104.4" r="3.2"/>
+<circle class="st47" cx="62.2" cy="104.4" r="2.2"/>
+<circle cx="69" cy="84.4" r="3.2"/>
+<circle class="st48" cx="69" cy="84.4" r="2.2"/>
+<circle cx="69.8" cy="105.9" r="3.2"/>
+<circle class="st49" cx="69.8" cy="105.9" r="2.2"/>
+<circle cx="79.7" cy="151.9" r="3.2"/>
+<circle class="st49" cx="79.7" cy="151.9" r="2.2"/>
+<circle cx="87" cy="190.2" r="3.2"/>
+<circle class="st38" cx="87" cy="190.2" r="2.2"/>
+<circle cx="89" cy="190.4" r="3.2"/>
+<circle class="st50" cx="89" cy="190.4" r="2.2"/>
+<circle cx="92.5" cy="194.1" r="3.2"/>
+<circle class="st35" cx="92.5" cy="194.1" r="2.2"/>
+<circle cx="52.4" cy="118.6" r="3.2"/>
+<circle class="st51" cx="52.4" cy="118.6" r="2.2"/>
+<circle cx="52.7" cy="106.6" r="3.2"/>
+<circle class="st52" cx="52.7" cy="106.6" r="2.2"/>
+<circle cx="86.5" cy="66.6" r="3.2"/>
+<circle class="st53" cx="86.5" cy="66.6" r="2.2"/>
+<circle cx="88.4" cy="57.6" r="3.2"/>
+<circle class="st54" cx="88.4" cy="57.6" r="2.2"/>
+<circle cx="95.9" cy="102.7" r="3.2"/>
+<circle class="st35" cx="95.9" cy="102.7" r="2.2"/>
+<circle cx="73.6" cy="108.7" r="3.2"/>
+<circle class="st55" cx="73.6" cy="108.7" r="2.2"/>
+<circle cx="66.1" cy="100.6" r="3.2"/>
+<circle class="st4" cx="66.1" cy="100.6" r="2.2"/>
+<circle cx="80.3" cy="130.7" r="3.2"/>
+<circle class="st5" cx="80.3" cy="130.7" r="2.2"/>
+<circle cx="80.3" cy="132.4" r="3.2"/>
+<circle class="st56" cx="80.3" cy="132.4" r="2.2"/>
+<circle cx="94.1" cy="125" r="3.2"/>
+<circle class="st20" cx="94.1" cy="125" r="2.2"/>
+<circle cx="104.9" cy="128.3" r="3.2"/>
+<circle class="st57" cx="104.9" cy="128.3" r="2.2"/>
+<circle cx="90.5" cy="145.1" r="3.2"/>
+<circle class="st58" cx="90.5" cy="145.1" r="2.2"/>
+<circle cx="64" cy="90.5" r="3.2"/>
+<circle class="st35" cx="64" cy="90.5" r="2.2"/>
+<circle cx="63" cy="87.4" r="3.2"/>
+<circle class="st59" cx="63" cy="87.4" r="2.2"/>
+<circle cx="56.6" cy="134.6" r="3.2"/>
+<circle class="st60" cx="56.6" cy="134.6" r="2.2"/>
+<circle cx="58.5" cy="135.9" r="3.2"/>
+<circle class="st61" cx="58.5" cy="135.9" r="2.2"/>
+<circle cx="125.8" cy="124.3" r="3.2"/>
+<circle class="st62" cx="125.8" cy="124.3" r="2.2"/>
+<circle cx="130.2" cy="135" r="3.2"/>
+<circle class="st63" cx="130.2" cy="135" r="2.2"/>
+<circle cx="130.8" cy="132.2" r="3.2"/>
+<circle class="st16" cx="130.8" cy="132.2" r="2.2"/>
+<circle cx="52.2" cy="142.8" r="3.2"/>
+<circle class="st64" cx="52.2" cy="142.8" r="2.2"/>
+<circle cx="69" cy="201.7" r="3.2"/>
+<circle class="st65" cx="69" cy="201.7" r="2.2"/>
+<circle cx="82.6" cy="216.5" r="3.2"/>
+<circle class="st33" cx="82.6" cy="216.5" r="2.2"/>
+<circle cx="82" cy="155.2" r="3.2"/>
+<circle class="st66" cx="82" cy="155.2" r="2.2"/>
+<circle cx="63.6" cy="179.9" r="3.2"/>
+<circle class="st21" cx="63.6" cy="179.9" r="2.2"/>
+<circle cx="65.8" cy="142.3" r="3.2"/>
+<circle class="st67" cx="65.8" cy="142.3" r="2.2"/>
+<circle cx="99" cy="119.6" r="3.2"/>
+<circle class="st68" cx="99" cy="119.6" r="2.2"/>
+<circle cx="93.6" cy="121.3" r="3.2"/>
+<circle class="st35" cx="93.6" cy="121.3" r="2.2"/>
+<circle cx="80.8" cy="92.3" r="3.2"/>
+<circle class="st69" cx="80.8" cy="92.3" r="2.2"/>
+<circle cx="67.9" cy="100.8" r="3.2"/>
+<circle class="st70" cx="67.9" cy="100.8" r="2.2"/>
+<circle cx="63.4" cy="98.2" r="3.2"/>
+<circle class="st47" cx="63.4" cy="98.2" r="2.2"/>
+<circle cx="120.8" cy="154.7" r="3.2"/>
+<circle class="st71" cx="120.8" cy="154.7" r="2.2"/>
+<circle cx="89.1" cy="141.6" r="3.2"/>
+<circle class="st57" cx="89.1" cy="141.6" r="2.2"/>
+<circle cx="90.7" cy="145.8" r="3.2"/>
+<circle class="st24" cx="90.7" cy="145.8" r="2.2"/>
+<circle cx="68.1" cy="178" r="3.2"/>
+<circle class="st72" cx="68.1" cy="178" r="2.2"/>
+<circle cx="77.2" cy="84.9" r="3.2"/>
+<circle class="st73" cx="77.2" cy="84.9" r="2.2"/>
+<circle cx="76.3" cy="85" r="3.2"/>
+<circle class="st74" cx="76.3" cy="85" r="2.2"/>
+<circle cx="75.3" cy="105.1" r="3.2"/>
+<circle class="st75" cx="75.3" cy="105.1" r="2.2"/>
+<circle cx="77.6" cy="93.8" r="3.2"/>
+<circle class="st76" cx="77.6" cy="93.8" r="2.2"/>
+<circle cx="72.2" cy="98.3" r="3.2"/>
+<circle class="st30" cx="72.2" cy="98.3" r="2.2"/>
+<circle cx="58.5" cy="114.5" r="3.2"/>
+<circle class="st77" cx="58.5" cy="114.5" r="2.2"/>
+<circle cx="57.8" cy="113.8" r="3.2"/>
+<circle class="st66" cx="57.8" cy="113.8" r="2.2"/>
+<circle cx="82.5" cy="106.3" r="3.2"/>
+<circle class="st22" cx="82.5" cy="106.3" r="2.2"/>
+<circle cx="69.3" cy="102.5" r="3.2"/>
+<circle class="st78" cx="69.3" cy="102.5" r="2.2"/>
+<circle cx="69.7" cy="128" r="3.2"/>
+<circle class="st79" cx="69.7" cy="128" r="2.2"/>
+<circle cx="67.5" cy="112.4" r="3.2"/>
+<circle class="st80" cx="67.5" cy="112.4" r="2.2"/>
+<circle cx="65.5" cy="158" r="3.2"/>
+<circle class="st34" cx="65.5" cy="158" r="2.2"/>
+<circle cx="74.2" cy="162.8" r="3.2"/>
+<circle class="st13" cx="74.2" cy="162.8" r="2.2"/>
+<circle cx="69.5" cy="162.3" r="3.2"/>
+<circle class="st81" cx="69.5" cy="162.3" r="2.2"/>
+<circle cx="81.2" cy="128.8" r="3.2"/>
+<circle class="st11" cx="81.2" cy="128.8" r="2.2"/>
+<circle cx="99.7" cy="72.7" r="3.2"/>
+<circle class="st22" cx="99.7" cy="72.7" r="2.2"/>
+<circle cx="92.8" cy="89.2" r="3.2"/>
+<circle class="st82" cx="92.8" cy="89.2" r="2.2"/>
+<circle cx="88" cy="94.1" r="3.2"/>
+<circle class="st83" cx="88" cy="94.1" r="2.2"/>
+<circle cx="95.1" cy="75.2" r="3.2"/>
+<circle class="st84" cx="95.1" cy="75.2" r="2.2"/>
+<circle cx="82.9" cy="90.8" r="3.2"/>
+<circle class="st85" cx="82.9" cy="90.8" r="2.2"/>
+<circle cx="60.1" cy="157" r="3.2"/>
+<circle class="st86" cx="60.1" cy="157" r="2.2"/>
+<circle cx="71.7" cy="178.4" r="3.2"/>
+<circle class="st87" cx="71.7" cy="178.4" r="2.2"/>
+<circle cx="85.2" cy="96" r="3.2"/>
+<circle class="st88" cx="85.2" cy="96" r="2.2"/>
+<circle cx="84.4" cy="90.3" r="3.2"/>
+<circle class="st68" cx="84.4" cy="90.3" r="2.2"/>
+<circle cx="71.5" cy="108.3" r="3.2"/>
+<circle class="st89" cx="71.5" cy="108.3" r="2.2"/>
+<circle cx="93.7" cy="89.8" r="3.2"/>
+<circle class="st90" cx="93.7" cy="89.8" r="2.2"/>
+<circle cx="99.9" cy="73.3" r="3.2"/>
+<circle class="st65" cx="99.9" cy="73.3" r="2.2"/>
+<circle cx="116.9" cy="85" r="3.2"/>
+<circle class="st91" cx="116.9" cy="85" r="2.2"/>
+<circle cx="136.6" cy="88.1" r="3.2"/>
+<circle class="st7" cx="136.6" cy="88.1" r="2.2"/>
+<circle cx="94.9" cy="75" r="3.2"/>
+<circle class="st92" cx="94.9" cy="75" r="2.2"/>
+<circle cx="78.9" cy="78.5" r="3.2"/>
+<circle class="st93" cx="78.9" cy="78.5" r="2.2"/>
+<circle cx="73.8" cy="90.6" r="3.2"/>
+<circle class="st94" cx="73.8" cy="90.6" r="2.2"/>
+<circle cx="99.2" cy="206.8" r="3.2"/>
+<circle class="st95" cx="99.2" cy="206.8" r="2.2"/>
+<circle cx="75.9" cy="103" r="3.2"/>
+<circle class="st67" cx="75.9" cy="103" r="2.2"/>
+<circle cx="67.5" cy="91.6" r="3.2"/>
+<circle class="st96" cx="67.5" cy="91.6" r="2.2"/>
+<circle cx="78.1" cy="92.7" r="3.2"/>
+<circle class="st97" cx="78.1" cy="92.7" r="2.2"/>
+<circle cx="82.5" cy="122.8" r="3.2"/>
+<circle class="st98" cx="82.5" cy="122.8" r="2.2"/>
+<circle cx="77.3" cy="83.6" r="3.2"/>
+<circle class="st33" cx="77.3" cy="83.6" r="2.2"/>
+<circle cx="82.3" cy="103.2" r="3.2"/>
+<circle class="st99" cx="82.3" cy="103.2" r="2.2"/>
+<circle cx="91" cy="58.4" r="3.2"/>
+<circle class="st100" cx="91" cy="58.4" r="2.2"/>
+<circle cx="88.3" cy="55.1" r="3.2"/>
+<circle class="st101" cx="88.3" cy="55.1" r="2.2"/>
+<circle cx="111.1" cy="57.9" r="3.2"/>
+<circle class="st102" cx="111.1" cy="57.9" r="2.2"/>
+<circle cx="108.5" cy="194.2" r="3.2"/>
+<circle class="st103" cx="108.5" cy="194.2" r="2.2"/>
+<circle cx="137.9" cy="131.7" r="3.2"/>
+<circle class="st58" cx="137.9" cy="131.7" r="2.2"/>
+<circle cx="117" cy="141.7" r="3.2"/>
+<circle class="st104" cx="117" cy="141.7" r="2.2"/>
+<circle cx="81" cy="90.5" r="3.2"/>
+<circle class="st105" cx="81" cy="90.5" r="2.2"/>
+<circle cx="85.7" cy="82.6" r="3.2"/>
+<circle class="st106" cx="85.7" cy="82.6" r="2.2"/>
+<circle cx="78.8" cy="87.3" r="3.2"/>
+<circle class="st107" cx="78.8" cy="87.3" r="2.2"/>
+<circle cx="77.3" cy="119.9" r="3.2"/>
+<circle class="st108" cx="77.3" cy="119.9" r="2.2"/>
+<circle cx="101.5" cy="123.3" r="3.2"/>
+<circle class="st109" cx="101.5" cy="123.3" r="2.2"/>
+<circle cx="88.9" cy="119.8" r="3.2"/>
+<circle class="st86" cx="88.9" cy="119.8" r="2.2"/>
+<circle cx="75.7" cy="123.5" r="3.2"/>
+<circle class="st110" cx="75.7" cy="123.5" r="2.2"/>
+<circle cx="117.6" cy="96.7" r="3.2"/>
+<circle class="st111" cx="117.6" cy="96.7" r="2.2"/>
+<circle cx="124.1" cy="53.8" r="3.2"/>
+<circle class="st84" cx="124.1" cy="53.8" r="2.2"/>
+<circle cx="63.9" cy="106.9" r="3.2"/>
+<circle class="st112" cx="63.9" cy="106.9" r="2.2"/>
+<circle cx="64.8" cy="109.1" r="3.2"/>
+<circle class="st66" cx="64.8" cy="109.1" r="2.2"/>
+<circle cx="107.2" cy="109.4" r="3.2"/>
+<circle class="st21" cx="107.2" cy="109.4" r="2.2"/>
+<circle cx="105.3" cy="84.4" r="3.2"/>
+<circle class="st113" cx="105.3" cy="84.4" r="2.2"/>
+<circle cx="97" cy="88.8" r="3.2"/>
+<circle class="st114" cx="97" cy="88.8" r="2.2"/>
+<circle cx="102.2" cy="71.2" r="3.2"/>
+<circle class="st115" cx="102.2" cy="71.2" r="2.2"/>
+<circle cx="84.5" cy="78" r="3.2"/>
+<circle class="st116" cx="84.5" cy="78" r="2.2"/>
+<circle cx="83.3" cy="74.9" r="3.2"/>
+<circle class="st117" cx="83.3" cy="74.9" r="2.2"/>
+<circle cx="78.4" cy="123.3" r="3.2"/>
+<circle class="st118" cx="78.4" cy="123.3" r="2.2"/>
+<circle cx="159.6" cy="93.1" r="3.2"/>
+<circle class="st72" cx="159.6" cy="93.1" r="2.2"/>
+<circle cx="167.8" cy="125.1" r="3.2"/>
+<circle class="st119" cx="167.8" cy="125.1" r="2.2"/>
+<circle cx="161" cy="127.1" r="3.2"/>
+<circle class="st120" cx="161" cy="127.1" r="2.2"/>
+<circle cx="123.7" cy="120.3" r="3.2"/>
+<circle class="st28" cx="123.7" cy="120.3" r="2.2"/>
+<circle cx="110" cy="74.5" r="3.2"/>
+<circle class="st73" cx="110" cy="74.5" r="2.2"/>
+<circle cx="95.4" cy="84.1" r="3.2"/>
+<circle class="st121" cx="95.4" cy="84.1" r="2.2"/>
+<circle cx="88.5" cy="78" r="3.2"/>
+<circle class="st122" cx="88.5" cy="78" r="2.2"/>
+<circle cx="110.9" cy="101.4" r="3.2"/>
+<circle class="st20" cx="110.9" cy="101.4" r="2.2"/>
+<circle cx="195.3" cy="53.5" r="3.2"/>
+<circle class="st76" cx="195.3" cy="53.5" r="2.2"/>
+<circle cx="191.7" cy="54.1" r="3.2"/>
+<circle class="st78" cx="191.7" cy="54.1" r="2.2"/>
+<circle cx="80.2" cy="198.4" r="3.2"/>
+<circle class="st44" cx="80.2" cy="198.4" r="2.2"/>
+<circle cx="83.1" cy="203.3" r="3.2"/>
+<circle class="st4" cx="83.1" cy="203.3" r="2.2"/>
+<circle cx="84" cy="203.4" r="3.2"/>
+<circle class="st123" cx="84" cy="203.4" r="2.2"/>
+<circle cx="164.8" cy="61.7" r="3.2"/>
+<circle class="st124" cx="164.8" cy="61.7" r="2.2"/>
+<circle cx="192.6" cy="64.7" r="3.2"/>
+<circle class="st125" cx="192.6" cy="64.7" r="2.2"/>
+<circle cx="151.9" cy="45.5" r="3.2"/>
+<circle class="st126" cx="151.9" cy="45.5" r="2.2"/>
+<circle cx="133.5" cy="77.8" r="3.2"/>
+<circle class="st16" cx="133.5" cy="77.8" r="2.2"/>
+<circle cx="144.6" cy="82.2" r="3.2"/>
+<circle class="st127" cx="144.6" cy="82.2" r="2.2"/>
+<circle cx="79.3" cy="197.6" r="3.2"/>
+<circle class="st128" cx="79.3" cy="197.6" r="2.2"/>
+<circle cx="77" cy="196.2" r="3.2"/>
+<circle class="st37" cx="77" cy="196.2" r="2.2"/>
+<circle cx="93.8" cy="78.9" r="3.2"/>
+<circle class="st129" cx="93.8" cy="78.9" r="2.2"/>
+<circle cx="104.9" cy="72.8" r="3.2"/>
+<circle class="st130" cx="104.9" cy="72.8" r="2.2"/>
+<circle cx="74.2" cy="103.3" r="3.2"/>
+<circle class="st131" cx="74.2" cy="103.3" r="2.2"/>
+<circle cx="82.7" cy="102.2" r="3.2"/>
+<circle class="st132" cx="82.7" cy="102.2" r="2.2"/>
+<circle cx="83.7" cy="109.5" r="3.2"/>
+<circle class="st71" cx="83.7" cy="109.5" r="2.2"/>
+<circle cx="77.3" cy="110.5" r="3.2"/>
+<circle class="st52" cx="77.3" cy="110.5" r="2.2"/>
+<circle cx="75.1" cy="164.8" r="3.2"/>
+<circle class="st133" cx="75.1" cy="164.8" r="2.2"/>
+<circle cx="89.6" cy="203.9" r="3.2"/>
+<circle class="st134" cx="89.6" cy="203.9" r="2.2"/>
+<circle cx="80.8" cy="201.4" r="3.2"/>
+<circle class="st135" cx="80.8" cy="201.4" r="2.2"/>
+<circle cx="97.1" cy="104.8" r="3.2"/>
+<circle class="st105" cx="97.1" cy="104.8" r="2.2"/>
+<circle cx="79.5" cy="114.6" r="3.2"/>
+<circle class="st72" cx="79.5" cy="114.6" r="2.2"/>
+<circle cx="84.5" cy="114.6" r="3.2"/>
+<circle class="st136" cx="84.5" cy="114.6" r="2.2"/>
+<circle cx="81.5" cy="114.1" r="3.2"/>
+<circle class="st137" cx="81.5" cy="114.1" r="2.2"/>
+<circle cx="69.9" cy="97.3" r="3.2"/>
+<circle class="st67" cx="69.9" cy="97.3" r="2.2"/>
+<circle cx="75.8" cy="100.1" r="3.2"/>
+<circle class="st27" cx="75.8" cy="100.1" r="2.2"/>
+<circle cx="133.1" cy="96.7" r="3.2"/>
+<circle class="st9" cx="133.1" cy="96.7" r="2.2"/>
+<circle cx="76.9" cy="96.1" r="3.2"/>
+<circle class="st138" cx="76.9" cy="96.1" r="2.2"/>
+<circle cx="76.8" cy="95.9" r="3.2"/>
+<circle class="st139" cx="76.8" cy="95.9" r="2.2"/>
+<circle cx="80.7" cy="92.6" r="3.2"/>
+<circle class="st140" cx="80.7" cy="92.6" r="2.2"/>
+<circle cx="79.4" cy="95.3" r="3.2"/>
+<circle class="st76" cx="79.4" cy="95.3" r="2.2"/>
+<circle cx="202.6" cy="71.6" r="3.2"/>
+<circle class="st141" cx="202.6" cy="71.6" r="2.2"/>
+<circle cx="114.4" cy="207" r="3.2"/>
+<circle class="st142" cx="114.4" cy="207" r="2.2"/>
+<circle cx="92.7" cy="201.1" r="3.2"/>
+<circle class="st143" cx="92.7" cy="201.1" r="2.2"/>
+<circle cx="65.3" cy="177.4" r="3.2"/>
+<circle class="st140" cx="65.3" cy="177.4" r="2.2"/>
+<circle cx="64.2" cy="171.5" r="3.2"/>
+<circle class="st35" cx="64.2" cy="171.5" r="2.2"/>
+<circle cx="92.2" cy="73.2" r="3.2"/>
+<circle class="st144" cx="92.2" cy="73.2" r="2.2"/>
+<circle cx="93.9" cy="71.7" r="3.2"/>
+<circle class="st145" cx="93.9" cy="71.7" r="2.2"/>
+<circle cx="81.9" cy="87.1" r="3.2"/>
+<circle class="st123" cx="81.9" cy="87.1" r="2.2"/>
+<circle cx="127.6" cy="105.7" r="3.2"/>
+<circle class="st80" cx="127.6" cy="105.7" r="2.2"/>
+<circle cx="85.8" cy="69.1" r="3.2"/>
+<circle class="st48" cx="85.8" cy="69.1" r="2.2"/>
+<circle cx="95.9" cy="66.3" r="3.2"/>
+<circle class="st19" cx="95.9" cy="66.3" r="2.2"/>
+<circle cx="92.5" cy="100.5" r="3.2"/>
+<circle class="st146" cx="92.5" cy="100.5" r="2.2"/>
+<circle cx="101" cy="96.9" r="3.2"/>
+<circle class="st34" cx="101" cy="96.9" r="2.2"/>
+<circle cx="69.2" cy="181.2" r="3.2"/>
+<circle class="st73" cx="69.2" cy="181.2" r="2.2"/>
+<circle cx="69.5" cy="184.2" r="3.2"/>
+<circle class="st147" cx="69.5" cy="184.2" r="2.2"/>
+<circle cx="70.8" cy="187.4" r="3.2"/>
+<circle class="st35" cx="70.8" cy="187.4" r="2.2"/>
+<circle cx="235.4" cy="111.4" r="3.2"/>
+<circle class="st116" cx="235.4" cy="111.4" r="2.2"/>
+<circle cx="237.2" cy="86.9" r="3.2"/>
+<circle class="st148" cx="237.2" cy="86.9" r="2.2"/>
+<circle cx="73.4" cy="77.1" r="3.2"/>
+<circle class="st149" cx="73.4" cy="77.1" r="2.2"/>
+<circle cx="81" cy="69.3" r="3.2"/>
+<circle class="st150" cx="81" cy="69.3" r="2.2"/>
+<circle cx="59.9" cy="113.3" r="3.2"/>
+<circle class="st151" cx="59.9" cy="113.3" r="2.2"/>
+<circle cx="62.9" cy="99.2" r="3.2"/>
+<circle class="st152" cx="62.9" cy="99.2" r="2.2"/>
+<circle cx="78.6" cy="152.2" r="3.2"/>
+<circle class="st153" cx="78.6" cy="152.2" r="2.2"/>
+<circle cx="78" cy="143.5" r="3.2"/>
+<circle class="st154" cx="78" cy="143.5" r="2.2"/>
+<circle cx="180.6" cy="132.3" r="3.2"/>
+<circle class="st155" cx="180.6" cy="132.3" r="2.2"/>
+<ellipse transform="matrix(0.1602 -0.9871 0.9871 0.1602 81.17 210.8371)" cx="164.5" cy="57.7" rx="3.2" ry="3.2"/>
+<ellipse transform="matrix(0.1602 -0.9871 0.9871 0.1602 81.17 210.8371)" class="st78" cx="164.5" cy="57.7" rx="2.2" ry="2.2"/>
+<circle cx="85.7" cy="107.8" r="3.2"/>
+<circle class="st156" cx="85.7" cy="107.8" r="2.2"/>
+<circle cx="96.1" cy="115" r="3.2"/>
+<circle class="st81" cx="96.1" cy="115" r="2.2"/>
+<circle cx="95.6" cy="75.9" r="3.2"/>
+<circle class="st157" cx="95.6" cy="75.9" r="2.2"/>
+<circle cx="92.4" cy="72.5" r="3.2"/>
+<circle class="st158" cx="92.4" cy="72.5" r="2.2"/>
+<circle cx="115.3" cy="71.3" r="3.2"/>
+<circle class="st159" cx="115.3" cy="71.3" r="2.2"/>
+<circle cx="111.9" cy="70.4" r="3.2"/>
+<circle class="st35" cx="111.9" cy="70.4" r="2.2"/>
+<circle cx="93.8" cy="74.2" r="3.2"/>
+<circle class="st160" cx="93.8" cy="74.2" r="2.2"/>
+<circle cx="81.8" cy="92.6" r="3.2"/>
+<circle class="st36" cx="81.8" cy="92.6" r="2.2"/>
+<circle cx="101.7" cy="63.2" r="3.2"/>
+<circle class="st54" cx="101.7" cy="63.2" r="2.2"/>
+<circle cx="103.8" cy="50.6" r="3.2"/>
+<circle class="st114" cx="103.8" cy="50.6" r="2.2"/>
+<circle cx="79.3" cy="78.8" r="3.2"/>
+<circle class="st117" cx="79.3" cy="78.8" r="2.2"/>
+<circle cx="76.9" cy="76.4" r="3.2"/>
+<circle class="st12" cx="76.9" cy="76.4" r="2.2"/>
+<circle cx="64.3" cy="77.9" r="3.2"/>
+<circle class="st12" cx="64.3" cy="77.9" r="2.2"/>
+<circle cx="64.4" cy="80.8" r="3.2"/>
+<circle class="st160" cx="64.4" cy="80.8" r="2.2"/>
+<circle cx="88.8" cy="89.4" r="3.2"/>
+<circle class="st48" cx="88.8" cy="89.4" r="2.2"/>
+<circle cx="95.6" cy="57.6" r="3.2"/>
+<circle class="st161" cx="95.6" cy="57.6" r="2.2"/>
+<circle cx="106.3" cy="196.9" r="3.2"/>
+<circle class="st162" cx="106.3" cy="196.9" r="2.2"/>
+<circle cx="100.4" cy="96.2" r="3.2"/>
+<circle class="st163" cx="100.4" cy="96.2" r="2.2"/>
+<circle cx="107.9" cy="93.5" r="3.2"/>
+<circle class="st130" cx="107.9" cy="93.5" r="2.2"/>
+<circle cx="125.2" cy="60.6" r="3.2"/>
+<circle class="st164" cx="125.2" cy="60.6" r="2.2"/>
+<circle cx="118.1" cy="69.9" r="3.2"/>
+<circle class="st165" cx="118.1" cy="69.9" r="2.2"/>
+<circle cx="108.9" cy="107.5" r="3.2"/>
+<circle class="st69" cx="108.9" cy="107.5" r="2.2"/>
+<circle cx="111.3" cy="109.5" r="3.2"/>
+<circle class="st73" cx="111.3" cy="109.5" r="2.2"/>
+<circle cx="128.3" cy="94.4" r="3.2"/>
+<circle class="st49" cx="128.3" cy="94.4" r="2.2"/>
+<circle cx="86.3" cy="109.8" r="3.2"/>
+<circle class="st157" cx="86.3" cy="109.8" r="2.2"/>
+<circle cx="76.7" cy="140.6" r="3.2"/>
+<circle class="st166" cx="76.7" cy="140.6" r="2.2"/>
+<circle cx="75.6" cy="133.7" r="3.2"/>
+<circle class="st167" cx="75.6" cy="133.7" r="2.2"/>
+<circle cx="232.7" cy="123.2" r="3.2"/>
+<circle class="st155" cx="232.7" cy="123.2" r="2.2"/>
+<circle cx="235.8" cy="124.1" r="3.2"/>
+<circle class="st168" cx="235.8" cy="124.1" r="2.2"/>
+<circle cx="147.8" cy="103.4" r="3.2"/>
+<circle class="st169" cx="147.8" cy="103.4" r="2.2"/>
+<circle cx="70.3" cy="103.1" r="3.2"/>
+<circle class="st170" cx="70.3" cy="103.1" r="2.2"/>
+<circle cx="70.5" cy="100.5" r="3.2"/>
+<circle class="st171" cx="70.5" cy="100.5" r="2.2"/>
+<circle cx="57.8" cy="90.8" r="3.2"/>
+<circle class="st112" cx="57.8" cy="90.8" r="2.2"/>
+<circle cx="58" cy="95.9" r="3.2"/>
+<circle class="st172" cx="58" cy="95.9" r="2.2"/>
+<circle cx="238.4" cy="113" r="3.2"/>
+<circle class="st170" cx="238.4" cy="113" r="2.2"/>
+<circle cx="84.3" cy="59" r="3.2"/>
+<circle class="st173" cx="84.3" cy="59" r="2.2"/>
+<circle cx="89.2" cy="54.5" r="3.2"/>
+<circle class="st161" cx="89.2" cy="54.5" r="2.2"/>
+<circle cx="232.1" cy="90.9" r="3.2"/>
+<circle class="st81" cx="232.1" cy="90.9" r="2.2"/>
+<circle cx="232.1" cy="90.6" r="3.2"/>
+<circle class="st158" cx="232.1" cy="90.6" r="2.2"/>
+<circle cx="244.5" cy="138.4" r="3.2"/>
+<circle class="st174" cx="244.5" cy="138.4" r="2.2"/>
+<circle cx="97.7" cy="111.2" r="3.2"/>
+<circle class="st175" cx="97.7" cy="111.2" r="2.2"/>
+<circle cx="85.1" cy="100.2" r="3.2"/>
+<circle class="st91" cx="85.1" cy="100.2" r="2.2"/>
+<circle cx="252.1" cy="127.7" r="3.2"/>
+<circle class="st176" cx="252.1" cy="127.7" r="2.2"/>
+<circle cx="70" cy="72.6" r="3.2"/>
+<circle class="st44" cx="70" cy="72.6" r="2.2"/>
+<circle cx="74.2" cy="68.1" r="3.2"/>
+<circle class="st27" cx="74.2" cy="68.1" r="2.2"/>
+<circle cx="80" cy="66.4" r="3.2"/>
+<circle class="st177" cx="80" cy="66.4" r="2.2"/>
+<circle cx="91" cy="61.8" r="3.2"/>
+<circle class="st178" cx="91" cy="61.8" r="2.2"/>
+<circle cx="88.8" cy="62" r="3.2"/>
+<circle class="st179" cx="88.8" cy="62" r="2.2"/>
+<circle cx="261" cy="142.7" r="3.2"/>
+<circle class="st180" cx="261" cy="142.7" r="2.2"/>
+<circle cx="267.2" cy="142.8" r="3.2"/>
+<circle class="st181" cx="267.2" cy="142.8" r="2.2"/>
+<circle cx="261.2" cy="143" r="3.2"/>
+<circle class="st182" cx="261.2" cy="143" r="2.2"/>
+<circle cx="73.8" cy="83.3" r="3.2"/>
+<circle class="st183" cx="73.8" cy="83.3" r="2.2"/>
+<circle cx="71.8" cy="80.9" r="3.2"/>
+<circle class="st82" cx="71.8" cy="80.9" r="2.2"/>
+<circle cx="103.1" cy="207.6" r="3.2"/>
+<circle class="st184" cx="103.1" cy="207.6" r="2.2"/>
+<circle cx="92.7" cy="204.8" r="3.2"/>
+<circle class="st92" cx="92.7" cy="204.8" r="2.2"/>
+<circle cx="93.3" cy="203.7" r="3.2"/>
+<circle class="st173" cx="93.3" cy="203.7" r="2.2"/>
+<circle cx="217" cy="122.6" r="3.2"/>
+<circle class="st185" cx="217" cy="122.6" r="2.2"/>
+<circle cx="204.9" cy="117.1" r="3.2"/>
+<circle class="st132" cx="204.9" cy="117.1" r="2.2"/>
+<circle cx="68.7" cy="137.2" r="3.2"/>
+<circle class="st186" cx="68.7" cy="137.2" r="2.2"/>
+<circle cx="70" cy="131.4" r="3.2"/>
+<circle class="st187" cx="70" cy="131.4" r="2.2"/>
+<circle cx="67.5" cy="131.6" r="3.2"/>
+<circle class="st188" cx="67.5" cy="131.6" r="2.2"/>
+<circle cx="158.2" cy="89.3" r="3.2"/>
+<circle class="st189" cx="158.2" cy="89.3" r="2.2"/>
+<circle cx="181.8" cy="90.5" r="3.2"/>
+<circle class="st190" cx="181.8" cy="90.5" r="2.2"/>
+<circle cx="158.5" cy="84.1" r="3.2"/>
+<circle class="st161" cx="158.5" cy="84.1" r="2.2"/>
+<circle cx="257" cy="144.4" r="3.2"/>
+<circle class="st174" cx="257" cy="144.4" r="2.2"/>
+<circle cx="78.4" cy="90.3" r="3.2"/>
+<circle class="st21" cx="78.4" cy="90.3" r="2.2"/>
+<circle cx="258.1" cy="144.1" r="3.2"/>
+<circle class="st174" cx="258.1" cy="144.1" r="2.2"/>
+<circle cx="259.2" cy="144.2" r="3.2"/>
+<circle class="st174" cx="259.2" cy="144.2" r="2.2"/>
+<circle cx="261.5" cy="144.9" r="3.2"/>
+<circle class="st191" cx="261.5" cy="144.9" r="2.2"/>
+<circle cx="89.1" cy="199.3" r="3.2"/>
+<circle class="st192" cx="89.1" cy="199.3" r="2.2"/>
+<circle cx="90.1" cy="162" r="3.2"/>
+<circle class="st193" cx="90.1" cy="162" r="2.2"/>
+<circle cx="104.4" cy="193.3" r="3.2"/>
+<circle class="st194" cx="104.4" cy="193.3" r="2.2"/>
+<circle cx="102.4" cy="80.2" r="3.2"/>
+<circle class="st129" cx="102.4" cy="80.2" r="2.2"/>
+<circle cx="119.6" cy="64.2" r="3.2"/>
+<circle class="st195" cx="119.6" cy="64.2" r="2.2"/>
+<circle cx="112.7" cy="65" r="3.2"/>
+<circle class="st196" cx="112.7" cy="65" r="2.2"/>
+<circle cx="84.9" cy="93.2" r="3.2"/>
+<circle class="st197" cx="84.9" cy="93.2" r="2.2"/>
+<circle cx="77.9" cy="95.3" r="3.2"/>
+<circle class="st198" cx="77.9" cy="95.3" r="2.2"/>
+<circle cx="83.6" cy="86.3" r="3.2"/>
+<circle class="st5" cx="83.6" cy="86.3" r="2.2"/>
+<circle cx="84" cy="83.5" r="3.2"/>
+<circle class="st38" cx="84" cy="83.5" r="2.2"/>
+<circle cx="115.9" cy="123.2" r="3.2"/>
+<circle class="st199" cx="115.9" cy="123.2" r="2.2"/>
+<circle cx="113" cy="124.2" r="3.2"/>
+<circle class="st200" cx="113" cy="124.2" r="2.2"/>
+<circle cx="114.3" cy="124.4" r="3.2"/>
+<circle class="st200" cx="114.3" cy="124.4" r="2.2"/>
+<circle cx="271" cy="139.2" r="3.2"/>
+<circle class="st180" cx="271" cy="139.2" r="2.2"/>
+<circle cx="263.5" cy="137" r="3.2"/>
+<circle class="st201" cx="263.5" cy="137" r="2.2"/>
+<circle cx="256.8" cy="136.7" r="3.2"/>
+<circle class="st180" cx="256.8" cy="136.7" r="2.2"/>
+<circle cx="116.9" cy="89.3" r="3.2"/>
+<circle class="st87" cx="116.9" cy="89.3" r="2.2"/>
+<circle cx="117.2" cy="92.1" r="3.2"/>
+<circle class="st202" cx="117.2" cy="92.1" r="2.2"/>
+<circle cx="80.9" cy="108.4" r="3.2"/>
+<circle class="st83" cx="80.9" cy="108.4" r="2.2"/>
+<circle cx="63.8" cy="112.4" r="3.2"/>
+<circle class="st200" cx="63.8" cy="112.4" r="2.2"/>
+<circle cx="62.9" cy="109.7" r="3.2"/>
+<circle class="st203" cx="62.9" cy="109.7" r="2.2"/>
+<circle cx="85.7" cy="87.1" r="3.2"/>
+<circle class="st43" cx="85.7" cy="87.1" r="2.2"/>
+<circle cx="129.7" cy="98.1" r="3.2"/>
+<circle class="st204" cx="129.7" cy="98.1" r="2.2"/>
+<circle cx="98.9" cy="109.5" r="3.2"/>
+<circle class="st205" cx="98.9" cy="109.5" r="2.2"/>
+<circle cx="229.6" cy="95.4" r="3.2"/>
+<circle class="st169" cx="229.6" cy="95.4" r="2.2"/>
+<circle cx="63.7" cy="89.2" r="3.2"/>
+<circle class="st206" cx="63.7" cy="89.2" r="2.2"/>
+<circle cx="60.3" cy="88.7" r="3.2"/>
+<circle class="st207" cx="60.3" cy="88.7" r="2.2"/>
+<circle cx="65" cy="89.7" r="3.2"/>
+<circle class="st70" cx="65" cy="89.7" r="2.2"/>
+<circle cx="224.4" cy="139.1" r="3.2"/>
+<circle class="st174" cx="224.4" cy="139.1" r="2.2"/>
+<circle cx="57" cy="129.9" r="3.2"/>
+<circle class="st208" cx="57" cy="129.9" r="2.2"/>
+<circle cx="58.7" cy="115.4" r="3.2"/>
+<circle class="st209" cx="58.7" cy="115.4" r="2.2"/>
+<circle cx="60.3" cy="118.8" r="3.2"/>
+<circle class="st210" cx="60.3" cy="118.8" r="2.2"/>
+<circle cx="89.8" cy="101.6" r="3.2"/>
+<circle class="st37" cx="89.8" cy="101.6" r="2.2"/>
+<circle cx="91" cy="92.8" r="3.2"/>
+<circle class="st93" cx="91" cy="92.8" r="2.2"/>
+<circle cx="90.5" cy="92.8" r="3.2"/>
+<circle class="st19" cx="90.5" cy="92.8" r="2.2"/>
+<circle cx="67.2" cy="92.8" r="3.2"/>
+<circle class="st26" cx="67.2" cy="92.8" r="2.2"/>
+<circle cx="67.8" cy="84.9" r="3.2"/>
+<circle class="st211" cx="67.8" cy="84.9" r="2.2"/>
+<circle cx="107.2" cy="76.3" r="3.2"/>
+<circle class="st153" cx="107.2" cy="76.3" r="2.2"/>
+<circle cx="106.1" cy="61.3" r="3.2"/>
+<circle class="st212" cx="106.1" cy="61.3" r="2.2"/>
+<circle cx="63.2" cy="102.4" r="3.2"/>
+<circle class="st56" cx="63.2" cy="102.4" r="2.2"/>
+<circle cx="66.2" cy="101" r="3.2"/>
+<circle class="st63" cx="66.2" cy="101" r="2.2"/>
+<circle cx="73" cy="103.8" r="3.2"/>
+<circle class="st136" cx="73" cy="103.8" r="2.2"/>
+<circle cx="90.8" cy="65.9" r="3.2"/>
+<circle class="st213" cx="90.8" cy="65.9" r="2.2"/>
+<circle cx="93.9" cy="63.1" r="3.2"/>
+<circle class="st214" cx="93.9" cy="63.1" r="2.2"/>
+<circle cx="202.8" cy="76.6" r="3.2"/>
+<circle class="st215" cx="202.8" cy="76.6" r="2.2"/>
+<circle cx="70.8" cy="163.4" r="3.2"/>
+<circle class="st216" cx="70.8" cy="163.4" r="2.2"/>
+<circle cx="71.3" cy="170.7" r="3.2"/>
+<circle class="st193" cx="71.3" cy="170.7" r="2.2"/>
+<circle cx="72.5" cy="170.8" r="3.2"/>
+<circle class="st217" cx="72.5" cy="170.8" r="2.2"/>
+<circle cx="180.6" cy="71.5" r="3.2"/>
+<circle class="st218" cx="180.6" cy="71.5" r="2.2"/>
+<circle cx="168.2" cy="63.1" r="3.2"/>
+<circle class="st219" cx="168.2" cy="63.1" r="2.2"/>
+<circle cx="159.9" cy="53.9" r="3.2"/>
+<circle class="st220" cx="159.9" cy="53.9" r="2.2"/>
+<circle cx="158.6" cy="50.1" r="3.2"/>
+<circle class="st221" cx="158.6" cy="50.1" r="2.2"/>
+<circle cx="259.2" cy="131.4" r="3.2"/>
+<circle class="st174" cx="259.2" cy="131.4" r="2.2"/>
+<circle cx="255.4" cy="125.9" r="3.2"/>
+<circle class="st174" cx="255.4" cy="125.9" r="2.2"/>
+<circle cx="130.4" cy="71.1" r="3.2"/>
+<circle class="st222" cx="130.4" cy="71.1" r="2.2"/>
+<circle cx="178" cy="107.4" r="3.2"/>
+<circle class="st104" cx="178" cy="107.4" r="2.2"/>
+<circle cx="167.9" cy="196.5" r="3.2"/>
+<circle class="st117" cx="167.9" cy="196.5" r="2.2"/>
+<circle cx="73.7" cy="92.1" r="3.2"/>
+<circle class="st42" cx="73.7" cy="92.1" r="2.2"/>
+<circle cx="74" cy="98.1" r="3.2"/>
+<circle class="st170" cx="74" cy="98.1" r="2.2"/>
+<circle cx="105.1" cy="84.1" r="3.2"/>
+<circle class="st44" cx="105.1" cy="84.1" r="2.2"/>
+<circle cx="272.1" cy="137.5" r="3.2"/>
+<circle class="st174" cx="272.1" cy="137.5" r="2.2"/>
+<circle cx="70.4" cy="114.9" r="3.2"/>
+<circle class="st223" cx="70.4" cy="114.9" r="2.2"/>
+<circle cx="70.4" cy="115.6" r="3.2"/>
+<circle class="st4" cx="70.4" cy="115.6" r="2.2"/>
+<circle cx="192.8" cy="116.8" r="3.2"/>
+<circle class="st118" cx="192.8" cy="116.8" r="2.2"/>
+<circle cx="142.7" cy="79.5" r="3.2"/>
+<circle class="st224" cx="142.7" cy="79.5" r="2.2"/>
+<circle cx="224.5" cy="91.6" r="3.2"/>
+<circle class="st225" cx="224.5" cy="91.6" r="2.2"/>
+<circle cx="103.9" cy="111.8" r="3.2"/>
+<circle class="st226" cx="103.9" cy="111.8" r="2.2"/>
+<circle cx="104.3" cy="87.4" r="3.2"/>
+<circle class="st36" cx="104.3" cy="87.4" r="2.2"/>
+<circle cx="109.6" cy="83.9" r="3.2"/>
+<circle class="st103" cx="109.6" cy="83.9" r="2.2"/>
+<circle cx="110.6" cy="76.7" r="3.2"/>
+<circle class="st197" cx="110.6" cy="76.7" r="2.2"/>
+<circle cx="114.3" cy="82.4" r="3.2"/>
+<circle class="st145" cx="114.3" cy="82.4" r="2.2"/>
+<circle cx="110.2" cy="55.3" r="3.2"/>
+<circle class="st92" cx="110.2" cy="55.3" r="2.2"/>
+<circle cx="214.2" cy="123.2" r="3.2"/>
+<circle class="st174" cx="214.2" cy="123.2" r="2.2"/>
+<circle cx="221" cy="123.6" r="3.2"/>
+<circle class="st174" cx="221" cy="123.6" r="2.2"/>
+<circle cx="73.4" cy="76" r="3.2"/>
+<circle class="st227" cx="73.4" cy="76" r="2.2"/>
+<circle cx="74.9" cy="71.1" r="3.2"/>
+<circle class="st196" cx="74.9" cy="71.1" r="2.2"/>
+<circle cx="119.8" cy="58.7" r="3.2"/>
+<circle class="st228" cx="119.8" cy="58.7" r="2.2"/>
+<circle cx="77" cy="118.5" r="3.2"/>
+<circle class="st22" cx="77" cy="118.5" r="2.2"/>
+<circle cx="261" cy="124.1" r="3.2"/>
+<circle class="st174" cx="261" cy="124.1" r="2.2"/>
+<circle cx="265.5" cy="126.5" r="3.2"/>
+<circle class="st229" cx="265.5" cy="126.5" r="2.2"/>
+<circle cx="257.3" cy="125.2" r="3.2"/>
+<circle class="st181" cx="257.3" cy="125.2" r="2.2"/>
+<circle cx="82.3" cy="119.9" r="3.2"/>
+<circle class="st160" cx="82.3" cy="119.9" r="2.2"/>
+<circle cx="76.5" cy="120.1" r="3.2"/>
+<circle class="st68" cx="76.5" cy="120.1" r="2.2"/>
+<circle cx="68.7" cy="123.7" r="3.2"/>
+<circle class="st205" cx="68.7" cy="123.7" r="2.2"/>
+<circle cx="71.8" cy="129.2" r="3.2"/>
+<circle class="st172" cx="71.8" cy="129.2" r="2.2"/>
+<circle cx="80" cy="192.8" r="3.2"/>
+<circle class="st96" cx="80" cy="192.8" r="2.2"/>
+<circle cx="75.3" cy="156.8" r="3.2"/>
+<circle class="st67" cx="75.3" cy="156.8" r="2.2"/>
+<circle cx="53.7" cy="102" r="3.2"/>
+<circle class="st198" cx="53.7" cy="102" r="2.2"/>
+<circle cx="58.2" cy="95.8" r="3.2"/>
+<circle class="st230" cx="58.2" cy="95.8" r="2.2"/>
+<circle cx="70.2" cy="80.1" r="3.2"/>
+<circle class="st129" cx="70.2" cy="80.1" r="2.2"/>
+<circle cx="70.3" cy="82.9" r="3.2"/>
+<circle class="st231" cx="70.3" cy="82.9" r="2.2"/>
+<circle cx="99.5" cy="192.9" r="3.2"/>
+<circle class="st232" cx="99.5" cy="192.9" r="2.2"/>
+<circle cx="276.5" cy="132.8" r="3.2"/>
+<circle class="st174" cx="276.5" cy="132.8" r="2.2"/>
+<circle cx="228.1" cy="126.4" r="3.2"/>
+<circle class="st174" cx="228.1" cy="126.4" r="2.2"/>
+<circle cx="99.1" cy="68.2" r="3.2"/>
+<circle class="st233" cx="99.1" cy="68.2" r="2.2"/>
+<circle cx="82.2" cy="113.3" r="3.2"/>
+<circle class="st68" cx="82.2" cy="113.3" r="2.2"/>
+<circle cx="92.1" cy="69.7" r="3.2"/>
+<circle class="st15" cx="92.1" cy="69.7" r="2.2"/>
+<circle cx="217.6" cy="125.7" r="3.2"/>
+<circle class="st174" cx="217.6" cy="125.7" r="2.2"/>
+<circle cx="72.7" cy="81" r="3.2"/>
+<circle class="st234" cx="72.7" cy="81" r="2.2"/>
+<circle cx="116.4" cy="206.9" r="3.2"/>
+<circle class="st235" cx="116.4" cy="206.9" r="2.2"/>
+<circle cx="112.2" cy="197.2" r="3.2"/>
+<circle class="st216" cx="112.2" cy="197.2" r="2.2"/>
+<circle cx="89.4" cy="89" r="3.2"/>
+<circle class="st233" cx="89.4" cy="89" r="2.2"/>
+<circle cx="93.4" cy="96.3" r="3.2"/>
+<circle class="st236" cx="93.4" cy="96.3" r="2.2"/>
+<circle cx="116.9" cy="117" r="3.2"/>
+<circle class="st237" cx="116.9" cy="117" r="2.2"/>
+<circle cx="93.2" cy="94.5" r="3.2"/>
+<circle class="st17" cx="93.2" cy="94.5" r="2.2"/>
+<circle cx="89.3" cy="186.3" r="3.2"/>
+<circle class="st238" cx="89.3" cy="186.3" r="2.2"/>
+<circle cx="85.8" cy="153.2" r="3.2"/>
+<circle class="st57" cx="85.8" cy="153.2" r="2.2"/>
+<circle cx="163.2" cy="93.5" r="3.2"/>
+<circle class="st239" cx="163.2" cy="93.5" r="2.2"/>
+<circle cx="148.8" cy="67.1" r="3.2"/>
+<circle class="st106" cx="148.8" cy="67.1" r="2.2"/>
+<circle cx="122.4" cy="81" r="3.2"/>
+<circle class="st240" cx="122.4" cy="81" r="2.2"/>
+<circle cx="102.4" cy="52.5" r="3.2"/>
+<circle class="st241" cx="102.4" cy="52.5" r="2.2"/>
+<circle cx="75" cy="74.8" r="3.2"/>
+<circle class="st204" cx="75" cy="74.8" r="2.2"/>
+<circle cx="77.1" cy="113.7" r="3.2"/>
+<circle class="st242" cx="77.1" cy="113.7" r="2.2"/>
+<circle cx="78.7" cy="112.1" r="3.2"/>
+<circle class="st56" cx="78.7" cy="112.1" r="2.2"/>
+<circle cx="256.1" cy="126.6" r="3.2"/>
+<circle class="st31" cx="256.1" cy="126.6" r="2.2"/>
+<circle cx="236.9" cy="100.8" r="3.2"/>
+<circle class="st118" cx="236.9" cy="100.8" r="2.2"/>
+<circle cx="257.5" cy="124.9" r="3.2"/>
+<circle class="st7" cx="257.5" cy="124.9" r="2.2"/>
+<circle cx="94" cy="104.4" r="3.2"/>
+<circle class="st35" cx="94" cy="104.4" r="2.2"/>
+<circle cx="199.5" cy="113.4" r="3.2"/>
+<circle class="st219" cx="199.5" cy="113.4" r="2.2"/>
+<circle cx="173.6" cy="111.9" r="3.2"/>
+<circle class="st243" cx="173.6" cy="111.9" r="2.2"/>
+<circle cx="221.2" cy="111.5" r="3.2"/>
+<circle class="st45" cx="221.2" cy="111.5" r="2.2"/>
+<circle cx="149.6" cy="62.1" r="3.2"/>
+<circle class="st244" cx="149.6" cy="62.1" r="2.2"/>
+<circle cx="125.5" cy="133.3" r="3.2"/>
+<circle class="st245" cx="125.5" cy="133.3" r="2.2"/>
+<circle cx="150.8" cy="105.6" r="3.2"/>
+<circle class="st71" cx="150.8" cy="105.6" r="2.2"/>
+<circle cx="263.9" cy="121.5" r="3.2"/>
+<circle class="st5" cx="263.9" cy="121.5" r="2.2"/>
+<circle cx="268.1" cy="122.3" r="3.2"/>
+<circle class="st90" cx="268.1" cy="122.3" r="2.2"/>
+<circle cx="218.6" cy="100" r="3.2"/>
+<circle class="st198" cx="218.6" cy="100" r="2.2"/>
+<circle cx="219.8" cy="102.9" r="3.2"/>
+<circle class="st246" cx="219.8" cy="102.9" r="2.2"/>
+<circle cx="110.9" cy="205.9" r="3.2"/>
+<circle class="st122" cx="110.9" cy="205.9" r="2.2"/>
+<circle cx="116.4" cy="199.1" r="3.2"/>
+<circle class="st48" cx="116.4" cy="199.1" r="2.2"/>
+<image style="overflow:visible;enable-background:new    ;" width="72" height="564" xlink:href="488EF6DBC68C970F.png"  transform="matrix(0.3214 0 0 0.3214 298.5338 40.4199)">
+</image>
+<text transform="matrix(1 0 0 1 333.3311 226.0156)" class="st1 st247">0</text>
+<text transform="matrix(1 0 0 1 333.3311 207.0586)" class="st1 st247">0.1</text>
+<text transform="matrix(1 0 0 1 333.3311 188.103)" class="st1 st247">0.2</text>
+<text transform="matrix(1 0 0 1 333.3311 169.147)" class="st1 st247">0.3</text>
+<text transform="matrix(1 0 0 1 333.3311 150.1909)" class="st1 st247">0.4</text>
+<text transform="matrix(1 0 0 1 333.3311 131.2349)" class="st1 st247">0.5</text>
+<text transform="matrix(1 0 0 1 333.3311 112.2788)" class="st1 st247">0.6</text>
+<text transform="matrix(1 0 0 1 333.3311 93.3237)" class="st1 st247">0.7</text>
+<text transform="matrix(1 0 0 1 333.3311 74.3677)" class="st1 st247">0.8</text>
+<text transform="matrix(1 0 0 1 333.3311 55.4116)" class="st1 st247">0.9</text>
+<polyline class="st0" points="321.8,221.6 321.8,221.6 329.5,221.6 321.8,221.6 321.8,202.7 329.5,202.7 321.8,202.7 321.8,183.7 
+	329.5,183.7 321.8,183.7 321.8,164.8 329.5,164.8 321.8,164.8 321.8,145.8 329.5,145.8 321.8,145.8 321.8,126.8 329.5,126.8 
+	321.8,126.8 321.8,107.9 329.5,107.9 321.8,107.9 321.8,88.9 329.5,88.9 321.8,88.9 321.8,70 329.5,70 321.8,70 321.8,51 329.5,51 
+	321.8,51 321.8,40.4 "/>
+<line class="st0" x1="431.2" y1="221.6" x2="668.9" y2="221.6"/>
+<line class="st0" x1="431.2" y1="221.6" x2="431.2" y2="40.4"/>
+<text transform="matrix(1 0 0 1 454.0332 23.4487)" class="st1 st2">Kids, Firmicutes</text>
+<text transform="matrix(1 0 0 1 477.5293 242.9746)" class="st1 st3">PCo1 (16.95%)</text>
+<text transform="matrix(6.123234e-17 -1 1 6.123234e-17 416.1533 203.541)" class="st1 st3">PCo2 (10.42%)</text>
+<circle cx="481.2" cy="80.8" r="3.2"/>
+<circle class="st248" cx="481.2" cy="80.8" r="2.2"/>
+<circle cx="449.5" cy="125.9" r="3.2"/>
+<circle class="st177" cx="449.5" cy="125.9" r="2.2"/>
+<circle cx="441.6" cy="120.6" r="3.2"/>
+<circle class="st249" cx="441.6" cy="120.6" r="2.2"/>
+<circle cx="440.3" cy="123.5" r="3.2"/>
+<circle class="st250" cx="440.3" cy="123.5" r="2.2"/>
+<circle cx="459.7" cy="130.2" r="3.2"/>
+<circle class="st251" cx="459.7" cy="130.2" r="2.2"/>
+<circle cx="446.2" cy="112.1" r="3.2"/>
+<circle class="st252" cx="446.2" cy="112.1" r="2.2"/>
+<circle cx="445.9" cy="105.3" r="3.2"/>
+<circle class="st253" cx="445.9" cy="105.3" r="2.2"/>
+<circle cx="462.9" cy="134.8" r="3.2"/>
+<circle class="st221" cx="462.9" cy="134.8" r="2.2"/>
+<circle cx="470.1" cy="85.4" r="3.2"/>
+<circle class="st148" cx="470.1" cy="85.4" r="2.2"/>
+<circle cx="476.9" cy="101.5" r="3.2"/>
+<circle class="st161" cx="476.9" cy="101.5" r="2.2"/>
+<circle cx="490.2" cy="104.6" r="3.2"/>
+<circle class="st17" cx="490.2" cy="104.6" r="2.2"/>
+<circle cx="489.8" cy="97" r="3.2"/>
+<circle class="st254" cx="489.8" cy="97" r="2.2"/>
+<circle cx="441" cy="154" r="3.2"/>
+<circle class="st255" cx="441" cy="154" r="2.2"/>
+<circle cx="439.7" cy="162.1" r="3.2"/>
+<circle class="st202" cx="439.7" cy="162.1" r="2.2"/>
+<circle cx="449.1" cy="194.4" r="3.2"/>
+<circle class="st256" cx="449.1" cy="194.4" r="2.2"/>
+<circle cx="482.1" cy="105.4" r="3.2"/>
+<circle class="st19" cx="482.1" cy="105.4" r="2.2"/>
+<circle cx="470.7" cy="100.7" r="3.2"/>
+<circle class="st162" cx="470.7" cy="100.7" r="2.2"/>
+<circle cx="469" cy="99.7" r="3.2"/>
+<circle class="st257" cx="469" cy="99.7" r="2.2"/>
+<circle cx="464.2" cy="86.1" r="3.2"/>
+<circle class="st258" cx="464.2" cy="86.1" r="2.2"/>
+<circle cx="463.9" cy="73.9" r="3.2"/>
+<circle class="st259" cx="463.9" cy="73.9" r="2.2"/>
+<circle cx="457.2" cy="107.1" r="3.2"/>
+<circle class="st260" cx="457.2" cy="107.1" r="2.2"/>
+<circle cx="444.4" cy="134.7" r="3.2"/>
+<circle class="st261" cx="444.4" cy="134.7" r="2.2"/>
+<circle cx="446.7" cy="133.6" r="3.2"/>
+<circle class="st262" cx="446.7" cy="133.6" r="2.2"/>
+<circle cx="456.7" cy="128" r="3.2"/>
+<circle class="st102" cx="456.7" cy="128" r="2.2"/>
+<circle cx="452.5" cy="119.2" r="3.2"/>
+<circle class="st263" cx="452.5" cy="119.2" r="2.2"/>
+<circle cx="449.2" cy="134.6" r="3.2"/>
+<circle class="st264" cx="449.2" cy="134.6" r="2.2"/>
+<circle cx="474" cy="81.6" r="3.2"/>
+<circle class="st265" cx="474" cy="81.6" r="2.2"/>
+<circle cx="456.4" cy="97.8" r="3.2"/>
+<circle class="st139" cx="456.4" cy="97.8" r="2.2"/>
+<circle cx="476.1" cy="95.4" r="3.2"/>
+<circle class="st248" cx="476.1" cy="95.4" r="2.2"/>
+<circle cx="479.9" cy="95.1" r="3.2"/>
+<circle class="st266" cx="479.9" cy="95.1" r="2.2"/>
+<circle cx="448.8" cy="130.9" r="3.2"/>
+<circle class="st65" cx="448.8" cy="130.9" r="2.2"/>
+<circle cx="471.5" cy="149.1" r="3.2"/>
+<circle class="st267" cx="471.5" cy="149.1" r="2.2"/>
+<circle cx="453.1" cy="102.7" r="3.2"/>
+<circle class="st268" cx="453.1" cy="102.7" r="2.2"/>
+<circle cx="487.6" cy="116.1" r="3.2"/>
+<circle class="st90" cx="487.6" cy="116.1" r="2.2"/>
+<circle cx="461.4" cy="102.9" r="3.2"/>
+<circle class="st19" cx="461.4" cy="102.9" r="2.2"/>
+<circle cx="457.4" cy="101.8" r="3.2"/>
+<circle class="st19" cx="457.4" cy="101.8" r="2.2"/>
+<circle cx="481.2" cy="85.9" r="3.2"/>
+<circle class="st62" cx="481.2" cy="85.9" r="2.2"/>
+<circle cx="456.7" cy="108" r="3.2"/>
+<circle class="st269" cx="456.7" cy="108" r="2.2"/>
+<circle cx="458.3" cy="120" r="3.2"/>
+<circle class="st270" cx="458.3" cy="120" r="2.2"/>
+<circle cx="473.7" cy="88.3" r="3.2"/>
+<circle class="st271" cx="473.7" cy="88.3" r="2.2"/>
+<circle cx="476" cy="91.8" r="3.2"/>
+<circle class="st272" cx="476" cy="91.8" r="2.2"/>
+<circle cx="495.2" cy="82.2" r="3.2"/>
+<circle class="st86" cx="495.2" cy="82.2" r="2.2"/>
+<circle cx="479.2" cy="79.3" r="3.2"/>
+<circle class="st273" cx="479.2" cy="79.3" r="2.2"/>
+<circle cx="494.7" cy="79.3" r="3.2"/>
+<circle class="st146" cx="494.7" cy="79.3" r="2.2"/>
+<circle cx="454" cy="105.6" r="3.2"/>
+<circle class="st218" cx="454" cy="105.6" r="2.2"/>
+<circle cx="451.6" cy="90.2" r="3.2"/>
+<circle class="st243" cx="451.6" cy="90.2" r="2.2"/>
+<circle cx="447.9" cy="104.4" r="3.2"/>
+<circle class="st274" cx="447.9" cy="104.4" r="2.2"/>
+<circle cx="454.8" cy="84.4" r="3.2"/>
+<circle class="st74" cx="454.8" cy="84.4" r="2.2"/>
+<circle cx="455.5" cy="105.9" r="3.2"/>
+<circle class="st97" cx="455.5" cy="105.9" r="2.2"/>
+<circle cx="465.4" cy="151.9" r="3.2"/>
+<circle class="st92" cx="465.4" cy="151.9" r="2.2"/>
+<circle cx="472.7" cy="190.2" r="3.2"/>
+<circle class="st275" cx="472.7" cy="190.2" r="2.2"/>
+<circle cx="474.7" cy="190.4" r="3.2"/>
+<circle class="st276" cx="474.7" cy="190.4" r="2.2"/>
+<circle cx="478.2" cy="194.1" r="3.2"/>
+<circle class="st106" cx="478.2" cy="194.1" r="2.2"/>
+<circle cx="438.1" cy="118.6" r="3.2"/>
+<circle class="st277" cx="438.1" cy="118.6" r="2.2"/>
+<circle cx="438.4" cy="106.6" r="3.2"/>
+<circle class="st278" cx="438.4" cy="106.6" r="2.2"/>
+<circle cx="472.2" cy="66.6" r="3.2"/>
+<circle class="st104" cx="472.2" cy="66.6" r="2.2"/>
+<circle cx="474.1" cy="57.6" r="3.2"/>
+<circle class="st211" cx="474.1" cy="57.6" r="2.2"/>
+<circle cx="481.6" cy="102.7" r="3.2"/>
+<circle class="st76" cx="481.6" cy="102.7" r="2.2"/>
+<circle cx="459.3" cy="108.7" r="3.2"/>
+<circle class="st37" cx="459.3" cy="108.7" r="2.2"/>
+<circle cx="451.8" cy="100.6" r="3.2"/>
+<circle class="st236" cx="451.8" cy="100.6" r="2.2"/>
+<circle cx="466.1" cy="130.7" r="3.2"/>
+<circle class="st204" cx="466.1" cy="130.7" r="2.2"/>
+<circle cx="466" cy="132.4" r="3.2"/>
+<circle class="st279" cx="466" cy="132.4" r="2.2"/>
+<circle cx="479.8" cy="125" r="3.2"/>
+<circle class="st280" cx="479.8" cy="125" r="2.2"/>
+<circle cx="490.6" cy="128.3" r="3.2"/>
+<circle class="st117" cx="490.6" cy="128.3" r="2.2"/>
+<circle cx="476.2" cy="145.1" r="3.2"/>
+<circle class="st281" cx="476.2" cy="145.1" r="2.2"/>
+<circle cx="449.7" cy="90.5" r="3.2"/>
+<circle class="st162" cx="449.7" cy="90.5" r="2.2"/>
+<circle cx="448.7" cy="87.4" r="3.2"/>
+<circle class="st69" cx="448.7" cy="87.4" r="2.2"/>
+<circle cx="442.3" cy="134.6" r="3.2"/>
+<circle class="st161" cx="442.3" cy="134.6" r="2.2"/>
+<circle cx="444.2" cy="135.9" r="3.2"/>
+<circle class="st282" cx="444.2" cy="135.9" r="2.2"/>
+<circle cx="511.5" cy="124.3" r="3.2"/>
+<circle class="st66" cx="511.5" cy="124.3" r="2.2"/>
+<circle cx="515.9" cy="135" r="3.2"/>
+<circle class="st283" cx="515.9" cy="135" r="2.2"/>
+<circle cx="516.5" cy="132.2" r="3.2"/>
+<circle class="st131" cx="516.5" cy="132.2" r="2.2"/>
+<circle cx="437.9" cy="142.8" r="3.2"/>
+<circle class="st284" cx="437.9" cy="142.8" r="2.2"/>
+<circle cx="454.7" cy="201.7" r="3.2"/>
+<circle class="st33" cx="454.7" cy="201.7" r="2.2"/>
+<circle cx="468.4" cy="216.5" r="3.2"/>
+<circle class="st150" cx="468.4" cy="216.5" r="2.2"/>
+<circle cx="467.7" cy="155.2" r="3.2"/>
+<circle class="st173" cx="467.7" cy="155.2" r="2.2"/>
+<circle cx="449.3" cy="179.9" r="3.2"/>
+<circle class="st106" cx="449.3" cy="179.9" r="2.2"/>
+<circle cx="451.5" cy="142.3" r="3.2"/>
+<circle class="st122" cx="451.5" cy="142.3" r="2.2"/>
+<circle cx="484.7" cy="119.6" r="3.2"/>
+<circle class="st285" cx="484.7" cy="119.6" r="2.2"/>
+<circle cx="479.3" cy="121.3" r="3.2"/>
+<circle class="st65" cx="479.3" cy="121.3" r="2.2"/>
+<circle cx="466.5" cy="92.3" r="3.2"/>
+<circle class="st48" cx="466.5" cy="92.3" r="2.2"/>
+<circle cx="453.6" cy="100.8" r="3.2"/>
+<circle class="st286" cx="453.6" cy="100.8" r="2.2"/>
+<circle cx="449.1" cy="98.2" r="3.2"/>
+<circle class="st287" cx="449.1" cy="98.2" r="2.2"/>
+<circle cx="506.5" cy="154.7" r="3.2"/>
+<circle class="st232" cx="506.5" cy="154.7" r="2.2"/>
+<circle cx="474.9" cy="141.6" r="3.2"/>
+<circle class="st288" cx="474.9" cy="141.6" r="2.2"/>
+<circle cx="476.5" cy="145.8" r="3.2"/>
+<circle class="st289" cx="476.5" cy="145.8" r="2.2"/>
+<circle cx="453.9" cy="178" r="3.2"/>
+<circle class="st290" cx="453.9" cy="178" r="2.2"/>
+<circle cx="462.9" cy="84.9" r="3.2"/>
+<circle class="st268" cx="462.9" cy="84.9" r="2.2"/>
+<circle cx="462" cy="85" r="3.2"/>
+<circle class="st59" cx="462" cy="85" r="2.2"/>
+<circle cx="461" cy="105.1" r="3.2"/>
+<circle class="st291" cx="461" cy="105.1" r="2.2"/>
+<circle cx="463.3" cy="93.8" r="3.2"/>
+<circle class="st106" cx="463.3" cy="93.8" r="2.2"/>
+<circle cx="457.9" cy="98.3" r="3.2"/>
+<circle class="st213" cx="457.9" cy="98.3" r="2.2"/>
+<circle cx="444.2" cy="114.5" r="3.2"/>
+<circle class="st271" cx="444.2" cy="114.5" r="2.2"/>
+<circle cx="443.6" cy="113.8" r="3.2"/>
+<circle class="st115" cx="443.6" cy="113.8" r="2.2"/>
+<circle cx="468.2" cy="106.3" r="3.2"/>
+<circle class="st141" cx="468.2" cy="106.3" r="2.2"/>
+<circle cx="455" cy="102.5" r="3.2"/>
+<circle class="st73" cx="455" cy="102.5" r="2.2"/>
+<circle cx="455.4" cy="128" r="3.2"/>
+<circle class="st124" cx="455.4" cy="128" r="2.2"/>
+<circle cx="453.2" cy="112.4" r="3.2"/>
+<circle class="st271" cx="453.2" cy="112.4" r="2.2"/>
+<circle cx="451.2" cy="158" r="3.2"/>
+<circle class="st292" cx="451.2" cy="158" r="2.2"/>
+<circle cx="459.9" cy="162.8" r="3.2"/>
+<circle class="st257" cx="459.9" cy="162.8" r="2.2"/>
+<circle cx="455.2" cy="162.3" r="3.2"/>
+<circle class="st161" cx="455.2" cy="162.3" r="2.2"/>
+<circle cx="466.9" cy="128.8" r="3.2"/>
+<circle class="st233" cx="466.9" cy="128.8" r="2.2"/>
+<circle cx="485.5" cy="72.7" r="3.2"/>
+<circle class="st154" cx="485.5" cy="72.7" r="2.2"/>
+<circle cx="478.5" cy="89.2" r="3.2"/>
+<circle class="st38" cx="478.5" cy="89.2" r="2.2"/>
+<circle cx="473.7" cy="94.1" r="3.2"/>
+<circle class="st93" cx="473.7" cy="94.1" r="2.2"/>
+<circle cx="480.9" cy="75.2" r="3.2"/>
+<circle class="st90" cx="480.9" cy="75.2" r="2.2"/>
+<circle cx="468.6" cy="90.8" r="3.2"/>
+<circle class="st268" cx="468.6" cy="90.8" r="2.2"/>
+<circle cx="445.8" cy="157" r="3.2"/>
+<circle class="st102" cx="445.8" cy="157" r="2.2"/>
+<circle cx="457.4" cy="178.4" r="3.2"/>
+<circle class="st276" cx="457.4" cy="178.4" r="2.2"/>
+<circle cx="470.9" cy="96" r="3.2"/>
+<circle class="st104" cx="470.9" cy="96" r="2.2"/>
+<circle cx="470.1" cy="90.3" r="3.2"/>
+<circle class="st293" cx="470.1" cy="90.3" r="2.2"/>
+<circle cx="457.2" cy="108.3" r="3.2"/>
+<circle class="st277" cx="457.2" cy="108.3" r="2.2"/>
+<circle cx="479.4" cy="89.8" r="3.2"/>
+<circle class="st178" cx="479.4" cy="89.8" r="2.2"/>
+<circle cx="485.6" cy="73.3" r="3.2"/>
+<circle class="st33" cx="485.6" cy="73.3" r="2.2"/>
+<circle cx="502.6" cy="85" r="3.2"/>
+<circle class="st195" cx="502.6" cy="85" r="2.2"/>
+<circle cx="522.4" cy="88.1" r="3.2"/>
+<circle class="st178" cx="522.4" cy="88.1" r="2.2"/>
+<circle cx="480.6" cy="75" r="3.2"/>
+<circle class="st172" cx="480.6" cy="75" r="2.2"/>
+<circle cx="464.6" cy="78.5" r="3.2"/>
+<circle class="st162" cx="464.6" cy="78.5" r="2.2"/>
+<circle cx="459.5" cy="90.6" r="3.2"/>
+<circle class="st183" cx="459.5" cy="90.6" r="2.2"/>
+<circle cx="484.9" cy="206.8" r="3.2"/>
+<circle class="st38" cx="484.9" cy="206.8" r="2.2"/>
+<circle cx="461.6" cy="103" r="3.2"/>
+<circle class="st22" cx="461.6" cy="103" r="2.2"/>
+<circle cx="453.2" cy="91.6" r="3.2"/>
+<circle class="st259" cx="453.2" cy="91.6" r="2.2"/>
+<circle cx="463.8" cy="92.7" r="3.2"/>
+<circle class="st294" cx="463.8" cy="92.7" r="2.2"/>
+<circle cx="468.2" cy="122.8" r="3.2"/>
+<circle class="st295" cx="468.2" cy="122.8" r="2.2"/>
+<circle cx="463" cy="83.6" r="3.2"/>
+<circle class="st193" cx="463" cy="83.6" r="2.2"/>
+<circle cx="468" cy="103.2" r="3.2"/>
+<circle class="st296" cx="468" cy="103.2" r="2.2"/>
+<circle cx="476.7" cy="58.4" r="3.2"/>
+<circle class="st131" cx="476.7" cy="58.4" r="2.2"/>
+<circle cx="474.1" cy="55.1" r="3.2"/>
+<circle class="st133" cx="474.1" cy="55.1" r="2.2"/>
+<circle cx="496.8" cy="57.9" r="3.2"/>
+<circle class="st28" cx="496.8" cy="57.9" r="2.2"/>
+<circle cx="494.2" cy="194.2" r="3.2"/>
+<circle class="st43" cx="494.2" cy="194.2" r="2.2"/>
+<circle cx="523.6" cy="131.7" r="3.2"/>
+<circle class="st123" cx="523.6" cy="131.7" r="2.2"/>
+<circle cx="502.7" cy="141.7" r="3.2"/>
+<circle class="st48" cx="502.7" cy="141.7" r="2.2"/>
+<circle cx="466.7" cy="90.5" r="3.2"/>
+<circle class="st279" cx="466.7" cy="90.5" r="2.2"/>
+<circle cx="471.5" cy="82.6" r="3.2"/>
+<circle class="st297" cx="471.5" cy="82.6" r="2.2"/>
+<circle cx="464.5" cy="87.3" r="3.2"/>
+<circle class="st150" cx="464.5" cy="87.3" r="2.2"/>
+<circle cx="463" cy="119.9" r="3.2"/>
+<circle class="st233" cx="463" cy="119.9" r="2.2"/>
+<circle cx="487.3" cy="123.3" r="3.2"/>
+<circle class="st250" cx="487.3" cy="123.3" r="2.2"/>
+<circle cx="474.6" cy="119.8" r="3.2"/>
+<circle class="st219" cx="474.6" cy="119.8" r="2.2"/>
+<circle cx="461.4" cy="123.5" r="3.2"/>
+<circle class="st153" cx="461.4" cy="123.5" r="2.2"/>
+<circle cx="503.3" cy="96.7" r="3.2"/>
+<circle class="st98" cx="503.3" cy="96.7" r="2.2"/>
+<circle cx="509.8" cy="53.8" r="3.2"/>
+<circle class="st45" cx="509.8" cy="53.8" r="2.2"/>
+<circle cx="449.6" cy="106.9" r="3.2"/>
+<circle class="st298" cx="449.6" cy="106.9" r="2.2"/>
+<circle cx="450.5" cy="109.1" r="3.2"/>
+<circle class="st298" cx="450.5" cy="109.1" r="2.2"/>
+<circle cx="492.9" cy="109.4" r="3.2"/>
+<circle class="st248" cx="492.9" cy="109.4" r="2.2"/>
+<circle cx="491" cy="84.4" r="3.2"/>
+<circle class="st98" cx="491" cy="84.4" r="2.2"/>
+<circle cx="482.7" cy="88.8" r="3.2"/>
+<circle class="st58" cx="482.7" cy="88.8" r="2.2"/>
+<circle cx="487.9" cy="71.2" r="3.2"/>
+<circle class="st299" cx="487.9" cy="71.2" r="2.2"/>
+<circle cx="470.2" cy="78" r="3.2"/>
+<circle class="st84" cx="470.2" cy="78" r="2.2"/>
+<circle cx="469" cy="74.9" r="3.2"/>
+<circle class="st177" cx="469" cy="74.9" r="2.2"/>
+<circle cx="464.1" cy="123.3" r="3.2"/>
+<circle class="st101" cx="464.1" cy="123.3" r="2.2"/>
+<circle cx="545.3" cy="93.1" r="3.2"/>
+<circle class="st4" cx="545.3" cy="93.1" r="2.2"/>
+<circle cx="553.5" cy="125.1" r="3.2"/>
+<circle class="st300" cx="553.5" cy="125.1" r="2.2"/>
+<circle cx="546.7" cy="127.1" r="3.2"/>
+<circle class="st301" cx="546.7" cy="127.1" r="2.2"/>
+<circle cx="509.4" cy="120.3" r="3.2"/>
+<circle class="st213" cx="509.4" cy="120.3" r="2.2"/>
+<circle cx="495.7" cy="74.5" r="3.2"/>
+<circle class="st280" cx="495.7" cy="74.5" r="2.2"/>
+<circle cx="481.1" cy="84.1" r="3.2"/>
+<circle class="st217" cx="481.1" cy="84.1" r="2.2"/>
+<circle cx="474.2" cy="78" r="3.2"/>
+<circle class="st266" cx="474.2" cy="78" r="2.2"/>
+<circle cx="496.6" cy="101.4" r="3.2"/>
+<circle class="st302" cx="496.6" cy="101.4" r="2.2"/>
+<circle cx="581" cy="53.5" r="3.2"/>
+<circle class="st303" cx="581" cy="53.5" r="2.2"/>
+<circle cx="577.4" cy="54.1" r="3.2"/>
+<circle class="st50" cx="577.4" cy="54.1" r="2.2"/>
+<circle cx="465.9" cy="198.4" r="3.2"/>
+<circle class="st304" cx="465.9" cy="198.4" r="2.2"/>
+<circle cx="468.8" cy="203.3" r="3.2"/>
+<circle class="st12" cx="468.8" cy="203.3" r="2.2"/>
+<circle cx="469.7" cy="203.4" r="3.2"/>
+<circle class="st305" cx="469.7" cy="203.4" r="2.2"/>
+<circle cx="550.5" cy="61.7" r="3.2"/>
+<circle class="st306" cx="550.5" cy="61.7" r="2.2"/>
+<circle cx="578.3" cy="64.7" r="3.2"/>
+<circle class="st307" cx="578.3" cy="64.7" r="2.2"/>
+<circle cx="537.6" cy="45.5" r="3.2"/>
+<circle class="st308" cx="537.6" cy="45.5" r="2.2"/>
+<circle cx="519.2" cy="77.8" r="3.2"/>
+<circle class="st309" cx="519.2" cy="77.8" r="2.2"/>
+<circle cx="530.4" cy="82.2" r="3.2"/>
+<circle class="st287" cx="530.4" cy="82.2" r="2.2"/>
+<circle cx="465" cy="197.6" r="3.2"/>
+<circle class="st123" cx="465" cy="197.6" r="2.2"/>
+<circle cx="462.7" cy="196.2" r="3.2"/>
+<circle class="st206" cx="462.7" cy="196.2" r="2.2"/>
+<circle cx="479.5" cy="78.9" r="3.2"/>
+<circle class="st140" cx="479.5" cy="78.9" r="2.2"/>
+<circle cx="490.6" cy="72.8" r="3.2"/>
+<circle class="st160" cx="490.6" cy="72.8" r="2.2"/>
+<circle cx="459.9" cy="103.3" r="3.2"/>
+<circle class="st286" cx="459.9" cy="103.3" r="2.2"/>
+<circle cx="468.5" cy="102.2" r="3.2"/>
+<circle class="st161" cx="468.5" cy="102.2" r="2.2"/>
+<circle cx="469.4" cy="109.5" r="3.2"/>
+<circle class="st310" cx="469.4" cy="109.5" r="2.2"/>
+<circle cx="463" cy="110.5" r="3.2"/>
+<circle class="st115" cx="463" cy="110.5" r="2.2"/>
+<circle cx="460.8" cy="164.8" r="3.2"/>
+<circle class="st148" cx="460.8" cy="164.8" r="2.2"/>
+<circle cx="475.3" cy="203.9" r="3.2"/>
+<circle class="st20" cx="475.3" cy="203.9" r="2.2"/>
+<circle cx="466.5" cy="201.4" r="3.2"/>
+<circle class="st36" cx="466.5" cy="201.4" r="2.2"/>
+<circle cx="482.8" cy="104.8" r="3.2"/>
+<circle class="st27" cx="482.8" cy="104.8" r="2.2"/>
+<circle cx="465.2" cy="114.6" r="3.2"/>
+<circle class="st129" cx="465.2" cy="114.6" r="2.2"/>
+<circle cx="470.2" cy="114.6" r="3.2"/>
+<circle class="st305" cx="470.2" cy="114.6" r="2.2"/>
+<circle cx="467.2" cy="114.1" r="3.2"/>
+<circle class="st311" cx="467.2" cy="114.1" r="2.2"/>
+<circle cx="455.6" cy="97.3" r="3.2"/>
+<circle class="st217" cx="455.6" cy="97.3" r="2.2"/>
+<circle cx="461.5" cy="100.1" r="3.2"/>
+<circle class="st123" cx="461.5" cy="100.1" r="2.2"/>
+<circle cx="518.8" cy="96.7" r="3.2"/>
+<circle class="st139" cx="518.8" cy="96.7" r="2.2"/>
+<circle cx="462.6" cy="96.1" r="3.2"/>
+<circle class="st217" cx="462.6" cy="96.1" r="2.2"/>
+<circle cx="462.6" cy="95.9" r="3.2"/>
+<circle class="st312" cx="462.6" cy="95.9" r="2.2"/>
+<circle cx="466.4" cy="92.6" r="3.2"/>
+<circle class="st106" cx="466.4" cy="92.6" r="2.2"/>
+<circle cx="465.1" cy="95.3" r="3.2"/>
+<circle class="st263" cx="465.1" cy="95.3" r="2.2"/>
+<circle cx="588.3" cy="71.6" r="3.2"/>
+<circle class="st313" cx="588.3" cy="71.6" r="2.2"/>
+<circle cx="500.1" cy="207" r="3.2"/>
+<circle class="st24" cx="500.1" cy="207" r="2.2"/>
+<circle cx="478.4" cy="201.1" r="3.2"/>
+<circle class="st198" cx="478.4" cy="201.1" r="2.2"/>
+<circle cx="451" cy="177.4" r="3.2"/>
+<circle class="st73" cx="451" cy="177.4" r="2.2"/>
+<circle cx="449.9" cy="171.5" r="3.2"/>
+<circle class="st139" cx="449.9" cy="171.5" r="2.2"/>
+<circle cx="477.9" cy="73.2" r="3.2"/>
+<circle class="st84" cx="477.9" cy="73.2" r="2.2"/>
+<circle cx="479.6" cy="71.7" r="3.2"/>
+<circle class="st196" cx="479.6" cy="71.7" r="2.2"/>
+<circle cx="467.7" cy="87.1" r="3.2"/>
+<circle class="st314" cx="467.7" cy="87.1" r="2.2"/>
+<circle cx="513.3" cy="105.7" r="3.2"/>
+<circle class="st148" cx="513.3" cy="105.7" r="2.2"/>
+<circle cx="471.6" cy="69.1" r="3.2"/>
+<circle class="st73" cx="471.6" cy="69.1" r="2.2"/>
+<circle cx="481.6" cy="66.3" r="3.2"/>
+<circle class="st315" cx="481.6" cy="66.3" r="2.2"/>
+<circle cx="478.3" cy="100.5" r="3.2"/>
+<circle class="st232" cx="478.3" cy="100.5" r="2.2"/>
+<circle cx="486.7" cy="96.9" r="3.2"/>
+<circle class="st316" cx="486.7" cy="96.9" r="2.2"/>
+<circle cx="454.9" cy="181.2" r="3.2"/>
+<circle class="st235" cx="454.9" cy="181.2" r="2.2"/>
+<circle cx="455.2" cy="184.2" r="3.2"/>
+<circle class="st302" cx="455.2" cy="184.2" r="2.2"/>
+<circle cx="456.5" cy="187.4" r="3.2"/>
+<circle class="st296" cx="456.5" cy="187.4" r="2.2"/>
+<circle cx="621.1" cy="111.4" r="3.2"/>
+<circle class="st317" cx="621.1" cy="111.4" r="2.2"/>
+<circle cx="622.9" cy="86.9" r="3.2"/>
+<circle class="st318" cx="622.9" cy="86.9" r="2.2"/>
+<circle cx="459.1" cy="77.1" r="3.2"/>
+<circle class="st319" cx="459.1" cy="77.1" r="2.2"/>
+<circle cx="466.7" cy="69.3" r="3.2"/>
+<circle class="st36" cx="466.7" cy="69.3" r="2.2"/>
+<circle cx="445.6" cy="113.3" r="3.2"/>
+<circle class="st320" cx="445.6" cy="113.3" r="2.2"/>
+<circle cx="448.6" cy="99.2" r="3.2"/>
+<circle class="st321" cx="448.6" cy="99.2" r="2.2"/>
+<circle cx="464.3" cy="152.2" r="3.2"/>
+<circle class="st95" cx="464.3" cy="152.2" r="2.2"/>
+<circle cx="463.7" cy="143.5" r="3.2"/>
+<circle class="st322" cx="463.7" cy="143.5" r="2.2"/>
+<circle cx="566.3" cy="132.3" r="3.2"/>
+<circle class="st322" cx="566.3" cy="132.3" r="2.2"/>
+<circle cx="550.2" cy="57.7" r="3.2"/>
+<circle class="st273" cx="550.2" cy="57.7" r="2.2"/>
+<circle cx="471.4" cy="107.8" r="3.2"/>
+<circle class="st202" cx="471.4" cy="107.8" r="2.2"/>
+<circle cx="481.8" cy="115" r="3.2"/>
+<circle class="st260" cx="481.8" cy="115" r="2.2"/>
+<circle cx="481.3" cy="75.9" r="3.2"/>
+<circle class="st323" cx="481.3" cy="75.9" r="2.2"/>
+<circle cx="478.1" cy="72.5" r="3.2"/>
+<circle class="st324" cx="478.1" cy="72.5" r="2.2"/>
+<circle cx="501" cy="71.3" r="3.2"/>
+<circle class="st65" cx="501" cy="71.3" r="2.2"/>
+<circle cx="497.6" cy="70.4" r="3.2"/>
+<circle class="st268" cx="497.6" cy="70.4" r="2.2"/>
+<circle cx="479.5" cy="74.2" r="3.2"/>
+<circle class="st204" cx="479.5" cy="74.2" r="2.2"/>
+<circle cx="467.5" cy="92.6" r="3.2"/>
+<circle class="st62" cx="467.5" cy="92.6" r="2.2"/>
+<circle cx="487.4" cy="63.2" r="3.2"/>
+<circle class="st325" cx="487.4" cy="63.2" r="2.2"/>
+<circle cx="489.5" cy="50.6" r="3.2"/>
+<circle class="st326" cx="489.5" cy="50.6" r="2.2"/>
+<circle cx="465" cy="78.8" r="3.2"/>
+<circle class="st255" cx="465" cy="78.8" r="2.2"/>
+<circle cx="462.6" cy="76.4" r="3.2"/>
+<circle class="st327" cx="462.6" cy="76.4" r="2.2"/>
+<circle cx="450" cy="77.9" r="3.2"/>
+<circle class="st328" cx="450" cy="77.9" r="2.2"/>
+<circle cx="450.1" cy="80.8" r="3.2"/>
+<circle class="st54" cx="450.1" cy="80.8" r="2.2"/>
+<circle cx="474.5" cy="89.4" r="3.2"/>
+<circle class="st280" cx="474.5" cy="89.4" r="2.2"/>
+<circle cx="481.4" cy="57.6" r="3.2"/>
+<circle class="st28" cx="481.4" cy="57.6" r="2.2"/>
+<circle cx="492" cy="196.9" r="3.2"/>
+<circle class="st136" cx="492" cy="196.9" r="2.2"/>
+<circle cx="486.1" cy="96.2" r="3.2"/>
+<circle class="st275" cx="486.1" cy="96.2" r="2.2"/>
+<circle cx="493.6" cy="93.5" r="3.2"/>
+<circle class="st35" cx="493.6" cy="93.5" r="2.2"/>
+<circle cx="510.9" cy="60.6" r="3.2"/>
+<circle class="st308" cx="510.9" cy="60.6" r="2.2"/>
+<circle cx="503.8" cy="69.9" r="3.2"/>
+<circle class="st329" cx="503.8" cy="69.9" r="2.2"/>
+<circle cx="494.6" cy="107.5" r="3.2"/>
+<circle class="st19" cx="494.6" cy="107.5" r="2.2"/>
+<circle cx="497" cy="109.5" r="3.2"/>
+<circle class="st330" cx="497" cy="109.5" r="2.2"/>
+<circle cx="514" cy="94.4" r="3.2"/>
+<circle class="st147" cx="514" cy="94.4" r="2.2"/>
+<circle cx="472" cy="109.8" r="3.2"/>
+<circle class="st142" cx="472" cy="109.8" r="2.2"/>
+<circle cx="462.4" cy="140.6" r="3.2"/>
+<circle class="st221" cx="462.4" cy="140.6" r="2.2"/>
+<circle cx="461.3" cy="133.7" r="3.2"/>
+<circle class="st126" cx="461.3" cy="133.7" r="2.2"/>
+<circle cx="618.4" cy="123.2" r="3.2"/>
+<circle class="st331" cx="618.4" cy="123.2" r="2.2"/>
+<circle cx="621.5" cy="124.1" r="3.2"/>
+<circle class="st332" cx="621.5" cy="124.1" r="2.2"/>
+<circle cx="533.6" cy="103.4" r="3.2"/>
+<circle class="st98" cx="533.6" cy="103.4" r="2.2"/>
+<circle cx="456" cy="103.1" r="3.2"/>
+<circle class="st333" cx="456" cy="103.1" r="2.2"/>
+<circle cx="456.2" cy="100.5" r="3.2"/>
+<circle class="st282" cx="456.2" cy="100.5" r="2.2"/>
+<circle cx="443.5" cy="90.8" r="3.2"/>
+<circle class="st334" cx="443.5" cy="90.8" r="2.2"/>
+<circle cx="443.7" cy="95.9" r="3.2"/>
+<circle class="st335" cx="443.7" cy="95.9" r="2.2"/>
+<circle cx="624.1" cy="113" r="3.2"/>
+<circle class="st93" cx="624.1" cy="113" r="2.2"/>
+<circle cx="470" cy="59" r="3.2"/>
+<circle class="st63" cx="470" cy="59" r="2.2"/>
+<circle cx="474.9" cy="54.5" r="3.2"/>
+<circle class="st336" cx="474.9" cy="54.5" r="2.2"/>
+<circle cx="617.8" cy="90.9" r="3.2"/>
+<circle class="st146" cx="617.8" cy="90.9" r="2.2"/>
+<circle cx="617.8" cy="90.6" r="3.2"/>
+<circle class="st26" cx="617.8" cy="90.6" r="2.2"/>
+<circle cx="630.2" cy="138.4" r="3.2"/>
+<circle class="st337" cx="630.2" cy="138.4" r="2.2"/>
+<circle cx="483.4" cy="111.2" r="3.2"/>
+<circle class="st309" cx="483.4" cy="111.2" r="2.2"/>
+<circle cx="470.8" cy="100.2" r="3.2"/>
+<circle class="st295" cx="470.8" cy="100.2" r="2.2"/>
+<circle cx="637.8" cy="127.7" r="3.2"/>
+<circle class="st136" cx="637.8" cy="127.7" r="2.2"/>
+<circle cx="455.8" cy="72.6" r="3.2"/>
+<circle class="st338" cx="455.8" cy="72.6" r="2.2"/>
+<circle cx="459.9" cy="68.1" r="3.2"/>
+<circle class="st54" cx="459.9" cy="68.1" r="2.2"/>
+<circle cx="465.7" cy="66.4" r="3.2"/>
+<circle class="st339" cx="465.7" cy="66.4" r="2.2"/>
+<circle cx="476.7" cy="61.8" r="3.2"/>
+<circle class="st23" cx="476.7" cy="61.8" r="2.2"/>
+<circle cx="474.5" cy="62" r="3.2"/>
+<circle class="st307" cx="474.5" cy="62" r="2.2"/>
+<circle cx="646.7" cy="142.7" r="3.2"/>
+<circle class="st340" cx="646.7" cy="142.7" r="2.2"/>
+<circle cx="652.9" cy="142.8" r="3.2"/>
+<circle class="st341" cx="652.9" cy="142.8" r="2.2"/>
+<circle cx="646.9" cy="143" r="3.2"/>
+<circle class="st342" cx="646.9" cy="143" r="2.2"/>
+<circle cx="459.5" cy="83.3" r="3.2"/>
+<circle class="st34" cx="459.5" cy="83.3" r="2.2"/>
+<circle cx="457.5" cy="80.9" r="3.2"/>
+<circle class="st76" cx="457.5" cy="80.9" r="2.2"/>
+<circle cx="488.8" cy="207.6" r="3.2"/>
+<circle class="st151" cx="488.8" cy="207.6" r="2.2"/>
+<circle cx="478.4" cy="204.8" r="3.2"/>
+<circle class="st75" cx="478.4" cy="204.8" r="2.2"/>
+<circle cx="479" cy="203.7" r="3.2"/>
+<circle class="st198" cx="479" cy="203.7" r="2.2"/>
+<circle cx="602.7" cy="122.6" r="3.2"/>
+<circle class="st343" cx="602.7" cy="122.6" r="2.2"/>
+<circle cx="590.6" cy="117.1" r="3.2"/>
+<circle class="st344" cx="590.6" cy="117.1" r="2.2"/>
+<circle cx="454.4" cy="137.2" r="3.2"/>
+<circle class="st241" cx="454.4" cy="137.2" r="2.2"/>
+<circle cx="455.7" cy="131.4" r="3.2"/>
+<circle class="st232" cx="455.7" cy="131.4" r="2.2"/>
+<circle cx="453.2" cy="131.6" r="3.2"/>
+<circle class="st345" cx="453.2" cy="131.6" r="2.2"/>
+<circle cx="543.9" cy="89.3" r="3.2"/>
+<circle class="st346" cx="543.9" cy="89.3" r="2.2"/>
+<circle cx="567.5" cy="90.5" r="3.2"/>
+<circle class="st6" cx="567.5" cy="90.5" r="2.2"/>
+<circle cx="544.2" cy="84.1" r="3.2"/>
+<circle class="st158" cx="544.2" cy="84.1" r="2.2"/>
+<circle cx="642.7" cy="144.4" r="3.2"/>
+<circle class="st347" cx="642.7" cy="144.4" r="2.2"/>
+<circle cx="464.1" cy="90.3" r="3.2"/>
+<circle class="st348" cx="464.1" cy="90.3" r="2.2"/>
+<circle cx="643.8" cy="144.1" r="3.2"/>
+<circle class="st52" cx="643.8" cy="144.1" r="2.2"/>
+<circle cx="644.9" cy="144.2" r="3.2"/>
+<circle class="st349" cx="644.9" cy="144.2" r="2.2"/>
+<circle cx="647.2" cy="144.9" r="3.2"/>
+<circle class="st166" cx="647.2" cy="144.9" r="2.2"/>
+<circle cx="474.8" cy="199.3" r="3.2"/>
+<circle class="st235" cx="474.8" cy="199.3" r="2.2"/>
+<circle cx="475.9" cy="162" r="3.2"/>
+<circle class="st276" cx="475.9" cy="162" r="2.2"/>
+<circle cx="490.1" cy="193.3" r="3.2"/>
+<circle class="st41" cx="490.1" cy="193.3" r="2.2"/>
+<circle cx="488.1" cy="80.2" r="3.2"/>
+<circle class="st207" cx="488.1" cy="80.2" r="2.2"/>
+<circle cx="505.4" cy="64.2" r="3.2"/>
+<circle class="st350" cx="505.4" cy="64.2" r="2.2"/>
+<circle cx="498.4" cy="65" r="3.2"/>
+<circle class="st351" cx="498.4" cy="65" r="2.2"/>
+<circle cx="470.6" cy="93.2" r="3.2"/>
+<circle class="st207" cx="470.6" cy="93.2" r="2.2"/>
+<circle cx="463.7" cy="95.3" r="3.2"/>
+<circle class="st321" cx="463.7" cy="95.3" r="2.2"/>
+<circle cx="469.3" cy="86.3" r="3.2"/>
+<circle class="st292" cx="469.3" cy="86.3" r="2.2"/>
+<circle cx="469.8" cy="83.5" r="3.2"/>
+<circle class="st348" cx="469.8" cy="83.5" r="2.2"/>
+<circle cx="501.6" cy="123.2" r="3.2"/>
+<circle class="st238" cx="501.6" cy="123.2" r="2.2"/>
+<circle cx="498.7" cy="124.2" r="3.2"/>
+<circle class="st320" cx="498.7" cy="124.2" r="2.2"/>
+<circle cx="500" cy="124.4" r="3.2"/>
+<circle class="st218" cx="500" cy="124.4" r="2.2"/>
+<circle cx="656.7" cy="139.2" r="3.2"/>
+<circle class="st180" cx="656.7" cy="139.2" r="2.2"/>
+<circle cx="649.2" cy="137" r="3.2"/>
+<circle class="st352" cx="649.2" cy="137" r="2.2"/>
+<circle cx="642.5" cy="136.7" r="3.2"/>
+<circle class="st174" cx="642.5" cy="136.7" r="2.2"/>
+<circle cx="502.6" cy="89.3" r="3.2"/>
+<circle class="st73" cx="502.6" cy="89.3" r="2.2"/>
+<circle cx="502.9" cy="92.1" r="3.2"/>
+<circle class="st56" cx="502.9" cy="92.1" r="2.2"/>
+<circle cx="466.6" cy="108.4" r="3.2"/>
+<circle class="st160" cx="466.6" cy="108.4" r="2.2"/>
+<circle cx="449.5" cy="112.4" r="3.2"/>
+<circle class="st264" cx="449.5" cy="112.4" r="2.2"/>
+<circle cx="448.6" cy="109.7" r="3.2"/>
+<circle class="st333" cx="448.6" cy="109.7" r="2.2"/>
+<circle cx="471.4" cy="87.1" r="3.2"/>
+<circle class="st18" cx="471.4" cy="87.1" r="2.2"/>
+<circle cx="515.4" cy="98.1" r="3.2"/>
+<circle class="st185" cx="515.4" cy="98.1" r="2.2"/>
+<circle cx="484.6" cy="109.5" r="3.2"/>
+<circle class="st53" cx="484.6" cy="109.5" r="2.2"/>
+<circle cx="615.4" cy="95.4" r="3.2"/>
+<circle class="st353" cx="615.4" cy="95.4" r="2.2"/>
+<circle cx="449.4" cy="89.2" r="3.2"/>
+<circle class="st65" cx="449.4" cy="89.2" r="2.2"/>
+<circle cx="446" cy="88.7" r="3.2"/>
+<circle class="st255" cx="446" cy="88.7" r="2.2"/>
+<circle cx="450.7" cy="89.7" r="3.2"/>
+<circle class="st54" cx="450.7" cy="89.7" r="2.2"/>
+<circle cx="610.1" cy="139.1" r="3.2"/>
+<circle class="st174" cx="610.1" cy="139.1" r="2.2"/>
+<circle cx="442.7" cy="129.9" r="3.2"/>
+<circle class="st218" cx="442.7" cy="129.9" r="2.2"/>
+<circle cx="444.5" cy="115.4" r="3.2"/>
+<circle class="st321" cx="444.5" cy="115.4" r="2.2"/>
+<circle cx="446" cy="118.8" r="3.2"/>
+<circle class="st218" cx="446" cy="118.8" r="2.2"/>
+<circle cx="475.6" cy="101.6" r="3.2"/>
+<circle class="st314" cx="475.6" cy="101.6" r="2.2"/>
+<circle cx="476.7" cy="92.8" r="3.2"/>
+<circle class="st354" cx="476.7" cy="92.8" r="2.2"/>
+<circle cx="476.2" cy="92.8" r="3.2"/>
+<circle class="st242" cx="476.2" cy="92.8" r="2.2"/>
+<circle cx="452.9" cy="92.8" r="3.2"/>
+<circle class="st161" cx="452.9" cy="92.8" r="2.2"/>
+<circle cx="453.5" cy="84.9" r="3.2"/>
+<circle class="st54" cx="453.5" cy="84.9" r="2.2"/>
+<circle cx="493" cy="76.3" r="3.2"/>
+<circle class="st206" cx="493" cy="76.3" r="2.2"/>
+<circle cx="491.9" cy="61.3" r="3.2"/>
+<circle class="st355" cx="491.9" cy="61.3" r="2.2"/>
+<circle cx="448.9" cy="102.4" r="3.2"/>
+<circle class="st356" cx="448.9" cy="102.4" r="2.2"/>
+<circle cx="451.9" cy="101" r="3.2"/>
+<circle class="st260" cx="451.9" cy="101" r="2.2"/>
+<circle cx="458.7" cy="103.8" r="3.2"/>
+<circle class="st204" cx="458.7" cy="103.8" r="2.2"/>
+<circle cx="476.5" cy="65.9" r="3.2"/>
+<circle class="st110" cx="476.5" cy="65.9" r="2.2"/>
+<circle cx="479.6" cy="63.1" r="3.2"/>
+<circle class="st117" cx="479.6" cy="63.1" r="2.2"/>
+<circle cx="588.5" cy="76.6" r="3.2"/>
+<circle class="st357" cx="588.5" cy="76.6" r="2.2"/>
+<circle cx="456.5" cy="163.4" r="3.2"/>
+<circle class="st358" cx="456.5" cy="163.4" r="2.2"/>
+<circle cx="457" cy="170.7" r="3.2"/>
+<circle class="st327" cx="457" cy="170.7" r="2.2"/>
+<circle cx="458.2" cy="170.8" r="3.2"/>
+<circle class="st263" cx="458.2" cy="170.8" r="2.2"/>
+<circle cx="566.3" cy="71.5" r="3.2"/>
+<circle class="st11" cx="566.3" cy="71.5" r="2.2"/>
+<circle cx="553.9" cy="63.1" r="3.2"/>
+<circle class="st237" cx="553.9" cy="63.1" r="2.2"/>
+<circle cx="545.6" cy="53.9" r="3.2"/>
+<circle class="st185" cx="545.6" cy="53.9" r="2.2"/>
+<circle cx="544.3" cy="50.1" r="3.2"/>
+<circle class="st344" cx="544.3" cy="50.1" r="2.2"/>
+<circle cx="644.9" cy="131.4" r="3.2"/>
+<circle class="st331" cx="644.9" cy="131.4" r="2.2"/>
+<circle cx="641.1" cy="125.9" r="3.2"/>
+<circle class="st291" cx="641.1" cy="125.9" r="2.2"/>
+<circle cx="516.1" cy="71.1" r="3.2"/>
+<circle class="st359" cx="516.1" cy="71.1" r="2.2"/>
+<circle cx="563.7" cy="107.4" r="3.2"/>
+<circle class="st242" cx="563.7" cy="107.4" r="2.2"/>
+<circle cx="553.6" cy="196.5" r="3.2"/>
+<circle class="st246" cx="553.6" cy="196.5" r="2.2"/>
+<circle cx="459.4" cy="92.1" r="3.2"/>
+<circle class="st360" cx="459.4" cy="92.1" r="2.2"/>
+<circle cx="459.7" cy="98.1" r="3.2"/>
+<circle class="st345" cx="459.7" cy="98.1" r="2.2"/>
+<circle cx="490.9" cy="84.1" r="3.2"/>
+<circle class="st74" cx="490.9" cy="84.1" r="2.2"/>
+<ellipse transform="matrix(0.1602 -0.9871 0.9871 0.1602 416.661 764.7523)" cx="657.8" cy="137.5" rx="3.2" ry="3.2"/>
+<path class="st225" d="M657.8,135.3c1.2,0,2.2,1,2.2,2.2c0,1.2-1,2.2-2.2,2.2c-1.2,0-2.2-1-2.2-2.2
+	C655.5,136.3,656.5,135.3,657.8,135.3z"/>
+<circle cx="456.1" cy="114.9" r="3.2"/>
+<circle class="st149" cx="456.1" cy="114.9" r="2.2"/>
+<circle cx="456.1" cy="115.6" r="3.2"/>
+<circle class="st312" cx="456.1" cy="115.6" r="2.2"/>
+<circle cx="578.5" cy="116.8" r="3.2"/>
+<circle class="st361" cx="578.5" cy="116.8" r="2.2"/>
+<circle cx="528.4" cy="79.5" r="3.2"/>
+<circle class="st74" cx="528.4" cy="79.5" r="2.2"/>
+<circle cx="610.3" cy="91.6" r="3.2"/>
+<circle class="st362" cx="610.3" cy="91.6" r="2.2"/>
+<circle cx="489.6" cy="111.8" r="3.2"/>
+<circle class="st333" cx="489.6" cy="111.8" r="2.2"/>
+<circle cx="490.1" cy="87.4" r="3.2"/>
+<circle class="st110" cx="490.1" cy="87.4" r="2.2"/>
+<circle cx="495.3" cy="83.9" r="3.2"/>
+<circle class="st43" cx="495.3" cy="83.9" r="2.2"/>
+<circle cx="496.3" cy="76.7" r="3.2"/>
+<circle class="st43" cx="496.3" cy="76.7" r="2.2"/>
+<circle cx="500" cy="82.4" r="3.2"/>
+<circle class="st163" cx="500" cy="82.4" r="2.2"/>
+<circle cx="495.9" cy="55.3" r="3.2"/>
+<circle class="st170" cx="495.9" cy="55.3" r="2.2"/>
+<circle cx="599.9" cy="123.2" r="3.2"/>
+<circle class="st363" cx="599.9" cy="123.2" r="2.2"/>
+<circle cx="606.7" cy="123.6" r="3.2"/>
+<circle class="st291" cx="606.7" cy="123.6" r="2.2"/>
+<circle cx="459.1" cy="76" r="3.2"/>
+<circle class="st364" cx="459.1" cy="76" r="2.2"/>
+<circle cx="460.6" cy="71.1" r="3.2"/>
+<circle class="st254" cx="460.6" cy="71.1" r="2.2"/>
+<circle cx="505.5" cy="58.7" r="3.2"/>
+<circle class="st344" cx="505.5" cy="58.7" r="2.2"/>
+<circle cx="462.7" cy="118.5" r="3.2"/>
+<circle class="st207" cx="462.7" cy="118.5" r="2.2"/>
+<circle cx="646.7" cy="124.1" r="3.2"/>
+<circle class="st265" cx="646.7" cy="124.1" r="2.2"/>
+<circle cx="651.2" cy="126.5" r="3.2"/>
+<circle class="st167" cx="651.2" cy="126.5" r="2.2"/>
+<circle cx="643" cy="125.2" r="3.2"/>
+<circle class="st365" cx="643" cy="125.2" r="2.2"/>
+<circle cx="468" cy="119.9" r="3.2"/>
+<circle class="st279" cx="468" cy="119.9" r="2.2"/>
+<circle cx="462.2" cy="120.1" r="3.2"/>
+<circle class="st287" cx="462.2" cy="120.1" r="2.2"/>
+<circle cx="454.4" cy="123.7" r="3.2"/>
+<circle class="st366" cx="454.4" cy="123.7" r="2.2"/>
+<circle cx="457.5" cy="129.2" r="3.2"/>
+<circle class="st367" cx="457.5" cy="129.2" r="2.2"/>
+<circle cx="465.7" cy="192.8" r="3.2"/>
+<circle class="st117" cx="465.7" cy="192.8" r="2.2"/>
+<circle cx="461" cy="156.8" r="3.2"/>
+<circle class="st197" cx="461" cy="156.8" r="2.2"/>
+<circle cx="439.5" cy="102" r="3.2"/>
+<circle class="st202" cx="439.5" cy="102" r="2.2"/>
+<circle cx="443.9" cy="95.8" r="3.2"/>
+<circle class="st101" cx="443.9" cy="95.8" r="2.2"/>
+<circle cx="455.9" cy="80.1" r="3.2"/>
+<circle class="st368" cx="455.9" cy="80.1" r="2.2"/>
+<circle cx="456" cy="82.9" r="3.2"/>
+<circle class="st73" cx="456" cy="82.9" r="2.2"/>
+<circle cx="485.3" cy="192.9" r="3.2"/>
+<circle class="st112" cx="485.3" cy="192.9" r="2.2"/>
+<circle cx="662.2" cy="132.8" r="3.2"/>
+<circle class="st308" cx="662.2" cy="132.8" r="2.2"/>
+<circle cx="613.8" cy="126.4" r="3.2"/>
+<circle class="st369" cx="613.8" cy="126.4" r="2.2"/>
+<circle cx="484.8" cy="68.2" r="3.2"/>
+<circle class="st23" cx="484.8" cy="68.2" r="2.2"/>
+<circle cx="467.9" cy="113.3" r="3.2"/>
+<circle class="st101" cx="467.9" cy="113.3" r="2.2"/>
+<circle cx="477.8" cy="69.7" r="3.2"/>
+<circle class="st169" cx="477.8" cy="69.7" r="2.2"/>
+<circle cx="603.3" cy="125.7" r="3.2"/>
+<circle class="st239" cx="603.3" cy="125.7" r="2.2"/>
+<circle cx="458.4" cy="81" r="3.2"/>
+<circle class="st54" cx="458.4" cy="81" r="2.2"/>
+<circle cx="502.1" cy="206.9" r="3.2"/>
+<circle class="st69" cx="502.1" cy="206.9" r="2.2"/>
+<circle cx="497.9" cy="197.2" r="3.2"/>
+<circle class="st259" cx="497.9" cy="197.2" r="2.2"/>
+<circle cx="475.1" cy="89" r="3.2"/>
+<circle class="st283" cx="475.1" cy="89" r="2.2"/>
+<circle cx="479.1" cy="96.3" r="3.2"/>
+<circle class="st117" cx="479.1" cy="96.3" r="2.2"/>
+<circle cx="502.6" cy="117" r="3.2"/>
+<circle class="st129" cx="502.6" cy="117" r="2.2"/>
+<circle cx="478.9" cy="94.5" r="3.2"/>
+<circle class="st274" cx="478.9" cy="94.5" r="2.2"/>
+<circle cx="475" cy="186.3" r="3.2"/>
+<circle class="st370" cx="475" cy="186.3" r="2.2"/>
+<circle cx="471.5" cy="153.2" r="3.2"/>
+<circle class="st183" cx="471.5" cy="153.2" r="2.2"/>
+<circle cx="548.9" cy="93.5" r="3.2"/>
+<circle class="st371" cx="548.9" cy="93.5" r="2.2"/>
+<circle cx="534.5" cy="67.1" r="3.2"/>
+<circle class="st40" cx="534.5" cy="67.1" r="2.2"/>
+<circle cx="508.1" cy="81" r="3.2"/>
+<circle class="st104" cx="508.1" cy="81" r="2.2"/>
+<circle cx="488.1" cy="52.5" r="3.2"/>
+<circle class="st313" cx="488.1" cy="52.5" r="2.2"/>
+<circle cx="460.7" cy="74.8" r="3.2"/>
+<circle class="st67" cx="460.7" cy="74.8" r="2.2"/>
+<circle cx="462.8" cy="113.7" r="3.2"/>
+<circle class="st149" cx="462.8" cy="113.7" r="2.2"/>
+<circle cx="464.5" cy="112.1" r="3.2"/>
+<circle class="st19" cx="464.5" cy="112.1" r="2.2"/>
+<circle cx="641.9" cy="126.6" r="3.2"/>
+<circle class="st167" cx="641.9" cy="126.6" r="2.2"/>
+<circle cx="622.6" cy="100.8" r="3.2"/>
+<circle class="st188" cx="622.6" cy="100.8" r="2.2"/>
+<circle cx="643.2" cy="124.9" r="3.2"/>
+<circle class="st166" cx="643.2" cy="124.9" r="2.2"/>
+<circle cx="479.7" cy="104.4" r="3.2"/>
+<circle class="st139" cx="479.7" cy="104.4" r="2.2"/>
+<circle cx="585.2" cy="113.4" r="3.2"/>
+<circle class="st205" cx="585.2" cy="113.4" r="2.2"/>
+<circle cx="559.3" cy="111.9" r="3.2"/>
+<circle class="st59" cx="559.3" cy="111.9" r="2.2"/>
+<circle cx="606.9" cy="111.5" r="3.2"/>
+<circle class="st319" cx="606.9" cy="111.5" r="2.2"/>
+<circle cx="535.3" cy="62.1" r="3.2"/>
+<circle class="st152" cx="535.3" cy="62.1" r="2.2"/>
+<circle cx="511.2" cy="133.3" r="3.2"/>
+<circle class="st161" cx="511.2" cy="133.3" r="2.2"/>
+<circle cx="536.5" cy="105.6" r="3.2"/>
+<circle class="st102" cx="536.5" cy="105.6" r="2.2"/>
+<circle cx="649.6" cy="121.5" r="3.2"/>
+<circle class="st372" cx="649.6" cy="121.5" r="2.2"/>
+<circle cx="653.8" cy="122.3" r="3.2"/>
+<circle class="st341" cx="653.8" cy="122.3" r="2.2"/>
+<circle cx="604.3" cy="100" r="3.2"/>
+<circle class="st373" cx="604.3" cy="100" r="2.2"/>
+<circle cx="605.5" cy="102.9" r="3.2"/>
+<circle class="st374" cx="605.5" cy="102.9" r="2.2"/>
+<circle cx="496.6" cy="205.9" r="3.2"/>
+<circle class="st351" cx="496.6" cy="205.9" r="2.2"/>
+<circle cx="502.1" cy="199.1" r="3.2"/>
+<circle class="st375" cx="502.1" cy="199.1" r="2.2"/>
+<image style="overflow:visible;enable-background:new    ;" width="72" height="564" xlink:href="488EF6DBC68C970D.png"  transform="matrix(0.3214 0 0 0.3214 684.2421 40.4199)">
+</image>
+<text transform="matrix(1 0 0 1 719.0391 205.0293)" class="st1 st247">0.1</text>
+<text transform="matrix(1 0 0 1 719.0391 183.0073)" class="st1 st247">0.2</text>
+<text transform="matrix(1 0 0 1 719.0391 160.9858)" class="st1 st247">0.3</text>
+<text transform="matrix(1 0 0 1 719.0391 138.9634)" class="st1 st247">0.4</text>
+<text transform="matrix(1 0 0 1 719.0391 116.9419)" class="st1 st247">0.5</text>
+<text transform="matrix(1 0 0 1 719.0391 94.9194)" class="st1 st247">0.6</text>
+<text transform="matrix(1 0 0 1 719.0391 72.8979)" class="st1 st247">0.7</text>
+<text transform="matrix(1 0 0 1 719.0391 50.8755)" class="st1 st247">0.8</text>
+<polyline class="st0" points="707.5,221.6 707.5,200.6 715.2,200.6 707.5,200.6 707.5,178.6 715.2,178.6 707.5,178.6 707.5,156.6 
+	715.2,156.6 707.5,156.6 707.5,134.6 715.2,134.6 707.5,134.6 707.5,112.6 715.2,112.6 707.5,112.6 707.5,90.5 715.2,90.5 
+	707.5,90.5 707.5,68.5 715.2,68.5 707.5,68.5 707.5,46.5 715.2,46.5 707.5,46.5 707.5,40.4 "/>
+<line class="st0" x1="45.5" y1="478.8" x2="283.2" y2="478.8"/>
+<line class="st0" x1="45.5" y1="478.8" x2="45.5" y2="297.6"/>
+<text transform="matrix(1 0 0 1 45.7734 280.5879)" class="st1 st2">Kids, Actinobacteria</text>
+<text transform="matrix(1 0 0 1 91.8193 500.1133)" class="st1 st3">PCo1 (16.95%)</text>
+<text transform="matrix(6.123234e-17 -1 1 6.123234e-17 30.4453 460.6777)" class="st1 st3">PCo2 (10.42%)</text>
+<circle cx="95.4" cy="338" r="3.2"/>
+<circle class="st376" cx="95.4" cy="338" r="2.2"/>
+<circle cx="63.8" cy="383" r="3.2"/>
+<circle class="st377" cx="63.8" cy="383" r="2.2"/>
+<circle cx="55.9" cy="377.7" r="3.2"/>
+<circle class="st378" cx="55.9" cy="377.7" r="2.2"/>
+<circle cx="54.6" cy="380.7" r="3.2"/>
+<circle class="st379" cx="54.6" cy="380.7" r="2.2"/>
+<circle cx="73.9" cy="387.3" r="3.2"/>
+<circle class="st380" cx="73.9" cy="387.3" r="2.2"/>
+<circle cx="60.5" cy="369.2" r="3.2"/>
+<circle class="st381" cx="60.5" cy="369.2" r="2.2"/>
+<circle cx="60.1" cy="362.4" r="3.2"/>
+<circle class="st378" cx="60.1" cy="362.4" r="2.2"/>
+<circle cx="77.2" cy="391.9" r="3.2"/>
+<circle class="st353" cx="77.2" cy="391.9" r="2.2"/>
+<circle cx="84.4" cy="342.6" r="3.2"/>
+<circle class="st382" cx="84.4" cy="342.6" r="2.2"/>
+<circle cx="91.2" cy="358.7" r="3.2"/>
+<circle class="st369" cx="91.2" cy="358.7" r="2.2"/>
+<circle cx="104.5" cy="361.8" r="3.2"/>
+<circle class="st176" cx="104.5" cy="361.8" r="2.2"/>
+<circle cx="104.1" cy="354.2" r="3.2"/>
+<circle class="st383" cx="104.1" cy="354.2" r="2.2"/>
+<circle cx="55.3" cy="411.1" r="3.2"/>
+<circle class="st384" cx="55.3" cy="411.1" r="2.2"/>
+<circle cx="53.9" cy="419.2" r="3.2"/>
+<circle class="st385" cx="53.9" cy="419.2" r="2.2"/>
+<circle cx="63.4" cy="451.5" r="3.2"/>
+<circle class="st379" cx="63.4" cy="451.5" r="2.2"/>
+<circle cx="96.4" cy="362.6" r="3.2"/>
+<circle class="st155" cx="96.4" cy="362.6" r="2.2"/>
+<circle cx="85" cy="357.9" r="3.2"/>
+<circle class="st386" cx="85" cy="357.9" r="2.2"/>
+<circle cx="83.3" cy="356.8" r="3.2"/>
+<circle class="st380" cx="83.3" cy="356.8" r="2.2"/>
+<circle cx="78.5" cy="343.3" r="3.2"/>
+<circle class="st387" cx="78.5" cy="343.3" r="2.2"/>
+<circle cx="78.2" cy="331" r="3.2"/>
+<circle class="st365" cx="78.2" cy="331" r="2.2"/>
+<circle cx="71.5" cy="364.3" r="3.2"/>
+<circle class="st388" cx="71.5" cy="364.3" r="2.2"/>
+<circle cx="58.7" cy="391.8" r="3.2"/>
+<circle class="st378" cx="58.7" cy="391.8" r="2.2"/>
+<circle cx="61" cy="390.7" r="3.2"/>
+<circle class="st389" cx="61" cy="390.7" r="2.2"/>
+<circle cx="71" cy="385.1" r="3.2"/>
+<circle class="st389" cx="71" cy="385.1" r="2.2"/>
+<circle cx="66.8" cy="376.3" r="3.2"/>
+<circle class="st119" cx="66.8" cy="376.3" r="2.2"/>
+<circle cx="63.5" cy="391.7" r="3.2"/>
+<circle class="st390" cx="63.5" cy="391.7" r="2.2"/>
+<circle cx="88.3" cy="338.7" r="3.2"/>
+<circle class="st384" cx="88.3" cy="338.7" r="2.2"/>
+<circle cx="70.7" cy="354.9" r="3.2"/>
+<circle class="st79" cx="70.7" cy="354.9" r="2.2"/>
+<circle cx="90.4" cy="352.5" r="3.2"/>
+<circle class="st170" cx="90.4" cy="352.5" r="2.2"/>
+<circle cx="94.2" cy="352.2" r="3.2"/>
+<circle class="st313" cx="94.2" cy="352.2" r="2.2"/>
+<circle cx="63.1" cy="388.1" r="3.2"/>
+<circle class="st318" cx="63.1" cy="388.1" r="2.2"/>
+<circle cx="85.8" cy="406.3" r="3.2"/>
+<circle class="st60" cx="85.8" cy="406.3" r="2.2"/>
+<circle cx="67.4" cy="359.8" r="3.2"/>
+<circle class="st186" cx="67.4" cy="359.8" r="2.2"/>
+<circle cx="101.9" cy="373.3" r="3.2"/>
+<circle class="st180" cx="101.9" cy="373.3" r="2.2"/>
+<circle cx="75.7" cy="360.1" r="3.2"/>
+<circle class="st391" cx="75.7" cy="360.1" r="2.2"/>
+<circle cx="71.7" cy="359" r="3.2"/>
+<circle class="st392" cx="71.7" cy="359" r="2.2"/>
+<circle cx="95.4" cy="343.1" r="3.2"/>
+<circle class="st381" cx="95.4" cy="343.1" r="2.2"/>
+<circle cx="71" cy="365.1" r="3.2"/>
+<circle class="st387" cx="71" cy="365.1" r="2.2"/>
+<circle cx="72.6" cy="377.1" r="3.2"/>
+<circle class="st380" cx="72.6" cy="377.1" r="2.2"/>
+<circle cx="88" cy="345.4" r="3.2"/>
+<circle class="st372" cx="88" cy="345.4" r="2.2"/>
+<circle cx="90.3" cy="348.9" r="3.2"/>
+<circle class="st393" cx="90.3" cy="348.9" r="2.2"/>
+<circle cx="109.5" cy="339.3" r="3.2"/>
+<circle class="st394" cx="109.5" cy="339.3" r="2.2"/>
+<circle cx="93.4" cy="336.4" r="3.2"/>
+<circle class="st299" cx="93.4" cy="336.4" r="2.2"/>
+<circle cx="108.9" cy="336.4" r="3.2"/>
+<circle class="st200" cx="108.9" cy="336.4" r="2.2"/>
+<circle cx="68.3" cy="362.7" r="3.2"/>
+<circle class="st395" cx="68.3" cy="362.7" r="2.2"/>
+<circle cx="65.9" cy="347.4" r="3.2"/>
+<circle class="st392" cx="65.9" cy="347.4" r="2.2"/>
+<circle cx="62.2" cy="361.5" r="3.2"/>
+<circle class="st120" cx="62.2" cy="361.5" r="2.2"/>
+<circle cx="69" cy="341.6" r="3.2"/>
+<circle class="st396" cx="69" cy="341.6" r="2.2"/>
+<circle cx="69.8" cy="363.1" r="3.2"/>
+<circle class="st397" cx="69.8" cy="363.1" r="2.2"/>
+<circle cx="79.7" cy="409" r="3.2"/>
+<circle class="st353" cx="79.7" cy="409" r="2.2"/>
+<circle cx="87" cy="447.3" r="3.2"/>
+<circle class="st379" cx="87" cy="447.3" r="2.2"/>
+<circle cx="89" cy="447.5" r="3.2"/>
+<circle class="st391" cx="89" cy="447.5" r="2.2"/>
+<circle cx="92.5" cy="451.2" r="3.2"/>
+<circle class="st379" cx="92.5" cy="451.2" r="2.2"/>
+<circle cx="52.4" cy="375.8" r="3.2"/>
+<circle class="st382" cx="52.4" cy="375.8" r="2.2"/>
+<circle cx="52.7" cy="363.7" r="3.2"/>
+<circle class="st388" cx="52.7" cy="363.7" r="2.2"/>
+<circle cx="86.5" cy="323.7" r="3.2"/>
+<circle class="st398" cx="86.5" cy="323.7" r="2.2"/>
+<circle cx="88.4" cy="314.7" r="3.2"/>
+<circle class="st399" cx="88.4" cy="314.7" r="2.2"/>
+<circle cx="95.9" cy="359.9" r="3.2"/>
+<circle class="st343" cx="95.9" cy="359.9" r="2.2"/>
+<circle cx="73.6" cy="365.8" r="3.2"/>
+<circle class="st400" cx="73.6" cy="365.8" r="2.2"/>
+<circle cx="66.1" cy="357.8" r="3.2"/>
+<circle class="st401" cx="66.1" cy="357.8" r="2.2"/>
+<circle cx="80.3" cy="387.9" r="3.2"/>
+<circle class="st382" cx="80.3" cy="387.9" r="2.2"/>
+<circle cx="80.3" cy="389.6" r="3.2"/>
+<circle class="st341" cx="80.3" cy="389.6" r="2.2"/>
+<circle cx="94.1" cy="382.1" r="3.2"/>
+<circle class="st57" cx="94.1" cy="382.1" r="2.2"/>
+<circle cx="104.9" cy="385.5" r="3.2"/>
+<circle class="st230" cx="104.9" cy="385.5" r="2.2"/>
+<circle cx="90.5" cy="402.3" r="3.2"/>
+<circle class="st226" cx="90.5" cy="402.3" r="2.2"/>
+<circle cx="64" cy="347.6" r="3.2"/>
+<circle class="st402" cx="64" cy="347.6" r="2.2"/>
+<circle cx="63" cy="344.5" r="3.2"/>
+<circle class="st382" cx="63" cy="344.5" r="2.2"/>
+<circle cx="56.6" cy="391.7" r="3.2"/>
+<circle class="st89" cx="56.6" cy="391.7" r="2.2"/>
+<circle cx="58.5" cy="393" r="3.2"/>
+<circle class="st71" cx="58.5" cy="393" r="2.2"/>
+<circle cx="125.8" cy="381.5" r="3.2"/>
+<circle class="st51" cx="125.8" cy="381.5" r="2.2"/>
+<circle cx="130.2" cy="392.1" r="3.2"/>
+<circle class="st25" cx="130.2" cy="392.1" r="2.2"/>
+<circle cx="130.8" cy="389.3" r="3.2"/>
+<circle class="st172" cx="130.8" cy="389.3" r="2.2"/>
+<circle cx="52.2" cy="399.9" r="3.2"/>
+<circle class="st376" cx="52.2" cy="399.9" r="2.2"/>
+<circle cx="69" cy="458.8" r="3.2"/>
+<circle class="st379" cx="69" cy="458.8" r="2.2"/>
+<circle cx="82.6" cy="473.6" r="3.2"/>
+<circle class="st376" cx="82.6" cy="473.6" r="2.2"/>
+<circle cx="82" cy="412.3" r="3.2"/>
+<circle class="st403" cx="82" cy="412.3" r="2.2"/>
+<circle cx="63.6" cy="437.1" r="3.2"/>
+<circle class="st342" cx="63.6" cy="437.1" r="2.2"/>
+<circle cx="65.8" cy="399.4" r="3.2"/>
+<circle class="st404" cx="65.8" cy="399.4" r="2.2"/>
+<circle cx="99" cy="376.7" r="3.2"/>
+<circle class="st405" cx="99" cy="376.7" r="2.2"/>
+<circle cx="93.6" cy="378.5" r="3.2"/>
+<circle class="st120" cx="93.6" cy="378.5" r="2.2"/>
+<circle cx="80.8" cy="349.4" r="3.2"/>
+<circle class="st406" cx="80.8" cy="349.4" r="2.2"/>
+<circle cx="67.9" cy="357.9" r="3.2"/>
+<circle class="st402" cx="67.9" cy="357.9" r="2.2"/>
+<circle cx="63.4" cy="355.4" r="3.2"/>
+<circle class="st382" cx="63.4" cy="355.4" r="2.2"/>
+<circle cx="120.8" cy="411.9" r="3.2"/>
+<circle class="st61" cx="120.8" cy="411.9" r="2.2"/>
+<circle cx="89.1" cy="398.7" r="3.2"/>
+<circle class="st340" cx="89.1" cy="398.7" r="2.2"/>
+<circle cx="90.7" cy="403" r="3.2"/>
+<circle class="st79" cx="90.7" cy="403" r="2.2"/>
+<circle cx="68.1" cy="435.1" r="3.2"/>
+<circle class="st406" cx="68.1" cy="435.1" r="2.2"/>
+<circle cx="77.2" cy="342" r="3.2"/>
+<circle class="st176" cx="77.2" cy="342" r="2.2"/>
+<circle cx="76.3" cy="342.2" r="3.2"/>
+<circle class="st352" cx="76.3" cy="342.2" r="2.2"/>
+<circle cx="75.3" cy="362.2" r="3.2"/>
+<circle class="st98" cx="75.3" cy="362.2" r="2.2"/>
+<circle cx="77.6" cy="351" r="3.2"/>
+<circle class="st186" cx="77.6" cy="351" r="2.2"/>
+<circle cx="72.2" cy="355.4" r="3.2"/>
+<circle class="st8" cx="72.2" cy="355.4" r="2.2"/>
+<circle cx="58.5" cy="371.6" r="3.2"/>
+<circle class="st393" cx="58.5" cy="371.6" r="2.2"/>
+<circle cx="57.8" cy="370.9" r="3.2"/>
+<circle class="st406" cx="57.8" cy="370.9" r="2.2"/>
+<circle cx="82.5" cy="363.5" r="3.2"/>
+<circle class="st377" cx="82.5" cy="363.5" r="2.2"/>
+<circle cx="69.3" cy="359.6" r="3.2"/>
+<circle class="st382" cx="69.3" cy="359.6" r="2.2"/>
+<circle cx="69.7" cy="385.1" r="3.2"/>
+<circle class="st342" cx="69.7" cy="385.1" r="2.2"/>
+<circle cx="67.5" cy="369.5" r="3.2"/>
+<circle class="st380" cx="67.5" cy="369.5" r="2.2"/>
+<circle cx="65.5" cy="415.1" r="3.2"/>
+<circle class="st372" cx="65.5" cy="415.1" r="2.2"/>
+<circle cx="74.2" cy="419.9" r="3.2"/>
+<circle class="st361" cx="74.2" cy="419.9" r="2.2"/>
+<circle cx="69.5" cy="419.4" r="3.2"/>
+<circle class="st98" cx="69.5" cy="419.4" r="2.2"/>
+<circle cx="81.2" cy="386" r="3.2"/>
+<circle class="st40" cx="81.2" cy="386" r="2.2"/>
+<circle cx="99.7" cy="329.8" r="3.2"/>
+<circle class="st167" cx="99.7" cy="329.8" r="2.2"/>
+<circle cx="92.8" cy="346.3" r="3.2"/>
+<circle class="st407" cx="92.8" cy="346.3" r="2.2"/>
+<circle cx="88" cy="351.3" r="3.2"/>
+<circle class="st408" cx="88" cy="351.3" r="2.2"/>
+<circle cx="95.1" cy="332.3" r="3.2"/>
+<circle class="st383" cx="95.1" cy="332.3" r="2.2"/>
+<circle cx="82.9" cy="347.9" r="3.2"/>
+<circle class="st409" cx="82.9" cy="347.9" r="2.2"/>
+<circle cx="60.1" cy="414.1" r="3.2"/>
+<circle class="st410" cx="60.1" cy="414.1" r="2.2"/>
+<circle cx="71.7" cy="435.5" r="3.2"/>
+<circle class="st365" cx="71.7" cy="435.5" r="2.2"/>
+<circle cx="85.2" cy="353.1" r="3.2"/>
+<circle class="st343" cx="85.2" cy="353.1" r="2.2"/>
+<circle cx="84.4" cy="347.4" r="3.2"/>
+<circle class="st176" cx="84.4" cy="347.4" r="2.2"/>
+<circle cx="71.5" cy="365.4" r="3.2"/>
+<circle class="st398" cx="71.5" cy="365.4" r="2.2"/>
+<circle cx="93.7" cy="346.9" r="3.2"/>
+<circle class="st389" cx="93.7" cy="346.9" r="2.2"/>
+<circle cx="99.9" cy="330.4" r="3.2"/>
+<circle class="st379" cx="99.9" cy="330.4" r="2.2"/>
+<circle cx="116.9" cy="342.2" r="3.2"/>
+<circle class="st245" cx="116.9" cy="342.2" r="2.2"/>
+<circle cx="136.6" cy="345.3" r="3.2"/>
+<circle class="st237" cx="136.6" cy="345.3" r="2.2"/>
+<circle cx="94.9" cy="332.2" r="3.2"/>
+<circle class="st381" cx="94.9" cy="332.2" r="2.2"/>
+<circle cx="78.9" cy="335.7" r="3.2"/>
+<circle class="st411" cx="78.9" cy="335.7" r="2.2"/>
+<circle cx="73.8" cy="347.7" r="3.2"/>
+<circle class="st376" cx="73.8" cy="347.7" r="2.2"/>
+<circle cx="99.2" cy="463.9" r="3.2"/>
+<circle class="st155" cx="99.2" cy="463.9" r="2.2"/>
+<circle cx="75.9" cy="360.2" r="3.2"/>
+<circle class="st391" cx="75.9" cy="360.2" r="2.2"/>
+<circle cx="67.5" cy="348.7" r="3.2"/>
+<circle class="st412" cx="67.5" cy="348.7" r="2.2"/>
+<circle cx="78.1" cy="349.8" r="3.2"/>
+<circle class="st383" cx="78.1" cy="349.8" r="2.2"/>
+<circle cx="82.5" cy="380" r="3.2"/>
+<circle class="st371" cx="82.5" cy="380" r="2.2"/>
+<circle cx="77.3" cy="340.8" r="3.2"/>
+<circle class="st393" cx="77.3" cy="340.8" r="2.2"/>
+<circle cx="82.3" cy="360.4" r="3.2"/>
+<circle class="st89" cx="82.3" cy="360.4" r="2.2"/>
+<circle cx="91" cy="315.5" r="3.2"/>
+<circle class="st180" cx="91" cy="315.5" r="2.2"/>
+<circle cx="88.3" cy="312.2" r="3.2"/>
+<circle class="st176" cx="88.3" cy="312.2" r="2.2"/>
+<circle cx="111.1" cy="315" r="3.2"/>
+<circle class="st398" cx="111.1" cy="315" r="2.2"/>
+<circle cx="108.5" cy="451.3" r="3.2"/>
+<circle class="st402" cx="108.5" cy="451.3" r="2.2"/>
+<circle cx="137.9" cy="388.9" r="3.2"/>
+<circle class="st370" cx="137.9" cy="388.9" r="2.2"/>
+<circle cx="117" cy="398.9" r="3.2"/>
+<circle class="st349" cx="117" cy="398.9" r="2.2"/>
+<circle cx="81" cy="347.7" r="3.2"/>
+<circle class="st389" cx="81" cy="347.7" r="2.2"/>
+<circle cx="85.7" cy="339.8" r="3.2"/>
+<circle class="st378" cx="85.7" cy="339.8" r="2.2"/>
+<circle cx="78.8" cy="344.4" r="3.2"/>
+<circle class="st378" cx="78.8" cy="344.4" r="2.2"/>
+<circle cx="77.3" cy="377.1" r="3.2"/>
+<circle class="st413" cx="77.3" cy="377.1" r="2.2"/>
+<circle cx="101.5" cy="380.5" r="3.2"/>
+<circle class="st120" cx="101.5" cy="380.5" r="2.2"/>
+<circle cx="88.9" cy="376.9" r="3.2"/>
+<circle class="st414" cx="88.9" cy="376.9" r="2.2"/>
+<circle cx="75.7" cy="380.6" r="3.2"/>
+<circle class="st340" cx="75.7" cy="380.6" r="2.2"/>
+<circle cx="117.6" cy="353.9" r="3.2"/>
+<circle class="st376" cx="117.6" cy="353.9" r="2.2"/>
+<circle cx="124.1" cy="310.9" r="3.2"/>
+<circle class="st415" cx="124.1" cy="310.9" r="2.2"/>
+<circle cx="63.9" cy="364" r="3.2"/>
+<circle class="st403" cx="63.9" cy="364" r="2.2"/>
+<circle cx="64.8" cy="366.2" r="3.2"/>
+<circle class="st416" cx="64.8" cy="366.2" r="2.2"/>
+<circle cx="107.2" cy="366.5" r="3.2"/>
+<circle class="st306" cx="107.2" cy="366.5" r="2.2"/>
+<circle cx="105.3" cy="341.5" r="3.2"/>
+<circle class="st417" cx="105.3" cy="341.5" r="2.2"/>
+<circle cx="97" cy="345.9" r="3.2"/>
+<circle class="st387" cx="97" cy="345.9" r="2.2"/>
+<circle cx="102.2" cy="328.3" r="3.2"/>
+<circle class="st180" cx="102.2" cy="328.3" r="2.2"/>
+<circle cx="84.5" cy="335.1" r="3.2"/>
+<circle class="st418" cx="84.5" cy="335.1" r="2.2"/>
+<circle cx="83.3" cy="332.1" r="3.2"/>
+<circle class="st155" cx="83.3" cy="332.1" r="2.2"/>
+<circle cx="78.4" cy="380.4" r="3.2"/>
+<circle class="st395" cx="78.4" cy="380.4" r="2.2"/>
+<circle cx="159.6" cy="350.3" r="3.2"/>
+<circle class="st419" cx="159.6" cy="350.3" r="2.2"/>
+<circle cx="167.8" cy="382.3" r="3.2"/>
+<circle class="st11" cx="167.8" cy="382.3" r="2.2"/>
+<circle cx="161" cy="384.2" r="3.2"/>
+<circle class="st40" cx="161" cy="384.2" r="2.2"/>
+<circle cx="123.7" cy="377.5" r="3.2"/>
+<circle class="st347" cx="123.7" cy="377.5" r="2.2"/>
+<circle cx="110" cy="331.7" r="3.2"/>
+<circle class="st376" cx="110" cy="331.7" r="2.2"/>
+<circle cx="95.4" cy="341.3" r="3.2"/>
+<circle class="st416" cx="95.4" cy="341.3" r="2.2"/>
+<circle cx="88.5" cy="335.1" r="3.2"/>
+<circle class="st353" cx="88.5" cy="335.1" r="2.2"/>
+<circle cx="110.9" cy="358.5" r="3.2"/>
+<circle class="st306" cx="110.9" cy="358.5" r="2.2"/>
+<circle cx="195.3" cy="310.7" r="3.2"/>
+<circle class="st191" cx="195.3" cy="310.7" r="2.2"/>
+<circle cx="191.7" cy="311.3" r="3.2"/>
+<circle class="st174" cx="191.7" cy="311.3" r="2.2"/>
+<circle cx="80.2" cy="455.5" r="3.2"/>
+<circle class="st226" cx="80.2" cy="455.5" r="2.2"/>
+<circle cx="83.1" cy="460.4" r="3.2"/>
+<circle class="st186" cx="83.1" cy="460.4" r="2.2"/>
+<circle cx="84" cy="460.5" r="3.2"/>
+<circle class="st372" cx="84" cy="460.5" r="2.2"/>
+<circle cx="164.8" cy="318.9" r="3.2"/>
+<circle class="st180" cx="164.8" cy="318.9" r="2.2"/>
+<circle cx="192.6" cy="321.9" r="3.2"/>
+<circle class="st417" cx="192.6" cy="321.9" r="2.2"/>
+<circle cx="151.9" cy="302.7" r="3.2"/>
+<circle class="st318" cx="151.9" cy="302.7" r="2.2"/>
+<circle cx="133.5" cy="334.9" r="3.2"/>
+<circle class="st119" cx="133.5" cy="334.9" r="2.2"/>
+<circle cx="144.6" cy="339.3" r="3.2"/>
+<circle class="st398" cx="144.6" cy="339.3" r="2.2"/>
+<circle cx="79.3" cy="454.7" r="3.2"/>
+<circle class="st387" cx="79.3" cy="454.7" r="2.2"/>
+<circle cx="77" cy="453.3" r="3.2"/>
+<circle class="st398" cx="77" cy="453.3" r="2.2"/>
+<circle cx="93.8" cy="336" r="3.2"/>
+<circle class="st420" cx="93.8" cy="336" r="2.2"/>
+<circle cx="104.9" cy="329.9" r="3.2"/>
+<circle class="st166" cx="104.9" cy="329.9" r="2.2"/>
+<circle cx="74.2" cy="360.4" r="3.2"/>
+<circle class="st344" cx="74.2" cy="360.4" r="2.2"/>
+<circle cx="82.7" cy="359.3" r="3.2"/>
+<circle class="st8" cx="82.7" cy="359.3" r="2.2"/>
+<circle cx="83.7" cy="366.7" r="3.2"/>
+<circle class="st8" cx="83.7" cy="366.7" r="2.2"/>
+<circle cx="77.3" cy="367.7" r="3.2"/>
+<circle class="st188" cx="77.3" cy="367.7" r="2.2"/>
+<circle cx="75.1" cy="421.9" r="3.2"/>
+<circle class="st187" cx="75.1" cy="421.9" r="2.2"/>
+<circle cx="89.6" cy="461" r="3.2"/>
+<circle class="st119" cx="89.6" cy="461" r="2.2"/>
+<circle cx="80.8" cy="458.5" r="3.2"/>
+<circle class="st317" cx="80.8" cy="458.5" r="2.2"/>
+<circle cx="97.1" cy="362" r="3.2"/>
+<circle class="st60" cx="97.1" cy="362" r="2.2"/>
+<circle cx="79.5" cy="371.7" r="3.2"/>
+<circle class="st41" cx="79.5" cy="371.7" r="2.2"/>
+<circle cx="84.5" cy="371.7" r="3.2"/>
+<circle class="st52" cx="84.5" cy="371.7" r="2.2"/>
+<circle cx="81.5" cy="371.3" r="3.2"/>
+<circle class="st421" cx="81.5" cy="371.3" r="2.2"/>
+<circle cx="69.9" cy="354.4" r="3.2"/>
+<circle class="st373" cx="69.9" cy="354.4" r="2.2"/>
+<circle cx="75.8" cy="357.2" r="3.2"/>
+<circle class="st422" cx="75.8" cy="357.2" r="2.2"/>
+<circle cx="133.1" cy="353.9" r="3.2"/>
+<circle class="st79" cx="133.1" cy="353.9" r="2.2"/>
+<circle cx="76.9" cy="353.2" r="3.2"/>
+<circle class="st318" cx="76.9" cy="353.2" r="2.2"/>
+<circle cx="76.8" cy="353" r="3.2"/>
+<circle class="st182" cx="76.8" cy="353" r="2.2"/>
+<circle cx="80.7" cy="349.7" r="3.2"/>
+<circle class="st400" cx="80.7" cy="349.7" r="2.2"/>
+<circle cx="79.4" cy="352.4" r="3.2"/>
+<circle class="st396" cx="79.4" cy="352.4" r="2.2"/>
+<circle cx="202.6" cy="328.8" r="3.2"/>
+<circle class="st86" cx="202.6" cy="328.8" r="2.2"/>
+<circle cx="114.4" cy="464.1" r="3.2"/>
+<circle class="st378" cx="114.4" cy="464.1" r="2.2"/>
+<circle cx="92.7" cy="458.3" r="3.2"/>
+<circle class="st341" cx="92.7" cy="458.3" r="2.2"/>
+<circle cx="65.3" cy="434.5" r="3.2"/>
+<circle class="st379" cx="65.3" cy="434.5" r="2.2"/>
+<circle cx="64.2" cy="428.7" r="3.2"/>
+<circle class="st119" cx="64.2" cy="428.7" r="2.2"/>
+<circle cx="92.2" cy="330.3" r="3.2"/>
+<circle class="st383" cx="92.2" cy="330.3" r="2.2"/>
+<circle cx="93.9" cy="328.8" r="3.2"/>
+<circle class="st383" cx="93.9" cy="328.8" r="2.2"/>
+<circle cx="81.9" cy="344.3" r="3.2"/>
+<circle class="st168" cx="81.9" cy="344.3" r="2.2"/>
+<circle cx="127.6" cy="362.8" r="3.2"/>
+<circle class="st26" cx="127.6" cy="362.8" r="2.2"/>
+<circle cx="85.8" cy="326.3" r="3.2"/>
+<circle class="st417" cx="85.8" cy="326.3" r="2.2"/>
+<circle cx="95.9" cy="323.4" r="3.2"/>
+<circle class="st423" cx="95.9" cy="323.4" r="2.2"/>
+<circle cx="92.5" cy="357.6" r="3.2"/>
+<circle class="st401" cx="92.5" cy="357.6" r="2.2"/>
+<circle cx="101" cy="354" r="3.2"/>
+<circle class="st387" cx="101" cy="354" r="2.2"/>
+<circle cx="69.2" cy="438.3" r="3.2"/>
+<circle class="st390" cx="69.2" cy="438.3" r="2.2"/>
+<circle cx="69.5" cy="441.4" r="3.2"/>
+<circle class="st166" cx="69.5" cy="441.4" r="2.2"/>
+<circle cx="70.8" cy="444.6" r="3.2"/>
+<circle class="st391" cx="70.8" cy="444.6" r="2.2"/>
+<circle cx="235.4" cy="368.6" r="3.2"/>
+<circle class="st375" cx="235.4" cy="368.6" r="2.2"/>
+<circle cx="237.2" cy="344.1" r="3.2"/>
+<circle class="st118" cx="237.2" cy="344.1" r="2.2"/>
+<circle cx="73.4" cy="334.2" r="3.2"/>
+<circle class="st390" cx="73.4" cy="334.2" r="2.2"/>
+<circle cx="81" cy="326.5" r="3.2"/>
+<circle class="st424" cx="81" cy="326.5" r="2.2"/>
+<circle cx="59.9" cy="370.4" r="3.2"/>
+<circle class="st373" cx="59.9" cy="370.4" r="2.2"/>
+<circle cx="62.9" cy="356.3" r="3.2"/>
+<circle class="st395" cx="62.9" cy="356.3" r="2.2"/>
+<circle cx="78.6" cy="409.4" r="3.2"/>
+<circle class="st391" cx="78.6" cy="409.4" r="2.2"/>
+<circle cx="78" cy="400.6" r="3.2"/>
+<circle class="st406" cx="78" cy="400.6" r="2.2"/>
+<circle cx="180.6" cy="389.4" r="3.2"/>
+<circle class="st332" cx="180.6" cy="389.4" r="2.2"/>
+<ellipse transform="matrix(0.1602 -0.9871 0.9871 0.1602 -172.6485 426.7869)" cx="164.5" cy="314.9" rx="3.2" ry="3.2"/>
+<ellipse transform="matrix(0.1602 -0.9871 0.9871 0.1602 -172.6485 426.7869)" class="st61" cx="164.5" cy="314.9" rx="2.2" ry="2.2"/>
+<circle cx="85.7" cy="365" r="3.2"/>
+<circle class="st186" cx="85.7" cy="365" r="2.2"/>
+<circle cx="96.1" cy="372.1" r="3.2"/>
+<circle class="st424" cx="96.1" cy="372.1" r="2.2"/>
+<circle cx="95.6" cy="333" r="3.2"/>
+<circle class="st341" cx="95.6" cy="333" r="2.2"/>
+<circle cx="92.4" cy="329.7" r="3.2"/>
+<circle class="st425" cx="92.4" cy="329.7" r="2.2"/>
+<circle cx="115.3" cy="328.5" r="3.2"/>
+<circle class="st403" cx="115.3" cy="328.5" r="2.2"/>
+<circle cx="111.9" cy="327.5" r="3.2"/>
+<circle class="st373" cx="111.9" cy="327.5" r="2.2"/>
+<circle cx="93.8" cy="331.3" r="3.2"/>
+<circle class="st426" cx="93.8" cy="331.3" r="2.2"/>
+<circle cx="81.8" cy="349.7" r="3.2"/>
+<circle class="st427" cx="81.8" cy="349.7" r="2.2"/>
+<circle cx="101.7" cy="320.4" r="3.2"/>
+<circle class="st407" cx="101.7" cy="320.4" r="2.2"/>
+<circle cx="103.8" cy="307.8" r="3.2"/>
+<circle class="st201" cx="103.8" cy="307.8" r="2.2"/>
+<circle cx="79.3" cy="336" r="3.2"/>
+<circle class="st428" cx="79.3" cy="336" r="2.2"/>
+<circle cx="76.9" cy="333.5" r="3.2"/>
+<circle class="st318" cx="76.9" cy="333.5" r="2.2"/>
+<circle cx="64.3" cy="335" r="3.2"/>
+<circle class="st318" cx="64.3" cy="335" r="2.2"/>
+<circle cx="64.4" cy="337.9" r="3.2"/>
+<circle class="st401" cx="64.4" cy="337.9" r="2.2"/>
+<circle cx="88.8" cy="346.5" r="3.2"/>
+<circle class="st429" cx="88.8" cy="346.5" r="2.2"/>
+<circle cx="95.6" cy="314.7" r="3.2"/>
+<circle class="st378" cx="95.6" cy="314.7" r="2.2"/>
+<circle cx="106.3" cy="454.1" r="3.2"/>
+<circle class="st361" cx="106.3" cy="454.1" r="2.2"/>
+<circle cx="100.4" cy="353.3" r="3.2"/>
+<circle class="st229" cx="100.4" cy="353.3" r="2.2"/>
+<circle cx="107.9" cy="350.7" r="3.2"/>
+<circle class="st383" cx="107.9" cy="350.7" r="2.2"/>
+<circle cx="125.2" cy="317.7" r="3.2"/>
+<circle class="st191" cx="125.2" cy="317.7" r="2.2"/>
+<circle cx="118.1" cy="327" r="3.2"/>
+<circle class="st176" cx="118.1" cy="327" r="2.2"/>
+<circle cx="108.9" cy="364.6" r="3.2"/>
+<circle class="st430" cx="108.9" cy="364.6" r="2.2"/>
+<circle cx="111.3" cy="366.7" r="3.2"/>
+<circle class="st381" cx="111.3" cy="366.7" r="2.2"/>
+<circle cx="128.3" cy="351.5" r="3.2"/>
+<circle class="st200" cx="128.3" cy="351.5" r="2.2"/>
+<circle cx="86.3" cy="366.9" r="3.2"/>
+<circle class="st344" cx="86.3" cy="366.9" r="2.2"/>
+<circle cx="76.7" cy="397.7" r="3.2"/>
+<circle class="st419" cx="76.7" cy="397.7" r="2.2"/>
+<circle cx="75.6" cy="390.8" r="3.2"/>
+<circle class="st431" cx="75.6" cy="390.8" r="2.2"/>
+<circle cx="232.7" cy="380.3" r="3.2"/>
+<circle class="st213" cx="232.7" cy="380.3" r="2.2"/>
+<circle cx="235.8" cy="381.3" r="3.2"/>
+<circle class="st257" cx="235.8" cy="381.3" r="2.2"/>
+<circle cx="147.8" cy="360.5" r="3.2"/>
+<circle class="st204" cx="147.8" cy="360.5" r="2.2"/>
+<circle cx="70.3" cy="360.3" r="3.2"/>
+<circle class="st432" cx="70.3" cy="360.3" r="2.2"/>
+<circle cx="70.5" cy="357.7" r="3.2"/>
+<circle class="st120" cx="70.5" cy="357.7" r="2.2"/>
+<circle cx="57.8" cy="348" r="3.2"/>
+<circle class="st430" cx="57.8" cy="348" r="2.2"/>
+<circle cx="58" cy="353" r="3.2"/>
+<circle class="st381" cx="58" cy="353" r="2.2"/>
+<circle cx="238.4" cy="370.1" r="3.2"/>
+<circle class="st112" cx="238.4" cy="370.1" r="2.2"/>
+<circle cx="84.3" cy="316.1" r="3.2"/>
+<circle class="st383" cx="84.3" cy="316.1" r="2.2"/>
+<circle cx="89.2" cy="311.7" r="3.2"/>
+<circle class="st176" cx="89.2" cy="311.7" r="2.2"/>
+<circle cx="232.1" cy="348" r="3.2"/>
+<circle class="st149" cx="232.1" cy="348" r="2.2"/>
+<circle cx="232.1" cy="347.7" r="3.2"/>
+<circle class="st21" cx="232.1" cy="347.7" r="2.2"/>
+<circle cx="244.5" cy="395.5" r="3.2"/>
+<circle class="st433" cx="244.5" cy="395.5" r="2.2"/>
+<circle cx="97.7" cy="368.3" r="3.2"/>
+<circle class="st340" cx="97.7" cy="368.3" r="2.2"/>
+<circle cx="85.1" cy="357.3" r="3.2"/>
+<circle class="st425" cx="85.1" cy="357.3" r="2.2"/>
+<circle cx="252.1" cy="384.8" r="3.2"/>
+<circle class="st200" cx="252.1" cy="384.8" r="2.2"/>
+<circle cx="70" cy="329.7" r="3.2"/>
+<circle class="st401" cx="70" cy="329.7" r="2.2"/>
+<circle cx="74.2" cy="325.2" r="3.2"/>
+<circle class="st418" cx="74.2" cy="325.2" r="2.2"/>
+<circle cx="80" cy="323.6" r="3.2"/>
+<circle class="st430" cx="80" cy="323.6" r="2.2"/>
+<circle cx="91" cy="318.9" r="3.2"/>
+<circle class="st182" cx="91" cy="318.9" r="2.2"/>
+<circle cx="88.8" cy="319.1" r="3.2"/>
+<circle class="st229" cx="88.8" cy="319.1" r="2.2"/>
+<circle cx="261" cy="399.9" r="3.2"/>
+<circle class="st434" cx="261" cy="399.9" r="2.2"/>
+<circle cx="267.2" cy="400" r="3.2"/>
+<circle class="st435" cx="267.2" cy="400" r="2.2"/>
+<circle cx="261.2" cy="400.1" r="3.2"/>
+<circle class="st335" cx="261.2" cy="400.1" r="2.2"/>
+<circle cx="73.8" cy="340.4" r="3.2"/>
+<circle class="st168" cx="73.8" cy="340.4" r="2.2"/>
+<circle cx="71.8" cy="338.1" r="3.2"/>
+<circle class="st436" cx="71.8" cy="338.1" r="2.2"/>
+<circle cx="103.1" cy="464.8" r="3.2"/>
+<circle class="st412" cx="103.1" cy="464.8" r="2.2"/>
+<circle cx="92.7" cy="461.9" r="3.2"/>
+<circle class="st417" cx="92.7" cy="461.9" r="2.2"/>
+<circle cx="93.3" cy="460.8" r="3.2"/>
+<circle class="st412" cx="93.3" cy="460.8" r="2.2"/>
+<circle cx="217" cy="379.8" r="3.2"/>
+<circle class="st196" cx="217" cy="379.8" r="2.2"/>
+<circle cx="204.9" cy="374.3" r="3.2"/>
+<circle class="st233" cx="204.9" cy="374.3" r="2.2"/>
+<circle cx="68.7" cy="394.3" r="3.2"/>
+<circle class="st437" cx="68.7" cy="394.3" r="2.2"/>
+<circle cx="70" cy="388.6" r="3.2"/>
+<circle class="st158" cx="70" cy="388.6" r="2.2"/>
+<circle cx="67.5" cy="388.7" r="3.2"/>
+<circle class="st438" cx="67.5" cy="388.7" r="2.2"/>
+<circle cx="158.2" cy="346.5" r="3.2"/>
+<circle class="st398" cx="158.2" cy="346.5" r="2.2"/>
+<circle cx="181.8" cy="347.6" r="3.2"/>
+<circle class="st405" cx="181.8" cy="347.6" r="2.2"/>
+<circle cx="158.5" cy="341.2" r="3.2"/>
+<circle class="st414" cx="158.5" cy="341.2" r="2.2"/>
+<circle cx="257" cy="401.5" r="3.2"/>
+<circle class="st439" cx="257" cy="401.5" r="2.2"/>
+<circle cx="78.4" cy="347.4" r="3.2"/>
+<circle class="st401" cx="78.4" cy="347.4" r="2.2"/>
+<circle cx="258.1" cy="401.2" r="3.2"/>
+<circle class="st440" cx="258.1" cy="401.2" r="2.2"/>
+<circle cx="259.2" cy="401.4" r="3.2"/>
+<circle class="st441" cx="259.2" cy="401.4" r="2.2"/>
+<circle cx="261.5" cy="402" r="3.2"/>
+<circle class="st442" cx="261.5" cy="402" r="2.2"/>
+<circle cx="89.1" cy="456.5" r="3.2"/>
+<circle class="st423" cx="89.1" cy="456.5" r="2.2"/>
+<circle cx="90.1" cy="419.2" r="3.2"/>
+<circle class="st168" cx="90.1" cy="419.2" r="2.2"/>
+<circle cx="104.4" cy="450.4" r="3.2"/>
+<circle class="st201" cx="104.4" cy="450.4" r="2.2"/>
+<circle cx="102.4" cy="337.4" r="3.2"/>
+<circle class="st317" cx="102.4" cy="337.4" r="2.2"/>
+<circle cx="119.6" cy="321.3" r="3.2"/>
+<circle class="st387" cx="119.6" cy="321.3" r="2.2"/>
+<circle cx="112.7" cy="322.2" r="3.2"/>
+<circle class="st398" cx="112.7" cy="322.2" r="2.2"/>
+<circle cx="84.9" cy="350.3" r="3.2"/>
+<circle class="st406" cx="84.9" cy="350.3" r="2.2"/>
+<circle cx="77.9" cy="352.4" r="3.2"/>
+<circle class="st166" cx="77.9" cy="352.4" r="2.2"/>
+<circle cx="83.6" cy="343.5" r="3.2"/>
+<circle class="st374" cx="83.6" cy="343.5" r="2.2"/>
+<circle cx="84" cy="340.7" r="3.2"/>
+<circle class="st424" cx="84" cy="340.7" r="2.2"/>
+<circle cx="115.9" cy="380.4" r="3.2"/>
+<circle class="st428" cx="115.9" cy="380.4" r="2.2"/>
+<circle cx="113" cy="381.4" r="3.2"/>
+<circle class="st430" cx="113" cy="381.4" r="2.2"/>
+<circle cx="114.3" cy="381.6" r="3.2"/>
+<circle class="st168" cx="114.3" cy="381.6" r="2.2"/>
+<circle cx="271" cy="396.4" r="3.2"/>
+<circle class="st363" cx="271" cy="396.4" r="2.2"/>
+<circle cx="263.5" cy="394.2" r="3.2"/>
+<circle class="st48" cx="263.5" cy="394.2" r="2.2"/>
+<circle cx="256.8" cy="393.9" r="3.2"/>
+<circle class="st76" cx="256.8" cy="393.9" r="2.2"/>
+<circle cx="116.9" cy="346.4" r="3.2"/>
+<circle class="st443" cx="116.9" cy="346.4" r="2.2"/>
+<circle cx="117.2" cy="349.3" r="3.2"/>
+<circle class="st229" cx="117.2" cy="349.3" r="2.2"/>
+<circle cx="80.9" cy="365.6" r="3.2"/>
+<circle class="st180" cx="80.9" cy="365.6" r="2.2"/>
+<circle cx="63.8" cy="369.5" r="3.2"/>
+<circle class="st352" cx="63.8" cy="369.5" r="2.2"/>
+<circle cx="62.9" cy="366.8" r="3.2"/>
+<circle class="st176" cx="62.9" cy="366.8" r="2.2"/>
+<circle cx="85.7" cy="344.2" r="3.2"/>
+<circle class="st342" cx="85.7" cy="344.2" r="2.2"/>
+<circle cx="129.7" cy="355.2" r="3.2"/>
+<circle class="st387" cx="129.7" cy="355.2" r="2.2"/>
+<circle cx="98.9" cy="366.6" r="3.2"/>
+<circle class="st438" cx="98.9" cy="366.6" r="2.2"/>
+<circle cx="229.6" cy="352.6" r="3.2"/>
+<circle class="st69" cx="229.6" cy="352.6" r="2.2"/>
+<circle cx="63.7" cy="346.4" r="3.2"/>
+<circle class="st181" cx="63.7" cy="346.4" r="2.2"/>
+<circle cx="60.3" cy="345.9" r="3.2"/>
+<circle class="st389" cx="60.3" cy="345.9" r="2.2"/>
+<circle cx="65" cy="346.8" r="3.2"/>
+<circle class="st384" cx="65" cy="346.8" r="2.2"/>
+<circle cx="224.4" cy="396.2" r="3.2"/>
+<circle class="st251" cx="224.4" cy="396.2" r="2.2"/>
+<circle cx="57" cy="387" r="3.2"/>
+<circle class="st342" cx="57" cy="387" r="2.2"/>
+<circle cx="58.7" cy="372.5" r="3.2"/>
+<circle class="st387" cx="58.7" cy="372.5" r="2.2"/>
+<circle cx="60.3" cy="375.9" r="3.2"/>
+<circle class="st426" cx="60.3" cy="375.9" r="2.2"/>
+<circle cx="89.8" cy="358.7" r="3.2"/>
+<circle class="st390" cx="89.8" cy="358.7" r="2.2"/>
+<circle cx="91" cy="349.9" r="3.2"/>
+<circle class="st407" cx="91" cy="349.9" r="2.2"/>
+<circle cx="90.5" cy="349.9" r="3.2"/>
+<circle class="st318" cx="90.5" cy="349.9" r="2.2"/>
+<circle cx="67.2" cy="349.9" r="3.2"/>
+<circle class="st317" cx="67.2" cy="349.9" r="2.2"/>
+<circle cx="67.8" cy="342" r="3.2"/>
+<circle class="st342" cx="67.8" cy="342" r="2.2"/>
+<circle cx="107.2" cy="333.5" r="3.2"/>
+<circle class="st372" cx="107.2" cy="333.5" r="2.2"/>
+<circle cx="106.1" cy="318.5" r="3.2"/>
+<circle class="st365" cx="106.1" cy="318.5" r="2.2"/>
+<circle cx="63.2" cy="359.6" r="3.2"/>
+<circle class="st342" cx="63.2" cy="359.6" r="2.2"/>
+<circle cx="66.2" cy="358.1" r="3.2"/>
+<circle class="st166" cx="66.2" cy="358.1" r="2.2"/>
+<circle cx="73" cy="361" r="3.2"/>
+<circle class="st422" cx="73" cy="361" r="2.2"/>
+<circle cx="90.8" cy="323.1" r="3.2"/>
+<circle class="st181" cx="90.8" cy="323.1" r="2.2"/>
+<circle cx="93.9" cy="320.3" r="3.2"/>
+<circle class="st436" cx="93.9" cy="320.3" r="2.2"/>
+<circle cx="202.8" cy="333.7" r="3.2"/>
+<circle class="st405" cx="202.8" cy="333.7" r="2.2"/>
+<circle cx="70.8" cy="420.6" r="3.2"/>
+<circle class="st399" cx="70.8" cy="420.6" r="2.2"/>
+<circle cx="71.3" cy="427.8" r="3.2"/>
+<circle class="st168" cx="71.3" cy="427.8" r="2.2"/>
+<circle cx="72.5" cy="428" r="3.2"/>
+<circle class="st444" cx="72.5" cy="428" r="2.2"/>
+<circle cx="180.6" cy="328.7" r="3.2"/>
+<circle class="st445" cx="180.6" cy="328.7" r="2.2"/>
+<circle cx="168.2" cy="320.2" r="3.2"/>
+<circle class="st353" cx="168.2" cy="320.2" r="2.2"/>
+<circle cx="159.9" cy="311" r="3.2"/>
+<circle class="st365" cx="159.9" cy="311" r="2.2"/>
+<circle cx="158.6" cy="307.3" r="3.2"/>
+<circle class="st389" cx="158.6" cy="307.3" r="2.2"/>
+<circle cx="259.2" cy="388.6" r="3.2"/>
+<circle class="st84" cx="259.2" cy="388.6" r="2.2"/>
+<circle cx="255.4" cy="383" r="3.2"/>
+<circle class="st36" cx="255.4" cy="383" r="2.2"/>
+<circle cx="130.4" cy="328.2" r="3.2"/>
+<circle class="st429" cx="130.4" cy="328.2" r="2.2"/>
+<circle cx="178" cy="364.5" r="3.2"/>
+<circle class="st397" cx="178" cy="364.5" r="2.2"/>
+<circle cx="167.9" cy="453.6" r="3.2"/>
+<circle class="st370" cx="167.9" cy="453.6" r="2.2"/>
+<circle cx="73.7" cy="349.3" r="3.2"/>
+<circle class="st342" cx="73.7" cy="349.3" r="2.2"/>
+<circle cx="74" cy="355.3" r="3.2"/>
+<circle class="st388" cx="74" cy="355.3" r="2.2"/>
+<circle cx="105.1" cy="341.2" r="3.2"/>
+<circle class="st186" cx="105.1" cy="341.2" r="2.2"/>
+<circle cx="272.1" cy="394.7" r="3.2"/>
+<circle class="st233" cx="272.1" cy="394.7" r="2.2"/>
+<circle cx="70.4" cy="372" r="3.2"/>
+<circle class="st380" cx="70.4" cy="372" r="2.2"/>
+<circle cx="70.4" cy="372.7" r="3.2"/>
+<circle class="st391" cx="70.4" cy="372.7" r="2.2"/>
+<circle cx="192.8" cy="374" r="3.2"/>
+<circle class="st446" cx="192.8" cy="374" r="2.2"/>
+<circle cx="142.7" cy="336.6" r="3.2"/>
+<circle class="st371" cx="142.7" cy="336.6" r="2.2"/>
+<circle cx="224.5" cy="348.7" r="3.2"/>
+<circle class="st179" cx="224.5" cy="348.7" r="2.2"/>
+<circle cx="103.9" cy="368.9" r="3.2"/>
+<circle class="st57" cx="103.9" cy="368.9" r="2.2"/>
+<circle cx="104.3" cy="344.6" r="3.2"/>
+<circle class="st416" cx="104.3" cy="344.6" r="2.2"/>
+<circle cx="109.6" cy="341" r="3.2"/>
+<circle class="st432" cx="109.6" cy="341" r="2.2"/>
+<circle cx="110.6" cy="333.9" r="3.2"/>
+<circle class="st376" cx="110.6" cy="333.9" r="2.2"/>
+<circle cx="114.3" cy="339.5" r="3.2"/>
+<circle class="st429" cx="114.3" cy="339.5" r="2.2"/>
+<circle cx="110.2" cy="312.4" r="3.2"/>
+<circle class="st168" cx="110.2" cy="312.4" r="2.2"/>
+<circle cx="214.2" cy="380.3" r="3.2"/>
+<circle class="st174" cx="214.2" cy="380.3" r="2.2"/>
+<circle cx="221" cy="380.7" r="3.2"/>
+<circle class="st174" cx="221" cy="380.7" r="2.2"/>
+<circle cx="73.4" cy="333.1" r="3.2"/>
+<circle class="st393" cx="73.4" cy="333.1" r="2.2"/>
+<circle cx="74.9" cy="328.2" r="3.2"/>
+<circle class="st402" cx="74.9" cy="328.2" r="2.2"/>
+<circle cx="119.8" cy="315.8" r="3.2"/>
+<circle class="st352" cx="119.8" cy="315.8" r="2.2"/>
+<circle cx="77" cy="375.7" r="3.2"/>
+<circle class="st380" cx="77" cy="375.7" r="2.2"/>
+<circle cx="261" cy="381.3" r="3.2"/>
+<circle class="st447" cx="261" cy="381.3" r="2.2"/>
+<circle cx="265.5" cy="383.7" r="3.2"/>
+<circle class="st448" cx="265.5" cy="383.7" r="2.2"/>
+<circle cx="257.3" cy="382.3" r="3.2"/>
+<circle class="st449" cx="257.3" cy="382.3" r="2.2"/>
+<circle cx="82.3" cy="377" r="3.2"/>
+<circle class="st155" cx="82.3" cy="377" r="2.2"/>
+<circle cx="76.5" cy="377.2" r="3.2"/>
+<circle class="st318" cx="76.5" cy="377.2" r="2.2"/>
+<circle cx="68.7" cy="380.8" r="3.2"/>
+<circle class="st410" cx="68.7" cy="380.8" r="2.2"/>
+<circle cx="71.8" cy="386.4" r="3.2"/>
+<circle class="st450" cx="71.8" cy="386.4" r="2.2"/>
+<circle cx="80" cy="449.9" r="3.2"/>
+<circle class="st411" cx="80" cy="449.9" r="2.2"/>
+<circle cx="75.3" cy="414" r="3.2"/>
+<circle class="st393" cx="75.3" cy="414" r="2.2"/>
+<circle cx="53.7" cy="359.1" r="3.2"/>
+<circle class="st381" cx="53.7" cy="359.1" r="2.2"/>
+<circle cx="58.2" cy="353" r="3.2"/>
+<circle class="st388" cx="58.2" cy="353" r="2.2"/>
+<circle cx="70.2" cy="337.2" r="3.2"/>
+<circle class="st382" cx="70.2" cy="337.2" r="2.2"/>
+<circle cx="70.3" cy="340.1" r="3.2"/>
+<circle class="st120" cx="70.3" cy="340.1" r="2.2"/>
+<circle cx="99.5" cy="450.1" r="3.2"/>
+<circle class="st399" cx="99.5" cy="450.1" r="2.2"/>
+<circle cx="276.5" cy="390" r="3.2"/>
+<circle class="st189" cx="276.5" cy="390" r="2.2"/>
+<circle cx="228.1" cy="383.5" r="3.2"/>
+<circle class="st402" cx="228.1" cy="383.5" r="2.2"/>
+<circle cx="99.1" cy="325.3" r="3.2"/>
+<circle class="st402" cx="99.1" cy="325.3" r="2.2"/>
+<circle cx="82.2" cy="370.5" r="3.2"/>
+<circle class="st393" cx="82.2" cy="370.5" r="2.2"/>
+<circle cx="92.1" cy="326.8" r="3.2"/>
+<circle class="st182" cx="92.1" cy="326.8" r="2.2"/>
+<circle cx="217.6" cy="382.8" r="3.2"/>
+<circle class="st98" cx="217.6" cy="382.8" r="2.2"/>
+<circle cx="72.7" cy="338.2" r="3.2"/>
+<circle class="st426" cx="72.7" cy="338.2" r="2.2"/>
+<circle cx="116.4" cy="464.1" r="3.2"/>
+<circle class="st372" cx="116.4" cy="464.1" r="2.2"/>
+<circle cx="112.2" cy="454.3" r="3.2"/>
+<circle class="st419" cx="112.2" cy="454.3" r="2.2"/>
+<circle cx="89.4" cy="346.1" r="3.2"/>
+<circle class="st424" cx="89.4" cy="346.1" r="2.2"/>
+<circle cx="93.4" cy="353.4" r="3.2"/>
+<circle class="st397" cx="93.4" cy="353.4" r="2.2"/>
+<circle cx="116.9" cy="374.2" r="3.2"/>
+<circle class="st224" cx="116.9" cy="374.2" r="2.2"/>
+<circle cx="93.2" cy="351.6" r="3.2"/>
+<circle class="st382" cx="93.2" cy="351.6" r="2.2"/>
+<circle cx="89.3" cy="443.5" r="3.2"/>
+<circle class="st382" cx="89.3" cy="443.5" r="2.2"/>
+<circle cx="85.8" cy="410.3" r="3.2"/>
+<circle class="st52" cx="85.8" cy="410.3" r="2.2"/>
+<circle cx="163.2" cy="350.6" r="3.2"/>
+<circle class="st408" cx="163.2" cy="350.6" r="2.2"/>
+<circle cx="148.8" cy="324.2" r="3.2"/>
+<circle class="st451" cx="148.8" cy="324.2" r="2.2"/>
+<circle cx="122.4" cy="338.1" r="3.2"/>
+<circle class="st41" cx="122.4" cy="338.1" r="2.2"/>
+<circle cx="102.4" cy="309.6" r="3.2"/>
+<circle class="st176" cx="102.4" cy="309.6" r="2.2"/>
+<circle cx="75" cy="331.9" r="3.2"/>
+<circle class="st423" cx="75" cy="331.9" r="2.2"/>
+<circle cx="77.1" cy="370.9" r="3.2"/>
+<circle class="st341" cx="77.1" cy="370.9" r="2.2"/>
+<circle cx="78.7" cy="369.2" r="3.2"/>
+<circle class="st452" cx="78.7" cy="369.2" r="2.2"/>
+<circle cx="256.1" cy="383.7" r="3.2"/>
+<circle class="st78" cx="256.1" cy="383.7" r="2.2"/>
+<circle cx="236.9" cy="358" r="3.2"/>
+<circle class="st74" cx="236.9" cy="358" r="2.2"/>
+<circle cx="257.5" cy="382.1" r="3.2"/>
+<circle class="st19" cx="257.5" cy="382.1" r="2.2"/>
+<circle cx="94" cy="361.6" r="3.2"/>
+<circle class="st155" cx="94" cy="361.6" r="2.2"/>
+<circle cx="199.5" cy="370.5" r="3.2"/>
+<circle class="st430" cx="199.5" cy="370.5" r="2.2"/>
+<circle cx="173.6" cy="369" r="3.2"/>
+<circle class="st378" cx="173.6" cy="369" r="2.2"/>
+<circle cx="221.2" cy="368.6" r="3.2"/>
+<circle class="st11" cx="221.2" cy="368.6" r="2.2"/>
+<circle cx="149.6" cy="319.2" r="3.2"/>
+<circle class="st353" cx="149.6" cy="319.2" r="2.2"/>
+<circle cx="125.5" cy="390.5" r="3.2"/>
+<circle class="st343" cx="125.5" cy="390.5" r="2.2"/>
+<circle cx="150.8" cy="362.8" r="3.2"/>
+<circle class="st89" cx="150.8" cy="362.8" r="2.2"/>
+<circle cx="263.9" cy="378.6" r="3.2"/>
+<circle class="st85" cx="263.9" cy="378.6" r="2.2"/>
+<circle cx="268.1" cy="379.5" r="3.2"/>
+<circle class="st73" cx="268.1" cy="379.5" r="2.2"/>
+<circle cx="218.6" cy="357.1" r="3.2"/>
+<circle class="st139" cx="218.6" cy="357.1" r="2.2"/>
+<circle cx="219.8" cy="360" r="3.2"/>
+<circle class="st275" cx="219.8" cy="360" r="2.2"/>
+<circle cx="110.9" cy="463.1" r="3.2"/>
+<circle class="st71" cx="110.9" cy="463.1" r="2.2"/>
+<circle cx="116.4" cy="456.2" r="3.2"/>
+<circle class="st438" cx="116.4" cy="456.2" r="2.2"/>
+<image style="overflow:visible;enable-background:new    ;" width="72" height="564" xlink:href="488EF6DBC68C9713.png"  transform="matrix(0.3214 0 0 0.3214 298.5338 297.5587)">
+</image>
+<text transform="matrix(1 0 0 1 333.3311 483.1523)" class="st1 st247">0</text>
+<text transform="matrix(1 0 0 1 333.3311 463.6484)" class="st1 st247">0.1</text>
+<text transform="matrix(1 0 0 1 333.3311 444.1445)" class="st1 st247">0.2</text>
+<text transform="matrix(1 0 0 1 333.3311 424.6406)" class="st1 st247">0.3</text>
+<text transform="matrix(1 0 0 1 333.3311 405.1367)" class="st1 st247">0.4</text>
+<text transform="matrix(1 0 0 1 333.3311 385.6289)" class="st1 st247">0.5</text>
+<text transform="matrix(1 0 0 1 333.3311 366.125)" class="st1 st247">0.6</text>
+<text transform="matrix(1 0 0 1 333.3311 346.6211)" class="st1 st247">0.7</text>
+<text transform="matrix(1 0 0 1 333.3311 327.1172)" class="st1 st247">0.8</text>
+<text transform="matrix(1 0 0 1 333.3311 307.6113)" class="st1 st247">0.9</text>
+<polyline class="st0" points="321.8,478.8 321.8,478.8 329.5,478.8 321.8,478.8 321.8,459.3 329.5,459.3 321.8,459.3 321.8,439.8 
+	329.5,439.8 321.8,439.8 321.8,420.3 329.5,420.3 321.8,420.3 321.8,400.7 329.5,400.7 321.8,400.7 321.8,381.2 329.5,381.2 
+	321.8,381.2 321.8,361.7 329.5,361.7 321.8,361.7 321.8,342.2 329.5,342.2 321.8,342.2 321.8,322.7 329.5,322.7 321.8,322.7 
+	321.8,303.2 329.5,303.2 321.8,303.2 321.8,297.6 "/>
+<line class="st0" x1="431.2" y1="478.8" x2="668.9" y2="478.8"/>
+<line class="st0" x1="431.2" y1="478.8" x2="431.2" y2="297.6"/>
+<text transform="matrix(1 0 0 1 428.4844 280.5879)" class="st1 st2">Kids, Proteobacteria</text>
+<text transform="matrix(1 0 0 1 477.5293 500.1133)" class="st1 st3">PCo1 (16.95%)</text>
+<text transform="matrix(6.123234e-17 -1 1 6.123234e-17 416.1533 460.6777)" class="st1 st3">PCo2 (10.42%)</text>
+<circle cx="481.2" cy="338" r="3.2"/>
+<circle class="st401" cx="481.2" cy="338" r="2.2"/>
+<circle cx="449.5" cy="383" r="3.2"/>
+<circle class="st436" cx="449.5" cy="383" r="2.2"/>
+<circle cx="441.6" cy="377.7" r="3.2"/>
+<circle class="st423" cx="441.6" cy="377.7" r="2.2"/>
+<circle cx="440.3" cy="380.7" r="3.2"/>
+<circle class="st436" cx="440.3" cy="380.7" r="2.2"/>
+<circle cx="459.7" cy="387.3" r="3.2"/>
+<circle class="st180" cx="459.7" cy="387.3" r="2.2"/>
+<circle cx="446.2" cy="369.2" r="3.2"/>
+<circle class="st411" cx="446.2" cy="369.2" r="2.2"/>
+<circle cx="445.9" cy="362.4" r="3.2"/>
+<circle class="st381" cx="445.9" cy="362.4" r="2.2"/>
+<circle cx="462.9" cy="391.9" r="3.2"/>
+<circle class="st180" cx="462.9" cy="391.9" r="2.2"/>
+<circle cx="470.1" cy="342.6" r="3.2"/>
+<circle class="st182" cx="470.1" cy="342.6" r="2.2"/>
+<circle cx="476.9" cy="358.7" r="3.2"/>
+<circle class="st180" cx="476.9" cy="358.7" r="2.2"/>
+<circle cx="490.2" cy="361.8" r="3.2"/>
+<circle class="st417" cx="490.2" cy="361.8" r="2.2"/>
+<circle cx="489.8" cy="354.2" r="3.2"/>
+<circle class="st444" cx="489.8" cy="354.2" r="2.2"/>
+<circle cx="441" cy="411.1" r="3.2"/>
+<circle class="st176" cx="441" cy="411.1" r="2.2"/>
+<circle cx="439.7" cy="419.2" r="3.2"/>
+<circle class="st417" cx="439.7" cy="419.2" r="2.2"/>
+<circle cx="449.1" cy="451.5" r="3.2"/>
+<circle class="st352" cx="449.1" cy="451.5" r="2.2"/>
+<circle cx="482.1" cy="362.6" r="3.2"/>
+<circle class="st318" cx="482.1" cy="362.6" r="2.2"/>
+<circle cx="470.7" cy="357.9" r="3.2"/>
+<circle class="st423" cx="470.7" cy="357.9" r="2.2"/>
+<circle cx="469" cy="356.8" r="3.2"/>
+<circle class="st176" cx="469" cy="356.8" r="2.2"/>
+<circle cx="464.2" cy="343.3" r="3.2"/>
+<circle class="st180" cx="464.2" cy="343.3" r="2.2"/>
+<circle cx="463.9" cy="331" r="3.2"/>
+<circle class="st229" cx="463.9" cy="331" r="2.2"/>
+<circle cx="457.2" cy="364.3" r="3.2"/>
+<circle class="st352" cx="457.2" cy="364.3" r="2.2"/>
+<circle cx="444.4" cy="391.8" r="3.2"/>
+<circle class="st445" cx="444.4" cy="391.8" r="2.2"/>
+<circle cx="446.7" cy="390.7" r="3.2"/>
+<circle class="st176" cx="446.7" cy="390.7" r="2.2"/>
+<circle cx="456.7" cy="385.1" r="3.2"/>
+<circle class="st383" cx="456.7" cy="385.1" r="2.2"/>
+<circle cx="452.5" cy="376.3" r="3.2"/>
+<circle class="st176" cx="452.5" cy="376.3" r="2.2"/>
+<circle cx="449.2" cy="391.7" r="3.2"/>
+<circle class="st383" cx="449.2" cy="391.7" r="2.2"/>
+<circle cx="474" cy="338.7" r="3.2"/>
+<circle class="st389" cx="474" cy="338.7" r="2.2"/>
+<circle cx="456.4" cy="354.9" r="3.2"/>
+<circle class="st168" cx="456.4" cy="354.9" r="2.2"/>
+<circle cx="476.1" cy="352.5" r="3.2"/>
+<circle class="st399" cx="476.1" cy="352.5" r="2.2"/>
+<circle cx="479.9" cy="352.2" r="3.2"/>
+<circle class="st396" cx="479.9" cy="352.2" r="2.2"/>
+<circle cx="448.8" cy="388.1" r="3.2"/>
+<circle class="st229" cx="448.8" cy="388.1" r="2.2"/>
+<circle cx="471.5" cy="406.3" r="3.2"/>
+<circle class="st383" cx="471.5" cy="406.3" r="2.2"/>
+<circle cx="453.1" cy="359.8" r="3.2"/>
+<circle class="st383" cx="453.1" cy="359.8" r="2.2"/>
+<circle cx="487.6" cy="373.3" r="3.2"/>
+<circle class="st453" cx="487.6" cy="373.3" r="2.2"/>
+<circle cx="461.4" cy="360.1" r="3.2"/>
+<circle class="st182" cx="461.4" cy="360.1" r="2.2"/>
+<circle cx="457.4" cy="359" r="3.2"/>
+<circle class="st180" cx="457.4" cy="359" r="2.2"/>
+<circle cx="481.2" cy="343.1" r="3.2"/>
+<circle class="st352" cx="481.2" cy="343.1" r="2.2"/>
+<circle cx="456.7" cy="365.1" r="3.2"/>
+<circle class="st180" cx="456.7" cy="365.1" r="2.2"/>
+<circle cx="458.3" cy="377.1" r="3.2"/>
+<circle class="st201" cx="458.3" cy="377.1" r="2.2"/>
+<circle cx="473.7" cy="345.4" r="3.2"/>
+<circle class="st182" cx="473.7" cy="345.4" r="2.2"/>
+<circle cx="476" cy="348.9" r="3.2"/>
+<circle class="st417" cx="476" cy="348.9" r="2.2"/>
+<circle cx="495.2" cy="339.3" r="3.2"/>
+<circle class="st318" cx="495.2" cy="339.3" r="2.2"/>
+<circle cx="479.2" cy="336.4" r="3.2"/>
+<circle class="st453" cx="479.2" cy="336.4" r="2.2"/>
+<circle cx="494.7" cy="336.4" r="3.2"/>
+<circle class="st229" cx="494.7" cy="336.4" r="2.2"/>
+<circle cx="454" cy="362.7" r="3.2"/>
+<circle class="st417" cx="454" cy="362.7" r="2.2"/>
+<circle cx="451.6" cy="347.4" r="3.2"/>
+<circle class="st383" cx="451.6" cy="347.4" r="2.2"/>
+<circle cx="447.9" cy="361.5" r="3.2"/>
+<circle class="st396" cx="447.9" cy="361.5" r="2.2"/>
+<circle cx="454.8" cy="341.6" r="3.2"/>
+<circle class="st176" cx="454.8" cy="341.6" r="2.2"/>
+<circle cx="455.5" cy="363.1" r="3.2"/>
+<circle class="st412" cx="455.5" cy="363.1" r="2.2"/>
+<circle cx="465.4" cy="409" r="3.2"/>
+<circle class="st168" cx="465.4" cy="409" r="2.2"/>
+<circle cx="472.7" cy="447.3" r="3.2"/>
+<circle class="st229" cx="472.7" cy="447.3" r="2.2"/>
+<circle cx="474.7" cy="447.5" r="3.2"/>
+<circle class="st182" cx="474.7" cy="447.5" r="2.2"/>
+<circle cx="478.2" cy="451.2" r="3.2"/>
+<circle class="st453" cx="478.2" cy="451.2" r="2.2"/>
+<circle cx="438.1" cy="375.8" r="3.2"/>
+<circle class="st352" cx="438.1" cy="375.8" r="2.2"/>
+<circle cx="438.4" cy="363.7" r="3.2"/>
+<circle class="st352" cx="438.4" cy="363.7" r="2.2"/>
+<circle cx="472.2" cy="323.7" r="3.2"/>
+<circle class="st383" cx="472.2" cy="323.7" r="2.2"/>
+<circle cx="474.1" cy="314.7" r="3.2"/>
+<circle class="st417" cx="474.1" cy="314.7" r="2.2"/>
+<circle cx="481.6" cy="359.9" r="3.2"/>
+<circle class="st176" cx="481.6" cy="359.9" r="2.2"/>
+<circle cx="459.3" cy="365.8" r="3.2"/>
+<circle class="st352" cx="459.3" cy="365.8" r="2.2"/>
+<circle cx="451.8" cy="357.8" r="3.2"/>
+<circle class="st176" cx="451.8" cy="357.8" r="2.2"/>
+<circle cx="466.1" cy="387.9" r="3.2"/>
+<circle class="st383" cx="466.1" cy="387.9" r="2.2"/>
+<circle cx="466" cy="389.6" r="3.2"/>
+<circle class="st176" cx="466" cy="389.6" r="2.2"/>
+<circle cx="479.8" cy="382.1" r="3.2"/>
+<circle class="st383" cx="479.8" cy="382.1" r="2.2"/>
+<circle cx="490.6" cy="385.5" r="3.2"/>
+<circle class="st201" cx="490.6" cy="385.5" r="2.2"/>
+<circle cx="476.2" cy="402.3" r="3.2"/>
+<circle class="st201" cx="476.2" cy="402.3" r="2.2"/>
+<circle cx="449.7" cy="347.6" r="3.2"/>
+<circle class="st180" cx="449.7" cy="347.6" r="2.2"/>
+<circle cx="448.7" cy="344.5" r="3.2"/>
+<circle class="st180" cx="448.7" cy="344.5" r="2.2"/>
+<circle cx="442.3" cy="391.7" r="3.2"/>
+<circle class="st417" cx="442.3" cy="391.7" r="2.2"/>
+<circle cx="444.2" cy="393" r="3.2"/>
+<circle class="st201" cx="444.2" cy="393" r="2.2"/>
+<circle cx="511.5" cy="381.5" r="3.2"/>
+<circle class="st383" cx="511.5" cy="381.5" r="2.2"/>
+<circle cx="515.9" cy="392.1" r="3.2"/>
+<circle class="st436" cx="515.9" cy="392.1" r="2.2"/>
+<circle cx="516.5" cy="389.3" r="3.2"/>
+<circle class="st229" cx="516.5" cy="389.3" r="2.2"/>
+<circle cx="437.9" cy="399.9" r="3.2"/>
+<circle class="st182" cx="437.9" cy="399.9" r="2.2"/>
+<circle cx="454.7" cy="458.8" r="3.2"/>
+<circle class="st180" cx="454.7" cy="458.8" r="2.2"/>
+<circle cx="468.4" cy="473.6" r="3.2"/>
+<circle class="st412" cx="468.4" cy="473.6" r="2.2"/>
+<circle cx="467.7" cy="412.3" r="3.2"/>
+<circle class="st444" cx="467.7" cy="412.3" r="2.2"/>
+<circle cx="449.3" cy="437.1" r="3.2"/>
+<circle class="st408" cx="449.3" cy="437.1" r="2.2"/>
+<circle cx="451.5" cy="399.4" r="3.2"/>
+<circle class="st182" cx="451.5" cy="399.4" r="2.2"/>
+<circle cx="484.7" cy="376.7" r="3.2"/>
+<circle class="st445" cx="484.7" cy="376.7" r="2.2"/>
+<circle cx="479.3" cy="378.5" r="3.2"/>
+<circle class="st180" cx="479.3" cy="378.5" r="2.2"/>
+<circle cx="466.5" cy="349.4" r="3.2"/>
+<circle class="st181" cx="466.5" cy="349.4" r="2.2"/>
+<circle cx="453.6" cy="357.9" r="3.2"/>
+<circle class="st168" cx="453.6" cy="357.9" r="2.2"/>
+<circle cx="449.1" cy="355.4" r="3.2"/>
+<circle class="st423" cx="449.1" cy="355.4" r="2.2"/>
+<circle cx="506.5" cy="411.9" r="3.2"/>
+<circle class="st168" cx="506.5" cy="411.9" r="2.2"/>
+<circle cx="474.9" cy="398.7" r="3.2"/>
+<circle class="st168" cx="474.9" cy="398.7" r="2.2"/>
+<circle cx="476.5" cy="403" r="3.2"/>
+<circle class="st436" cx="476.5" cy="403" r="2.2"/>
+<circle cx="453.9" cy="435.1" r="3.2"/>
+<circle class="st408" cx="453.9" cy="435.1" r="2.2"/>
+<circle cx="462.9" cy="342" r="3.2"/>
+<circle class="st383" cx="462.9" cy="342" r="2.2"/>
+<circle cx="462" cy="342.2" r="3.2"/>
+<circle class="st383" cx="462" cy="342.2" r="2.2"/>
+<circle cx="461" cy="362.2" r="3.2"/>
+<circle class="st383" cx="461" cy="362.2" r="2.2"/>
+<circle cx="463.3" cy="351" r="3.2"/>
+<circle class="st180" cx="463.3" cy="351" r="2.2"/>
+<circle cx="457.9" cy="355.4" r="3.2"/>
+<circle class="st417" cx="457.9" cy="355.4" r="2.2"/>
+<circle cx="444.2" cy="371.6" r="3.2"/>
+<circle class="st176" cx="444.2" cy="371.6" r="2.2"/>
+<circle cx="443.6" cy="370.9" r="3.2"/>
+<circle class="st352" cx="443.6" cy="370.9" r="2.2"/>
+<circle cx="468.2" cy="363.5" r="3.2"/>
+<circle class="st407" cx="468.2" cy="363.5" r="2.2"/>
+<circle cx="455" cy="359.6" r="3.2"/>
+<circle class="st400" cx="455" cy="359.6" r="2.2"/>
+<circle cx="455.4" cy="385.1" r="3.2"/>
+<circle class="st365" cx="455.4" cy="385.1" r="2.2"/>
+<circle cx="453.2" cy="369.5" r="3.2"/>
+<circle class="st402" cx="453.2" cy="369.5" r="2.2"/>
+<circle cx="451.2" cy="415.1" r="3.2"/>
+<circle class="st318" cx="451.2" cy="415.1" r="2.2"/>
+<circle cx="459.9" cy="419.9" r="3.2"/>
+<circle class="st383" cx="459.9" cy="419.9" r="2.2"/>
+<circle cx="455.2" cy="419.4" r="3.2"/>
+<circle class="st383" cx="455.2" cy="419.4" r="2.2"/>
+<circle cx="466.9" cy="386" r="3.2"/>
+<circle class="st400" cx="466.9" cy="386" r="2.2"/>
+<circle cx="485.5" cy="329.8" r="3.2"/>
+<circle class="st400" cx="485.5" cy="329.8" r="2.2"/>
+<circle cx="478.5" cy="346.3" r="3.2"/>
+<circle class="st229" cx="478.5" cy="346.3" r="2.2"/>
+<circle cx="473.7" cy="351.3" r="3.2"/>
+<circle class="st191" cx="473.7" cy="351.3" r="2.2"/>
+<circle cx="480.9" cy="332.3" r="3.2"/>
+<circle class="st182" cx="480.9" cy="332.3" r="2.2"/>
+<circle cx="468.6" cy="347.9" r="3.2"/>
+<circle class="st454" cx="468.6" cy="347.9" r="2.2"/>
+<circle cx="445.8" cy="414.1" r="3.2"/>
+<circle class="st436" cx="445.8" cy="414.1" r="2.2"/>
+<circle cx="457.4" cy="435.5" r="3.2"/>
+<circle class="st381" cx="457.4" cy="435.5" r="2.2"/>
+<circle cx="470.9" cy="353.1" r="3.2"/>
+<circle class="st454" cx="470.9" cy="353.1" r="2.2"/>
+<circle cx="470.1" cy="347.4" r="3.2"/>
+<circle class="st454" cx="470.1" cy="347.4" r="2.2"/>
+<circle cx="457.2" cy="365.4" r="3.2"/>
+<circle class="st181" cx="457.2" cy="365.4" r="2.2"/>
+<circle cx="479.4" cy="346.9" r="3.2"/>
+<circle class="st426" cx="479.4" cy="346.9" r="2.2"/>
+<circle cx="485.6" cy="330.4" r="3.2"/>
+<circle class="st383" cx="485.6" cy="330.4" r="2.2"/>
+<circle cx="502.6" cy="342.2" r="3.2"/>
+<circle class="st436" cx="502.6" cy="342.2" r="2.2"/>
+<circle cx="522.4" cy="345.3" r="3.2"/>
+<circle class="st176" cx="522.4" cy="345.3" r="2.2"/>
+<circle cx="480.6" cy="332.2" r="3.2"/>
+<circle class="st423" cx="480.6" cy="332.2" r="2.2"/>
+<circle cx="464.6" cy="335.7" r="3.2"/>
+<circle class="st182" cx="464.6" cy="335.7" r="2.2"/>
+<circle cx="459.5" cy="347.7" r="3.2"/>
+<circle class="st229" cx="459.5" cy="347.7" r="2.2"/>
+<circle cx="484.9" cy="463.9" r="3.2"/>
+<circle class="st400" cx="484.9" cy="463.9" r="2.2"/>
+<circle cx="461.6" cy="360.2" r="3.2"/>
+<circle class="st387" cx="461.6" cy="360.2" r="2.2"/>
+<circle cx="453.2" cy="348.7" r="3.2"/>
+<circle class="st445" cx="453.2" cy="348.7" r="2.2"/>
+<circle cx="463.8" cy="349.8" r="3.2"/>
+<circle class="st180" cx="463.8" cy="349.8" r="2.2"/>
+<circle cx="468.2" cy="380" r="3.2"/>
+<circle class="st191" cx="468.2" cy="380" r="2.2"/>
+<circle cx="463" cy="340.8" r="3.2"/>
+<circle class="st436" cx="463" cy="340.8" r="2.2"/>
+<circle cx="468" cy="360.4" r="3.2"/>
+<circle class="st383" cx="468" cy="360.4" r="2.2"/>
+<circle cx="476.7" cy="315.5" r="3.2"/>
+<circle class="st352" cx="476.7" cy="315.5" r="2.2"/>
+<circle cx="474.1" cy="312.2" r="3.2"/>
+<circle class="st445" cx="474.1" cy="312.2" r="2.2"/>
+<circle cx="496.8" cy="315" r="3.2"/>
+<circle class="st423" cx="496.8" cy="315" r="2.2"/>
+<circle cx="494.2" cy="451.3" r="3.2"/>
+<circle class="st180" cx="494.2" cy="451.3" r="2.2"/>
+<circle cx="523.6" cy="388.9" r="3.2"/>
+<circle class="st417" cx="523.6" cy="388.9" r="2.2"/>
+<circle cx="502.7" cy="398.9" r="3.2"/>
+<circle class="st444" cx="502.7" cy="398.9" r="2.2"/>
+<circle cx="466.7" cy="347.7" r="3.2"/>
+<circle class="st412" cx="466.7" cy="347.7" r="2.2"/>
+<circle cx="471.5" cy="339.8" r="3.2"/>
+<circle class="st408" cx="471.5" cy="339.8" r="2.2"/>
+<circle cx="464.5" cy="344.4" r="3.2"/>
+<circle class="st229" cx="464.5" cy="344.4" r="2.2"/>
+<circle cx="463" cy="377.1" r="3.2"/>
+<circle class="st229" cx="463" cy="377.1" r="2.2"/>
+<circle cx="487.3" cy="380.5" r="3.2"/>
+<circle class="st342" cx="487.3" cy="380.5" r="2.2"/>
+<circle cx="474.6" cy="376.9" r="3.2"/>
+<circle class="st378" cx="474.6" cy="376.9" r="2.2"/>
+<circle cx="461.4" cy="380.6" r="3.2"/>
+<circle class="st376" cx="461.4" cy="380.6" r="2.2"/>
+<circle cx="503.3" cy="353.9" r="3.2"/>
+<circle class="st155" cx="503.3" cy="353.9" r="2.2"/>
+<circle cx="509.8" cy="310.9" r="3.2"/>
+<circle class="st408" cx="509.8" cy="310.9" r="2.2"/>
+<circle cx="449.6" cy="364" r="3.2"/>
+<circle class="st176" cx="449.6" cy="364" r="2.2"/>
+<circle cx="450.5" cy="366.2" r="3.2"/>
+<circle class="st383" cx="450.5" cy="366.2" r="2.2"/>
+<circle cx="492.9" cy="366.5" r="3.2"/>
+<circle class="st168" cx="492.9" cy="366.5" r="2.2"/>
+<circle cx="491" cy="341.5" r="3.2"/>
+<circle class="st454" cx="491" cy="341.5" r="2.2"/>
+<circle cx="482.7" cy="345.9" r="3.2"/>
+<circle class="st182" cx="482.7" cy="345.9" r="2.2"/>
+<circle cx="487.9" cy="328.3" r="3.2"/>
+<circle class="st387" cx="487.9" cy="328.3" r="2.2"/>
+<circle cx="470.2" cy="335.1" r="3.2"/>
+<circle class="st168" cx="470.2" cy="335.1" r="2.2"/>
+<circle cx="469" cy="332.1" r="3.2"/>
+<circle class="st182" cx="469" cy="332.1" r="2.2"/>
+<circle cx="464.1" cy="380.4" r="3.2"/>
+<circle class="st454" cx="464.1" cy="380.4" r="2.2"/>
+<circle cx="545.3" cy="350.3" r="3.2"/>
+<circle class="st187" cx="545.3" cy="350.3" r="2.2"/>
+<circle cx="553.5" cy="382.3" r="3.2"/>
+<circle class="st407" cx="553.5" cy="382.3" r="2.2"/>
+<circle cx="546.7" cy="384.2" r="3.2"/>
+<circle class="st455" cx="546.7" cy="384.2" r="2.2"/>
+<circle cx="509.4" cy="377.5" r="3.2"/>
+<circle class="st389" cx="509.4" cy="377.5" r="2.2"/>
+<circle cx="495.7" cy="331.7" r="3.2"/>
+<circle class="st365" cx="495.7" cy="331.7" r="2.2"/>
+<circle cx="481.1" cy="341.3" r="3.2"/>
+<circle class="st176" cx="481.1" cy="341.3" r="2.2"/>
+<circle cx="474.2" cy="335.1" r="3.2"/>
+<circle class="st417" cx="474.2" cy="335.1" r="2.2"/>
+<circle cx="496.6" cy="358.5" r="3.2"/>
+<circle class="st318" cx="496.6" cy="358.5" r="2.2"/>
+<circle cx="581" cy="310.7" r="3.2"/>
+<circle class="st332" cx="581" cy="310.7" r="2.2"/>
+<circle cx="577.4" cy="311.3" r="3.2"/>
+<circle class="st456" cx="577.4" cy="311.3" r="2.2"/>
+<circle cx="465.9" cy="455.5" r="3.2"/>
+<circle class="st201" cx="465.9" cy="455.5" r="2.2"/>
+<circle cx="468.8" cy="460.4" r="3.2"/>
+<circle class="st400" cx="468.8" cy="460.4" r="2.2"/>
+<circle cx="469.7" cy="460.5" r="3.2"/>
+<circle class="st182" cx="469.7" cy="460.5" r="2.2"/>
+<circle cx="550.5" cy="318.9" r="3.2"/>
+<circle class="st168" cx="550.5" cy="318.9" r="2.2"/>
+<circle cx="578.3" cy="321.9" r="3.2"/>
+<circle class="st60" cx="578.3" cy="321.9" r="2.2"/>
+<circle cx="537.6" cy="302.7" r="3.2"/>
+<circle class="st180" cx="537.6" cy="302.7" r="2.2"/>
+<circle cx="519.2" cy="334.9" r="3.2"/>
+<circle class="st400" cx="519.2" cy="334.9" r="2.2"/>
+<circle cx="530.4" cy="339.3" r="3.2"/>
+<circle class="st168" cx="530.4" cy="339.3" r="2.2"/>
+<circle cx="465" cy="454.7" r="3.2"/>
+<circle class="st417" cx="465" cy="454.7" r="2.2"/>
+<circle cx="462.7" cy="453.3" r="3.2"/>
+<circle class="st180" cx="462.7" cy="453.3" r="2.2"/>
+<circle cx="479.5" cy="336" r="3.2"/>
+<circle class="st352" cx="479.5" cy="336" r="2.2"/>
+<circle cx="490.6" cy="329.9" r="3.2"/>
+<circle class="st383" cx="490.6" cy="329.9" r="2.2"/>
+<circle cx="459.9" cy="360.4" r="3.2"/>
+<circle class="st229" cx="459.9" cy="360.4" r="2.2"/>
+<circle cx="468.5" cy="359.3" r="3.2"/>
+<circle class="st399" cx="468.5" cy="359.3" r="2.2"/>
+<circle cx="469.4" cy="366.7" r="3.2"/>
+<circle class="st436" cx="469.4" cy="366.7" r="2.2"/>
+<circle cx="463" cy="367.7" r="3.2"/>
+<circle class="st318" cx="463" cy="367.7" r="2.2"/>
+<circle cx="460.8" cy="421.9" r="3.2"/>
+<circle class="st168" cx="460.8" cy="421.9" r="2.2"/>
+<circle cx="475.3" cy="461" r="3.2"/>
+<circle class="st400" cx="475.3" cy="461" r="2.2"/>
+<circle cx="466.5" cy="458.5" r="3.2"/>
+<circle class="st168" cx="466.5" cy="458.5" r="2.2"/>
+<circle cx="482.8" cy="362" r="3.2"/>
+<circle class="st229" cx="482.8" cy="362" r="2.2"/>
+<circle cx="465.2" cy="371.7" r="3.2"/>
+<circle class="st180" cx="465.2" cy="371.7" r="2.2"/>
+<circle cx="470.2" cy="371.7" r="3.2"/>
+<circle class="st180" cx="470.2" cy="371.7" r="2.2"/>
+<circle cx="467.2" cy="371.3" r="3.2"/>
+<circle class="st417" cx="467.2" cy="371.3" r="2.2"/>
+<circle cx="455.6" cy="354.4" r="3.2"/>
+<circle class="st418" cx="455.6" cy="354.4" r="2.2"/>
+<circle cx="461.5" cy="357.2" r="3.2"/>
+<circle class="st387" cx="461.5" cy="357.2" r="2.2"/>
+<circle cx="518.8" cy="353.9" r="3.2"/>
+<circle class="st342" cx="518.8" cy="353.9" r="2.2"/>
+<circle cx="462.6" cy="353.2" r="3.2"/>
+<circle class="st383" cx="462.6" cy="353.2" r="2.2"/>
+<circle cx="462.6" cy="353" r="3.2"/>
+<circle class="st383" cx="462.6" cy="353" r="2.2"/>
+<circle cx="466.4" cy="349.7" r="3.2"/>
+<circle class="st454" cx="466.4" cy="349.7" r="2.2"/>
+<circle cx="465.1" cy="352.4" r="3.2"/>
+<circle class="st444" cx="465.1" cy="352.4" r="2.2"/>
+<circle cx="588.3" cy="328.8" r="3.2"/>
+<circle class="st374" cx="588.3" cy="328.8" r="2.2"/>
+<circle cx="500.1" cy="464.1" r="3.2"/>
+<circle class="st444" cx="500.1" cy="464.1" r="2.2"/>
+<circle cx="478.4" cy="458.3" r="3.2"/>
+<circle class="st412" cx="478.4" cy="458.3" r="2.2"/>
+<circle cx="451" cy="434.5" r="3.2"/>
+<circle class="st417" cx="451" cy="434.5" r="2.2"/>
+<circle cx="449.9" cy="428.7" r="3.2"/>
+<circle class="st180" cx="449.9" cy="428.7" r="2.2"/>
+<circle cx="477.9" cy="330.3" r="3.2"/>
+<circle class="st176" cx="477.9" cy="330.3" r="2.2"/>
+<circle cx="479.6" cy="328.8" r="3.2"/>
+<circle class="st383" cx="479.6" cy="328.8" r="2.2"/>
+<circle cx="467.7" cy="344.3" r="3.2"/>
+<circle class="st180" cx="467.7" cy="344.3" r="2.2"/>
+<circle cx="513.3" cy="362.8" r="3.2"/>
+<circle class="st383" cx="513.3" cy="362.8" r="2.2"/>
+<circle cx="471.6" cy="326.3" r="3.2"/>
+<circle class="st176" cx="471.6" cy="326.3" r="2.2"/>
+<circle cx="481.6" cy="323.4" r="3.2"/>
+<circle class="st383" cx="481.6" cy="323.4" r="2.2"/>
+<circle cx="478.3" cy="357.6" r="3.2"/>
+<circle class="st168" cx="478.3" cy="357.6" r="2.2"/>
+<circle cx="486.7" cy="354" r="3.2"/>
+<circle class="st168" cx="486.7" cy="354" r="2.2"/>
+<circle cx="454.9" cy="438.3" r="3.2"/>
+<circle class="st168" cx="454.9" cy="438.3" r="2.2"/>
+<circle cx="455.2" cy="441.4" r="3.2"/>
+<circle class="st417" cx="455.2" cy="441.4" r="2.2"/>
+<circle cx="456.5" cy="444.6" r="3.2"/>
+<circle class="st201" cx="456.5" cy="444.6" r="2.2"/>
+<circle cx="621.1" cy="368.6" r="3.2"/>
+<circle class="st20" cx="621.1" cy="368.6" r="2.2"/>
+<circle cx="622.9" cy="344.1" r="3.2"/>
+<circle class="st349" cx="622.9" cy="344.1" r="2.2"/>
+<circle cx="459.1" cy="334.2" r="3.2"/>
+<circle class="st201" cx="459.1" cy="334.2" r="2.2"/>
+<circle cx="466.7" cy="326.5" r="3.2"/>
+<circle class="st454" cx="466.7" cy="326.5" r="2.2"/>
+<circle cx="445.6" cy="370.4" r="3.2"/>
+<circle class="st229" cx="445.6" cy="370.4" r="2.2"/>
+<circle cx="448.6" cy="356.3" r="3.2"/>
+<circle class="st454" cx="448.6" cy="356.3" r="2.2"/>
+<circle cx="464.3" cy="409.4" r="3.2"/>
+<circle class="st182" cx="464.3" cy="409.4" r="2.2"/>
+<circle cx="463.7" cy="400.6" r="3.2"/>
+<circle class="st168" cx="463.7" cy="400.6" r="2.2"/>
+<circle cx="566.3" cy="389.4" r="3.2"/>
+<circle class="st157" cx="566.3" cy="389.4" r="2.2"/>
+<circle cx="550.2" cy="314.9" r="3.2"/>
+<circle class="st417" cx="550.2" cy="314.9" r="2.2"/>
+<circle cx="471.4" cy="365" r="3.2"/>
+<circle class="st353" cx="471.4" cy="365" r="2.2"/>
+<circle cx="481.8" cy="372.1" r="3.2"/>
+<circle class="st181" cx="481.8" cy="372.1" r="2.2"/>
+<circle cx="481.3" cy="333" r="3.2"/>
+<circle class="st412" cx="481.3" cy="333" r="2.2"/>
+<circle cx="478.1" cy="329.7" r="3.2"/>
+<circle class="st417" cx="478.1" cy="329.7" r="2.2"/>
+<circle cx="501" cy="328.5" r="3.2"/>
+<circle class="st352" cx="501" cy="328.5" r="2.2"/>
+<circle cx="497.6" cy="327.5" r="3.2"/>
+<circle class="st383" cx="497.6" cy="327.5" r="2.2"/>
+<circle cx="479.5" cy="331.3" r="3.2"/>
+<circle class="st399" cx="479.5" cy="331.3" r="2.2"/>
+<circle cx="467.5" cy="349.7" r="3.2"/>
+<circle class="st455" cx="467.5" cy="349.7" r="2.2"/>
+<circle cx="487.4" cy="320.4" r="3.2"/>
+<circle class="st378" cx="487.4" cy="320.4" r="2.2"/>
+<circle cx="489.5" cy="307.8" r="3.2"/>
+<circle class="st423" cx="489.5" cy="307.8" r="2.2"/>
+<circle cx="465" cy="336" r="3.2"/>
+<circle class="st418" cx="465" cy="336" r="2.2"/>
+<circle cx="462.6" cy="333.5" r="3.2"/>
+<circle class="st181" cx="462.6" cy="333.5" r="2.2"/>
+<circle cx="450" cy="335" r="3.2"/>
+<circle class="st423" cx="450" cy="335" r="2.2"/>
+<circle cx="450.1" cy="337.9" r="3.2"/>
+<circle class="st408" cx="450.1" cy="337.9" r="2.2"/>
+<circle cx="474.5" cy="346.5" r="3.2"/>
+<circle class="st181" cx="474.5" cy="346.5" r="2.2"/>
+<circle cx="481.4" cy="314.7" r="3.2"/>
+<circle class="st409" cx="481.4" cy="314.7" r="2.2"/>
+<circle cx="492" cy="454.1" r="3.2"/>
+<circle class="st399" cx="492" cy="454.1" r="2.2"/>
+<circle cx="486.1" cy="353.3" r="3.2"/>
+<circle class="st396" cx="486.1" cy="353.3" r="2.2"/>
+<circle cx="493.6" cy="350.7" r="3.2"/>
+<circle class="st387" cx="493.6" cy="350.7" r="2.2"/>
+<circle cx="510.9" cy="317.7" r="3.2"/>
+<circle class="st182" cx="510.9" cy="317.7" r="2.2"/>
+<circle cx="503.8" cy="327" r="3.2"/>
+<circle class="st181" cx="503.8" cy="327" r="2.2"/>
+<circle cx="494.6" cy="364.6" r="3.2"/>
+<circle class="st436" cx="494.6" cy="364.6" r="2.2"/>
+<circle cx="497" cy="366.7" r="3.2"/>
+<circle class="st436" cx="497" cy="366.7" r="2.2"/>
+<circle cx="514" cy="351.5" r="3.2"/>
+<circle class="st318" cx="514" cy="351.5" r="2.2"/>
+<circle cx="472" cy="366.9" r="3.2"/>
+<circle class="st181" cx="472" cy="366.9" r="2.2"/>
+<circle cx="462.4" cy="397.7" r="3.2"/>
+<circle class="st411" cx="462.4" cy="397.7" r="2.2"/>
+<circle cx="461.3" cy="390.8" r="3.2"/>
+<circle class="st365" cx="461.3" cy="390.8" r="2.2"/>
+<circle cx="618.4" cy="380.3" r="3.2"/>
+<circle class="st424" cx="618.4" cy="380.3" r="2.2"/>
+<circle cx="621.5" cy="381.3" r="3.2"/>
+<circle class="st395" cx="621.5" cy="381.3" r="2.2"/>
+<circle cx="533.6" cy="360.5" r="3.2"/>
+<circle class="st398" cx="533.6" cy="360.5" r="2.2"/>
+<circle cx="456" cy="360.3" r="3.2"/>
+<circle class="st399" cx="456" cy="360.3" r="2.2"/>
+<circle cx="456.2" cy="357.7" r="3.2"/>
+<circle class="st418" cx="456.2" cy="357.7" r="2.2"/>
+<circle cx="443.5" cy="348" r="3.2"/>
+<circle class="st383" cx="443.5" cy="348" r="2.2"/>
+<circle cx="443.7" cy="353" r="3.2"/>
+<circle class="st180" cx="443.7" cy="353" r="2.2"/>
+<circle cx="624.1" cy="370.1" r="3.2"/>
+<circle class="st389" cx="624.1" cy="370.1" r="2.2"/>
+<circle cx="470" cy="316.1" r="3.2"/>
+<circle class="st176" cx="470" cy="316.1" r="2.2"/>
+<circle cx="474.9" cy="311.7" r="3.2"/>
+<circle class="st176" cx="474.9" cy="311.7" r="2.2"/>
+<circle cx="617.8" cy="348" r="3.2"/>
+<circle class="st317" cx="617.8" cy="348" r="2.2"/>
+<circle cx="617.8" cy="347.7" r="3.2"/>
+<circle class="st388" cx="617.8" cy="347.7" r="2.2"/>
+<circle cx="630.2" cy="395.5" r="3.2"/>
+<circle class="st430" cx="630.2" cy="395.5" r="2.2"/>
+<circle cx="483.4" cy="368.3" r="3.2"/>
+<circle class="st430" cx="483.4" cy="368.3" r="2.2"/>
+<circle cx="470.8" cy="357.3" r="3.2"/>
+<circle class="st201" cx="470.8" cy="357.3" r="2.2"/>
+<circle cx="637.8" cy="384.8" r="3.2"/>
+<circle class="st73" cx="637.8" cy="384.8" r="2.2"/>
+<circle cx="455.8" cy="329.7" r="3.2"/>
+<circle class="st176" cx="455.8" cy="329.7" r="2.2"/>
+<circle cx="459.9" cy="325.2" r="3.2"/>
+<circle class="st180" cx="459.9" cy="325.2" r="2.2"/>
+<circle cx="465.7" cy="323.6" r="3.2"/>
+<circle class="st176" cx="465.7" cy="323.6" r="2.2"/>
+<circle cx="476.7" cy="318.9" r="3.2"/>
+<circle class="st383" cx="476.7" cy="318.9" r="2.2"/>
+<circle cx="474.5" cy="319.1" r="3.2"/>
+<circle class="st383" cx="474.5" cy="319.1" r="2.2"/>
+<circle cx="646.7" cy="399.9" r="3.2"/>
+<circle class="st361" cx="646.7" cy="399.9" r="2.2"/>
+<circle cx="652.9" cy="400" r="3.2"/>
+<circle class="st457" cx="652.9" cy="400" r="2.2"/>
+<circle cx="646.9" cy="400.1" r="3.2"/>
+<circle class="st343" cx="646.9" cy="400.1" r="2.2"/>
+<circle cx="459.5" cy="340.4" r="3.2"/>
+<circle class="st201" cx="459.5" cy="340.4" r="2.2"/>
+<circle cx="457.5" cy="338.1" r="3.2"/>
+<circle class="st412" cx="457.5" cy="338.1" r="2.2"/>
+<circle cx="488.8" cy="464.8" r="3.2"/>
+<circle class="st174" cx="488.8" cy="464.8" r="2.2"/>
+<circle cx="478.4" cy="461.9" r="3.2"/>
+<circle class="st352" cx="478.4" cy="461.9" r="2.2"/>
+<circle cx="479" cy="460.8" r="3.2"/>
+<circle class="st352" cx="479" cy="460.8" r="2.2"/>
+<circle cx="602.7" cy="379.8" r="3.2"/>
+<circle class="st398" cx="602.7" cy="379.8" r="2.2"/>
+<circle cx="590.6" cy="374.3" r="3.2"/>
+<circle class="st411" cx="590.6" cy="374.3" r="2.2"/>
+<circle cx="454.4" cy="394.3" r="3.2"/>
+<circle class="st180" cx="454.4" cy="394.3" r="2.2"/>
+<circle cx="455.7" cy="388.6" r="3.2"/>
+<circle class="st444" cx="455.7" cy="388.6" r="2.2"/>
+<circle cx="453.2" cy="388.7" r="3.2"/>
+<circle class="st454" cx="453.2" cy="388.7" r="2.2"/>
+<circle cx="543.9" cy="346.5" r="3.2"/>
+<circle class="st181" cx="543.9" cy="346.5" r="2.2"/>
+<circle cx="567.5" cy="347.6" r="3.2"/>
+<circle class="st167" cx="567.5" cy="347.6" r="2.2"/>
+<circle cx="544.2" cy="341.2" r="3.2"/>
+<circle class="st181" cx="544.2" cy="341.2" r="2.2"/>
+<circle cx="642.7" cy="401.5" r="3.2"/>
+<circle class="st407" cx="642.7" cy="401.5" r="2.2"/>
+<circle cx="464.1" cy="347.4" r="3.2"/>
+<circle class="st383" cx="464.1" cy="347.4" r="2.2"/>
+<circle cx="643.8" cy="401.2" r="3.2"/>
+<circle class="st377" cx="643.8" cy="401.2" r="2.2"/>
+<circle cx="644.9" cy="401.4" r="3.2"/>
+<circle class="st377" cx="644.9" cy="401.4" r="2.2"/>
+<circle cx="647.2" cy="402" r="3.2"/>
+<circle class="st393" cx="647.2" cy="402" r="2.2"/>
+<circle cx="474.8" cy="456.5" r="3.2"/>
+<circle class="st401" cx="474.8" cy="456.5" r="2.2"/>
+<circle cx="475.9" cy="419.2" r="3.2"/>
+<circle class="st381" cx="475.9" cy="419.2" r="2.2"/>
+<circle cx="490.1" cy="450.4" r="3.2"/>
+<circle class="st379" cx="490.1" cy="450.4" r="2.2"/>
+<circle cx="488.1" cy="337.4" r="3.2"/>
+<circle class="st383" cx="488.1" cy="337.4" r="2.2"/>
+<circle cx="505.4" cy="321.3" r="3.2"/>
+<circle class="st229" cx="505.4" cy="321.3" r="2.2"/>
+<circle cx="498.4" cy="322.2" r="3.2"/>
+<circle class="st229" cx="498.4" cy="322.2" r="2.2"/>
+<circle cx="470.6" cy="350.3" r="3.2"/>
+<circle class="st365" cx="470.6" cy="350.3" r="2.2"/>
+<circle cx="463.7" cy="352.4" r="3.2"/>
+<circle class="st191" cx="463.7" cy="352.4" r="2.2"/>
+<circle cx="469.3" cy="343.5" r="3.2"/>
+<circle class="st176" cx="469.3" cy="343.5" r="2.2"/>
+<circle cx="469.8" cy="340.7" r="3.2"/>
+<circle class="st352" cx="469.8" cy="340.7" r="2.2"/>
+<circle cx="501.6" cy="380.4" r="3.2"/>
+<circle class="st229" cx="501.6" cy="380.4" r="2.2"/>
+<circle cx="498.7" cy="381.4" r="3.2"/>
+<circle class="st423" cx="498.7" cy="381.4" r="2.2"/>
+<circle cx="500" cy="381.6" r="3.2"/>
+<circle class="st423" cx="500" cy="381.6" r="2.2"/>
+<circle cx="656.7" cy="396.4" r="3.2"/>
+<circle class="st226" cx="656.7" cy="396.4" r="2.2"/>
+<circle cx="649.2" cy="394.2" r="3.2"/>
+<circle class="st264" cx="649.2" cy="394.2" r="2.2"/>
+<circle cx="642.5" cy="393.9" r="3.2"/>
+<circle class="st250" cx="642.5" cy="393.9" r="2.2"/>
+<circle cx="502.6" cy="346.4" r="3.2"/>
+<circle class="st387" cx="502.6" cy="346.4" r="2.2"/>
+<circle cx="502.9" cy="349.3" r="3.2"/>
+<circle class="st155" cx="502.9" cy="349.3" r="2.2"/>
+<circle cx="466.6" cy="365.6" r="3.2"/>
+<circle class="st174" cx="466.6" cy="365.6" r="2.2"/>
+<circle cx="449.5" cy="369.5" r="3.2"/>
+<circle class="st174" cx="449.5" cy="369.5" r="2.2"/>
+<circle cx="448.6" cy="366.8" r="3.2"/>
+<circle class="st174" cx="448.6" cy="366.8" r="2.2"/>
+<circle cx="471.4" cy="344.2" r="3.2"/>
+<circle class="st174" cx="471.4" cy="344.2" r="2.2"/>
+<circle cx="515.4" cy="355.2" r="3.2"/>
+<circle class="st176" cx="515.4" cy="355.2" r="2.2"/>
+<circle cx="484.6" cy="366.6" r="3.2"/>
+<circle class="st174" cx="484.6" cy="366.6" r="2.2"/>
+<circle cx="615.4" cy="352.6" r="3.2"/>
+<circle class="st91" cx="615.4" cy="352.6" r="2.2"/>
+<circle cx="449.4" cy="346.4" r="3.2"/>
+<circle class="st180" cx="449.4" cy="346.4" r="2.2"/>
+<circle cx="446" cy="345.9" r="3.2"/>
+<circle class="st417" cx="446" cy="345.9" r="2.2"/>
+<circle cx="450.7" cy="346.8" r="3.2"/>
+<circle class="st454" cx="450.7" cy="346.8" r="2.2"/>
+<circle cx="610.1" cy="396.2" r="3.2"/>
+<circle class="st458" cx="610.1" cy="396.2" r="2.2"/>
+<circle cx="442.7" cy="387" r="3.2"/>
+<circle class="st454" cx="442.7" cy="387" r="2.2"/>
+<circle cx="444.5" cy="372.5" r="3.2"/>
+<circle class="st408" cx="444.5" cy="372.5" r="2.2"/>
+<circle cx="446" cy="375.9" r="3.2"/>
+<circle class="st436" cx="446" cy="375.9" r="2.2"/>
+<circle cx="475.6" cy="358.7" r="3.2"/>
+<circle class="st399" cx="475.6" cy="358.7" r="2.2"/>
+<circle cx="476.7" cy="349.9" r="3.2"/>
+<circle class="st387" cx="476.7" cy="349.9" r="2.2"/>
+<circle cx="476.2" cy="349.9" r="3.2"/>
+<circle class="st455" cx="476.2" cy="349.9" r="2.2"/>
+<circle cx="452.9" cy="349.9" r="3.2"/>
+<circle class="st182" cx="452.9" cy="349.9" r="2.2"/>
+<circle cx="453.5" cy="342" r="3.2"/>
+<circle class="st181" cx="453.5" cy="342" r="2.2"/>
+<circle cx="493" cy="333.5" r="3.2"/>
+<circle class="st176" cx="493" cy="333.5" r="2.2"/>
+<circle cx="491.9" cy="318.5" r="3.2"/>
+<circle class="st180" cx="491.9" cy="318.5" r="2.2"/>
+<circle cx="448.9" cy="359.6" r="3.2"/>
+<circle class="st408" cx="448.9" cy="359.6" r="2.2"/>
+<circle cx="451.9" cy="358.1" r="3.2"/>
+<circle class="st444" cx="451.9" cy="358.1" r="2.2"/>
+<circle cx="458.7" cy="361" r="3.2"/>
+<circle class="st180" cx="458.7" cy="361" r="2.2"/>
+<circle cx="476.5" cy="323.1" r="3.2"/>
+<circle class="st444" cx="476.5" cy="323.1" r="2.2"/>
+<circle cx="479.6" cy="320.3" r="3.2"/>
+<circle class="st430" cx="479.6" cy="320.3" r="2.2"/>
+<circle cx="588.5" cy="333.7" r="3.2"/>
+<circle class="st371" cx="588.5" cy="333.7" r="2.2"/>
+<circle cx="456.5" cy="420.6" r="3.2"/>
+<circle class="st436" cx="456.5" cy="420.6" r="2.2"/>
+<circle cx="457" cy="427.8" r="3.2"/>
+<circle class="st417" cx="457" cy="427.8" r="2.2"/>
+<circle cx="458.2" cy="428" r="3.2"/>
+<circle class="st229" cx="458.2" cy="428" r="2.2"/>
+<circle cx="566.3" cy="328.7" r="3.2"/>
+<circle class="st340" cx="566.3" cy="328.7" r="2.2"/>
+<circle cx="553.9" cy="320.2" r="3.2"/>
+<circle class="st191" cx="553.9" cy="320.2" r="2.2"/>
+<circle cx="545.6" cy="311" r="3.2"/>
+<circle class="st191" cx="545.6" cy="311" r="2.2"/>
+<circle cx="544.3" cy="307.3" r="3.2"/>
+<circle class="st191" cx="544.3" cy="307.3" r="2.2"/>
+<circle cx="644.9" cy="388.6" r="3.2"/>
+<circle class="st155" cx="644.9" cy="388.6" r="2.2"/>
+<circle cx="641.1" cy="383" r="3.2"/>
+<circle class="st306" cx="641.1" cy="383" r="2.2"/>
+<circle cx="516.1" cy="328.2" r="3.2"/>
+<circle class="st401" cx="516.1" cy="328.2" r="2.2"/>
+<circle cx="563.7" cy="364.5" r="3.2"/>
+<circle class="st459" cx="563.7" cy="364.5" r="2.2"/>
+<circle cx="553.6" cy="453.6" r="3.2"/>
+<circle class="st201" cx="553.6" cy="453.6" r="2.2"/>
+<circle cx="459.4" cy="349.3" r="3.2"/>
+<circle class="st181" cx="459.4" cy="349.3" r="2.2"/>
+<circle cx="459.7" cy="355.3" r="3.2"/>
+<circle class="st182" cx="459.7" cy="355.3" r="2.2"/>
+<circle cx="490.9" cy="341.2" r="3.2"/>
+<circle class="st365" cx="490.9" cy="341.2" r="2.2"/>
+<ellipse transform="matrix(0.1602 -0.9871 0.9871 0.1602 162.8431 980.7014)" cx="657.8" cy="394.7" rx="3.2" ry="3.2"/>
+<path class="st329" d="M657.8,392.4c1.2,0,2.2,1,2.2,2.2s-1,2.2-2.2,2.2c-1.2,0-2.2-1-2.2-2.2S656.5,392.4,657.8,392.4z"/>
+<circle cx="456.1" cy="372" r="3.2"/>
+<circle class="st176" cx="456.1" cy="372" r="2.2"/>
+<circle cx="456.1" cy="372.7" r="3.2"/>
+<circle class="st176" cx="456.1" cy="372.7" r="2.2"/>
+<circle cx="578.5" cy="374" r="3.2"/>
+<circle class="st93" cx="578.5" cy="374" r="2.2"/>
+<circle cx="528.4" cy="336.6" r="3.2"/>
+<circle class="st436" cx="528.4" cy="336.6" r="2.2"/>
+<circle cx="610.3" cy="348.7" r="3.2"/>
+<circle class="st400" cx="610.3" cy="348.7" r="2.2"/>
+<circle cx="489.6" cy="368.9" r="3.2"/>
+<circle class="st399" cx="489.6" cy="368.9" r="2.2"/>
+<circle cx="490.1" cy="344.6" r="3.2"/>
+<circle class="st186" cx="490.1" cy="344.6" r="2.2"/>
+<circle cx="495.3" cy="341" r="3.2"/>
+<circle class="st155" cx="495.3" cy="341" r="2.2"/>
+<circle cx="496.3" cy="333.9" r="3.2"/>
+<circle class="st168" cx="496.3" cy="333.9" r="2.2"/>
+<circle cx="500" cy="339.5" r="3.2"/>
+<circle class="st317" cx="500" cy="339.5" r="2.2"/>
+<circle cx="495.9" cy="312.4" r="3.2"/>
+<circle class="st374" cx="495.9" cy="312.4" r="2.2"/>
+<circle cx="599.9" cy="380.3" r="3.2"/>
+<circle class="st32" cx="599.9" cy="380.3" r="2.2"/>
+<circle cx="606.7" cy="380.7" r="3.2"/>
+<circle class="st195" cx="606.7" cy="380.7" r="2.2"/>
+<circle cx="459.1" cy="333.1" r="3.2"/>
+<circle class="st176" cx="459.1" cy="333.1" r="2.2"/>
+<circle cx="460.6" cy="328.2" r="3.2"/>
+<circle class="st180" cx="460.6" cy="328.2" r="2.2"/>
+<circle cx="505.5" cy="315.8" r="3.2"/>
+<circle class="st453" cx="505.5" cy="315.8" r="2.2"/>
+<circle cx="462.7" cy="375.7" r="3.2"/>
+<circle class="st378" cx="462.7" cy="375.7" r="2.2"/>
+<circle cx="646.7" cy="381.3" r="3.2"/>
+<circle class="st186" cx="646.7" cy="381.3" r="2.2"/>
+<circle cx="651.2" cy="383.7" r="3.2"/>
+<circle class="st317" cx="651.2" cy="383.7" r="2.2"/>
+<circle cx="643" cy="382.3" r="3.2"/>
+<circle class="st349" cx="643" cy="382.3" r="2.2"/>
+<circle cx="468" cy="377" r="3.2"/>
+<circle class="st166" cx="468" cy="377" r="2.2"/>
+<circle cx="462.2" cy="377.2" r="3.2"/>
+<circle class="st432" cx="462.2" cy="377.2" r="2.2"/>
+<circle cx="454.4" cy="380.8" r="3.2"/>
+<circle class="st229" cx="454.4" cy="380.8" r="2.2"/>
+<circle cx="457.5" cy="386.4" r="3.2"/>
+<circle class="st182" cx="457.5" cy="386.4" r="2.2"/>
+<circle cx="465.7" cy="449.9" r="3.2"/>
+<circle class="st176" cx="465.7" cy="449.9" r="2.2"/>
+<circle cx="461" cy="414" r="3.2"/>
+<circle class="st201" cx="461" cy="414" r="2.2"/>
+<circle cx="439.5" cy="359.1" r="3.2"/>
+<circle class="st180" cx="439.5" cy="359.1" r="2.2"/>
+<circle cx="443.9" cy="353" r="3.2"/>
+<circle class="st454" cx="443.9" cy="353" r="2.2"/>
+<circle cx="455.9" cy="337.2" r="3.2"/>
+<circle class="st383" cx="455.9" cy="337.2" r="2.2"/>
+<circle cx="456" cy="340.1" r="3.2"/>
+<circle class="st176" cx="456" cy="340.1" r="2.2"/>
+<circle cx="485.3" cy="450.1" r="3.2"/>
+<circle class="st444" cx="485.3" cy="450.1" r="2.2"/>
+<circle cx="662.2" cy="390" r="3.2"/>
+<circle class="st66" cx="662.2" cy="390" r="2.2"/>
+<circle cx="613.8" cy="383.5" r="3.2"/>
+<circle class="st251" cx="613.8" cy="383.5" r="2.2"/>
+<circle cx="484.8" cy="325.3" r="3.2"/>
+<circle class="st229" cx="484.8" cy="325.3" r="2.2"/>
+<circle cx="467.9" cy="370.5" r="3.2"/>
+<circle class="st352" cx="467.9" cy="370.5" r="2.2"/>
+<circle cx="477.8" cy="326.8" r="3.2"/>
+<circle class="st423" cx="477.8" cy="326.8" r="2.2"/>
+<circle cx="603.3" cy="382.8" r="3.2"/>
+<circle class="st237" cx="603.3" cy="382.8" r="2.2"/>
+<circle cx="458.4" cy="338.2" r="3.2"/>
+<circle class="st444" cx="458.4" cy="338.2" r="2.2"/>
+<circle cx="502.1" cy="464.1" r="3.2"/>
+<circle class="st229" cx="502.1" cy="464.1" r="2.2"/>
+<circle cx="497.9" cy="454.3" r="3.2"/>
+<circle class="st428" cx="497.9" cy="454.3" r="2.2"/>
+<circle cx="475.1" cy="346.1" r="3.2"/>
+<circle class="st436" cx="475.1" cy="346.1" r="2.2"/>
+<circle cx="479.1" cy="353.4" r="3.2"/>
+<circle class="st453" cx="479.1" cy="353.4" r="2.2"/>
+<circle cx="502.6" cy="374.2" r="3.2"/>
+<circle class="st408" cx="502.6" cy="374.2" r="2.2"/>
+<circle cx="478.9" cy="351.6" r="3.2"/>
+<circle class="st436" cx="478.9" cy="351.6" r="2.2"/>
+<circle cx="475" cy="443.5" r="3.2"/>
+<circle class="st430" cx="475" cy="443.5" r="2.2"/>
+<circle cx="471.5" cy="410.3" r="3.2"/>
+<circle class="st423" cx="471.5" cy="410.3" r="2.2"/>
+<circle cx="548.9" cy="350.6" r="3.2"/>
+<circle class="st342" cx="548.9" cy="350.6" r="2.2"/>
+<circle cx="534.5" cy="324.2" r="3.2"/>
+<circle class="st365" cx="534.5" cy="324.2" r="2.2"/>
+<circle cx="508.1" cy="338.1" r="3.2"/>
+<circle class="st155" cx="508.1" cy="338.1" r="2.2"/>
+<circle cx="488.1" cy="309.6" r="3.2"/>
+<circle class="st383" cx="488.1" cy="309.6" r="2.2"/>
+<circle cx="460.7" cy="331.9" r="3.2"/>
+<circle class="st436" cx="460.7" cy="331.9" r="2.2"/>
+<circle cx="462.8" cy="370.9" r="3.2"/>
+<circle class="st378" cx="462.8" cy="370.9" r="2.2"/>
+<circle cx="464.5" cy="369.2" r="3.2"/>
+<circle class="st388" cx="464.5" cy="369.2" r="2.2"/>
+<circle cx="641.9" cy="383.7" r="3.2"/>
+<circle class="st45" cx="641.9" cy="383.7" r="2.2"/>
+<circle cx="622.6" cy="358" r="3.2"/>
+<circle class="st341" cx="622.6" cy="358" r="2.2"/>
+<circle cx="643.2" cy="382.1" r="3.2"/>
+<circle class="st332" cx="643.2" cy="382.1" r="2.2"/>
+<circle cx="479.7" cy="361.6" r="3.2"/>
+<circle class="st229" cx="479.7" cy="361.6" r="2.2"/>
+<circle cx="585.2" cy="370.5" r="3.2"/>
+<circle class="st390" cx="585.2" cy="370.5" r="2.2"/>
+<circle cx="559.3" cy="369" r="3.2"/>
+<circle class="st411" cx="559.3" cy="369" r="2.2"/>
+<circle cx="606.9" cy="368.6" r="3.2"/>
+<circle class="st389" cx="606.9" cy="368.6" r="2.2"/>
+<circle cx="535.3" cy="319.2" r="3.2"/>
+<circle class="st405" cx="535.3" cy="319.2" r="2.2"/>
+<circle cx="511.2" cy="390.5" r="3.2"/>
+<circle class="st226" cx="511.2" cy="390.5" r="2.2"/>
+<circle cx="536.5" cy="362.8" r="3.2"/>
+<circle class="st445" cx="536.5" cy="362.8" r="2.2"/>
+<circle cx="649.6" cy="378.6" r="3.2"/>
+<circle class="st378" cx="649.6" cy="378.6" r="2.2"/>
+<circle cx="653.8" cy="379.5" r="3.2"/>
+<circle class="st353" cx="653.8" cy="379.5" r="2.2"/>
+<circle cx="604.3" cy="357.1" r="3.2"/>
+<circle class="st376" cx="604.3" cy="357.1" r="2.2"/>
+<circle cx="605.5" cy="360" r="3.2"/>
+<circle class="st119" cx="605.5" cy="360" r="2.2"/>
+<circle cx="496.6" cy="463.1" r="3.2"/>
+<circle class="st318" cx="496.6" cy="463.1" r="2.2"/>
+<circle cx="502.1" cy="456.2" r="3.2"/>
+<circle class="st318" cx="502.1" cy="456.2" r="2.2"/>
+<image style="overflow:visible;enable-background:new    ;" width="72" height="564" xlink:href="488EF6DBC68C9715.png"  transform="matrix(0.3214 0 0 0.3214 684.2421 297.5587)">
+</image>
+<text transform="matrix(1 0 0 1 719.0391 483.1523)" class="st1 st247">0</text>
+<text transform="matrix(1 0 0 1 719.0391 455.8125)" class="st1 st247">0.1</text>
+<text transform="matrix(1 0 0 1 719.0391 428.4688)" class="st1 st247">0.2</text>
+<text transform="matrix(1 0 0 1 719.0391 401.1289)" class="st1 st247">0.3</text>
+<text transform="matrix(1 0 0 1 719.0391 373.7852)" class="st1 st247">0.4</text>
+<text transform="matrix(1 0 0 1 719.0391 346.4434)" class="st1 st247">0.5</text>
+<text transform="matrix(1 0 0 1 719.0391 319.1016)" class="st1 st247">0.6</text>
+<polyline class="st0" points="707.5,478.8 707.5,478.8 715.2,478.8 707.5,478.8 707.5,451.4 715.2,451.4 707.5,451.4 707.5,424.1 
+	715.2,424.1 707.5,424.1 707.5,396.7 715.2,396.7 707.5,396.7 707.5,369.4 715.2,369.4 707.5,369.4 707.5,342.1 715.2,342.1 
+	707.5,342.1 707.5,314.7 715.2,314.7 707.5,314.7 707.5,297.6 "/>
+</svg>
