@@ -151,3 +151,55 @@ function metacolor(metadata::AbstractVector, colorlevels::AbstractVector; missin
     color_dict = Dict(um[i] => colorlevels[i] for i in eachindex(um))
     return [ismissing(m) ? missing_color : color_dict[m] for m in metadata]
 end
+
+function convert2num(s)
+    ismissing(s) && return missing
+    typeof(s) <: Number && return s
+    if typeof(s) <: AbstractString
+        @warn "$s is a string"
+        s = occursin(".", s) ? parse(Float64, s) : parse(Int, s)
+        @info typeof(s)
+    end
+    return s
+end
+
+
+import Base.occursin
+occursin(::String, ::Missing) = missing
+occursin(::Regex, ::Missing) = missing
+
+
+function breastfeeding(row)
+    bf = any([
+        occursin(r"[Bb]reast", row[:milkFeedingMethods]),
+        occursin(r"[Yy]es", row[:exclusivelyNursed]),
+        (
+            !ismissing(row[:exclusiveFormulaFed]) &&
+            !ismissing(row[:exclusivelyNursed]) &&
+            occursin(r"[Nn]o", row[:exclusiveFormulaFed]) &&
+            occursin(r"[Nn]o", row[:exclusivelyNursed])
+        ),
+        row[:typicalNumberOfFeedsFromBreast] > 0,
+        row[:typicalNumberOfEpressedMilkFeeds] > 0,
+        row[:lengthExclusivelyNursedMonths] > 0,
+        row[:noLongerFeedBreastmilkAge] > 0
+        ])
+    return !ismissing(bf) && bf
+end
+
+function formulafeeding(row)
+    ff = any([
+        occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
+        occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
+        (
+            !ismissing(row[:exclusiveFormulaFed]) &&
+            !ismissing(row[:exclusivelyNursed]) &&
+            occursin(r"[Nn]o", row[:exclusiveFormulaFed]) &&
+            occursin(r"[Nn]o", row[:exclusivelyNursed])
+        ),
+        !ismissing(row[:amountFormulaPerFeed]),
+        !ismissing(row[:formulaTypicalType]),
+        row[:amountFormulaPerFeed] > 0
+        ])
+    return !ismissing(ff) && ff
+end

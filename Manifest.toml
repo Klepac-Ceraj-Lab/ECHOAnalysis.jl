@@ -47,9 +47,9 @@ version = "0.1.0+"
 
 [[CSV]]
 deps = ["CategoricalArrays", "DataFrames", "Dates", "Mmap", "Parsers", "PooledArrays", "Profile", "Tables", "Unicode", "WeakRefStrings"]
-git-tree-sha1 = "f64241c9688ae3eb003bce26ffd9ed863cfb824c"
+git-tree-sha1 = "557a6b534b1ffc40abf7ddf1c4dec3b37ef05959"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-version = "0.5.2"
+version = "0.5.4"
 
 [[Calculus]]
 deps = ["Compat"]
@@ -191,9 +191,9 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[Distributions]]
 deps = ["LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns"]
-git-tree-sha1 = "56a158bc0abe4af5d4027af2275fde484261ca6d"
+git-tree-sha1 = "4ae0ff1a3a556383f7b1b004f5fb964b26ac96c9"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.19.2"
+version = "0.20.0"
 
 [[DocStringExtensions]]
 deps = ["LibGit2", "Markdown", "Pkg", "Test"]
@@ -256,6 +256,12 @@ git-tree-sha1 = "537b61986d8a5fd21e577541f8f0735e481eb3ed"
 uuid = "28b8d3ca-fb5f-59d9-8090-bfdbd6d07a71"
 version = "0.39.1"
 
+[[GeometryTypes]]
+deps = ["ColorTypes", "FixedPointNumbers", "IterTools", "LinearAlgebra", "StaticArrays", "Test"]
+git-tree-sha1 = "a9bc71d5a7eb971b61db353eb66c4a1de0551d8c"
+uuid = "4d00f742-c7ba-57c2-abde-4428a4b178cb"
+version = "0.7.3"
+
 [[Highlights]]
 deps = ["DocStringExtensions", "InteractiveUtils", "REPL", "Test"]
 git-tree-sha1 = "286ff83d696dd92748e603a3219618d9e407e872"
@@ -271,6 +277,12 @@ deps = ["AxisAlgorithms", "LinearAlgebra", "OffsetArrays", "Random", "Ratios", "
 git-tree-sha1 = "63665619f2b1a791d3c223acd8bc9155464f3dd3"
 uuid = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 version = "0.12.0"
+
+[[IterTools]]
+deps = ["SparseArrays", "Test"]
+git-tree-sha1 = "79246285c43602384e6f1943b3554042a3712056"
+uuid = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
+version = "1.1.1"
 
 [[IterableTables]]
 deps = ["DataValues", "IteratorInterfaceExtensions", "Requires", "TableTraits", "TableTraitsUtils", "Test"]
@@ -424,9 +436,9 @@ version = "0.10.3"
 
 [[Parsers]]
 deps = ["Dates", "Test"]
-git-tree-sha1 = "e2e65679cc0b70f2baeb504c8d99c2fc6d1a5cdc"
+git-tree-sha1 = "eaed2db080700f1013f0fc05667ecb2a082265a1"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "0.3.3"
+version = "0.3.5"
 
 [[Pkg]]
 deps = ["Dates", "LibGit2", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
@@ -445,10 +457,10 @@ uuid = "995b91a9-d308-5afd-9ec6-746e21dbc043"
 version = "0.5.8"
 
 [[Plots]]
-deps = ["Base64", "Contour", "Dates", "FixedPointNumbers", "GR", "JSON", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "Reexport", "Requires", "Showoff", "SparseArrays", "StaticArrays", "Statistics", "StatsBase", "Test", "UUIDs"]
-git-tree-sha1 = "5bcc6dbc8b7fe0823d9a63dde87d7d4542149693"
+deps = ["Base64", "Contour", "Dates", "FixedPointNumbers", "GR", "GeometryTypes", "JSON", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "Reexport", "Requires", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs"]
+git-tree-sha1 = "c446e51959578de01b5a4efa72ca6f2460e38196"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "0.24.0"
+version = "0.25.1"
 
 [[PooledArrays]]
 deps = ["Test"]
@@ -477,10 +489,10 @@ deps = ["Printf"]
 uuid = "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79"
 
 [[QuadGK]]
-deps = ["DataStructures", "LinearAlgebra", "Test"]
-git-tree-sha1 = "3ce467a8e76c6030d4c3786e7d3a73442017cdc0"
+deps = ["DataStructures", "LinearAlgebra"]
+git-tree-sha1 = "389fd27b958a33df5234772cc464b663b208273d"
 uuid = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
-version = "2.0.3"
+version = "2.0.4"
 
 [[RCall]]
 deps = ["CategoricalArrays", "Conda", "DataFrames", "DataStructures", "Dates", "Libdl", "Missings", "REPL", "Random", "Requires", "StatsModels", "Test", "WinReg"]
@@ -674,9 +686,9 @@ version = "1.1.3"
 
 [[WeakRefStrings]]
 deps = ["Random", "Test"]
-git-tree-sha1 = "033927a6a5a9f3881ad36ea736b915943977b22e"
+git-tree-sha1 = "9a0bb82eede528debe631b642eeb48a631a69bc2"
 uuid = "ea10d353-3f73-51f8-a26c-33c1cb351aa5"
-version = "0.6.0"
+version = "0.6.1"
 
 [[Weave]]
 deps = ["Base64", "Compat", "Dates", "Highlights", "JSON", "Markdown", "Mustache", "Pkg", "Printf", "REPL", "Requires", "Serialization", "Test", "YAML"]

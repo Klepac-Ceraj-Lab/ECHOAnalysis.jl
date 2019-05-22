@@ -92,6 +92,15 @@ description = """\
                 database, merged into long format."""
     date="2019-01-29"
 
+    [tables.metadata.sample_metadata]
+    path="data/metadata/metadata_with_brain.csv"
+    name="Merged Metadata"
+    description="""\
+                See Notebook 4 -
+                Contains selected metadata for each mgx sample\
+                unified by row."""
+    date="2019-01-29"
+
 
 [tables.biobakery]
 

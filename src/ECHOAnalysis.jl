@@ -6,7 +6,10 @@ export
     merge_tables,
     getmetadatum,
     getmetadata,
-    metacolor
+    metacolor,
+    convert2num
+    breastfeeding,
+    formulafeeding
 
 using DataFrames
 using CSV
