@@ -10,14 +10,14 @@ Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
 ```@example
+cd(dirname(@__FILE__))
 using ECHOAnalysis # hide
-cd(joinpath(dirname(pathof(ECHOAnalysis)), "..")) # hide
 ```
 
 ```@example 1
 using Pkg.TOML: parsefile
 
-files = parsefile("data/data.toml")
+files = parsefile("../../data/data.toml")
 println.(keys(files))
 files["description"]
 ```
@@ -108,5 +108,5 @@ for i in eachindex(allmeta[:value])
 end
 
 
-CSV.write("data/metadata/merged.csv", allmeta);
+CSV.write("../../data/metadata/merged.csv", allmeta);
 ```

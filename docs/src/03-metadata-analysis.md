@@ -9,6 +9,7 @@ I'm using the macros available from the [DataFramesMeta](https://github.com/Juli
 As an example, how many unique subjects do we have at least one sample for?
 
 ```@example 1
+cd(dirname(@__FILE__)) # hide
 using ECHOAnalysis # hide
 ```
 
@@ -19,7 +20,7 @@ using DataFramesMeta
 using PrettyTables
 using StatsPlots
 
-allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
+allmeta = CSV.File("../../data/metadata/merged.csv") |> DataFrame
 
 @linq allmeta |>
     select(:studyID) |>
@@ -38,8 +39,8 @@ histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 
-isdir("data/figures") || mkdir("data/figures") # hide
-savefig("data/figures/03-samples-per-subject.png") # hide
+isdir("../../data/figures") || mkdir("../../data/figures") # hide
+savefig("../../data/figures/03-samples-per-subject.png") # hide
 ```
 
 ![](../../data/figures/03-samples-per-subject.png)

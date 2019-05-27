@@ -13,7 +13,7 @@ using CSV, DataFrames
 using DataFramesMeta
 using PrettyTables
 
-tables = parsefile("data/data.toml")["tables"]
+tables = parsefile("../../data/data.toml")["tables"]
 biobakery = tables["biobakery"]
 ```
 
@@ -87,7 +87,7 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     title = "QC from Kneaddata", label=["Raw" "Final"],
     line=0)
 
-savefig("data/figures/03-knead-qc.svg"); # hide
+savefig("../../data/figures/03-knead-qc.svg"); # hide
 ```
 ![](../../data/figures/03-knead-qc.svg)
 
@@ -105,7 +105,7 @@ qc_stats = by(qc, :batch) do df
                   min=round(minimum(df[:final]) / 1e6, digits=2),
                   )
 end
-CSV.write("data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
+CSV.write("../../data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
 pretty_table(qc_stats)
 ```
 
@@ -128,7 +128,7 @@ using MicrobiomePlots
 using BiobakeryUtils
 using ColorBrewer
 
-tax = merge_tables("data/biobakery/metaphlan/", "_profile.tsv")
+tax = merge_tables("../../data/biobakery/metaphlan/", "_profile.tsv")
 # clean up sample names
 names!(tax,
     map(n-> Symbol(
@@ -189,7 +189,7 @@ dm = pairwise(BrayCurtis(), occurrences(abt))
 mds = fit(MDS, dm, distances=true)
 
 plot(mds, primary=false)
-savefig("data/figures/03-basic_pcoa.svg") # hide
+savefig("../../data/figures/03-basic_pcoa.svg") # hide
 ```
 
 ![(../../data/figures/03-basic_pcoa.svg)
@@ -203,7 +203,7 @@ function scree(mds)
 end
 
 scree(mds, primary=false, line=0)
-savefig("data/figures/03-scree.svg") # hide
+savefig("../../data/figures/03-scree.svg") # hide
 ```
 
 ![(../../data/figures/03-scree.svg)
@@ -220,7 +220,7 @@ scatter!([],[], color=color2[1], label="kids", legend=:topleft)
 scatter!([],[], color=color2[2], label="moms", legend=:topleft)
 title!("All samples taxonomic profiles")
 
-savefig("data/figures/03-taxonomic-profiles-moms-kids.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-moms-kids.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-moms-kids.svg)
@@ -230,7 +230,7 @@ p2 = plot(pco, marker=3, line=1,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
 
-savefig("data/figures/03-taxonomic-profiles-shannon.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-shannon.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-shannon.svg)
@@ -243,7 +243,7 @@ p3 = plot(pco, marker=3, line=1,
     zcolor=bacteroidetes, primary = false, color=:plasma,
     title="All samples, Bacteroidetes")
 
-savefig("data/figures/03-taxonomic-profiles-bacteroidetes.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-bacteroidetes.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-bacteroidetes.svg)
@@ -253,14 +253,14 @@ p4 = plot(pco, marker=3, line=1,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
 
-savefig("data/figures/03-taxonomic-profiles-firmicutes.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-firmicutes.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-firmicutes.svg)
 
 ```@example 2
 plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
-savefig("data/figures/03-taxonomic-profiles-grid.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-grid.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-grid.svg)
@@ -320,7 +320,7 @@ p5 = plot(kids_pco, marker=3, line=1,
     zcolor=shannon(kids), primary = false, color=:plasma,
     title="Kids, shannon diversity")
 
-savefig("data/figures/03-taxonomic-profiles-kids-shannon.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-kids-shannon.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-kids-shannon.svg)
@@ -348,7 +348,7 @@ plot(
         zcolor=kids_proteo, primary = false, color=:plasma,
         title="Kids, Proteobacteria"),
     )
-savefig("data/figures/03-taxonomic-profiles-kids-phyla.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-kids-phyla.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-kids-phyla.svg)
@@ -360,7 +360,7 @@ I'll use the [`getmetadata`]@ref function.
 #### Brain Data
 
 ```@example 2
-brainvol = CSV.read("data/brain/brain_volumes.csv")
+brainvol = CSV.read("../../data/brain/brain_volumes.csv")
 names!(brainvol, map(names(brainvol)) do n
                         replace(String(n), " "=>"_") |> lowercase |> Symbol
                     end
@@ -417,7 +417,7 @@ scatter!([],[], color=color2[4], label=unique(df[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(df[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomright)
 
-savefig("data/figures/03-taxonomic-profiles-kids-birth.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-kids-birth.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-kids-birth.svg)
@@ -457,7 +457,7 @@ end
 
 focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
 focusmeta[:formulafed] = formulafeeding.(eachrow(focusmeta))
-focusmeta |> CSV.write("data/metadata/metadata_with_brain.csv") # hide
+focusmeta |> CSV.write("../../data/metadata/metadata_with_brain.csv") # hide
 ```
 
 ```@example 2
@@ -484,7 +484,7 @@ scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
 scatter!([],[], color=color1[end], label="missing", legend=:bottomright)
 
-savefig("data/figures/03-taxonomic-profiles-kids-breastfeeding.svg") # hide
+savefig("../../data/figures/03-taxonomic-profiles-kids-breastfeeding.svg") # hide
 ```
 
 ![(../../data/figures/03-taxonomic-profiles-kids-breastfeeding.svg)
@@ -503,7 +503,7 @@ focusmeta[:correctedAgeDays] = [ismissing(x) ? missing : parse(Int, x) for x in 
 @df focusmeta scatter!(:correctedAgeDays, :csf_volume, label="csf", legend=:bottomright)
 title!("Brain Volumes")
 ylims!(0, 3e5)
-savefig("data/figures/03-brain-structures.svg") # hide
+savefig("../../data/figures/03-brain-structures.svg") # hide
 ```
 
 ![(../../data/figures/03-brain-structures.svg)
@@ -512,7 +512,7 @@ savefig("data/figures/03-brain-structures.svg") # hide
 wgr = focusmeta[:white_matter_volume] ./ focusmeta[:grey_matter_volume]
 @df focusmeta scatter(:correctedAgeDays, wgr, title="White/Grey Matter Ratio", primary=false,
     xlabel="Age in Days", ylabel="WMV / GMV")
-savefig("data/figures/03-brain-wgr.svg") # hide
+savefig("../../data/figures/03-brain-wgr.svg") # hide
 ```
 
 ![(../../data/figures/03-brain-wgr.svg)
@@ -521,7 +521,7 @@ savefig("data/figures/03-brain-wgr.svg") # hide
 gcr = focusmeta[:grey_matter_volume] ./ focusmeta[:csf_volume]
 @df focusmeta scatter(:correctedAgeDays, gcr, title="Grey Matter/CSF Ratio", primary=false,
     xlabel="Age in Days", ylabel="GMV / CSF")
-savefig("data/figures/03-brain-gcr.svg") #hide
+savefig("../../data/figures/03-brain-gcr.svg") #hide
 ```
 
 ![](../../data/figures/03-brain-gcr.svg)

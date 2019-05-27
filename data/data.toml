@@ -10,7 +10,7 @@ description = """\
 [tables.metadata]
 
     [tables.metadata.filemakerdb]
-    path="data/metadata/filemakerdb.csv"
+    path="../../data/metadata/filemakerdb.csv"
     name="FilemakerPro Database Export"
     description="""\
                 Using FilemakerPro Database from {{date}} \
@@ -73,18 +73,18 @@ description = """\
                 "WPPSI_III", \
                 and "Wppsi_IV", \
                 then ran metascrub.jl"""
-    log="data/metadata/filemakerdb.log"
+    log="../../data/metadata/filemakerdb.log"
     date="2019-04-03"
 
     [tables.metadata.samples]
-    path="data/metadata/fecal_samples.csv"
+    path="../../data/metadata/fecal_samples.csv"
     name="Fecal Samples DNA processing"
     description="""\
                 Downloaded "Everything" view from AirTable database"""
     date="2019-05-07"
 
     [tables.metadata.merged_metadata]
-    path="data/metadata/merged.csv"
+    path="../../data/metadata/merged.csv"
     name="Merged Metadata"
     description="""\
                 See Notebook 2 -
@@ -93,7 +93,7 @@ description = """\
     date="2019-01-29"
 
     [tables.metadata.sample_metadata]
-    path="data/metadata/metadata_with_brain.csv"
+    path="../../data/metadata/metadata_with_brain.csv"
     name="Merged Metadata"
     description="""\
                 See Notebook 4 -
@@ -105,40 +105,40 @@ description = """\
 [tables.biobakery]
 
     [tables.biobakery.kneaddata]
-    path="data/biobakery/kneaddata"
+    path="../../data/biobakery/kneaddata"
     name="Kneaddata read counts"
     description="need to vcat tables"
 
     [tables.biobakery.metaphlan2]
-    path="data/biobakery/"
+    path="../../data/biobakery/"
     suffix="profile"
 
     [tables.biobakery.humann2]
-    path="data/biobakery/"
+    path="../../data/biobakery/"
     suffix="genefamilies"
 
 [tables.mgxmetadata]
 
     [tables.mgxmetadata.all_long]
-    path="data/biobakery/mgxmetadata/mgxmetadata.csv"
+    path="../../data/biobakery/mgxmetadata/mgxmetadata.csv"
     name="See Notebook 2 - All metadata for mgx samples in long format"
 
     [tables.mgxmetadata.all_wide]
-    path="data/biobakery/mgxmetadata/mgxmetadatawide.csv"
+    path="../../data/biobakery/mgxmetadata/mgxmetadatawide.csv"
     name="See Notebook 2 - All metadata for mgx samples in wide format"
 
     [tables.mgxmetadata.tp0]
-    path="data/biobakery/mgxmetadata/mgxtp0.csv"
+    path="../../data/biobakery/mgxmetadata/mgxtp0.csv"
     name="See Notebook 2 - Wide table of timpoint-independent metadata for mgx samples"
 
     [tables.mgxmetadata.tps]
-    path="data/biobakery/mgxmetadata/mgxtps.csv"
+    path="../../data/biobakery/mgxmetadata/mgxtps.csv"
     name="See Notebook 2 - Wide table of timepoint-specific metadata for mgx samples"
 
 [tables.brain]
 
     [tables.brain.highres]
-    path="data/highres.csv"
+    path="../../data/highres.csv"
     name="High res structural and behavioral data"
     description="Table provided by Sean through Samepage"
     date="2018-05-12"
