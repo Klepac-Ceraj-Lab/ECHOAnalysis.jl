@@ -12,7 +12,6 @@ Parsing this file gives a set of nested key:value pairs.
 ```@example
 using ECHOAnalysis # hide
 cd(joinpath(dirname(pathof(ECHOAnalysis)), "..")) # hide
-pwd()
 ```
 
 ```@example 1
@@ -48,7 +47,7 @@ These are marked with `timepoint = 0`.
 Let's look at which variables that applies to:
 
 ```@example 1
-println.(allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique);
+allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique;
 ```
 
 Those all look reasonable!
@@ -66,7 +65,7 @@ samples = CSV.File(files["tables"]["metadata"]["samples"]["path"]) |> DataFrame
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
 samples = melt(samples, [:studyID, :timepoint, :sampleID], variable_name=:metadatum)
-filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID]]), samples)
+samples = filter(r-> !any(ismissing, [r[:studyID], r[:sampleID]]), samples)
 disallowmissing!(samples)
 samples[:parent_table] = "FecalProcessing";
 ```
@@ -109,5 +108,5 @@ for i in eachindex(allmeta[:value])
 end
 
 
-CSV.write("data/metadata/merged.csv", allmeta)
+CSV.write("data/metadata/merged.csv", allmeta);
 ```

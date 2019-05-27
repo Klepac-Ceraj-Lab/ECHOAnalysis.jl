@@ -4,8 +4,7 @@ All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
 ```@example 1
-using ECHOAnalysis
-cd(joinpath(dirname(pathof(ECHOAnalysis)), "..")) # hide
+using ECHOAnalysis # hide
 ```
 
 ```@example 1
@@ -41,7 +40,7 @@ for f in qc_files[2:end]
     global qc = vcat(qc, df)
 end
 
-pretty_table(qc)
+pretty_table(first(qc, 15))
 ```
 
 To keep the formatting of sample IDs consistant across data types,
@@ -54,7 +53,7 @@ qc[:Sample] = map(qc[:Sample]) do s
     resolve_sampleID(s)[:sample]
 end
 
-pretty_table(qc)
+pretty_table(first(qc,5))
 ```
 
 ```@example 1
@@ -62,7 +61,7 @@ pretty_table(qc)
 names!(qc,
     map(n-> Symbol(replace(String(n), " "=>"_")),
     names(qc)))
-pretty_table(qc)
+pretty_table(first(qc,5))
 ```
 
 I don't really care about each mate pair individually,
@@ -75,7 +74,7 @@ qc = @linq qc |>
             orphan = :final_orphan1 .+ :final_orphan2,
             final = :final_pair1 .+ :final_pair2,
             )
-
+pretty_table(first(qc,5)[[:batch, :raw, :trimmed, :orphan, :final]])
 ```
 
 ```@example 1
@@ -88,8 +87,10 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     title = "QC from Kneaddata", label=["Raw" "Final"],
     line=0)
 
-savefig("data/figures/03-knead-qc.svg") # hide
+savefig("data/figures/03-knead-qc.svg"); # hide
 ```
+![](../../data/figures/03-knead-qc.svg)
+
 
 These are a little more variable than I'd like.
 
@@ -98,17 +99,15 @@ using Statistics
 
 qc_stats = by(qc, :batch) do df
                 DataFrame(
-                  mean=mean(df[:final]) / 1e6,
-                  med=median(df[:final]) / 1e6,
-                  max=maximum(df[:final]) / 1e6,
-                  min=minimum(df[:final]) / 1e6,
+                  mean=round(mean(df[:final]) / 1e6, digits=2),
+                  med=round(median(df[:final]) / 1e6, digits=2),
+                  max=round(maximum(df[:final]) / 1e6, digits=2),
+                  min=round(minimum(df[:final]) / 1e6, digits=2),
                   )
 end
-```
-```@example 1
 CSV.write("data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
+pretty_table(qc_stats)
 ```
-
 
 ## Taxonomic Profiles
 
@@ -116,12 +115,14 @@ Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaph
 Each sample is run separately, and needs to be joined in a single table.
 I'll use the function [`merge_tables`]@ref
 
+
 ```@example 2
 using ECHOAnalysis
 using DataFrames
 using PrettyTables
 using CSV
 using Microbiome
+using MultivariateStats
 using StatsPlots
 using MicrobiomePlots
 using BiobakeryUtils
@@ -135,6 +136,7 @@ names!(tax,
         names(tax)
         )
     )
+pretty_table(first(tax, 10))
 ```
 
 Some analysis of the fungi:
@@ -171,29 +173,40 @@ let's look at the PCoA plots using BrayCurtis dissimilarity.
 ```@example 2
 spec = taxfilter(tax)
 phyla = taxfilter(tax, :phylum)
-spec |> pretty_table
+first(spec, 10) |> pretty_table
 ```
+
 
 ```@example 2
 abt = abundancetable(spec)
 pabt = abundancetable(phyla)
 relativeabundance!(abt)
-relativeabundance!(pabt)
-
-map(s-> startswith(s, "C"), sitenames(abt)) |> sum
-map(s-> startswith(s, "M"), sitenames(abt)) |> sum
-
-map(s-> startswith(s, "C") && occursin("F", s), sitenames(abt)) |> sum
-map(s-> startswith(s, "M") && occursin("F", s), sitenames(abt)) |> sum
-
-map(s-> startswith(s, "C") && occursin("E", s), sitenames(abt)) |> sum
-map(s-> startswith(s, "M") && occursin("E", s), sitenames(abt)) |> sum
-
-dm = getdm(spec, BrayCurtis())
-pco = pcoa(dm)
-
-plot(pco, legend=false, alpha=0.4)
+relativeabundance!(pabt);
 ```
+
+```@example 2
+dm = pairwise(BrayCurtis(), occurrences(abt))
+mds = fit(MDS, dm, distances=true)
+
+plot(mds, primary=false)
+savefig("data/figures/03-basic_pcoa.svg") # hide
+```
+
+![(../../data/figures/03-basic_pcoa.svg)
+
+```@example 2
+
+function scree(mds)
+    ev = eigvals(mds)
+    var_explained = [v / sum(ev) for v in ev]
+    bar(var_explained)
+end
+
+scree(mds, primary=false, line=0)
+savefig("data/figures/03-scree.svg") # hide
+```
+
+![(../../data/figures/03-scree.svg)
 
 ```@example 2
 color1 = ColorBrewer.palette("Set1", 9)
@@ -207,16 +220,20 @@ scatter!([],[], color=color2[1], label="kids", legend=:topleft)
 scatter!([],[], color=color2[2], label="moms", legend=:topleft)
 title!("All samples taxonomic profiles")
 
-savefig("data/figures/03-taxonomic-profiles-moms-kids.svg")
+savefig("data/figures/03-taxonomic-profiles-moms-kids.svg") # hide
 ```
+
+![(../../data/figures/03-taxonomic-profiles-moms-kids.svg)
 
 ```@example 2
 p2 = plot(pco, marker=3, line=1,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
 
-savefig("data/figures/03-taxonomic-profiles-shannon.svg")
+savefig("data/figures/03-taxonomic-profiles-shannon.svg") # hide
 ```
+
+![(../../data/figures/03-taxonomic-profiles-shannon.svg)
 
 ```@example 2
 bacteroidetes = vec(Matrix(phyla[phyla[1] .== "Bacteroidetes", 2:end]))
@@ -226,17 +243,27 @@ p3 = plot(pco, marker=3, line=1,
     zcolor=bacteroidetes, primary = false, color=:plasma,
     title="All samples, Bacteroidetes")
 
-savefig("data/figures/03-taxonomic-profiles-bacteroidetes.svg")
+savefig("data/figures/03-taxonomic-profiles-bacteroidetes.svg") # hide
+```
 
+![(../../data/figures/03-taxonomic-profiles-bacteroidetes.svg)
+
+```@example 2
 p4 = plot(pco, marker=3, line=1,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
 
-savefig("data/figures/03-taxonomic-profiles-firmicutes.svg")
-
-plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
-savefig("data/figures/03-taxonomic-profiles-grid.svg")
+savefig("data/figures/03-taxonomic-profiles-firmicutes.svg") # hide
 ```
+
+![(../../data/figures/03-taxonomic-profiles-firmicutes.svg)
+
+```@example 2
+plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
+savefig("data/figures/03-taxonomic-profiles-grid.svg") # hide
+```
+
+![(../../data/figures/03-taxonomic-profiles-grid.svg)
 
 #### Kids
 
@@ -289,17 +316,16 @@ ukids = view(kids, sites=unique_kids)
 kids_dm = getdm(kids, BrayCurtis())
 kids_pco = pcoa(kids_dm)
 
-plot(kids_pco, primary=false)
-```
-
-```@example 2
 p5 = plot(kids_pco, marker=3, line=1,
     zcolor=shannon(kids), primary = false, color=:plasma,
     title="Kids, shannon diversity")
 
-savefig("data/figures/03-taxonomic-profiles-kids-shannon.svg")
+savefig("data/figures/03-taxonomic-profiles-kids-shannon.svg") # hide
+```
 
-pkids = view(pabt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
+![(../../data/figures/03-taxonomic-profiles-kids-shannon.svg)
+
+```@example pkids = view(pabt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(pabt))))
 upkids = view(pkids, sites=unique_kids)
 
@@ -322,8 +348,10 @@ plot(
         zcolor=kids_proteo, primary = false, color=:plasma,
         title="Kids, Proteobacteria"),
     )
-savefig("data/figures/03-taxonomic-profiles-kids-phyla.svg")
+savefig("data/figures/03-taxonomic-profiles-kids-phyla.svg") # hide
 ```
+
+![(../../data/figures/03-taxonomic-profiles-kids-phyla.svg)
 
 In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
@@ -374,15 +402,9 @@ focusmeta[:ginisimpson] = ginisimpson(kids)
 
 focusmeta |> CSV.write("focus.csv") # hide
 
-.!ismissing.(focusmeta[:correctedAgeDays]) |> sum
-.!ismissing.(focusmeta[:white_matter_volume]) |> sum
-focusmeta[:breastfed] .| focusmeta[:formulafed] |> sum
 map(row-> any(!ismissing,
         [row[:mullen_VerbalComposite], row[:VCI_Percentile], row[:languagePercentile]]), eachrow(focusmeta)) |> sum
-
-.!ismissing.(focusmeta[unique_kids, :motherSES]) |> sum
-.!ismissing.(focusmeta[unique_kids, :birthType]) |> sum
-.!ismissing.(focusmeta[unique_kids, :motherSES]) |> sum
+println() # hide
 ```
 
 ##### Birth type
@@ -395,8 +417,10 @@ scatter!([],[], color=color2[4], label=unique(df[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(df[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomright)
 
-savefig("data/figures/03-taxonomic-profiles-kids-birth.svg")
+savefig("data/figures/03-taxonomic-profiles-kids-birth.svg") # hide
 ```
+
+![(../../data/figures/03-taxonomic-profiles-kids-birth.svg)
 
 ##### Breastfeeding
 
@@ -414,6 +438,9 @@ I'd like to distill all of this into:
 Both of these might be `true`.
 In principle, they shouldn't both be `false`.
 
+I defined [`breastfeeding`]@ref and [`formulafeeding`]@ref
+to calculate these values.
+
 ```@example 2
 # Make this function return `missing` instead of throwing an error
 import Base.occursin
@@ -425,30 +452,6 @@ for c in [:typicalNumberOfFeedsFromBreast, :typicalNumberOfEpressedMilkFeeds,
           :lengthExclusivelyNursedMonths, :noLongerFeedBreastmilkAge,
           :amountFormulaPerFeed]
     focusmeta[c] = [ismissing(x) ? missing : parse(Float64, x) for x in focusmeta[c]]
-end
-
-
-function breastfeeding(row)
-    bf = any([
-        occursin(r"[Bb]reast", row[:milkFeedingMethods]),
-        occursin(r"[Yy]es", row[:exclusivelyNursed]),
-        row[:typicalNumberOfFeedsFromBreast] > 0,
-        row[:typicalNumberOfEpressedMilkFeeds] > 0,
-        row[:lengthExclusivelyNursedMonths] > 0,
-        row[:noLongerFeedBreastmilkAge] > 0
-        ])
-    return !ismissing(bf) && bf
-end
-
-function formulafeeding(row)
-    ff = any([
-        occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
-        occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
-        !ismissing(row[:amountFormulaPerFeed]),
-        !ismissing(row[:formulaTypicalType]),
-        row[:amountFormulaPerFeed] > 0
-        ])
-    return !ismissing(ff) && ff
 end
 
 
@@ -481,9 +484,12 @@ scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
 scatter!([],[], color=color1[end], label="missing", legend=:bottomright)
 
-savefig("data/figures/03-taxonomic-profiles-kids-breastfeeding.svg")
+savefig("data/figures/03-taxonomic-profiles-kids-breastfeeding.svg") # hide
+```
 
-filter(focusmeta) do row
+![(../../data/figures/03-taxonomic-profiles-kids-breastfeeding.svg)
+
+```@example filter(focusmeta) do row
     !row[:breastfed] && !row[:formulafed]
 end |> CSV.write("breastfeeding_missing.csv")
 ```
@@ -497,23 +503,28 @@ focusmeta[:correctedAgeDays] = [ismissing(x) ? missing : parse(Int, x) for x in 
 @df focusmeta scatter!(:correctedAgeDays, :csf_volume, label="csf", legend=:bottomright)
 title!("Brain Volumes")
 ylims!(0, 3e5)
-savefig("data/figures/03-brain-structures.svg")
+savefig("data/figures/03-brain-structures.svg") # hide
 ```
+
+![(../../data/figures/03-brain-structures.svg)
 
 ```@example 2
 wgr = focusmeta[:white_matter_volume] ./ focusmeta[:grey_matter_volume]
 @df focusmeta scatter(:correctedAgeDays, wgr, title="White/Grey Matter Ratio", primary=false,
     xlabel="Age in Days", ylabel="WMV / GMV")
-savefig("data/figures/03-brain-wgr.svg")
+savefig("data/figures/03-brain-wgr.svg") # hide
+```
 
+![(../../data/figures/03-brain-wgr.svg)
+
+```@example 2
 gcr = focusmeta[:grey_matter_volume] ./ focusmeta[:csf_volume]
 @df focusmeta scatter(:correctedAgeDays, gcr, title="Grey Matter/CSF Ratio", primary=false,
     xlabel="Age in Days", ylabel="GMV / CSF")
-savefig("data/figures/03-brain-gcr.svg")
+savefig("data/figures/03-brain-gcr.svg") #hide
+```
 
-
-
-
+![](../../data/figures/03-brain-gcr.svg)
 
 
 ## Functions
@@ -522,4 +533,6 @@ savefig("data/figures/03-brain-gcr.svg")
 resolve_sampleID
 merge_tables
 getmetadata
+breastfeeding
+formulafeeding
 ```

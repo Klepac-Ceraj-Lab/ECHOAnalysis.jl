@@ -7,7 +7,7 @@ export
     getmetadatum,
     getmetadata,
     metacolor,
-    convert2num
+    convert2num,
     breastfeeding,
     formulafeeding
 

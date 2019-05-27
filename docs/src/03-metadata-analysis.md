@@ -10,7 +10,6 @@ As an example, how many unique subjects do we have at least one sample for?
 
 ```@example 1
 using ECHOAnalysis # hide
-cd(joinpath(dirname(pathof(ECHOAnalysis)), "..")) # hide
 ```
 
 ```@example 1
@@ -18,6 +17,7 @@ using CSV
 using DataFrames
 using DataFramesMeta
 using PrettyTables
+using StatsPlots
 
 allmeta = CSV.File("data/metadata/merged.csv") |> DataFrame
 
@@ -33,16 +33,16 @@ sampleinfo = @linq allmeta |>
     where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
 
-using Plots
-using StatsPlots
 
 histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 
-isdir("data/figures") || mkdir("data/figures")
+isdir("data/figures") || mkdir("data/figures") # hide
 savefig("data/figures/03-samples-per-subject.png") # hide
 ```
+
+![](../../data/figures/03-samples-per-subject.png)
 
 Wow - there are a couple of subjects that have a lot of samples.
 Taking a look to see what's going on there:
@@ -58,7 +58,7 @@ highsamplers = @linq allmeta |>
 
 ```@example 1
 # filter on metagenomes (DOM = "Date of Metagenome")
-@linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) |>
+highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) |>
     where(:metadatum .== "DOM") |>
     orderby(:studyID, :timepoint)
 
@@ -68,7 +68,6 @@ first(highsamplers, 15)
 So a bunch of these are where
 multiple samples were given for the same timepoint (eg `C0202_4F_1A` and `_2A`)
 and/or both genotech and enthanol samples.
-
 
 ## Metagenomes
 
@@ -82,35 +81,18 @@ mgxsamples = @linq allmeta |>
     select(:studyID, :timepoint) |>
     unique
 
-sort!(mgxsamples, :studyID)
+sort!(mgxsamples, :studyID);
+first(mgxsamples, 5)
+```
 
+
+```@example 1
 mgxmeta = let pairs = Set(zip(mgxsamples[:studyID], mgxsamples[:timepoint])), sids = Set(mgxsamples[:studyID])
     filter(row-> (row[:studyID] in sids && row[:timepoint] == 0) || # this captures metadata that's not linked to timepoints
                  (row[:studyID], row[:timepoint]) in pairs,
                  allmeta)
 end
 
-sort!(mgxmeta, [:studyID, :timepoint])
-
-filter!(mgxmeta) do row
-    !any(ismissing.(row))
-end
-
-# show a random assortment of ~ 20 rows
-mgxmeta[rand(nrow(mgxmeta)) .< 20 / nrow(mgxmeta), :] |> pretty_table
-```
-
-```@example 1
-CSV.write("data/metadata/mgxmetadata.csv", mgxmeta);
-```
-
-Just checking that it reads in properly:
-
-```@example 1
-try
-    mgxmeta = CSV.read("data/metadata/mgxmetadata.csv") |> DataFrame
-    pretty_table(mgxmeta)
-catch ex
-    @error "Table didn't read properly" ex
-end
+# show ~10 random rows
+allmeta[rand(nrow(mgxmeta)) .< 10 / nrow(mgxmeta), :] |> pretty_table
 ```

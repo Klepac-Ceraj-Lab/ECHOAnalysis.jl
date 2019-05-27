@@ -19,10 +19,10 @@ uuid = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
 version = "0.3.1"
 
 [[AxisAlgorithms]]
-deps = ["Compat", "WoodburyMatrices"]
-git-tree-sha1 = "99dabbe853e4f641ab21a676131f2cf9fb29937e"
+deps = ["LinearAlgebra", "Random", "SparseArrays", "WoodburyMatrices"]
+git-tree-sha1 = "a4d07a1c313392a77042855df46c5f534076fab9"
 uuid = "13072b0f-2c55-5437-9ae7-d433b7a33950"
-version = "0.3.0"
+version = "1.0.0"
 
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -47,9 +47,9 @@ version = "0.1.0+"
 
 [[CSV]]
 deps = ["CategoricalArrays", "DataFrames", "Dates", "Mmap", "Parsers", "PooledArrays", "Profile", "Tables", "Unicode", "WeakRefStrings"]
-git-tree-sha1 = "557a6b534b1ffc40abf7ddf1c4dec3b37ef05959"
+git-tree-sha1 = "239240112fc5f18fb934942a5b6f207a8f9e45d2"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-version = "0.5.4"
+version = "0.5.5"
 
 [[Calculus]]
 deps = ["Compat"]
@@ -88,10 +88,10 @@ uuid = "a2cac450-b92f-5266-8821-25eda20663c8"
 version = "0.4.0"
 
 [[ColorTypes]]
-deps = ["FixedPointNumbers", "Random", "Test"]
-git-tree-sha1 = "f73b0e10f2a5756de7019818a41654686da06b09"
+deps = ["FixedPointNumbers", "Random"]
+git-tree-sha1 = "10050a24b09e8e41b951e9976b109871ce98d965"
 uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
-version = "0.7.5"
+version = "0.8.0"
 
 [[Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "InteractiveUtils", "Printf", "Reexport", "Test"]
@@ -203,7 +203,7 @@ version = "0.7.0"
 
 [[Documenter]]
 deps = ["Base64", "DocStringExtensions", "InteractiveUtils", "JSON", "LibGit2", "Logging", "Markdown", "REPL", "Unicode"]
-git-tree-sha1 = "38509269fc99a9bc450fdb9e17e805021f3e5b1b"
+path = "/Users/ksb/.julia/dev/Documenter"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 version = "0.22.4"
 
@@ -229,10 +229,9 @@ version = "0.2.4"
 uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
-deps = ["Test"]
-git-tree-sha1 = "b8045033701c3b10bf2324d7203404be7aef88ba"
+git-tree-sha1 = "d14a6fa5890ea3a7e5dcab6811114f132fec2b4b"
 uuid = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
-version = "0.5.3"
+version = "0.6.1"
 
 [[Formatting]]
 deps = ["Compat"]
@@ -257,10 +256,10 @@ uuid = "28b8d3ca-fb5f-59d9-8090-bfdbd6d07a71"
 version = "0.39.1"
 
 [[GeometryTypes]]
-deps = ["ColorTypes", "FixedPointNumbers", "IterTools", "LinearAlgebra", "StaticArrays", "Test"]
-git-tree-sha1 = "a9bc71d5a7eb971b61db353eb66c4a1de0551d8c"
+deps = ["ColorTypes", "FixedPointNumbers", "IterTools", "LinearAlgebra", "StaticArrays"]
+git-tree-sha1 = "05796e9ac5a8fb8adfdcdf842fb8737d1cb5924e"
 uuid = "4d00f742-c7ba-57c2-abde-4428a4b178cb"
-version = "0.7.3"
+version = "0.7.4"
 
 [[Highlights]]
 deps = ["DocStringExtensions", "InteractiveUtils", "REPL", "Test"]
@@ -284,12 +283,6 @@ git-tree-sha1 = "79246285c43602384e6f1943b3554042a3712056"
 uuid = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
 version = "1.1.1"
 
-[[IterableTables]]
-deps = ["DataValues", "IteratorInterfaceExtensions", "Requires", "TableTraits", "TableTraitsUtils", "Test"]
-git-tree-sha1 = "18d6084924b2ac78deb65229cbcaa04d56ecb075"
-uuid = "1c8ee90f-4401-5389-894e-7a04a3dc0f4d"
-version = "0.11.0"
-
 [[IteratorInterfaceExtensions]]
 git-tree-sha1 = "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
 uuid = "82899510-4779-5014-852e-03e436cf321d"
@@ -303,9 +296,9 @@ version = "0.20.0"
 
 [[JuliaInterpreter]]
 deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
-git-tree-sha1 = "553281260578bb50d6d550977f438754e7e93397"
+git-tree-sha1 = "599cc7c6683e54cd0b3786ee37800db037e22df4"
 uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
-version = "0.5.1"
+version = "0.5.2"
 
 [[KernelDensity]]
 deps = ["Distributions", "FFTW", "Interpolations", "Optim", "StatsBase", "Test"]
@@ -354,7 +347,7 @@ uuid = "442fdcdd-2543-5da2-b0f3-8c86c306513e"
 version = "0.3.0"
 
 [[Microbiome]]
-deps = ["Clustering", "DataFrames", "Distances", "LinearAlgebra", "Reexport", "SpatialEcology", "Statistics", "StatsBase"]
+deps = ["Clustering", "DataFrames", "Distances", "LinearAlgebra", "MultivariateStats", "Reexport", "SpatialEcology", "Statistics", "StatsBase"]
 path = "/Users/ksb/.julia/dev/Microbiome"
 uuid = "3bd8f0ae-a0f2-5238-a5af-e1b399a4940c"
 version = "0.4.1"
@@ -373,6 +366,14 @@ version = "0.4.1"
 
 [[Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
+
+[[MultivariateStats]]
+deps = ["Arpack", "LinearAlgebra", "SparseArrays", "Statistics", "StatsBase"]
+git-tree-sha1 = "09df23f2d720e9a94fa37c068ba19a0f3eaedd18"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaStats/MultivariateStats.jl.git"
+uuid = "6f286f6a-111f-5878-ab1e-185364afe411"
+version = "0.6.0"
 
 [[Mustache]]
 deps = ["Printf", "Tables"]
@@ -546,9 +547,9 @@ version = "0.5.2"
 
 [[Revise]]
 deps = ["CodeTracking", "Distributed", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Pkg", "REPL", "UUIDs", "Unicode"]
-git-tree-sha1 = "f4cd86477685d5095f8cbce2a47f69ae9cf5c963"
+git-tree-sha1 = "0148fc4b3392778e09eb75c4971ce75424acd1d1"
 uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
-version = "2.1.4"
+version = "2.1.5"
 
 [[Rmath]]
 deps = ["BinaryProvider", "Libdl", "Random", "Statistics", "Test"]
@@ -591,7 +592,7 @@ git-tree-sha1 = "7e4ae3dd9cd98ac6127a28fc5bc46bdf5e28d86b"
 repo-rev = "89493fc5961a2c4250ba56993c492e19bbfcf4bd"
 repo-url = "https://github.com/EcoJulia/SpatialEcology.jl.git"
 uuid = "348f2d5d-71a3-5ad4-b565-8af070f99681"
-version = "0.7.0"
+version = "0.7.0+"
 
 [[SpecialFunctions]]
 deps = ["BinDeps", "BinaryProvider", "Libdl", "Test"]
@@ -628,10 +629,10 @@ uuid = "3eaba693-59b7-5ba5-a881-562e759f1c8d"
 version = "0.5.0"
 
 [[StatsPlots]]
-deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "IterableTables", "KernelDensity", "Observables", "Plots", "RecipesBase", "Reexport", "StatsBase", "TableTraits", "TableTraitsUtils", "Test", "Widgets"]
-git-tree-sha1 = "d722a2d4293ded61124654aae6696c68d7946a95"
+deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "KernelDensity", "MultivariateStats", "Observables", "Plots", "RecipesBase", "Reexport", "StatsBase", "Tables", "Widgets"]
+path = "/Users/ksb/.julia/dev/StatsPlots"
 uuid = "f3b207a7-027a-5e70-b257-86293d7955fd"
-version = "0.10.2"
+version = "0.11.0"
 
 [[SuiteSparse]]
 deps = ["Libdl", "LinearAlgebra", "SparseArrays"]
@@ -643,17 +644,11 @@ git-tree-sha1 = "b1ad568ba658d8cbb3b892ed5380a6f3e781a81e"
 uuid = "3783bdb8-4a98-5b6b-af9a-565f29a5fe9c"
 version = "1.0.0"
 
-[[TableTraitsUtils]]
-deps = ["DataValues", "IteratorInterfaceExtensions", "Missings", "TableTraits", "Test"]
-git-tree-sha1 = "55133a5476b61ec31060e555ffe12da27ac13682"
-uuid = "382cd787-c1b6-5bf2-a167-d5b971a19bda"
-version = "0.4.0"
-
 [[Tables]]
 deps = ["IteratorInterfaceExtensions", "LinearAlgebra", "Requires", "TableTraits", "Test"]
-git-tree-sha1 = "83b4a0261e5d01274f12b35d4c2212386fb15569"
+git-tree-sha1 = "c5d784c61e9d243a5a6a8458d19f535b70bdedeb"
 uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
-version = "0.2.3"
+version = "0.2.4"
 
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]
