@@ -2,6 +2,7 @@
 
 
 ```@example 1
+# cd(dirname(@__FILE__)) # hide
 using Pkg.TOML: parsefile
 using CSV
 using DataFrames
@@ -39,7 +40,7 @@ perm[:variable] = "Subject Type"
 ```
 
 
-```julia
+```@example 1
 kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(abt))))
 

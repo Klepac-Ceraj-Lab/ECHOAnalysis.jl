@@ -4,6 +4,7 @@ All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
 ```@example 1
+# cd(dirname(@__FILE__)) # hide
 using ECHOAnalysis # hide
 ```
 
