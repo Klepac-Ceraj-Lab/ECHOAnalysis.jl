@@ -103,19 +103,23 @@ description = """\
 
 
 [tables.biobakery]
+    path = "../../data/engaging"
 
     [tables.biobakery.kneaddata]
-    path="../../data/biobakery/kneaddata"
-    name="Kneaddata read counts"
-    description="need to vcat tables"
+    root = "kneaddata"
+    filter = ".txt"
+    name = "Kneaddata read counts"
+    description = "need to vcat tables"
 
     [tables.biobakery.metaphlan2]
-    path="../../data/biobakery/"
-    suffix="profile"
+    root = "metaphlan2"
+    filter = "profile"
+    analysis_output = "../../data/biobakery/metaphlan2"
 
     [tables.biobakery.humann2]
-    path="../../data/biobakery/"
-    suffix="genefamilies"
+    root = "humann2"
+    filter = "genefamilies"
+    analysis_output = "../../data/biobakery/humann2"
 
 [tables.mgxmetadata]
 
@@ -142,3 +146,6 @@ description = """\
     name="High res structural and behavioral data"
     description="Table provided by Sean through Samepage"
     date="2018-05-12"
+
+[figures]
+path = "../../data/figures"

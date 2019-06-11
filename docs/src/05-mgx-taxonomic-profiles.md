@@ -1,124 +1,16 @@
-# Preliminary analysis of metagenomes
-
-All of the metagenomes were processed
-using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
-
-```@example 1
-# cd(dirname(@__FILE__)) # hide
-using ECHOAnalysis # hide
-```
-
-```@example 1
-using Pkg.TOML: parsefile
-using CSV, DataFrames
-using DataFramesMeta
-using PrettyTables
-
-tables = parsefile("../../data/data.toml")["tables"]
-biobakery = tables["biobakery"]
-```
-
-## Quality control
-
-First, I'll look at the QC results from `kneaddata`.
-
-```@example 1
-qc_files = filter(readdir(biobakery["kneaddata"]["path"])) do f
-    occursin("read_counts", f)
-end
-
-# get all of the qc files
-qc_files = joinpath.(biobakery["kneaddata"]["path"], qc_files)
-# make a DataFrame of the first one
-qc = CSV.read(qc_files[1])
-qc[:batch] = "batch001"
-
-# loop through the rest and concatenate to the first one
-for f in qc_files[2:end]
-    df = CSV.read(f)
-    # get batch name from file
-    df[:batch] = match(r"(batch\d+)", f).captures[1]
-    global qc = vcat(qc, df)
-end
-
-pretty_table(first(qc, 15))
-```
-
-To keep the formatting of sample IDs consistant across data types,
-I'll use the [`resolve_sampleID`]@ref function.
-
-
-```@example 1
-qc[:Sample] = map(qc[:Sample]) do s
-    s = replace(s, "_kneaddata"=> "")
-    resolve_sampleID(s)[:sample]
-end
-
-pretty_table(first(qc,5))
-```
-
-```@example 1
-# cleaning up the column names a bit
-names!(qc,
-    map(n-> Symbol(replace(String(n), " "=>"_")),
-    names(qc)))
-pretty_table(first(qc,5))
-```
-
-I don't really care about each mate pair individually,
-so I'll sum them up
-
-```@example 1
-qc = @linq qc |>
-  transform(raw = :raw_pair1 .+ :raw_pair2,
-            trimmed = :trimmed_pair1 .+ :trimmed_pair2,
-            orphan = :final_orphan1 .+ :final_orphan2,
-            final = :final_pair1 .+ :final_pair2,
-            )
-pretty_table(first(qc,5)[[:batch, :raw, :trimmed, :orphan, :final]])
-```
-
-```@example 1
-using StatsPlots
-
-sort!(qc, [:batch, :raw])
-
-bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
-    xaxis="Samples", yaxis= "Count", legend=:topleft,
-    title = "QC from Kneaddata", label=["Raw" "Final"],
-    line=0)
-
-savefig("../../data/figures/03-knead-qc.svg"); # hide
-```
-![](../../data/figures/03-knead-qc.svg)
-
-
-These are a little more variable than I'd like.
-
-```@example 1
-using Statistics
-
-qc_stats = by(qc, :batch) do df
-                DataFrame(
-                  mean=round(mean(df[:final]) / 1e6, digits=2),
-                  med=round(median(df[:final]) / 1e6, digits=2),
-                  max=round(maximum(df[:final]) / 1e6, digits=2),
-                  min=round(minimum(df[:final]) / 1e6, digits=2),
-                  )
-end
-CSV.write("../../data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
-pretty_table(qc_stats)
-```
-
-## Taxonomic Profiles
+# Taxonomic Profiles
 
 Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/src).
 Each sample is run separately, and needs to be joined in a single table.
 I'll use the function [`merge_tables`]@ref
 
 
-```@example 2
+```@example tax_profiles
+cd(dirname(@__FILE__)) # hide
+ENV["GKSwstype"] = "100" # hide
+
 using ECHOAnalysis
+using Pkg.TOML: parsefile
 using DataFrames
 using PrettyTables
 using CSV
@@ -128,8 +20,18 @@ using StatsPlots
 using MicrobiomePlots
 using BiobakeryUtils
 using ColorBrewer
+using Clustering
 
-tax = merge_tables("../../data/biobakery/metaphlan/", "_profile.tsv")
+tables = parsefile("../../data/data.toml")["tables"]
+figsdir = parsefile("../../data/data.toml")["figures"]["path"]
+datafolder = tables["biobakery"]["path"]
+metaphlan = tables["biobakery"]["metaphlan2"]
+outdir = metaphlan["analysis_output"]
+isdir(outdir) || mkdir(outdir)
+
+tax = merge_tables(datafolder, metaphlan["root"], metaphlan["filter"],
+    suffix="_profile.tsv")
+
 # clean up sample names
 names!(tax,
     map(n-> Symbol(
@@ -142,7 +44,7 @@ pretty_table(first(tax, 10))
 
 Some analysis of the fungi:
 
-```@example 2
+```@example tax_profiles
 euk = filter(tax) do row
     occursin(r"^k__Eukaryota", row[1])
 end
@@ -151,10 +53,10 @@ end
 euk = euk[map(c->
     !(eltype(euk[c]) <: Number) || sum(euk[c]) > 0, names(euk))]
 
-CSV.write("euk.csv", euk)
+CSV.write(joinpath(outdir, "euk.csv"), euk)
 # get a df with only species
 taxfilter!(euk)
-CSV.write("euk_sp.csv", euk)
+CSV.write(joinpath(outdir, "euk_sp.csv"), euk)
 pretty_table(euk)
 ```
 
@@ -171,100 +73,104 @@ let's look at the PCoA plots using BrayCurtis dissimilarity.
 
 #### All Samples
 
-```@example 2
+```@example tax_profiles
 spec = taxfilter(tax)
 phyla = taxfilter(tax, :phylum)
 first(spec, 10) |> pretty_table
 ```
 
 
-```@example 2
+```@example tax_profiles
 abt = abundancetable(spec)
 pabt = abundancetable(phyla)
 relativeabundance!(abt)
 relativeabundance!(pabt);
 ```
 
-```@example 2
-dm = pairwise(BrayCurtis(), occurrences(abt))
+```@example tax_profiles
+dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
 
 plot(mds, primary=false)
-savefig("../../data/figures/03-basic_pcoa.svg") # hide
+savefig(joinpath(figsdir, "05-basic_pcoa.svg")) # hide
 ```
 
-![(../../data/figures/03-basic_pcoa.svg)
+![](../../data/figures/03-basic_pcoa.svg)
 
-```@example 2
 
+```@example tax_profiles
 function scree(mds)
     ev = eigvals(mds)
     var_explained = [v / sum(ev) for v in ev]
-    bar(var_explained)
+    bar(var_explained, primary=false, line=0)
 end
 
-scree(mds, primary=false, line=0)
-savefig("../../data/figures/03-scree.svg") # hide
+scree(mds)
+ylabel!("Variance explained")
+xlabel!("Principal coordinate axis")
+savefig(joinpath(figsdir, "05-scree.svg")) # hide
 ```
 
-![(../../data/figures/03-scree.svg)
+![](../../data/figures/03-scree.svg)
 
-```@example 2
+```@example tax_profiles
 color1 = ColorBrewer.palette("Set1", 9)
 color2 = ColorBrewer.palette("Set2", 8)
+color3 = ColorBrewer.palette("Set3", 12)
+color4 = ColorBrewer.palette("Paired", 12)
 
 c = [startswith(x, "C") ? color2[1] : color2[2] for x in samplenames(abt)]
 
-p1 = plot(pco, marker=3, line=1, framestyle=1,
+p1 = plot(mds, marker=3, line=1, framestyle=1,
     color=c, primary=false)
 scatter!([],[], color=color2[1], label="kids", legend=:topleft)
 scatter!([],[], color=color2[2], label="moms", legend=:topleft)
 title!("All samples taxonomic profiles")
 
-savefig("../../data/figures/03-taxonomic-profiles-moms-kids.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-moms-kids.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-moms-kids.svg)
+![](../../data/figures/03-taxonomic-profiles-moms-kids.svg)
 
-```@example 2
-p2 = plot(pco, marker=3, line=1,
+```@example tax_profiles
+p2 = plot(mds, marker=3, line=1,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
 
-savefig("../../data/figures/03-taxonomic-profiles-shannon.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-shannon.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-shannon.svg)
+![](../../data/figures/03-taxonomic-profiles-shannon.svg)
 
-```@example 2
+```@example tax_profiles
 bacteroidetes = vec(Matrix(phyla[phyla[1] .== "Bacteroidetes", 2:end]))
 firmicutes = vec(Matrix(phyla[phyla[1] .== "Firmicutes", 2:end]))
 
-p3 = plot(pco, marker=3, line=1,
+p3 = plot(mds, marker=3, line=1,
     zcolor=bacteroidetes, primary = false, color=:plasma,
     title="All samples, Bacteroidetes")
 
-savefig("../../data/figures/03-taxonomic-profiles-bacteroidetes.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-bacteroidetes.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-bacteroidetes.svg)
+![](../../data/figures/03-taxonomic-profiles-bacteroidetes.svg)
 
-```@example 2
-p4 = plot(pco, marker=3, line=1,
+```@example tax_profiles
+p4 = plot(mds, marker=3, line=1,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
 
-savefig("../../data/figures/03-taxonomic-profiles-firmicutes.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-firmicutes.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-firmicutes.svg)
+![](../../data/figures/03-taxonomic-profiles-firmicutes.svg)
 
-```@example 2
+```@example tax_profiles
 plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
-savefig("../../data/figures/03-taxonomic-profiles-grid.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-grid.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-grid.svg)
+![](../../data/figures/03-taxonomic-profiles-grid.svg)
 
 #### Kids
 
@@ -273,7 +179,7 @@ the samples that were stored in Genotek
 and also remove duplicates
 (since many of the kids are sampled more than once).
 
-```@example 2
+```@example tax_profiles
 moms = view(abt, sites=map(s-> occursin(r"^M", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(abt))))
 unique_moms = let
@@ -293,42 +199,69 @@ end
 
 
 umoms = view(moms, sites=unique_moms)
+umoms_dm = getdm(umoms, BrayCurtis())
+
+umoms_hcl = hclust(umoms_dm.dm, linkage=:average)
+
+abundanceplot(umoms, srt=umoms_hcl.order, title="Moms, top 10 species",
+    xticks=false, color=color4')
+savefig(joinpath(figsdir, "05-moms-abundanceplot.svg"))
+```
+
+![](../../figures/05-moms-abundanceplot.svg)
+
+```@example tax_profiles
 
 kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
-                            resolve_sampleID.(sitenames(abt))))
-unique_kids = let
-    subjects= []
-    unique = Bool[]
-    for sample in sitenames(kids)
-        s = resolve_sampleID(sample)
-        if !in(s[:subject], subjects)
-            push!(subjects, s[:subject])
-            push!(unique,true)
-        else
-            push!(unique,false)
-        end
-    end
-    unique
-end
-
-
-ukids = view(kids, sites=unique_kids)
+                    resolve_sampleID.(sitenames(abt))))
+unique_kids = view(abt, sites=firstkids(resolve_sampleID.(sitenames(abt))))
 
 kids_dm = getdm(kids, BrayCurtis())
-kids_pco = pcoa(kids_dm)
+kids_mds = fit(MDS, kids_dm, distances=true)
 
-p5 = plot(kids_pco, marker=3, line=1,
+ukids_dm = getdm(unique_kids, BrayCurtis())
+ukids_mds = fit(MDS, ukids_dm, distances=true)
+
+ukids_hcl = hclust(ukids_dm.dm, linkage=:average)
+abundanceplot(unique_kids, srt = ukids_hcl.order, title="Kids, top 10 species",
+    xticks=false, color=color4')
+savefig(joinpath(figsdir, "05-kids-abundanceplot.svg"))
+```
+
+![](../../figures/05-kids-abundanceplot.svg)
+
+
+```@example tax_profiles
+pcos = DataFrame(sampleID=samplenames(kids))
+samples = resolve_sampleID.(samplenames(kids))
+pcos[:studyID] = map(s-> s[:subject], samples)
+pcos[:timepoint] = map(s-> s[:timepoint], samples)
+pcos[:ginisimpson] = ginisimpson(kids)
+pcos[:shannon] = shannon(kids)
+
+proj = projection(kids_mds)
+
+
+for i in 1:size(proj, 2)
+    pcos[Symbol("Pco$i")] = proj[:,i]
+end
+
+CSV.write("/home/kevin/Desktop/tax_profile_pcos.csv", pcos)
+
+p5 = plot(kids_mds, marker=3, line=1,
     zcolor=shannon(kids), primary = false, color=:plasma,
     title="Kids, shannon diversity")
 
-savefig("../../data/figures/03-taxonomic-profiles-kids-shannon.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-shannon.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-kids-shannon.svg)
+![](../../data/figures/03-taxonomic-profiles-kids-shannon.svg)
 
-```@example pkids = view(pabt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
+```@example tax_profiles
+
+pkids = view(pabt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(pabt))))
-upkids = view(pkids, sites=unique_kids)
+upkids = view(pkids, sites=firstkids(resolve_sampleID.(sitenames(pkids))))
 
 kids_bact = vec(collect(occurrences(view(pkids, species=occursin.("Bact", speciesnames(pkids))))))
 kids_firm = vec(collect(occurrences(view(pkids, species=occursin.("Firm", speciesnames(pkids))))))
@@ -336,23 +269,23 @@ kids_act = vec(collect(occurrences(view(pkids, species=occursin.("Actino", speci
 kids_proteo = vec(collect(occurrences(view(pkids, species=occursin.("Proteo", speciesnames(pkids))))))
 
 plot(
-    plot(kids_pco, marker=2, line=1,
+    plot(kids_mds, marker=2, line=1,
         zcolor=kids_bact, primary = false, color=:plasma,
         title="Kids, Bacteroidetes"),
-    plot(kids_pco, marker=2, line=1,
+    plot(kids_mds, marker=2, line=1,
         zcolor=kids_firm, primary = false, color=:plasma,
         title="Kids, Firmicutes"),
-    plot(kids_pco, marker=2, line=1,
+    plot(kids_mds, marker=2, line=1,
         zcolor=kids_act, primary = false, color=:plasma,
         title="Kids, Actinobacteria"),
-    plot(kids_pco, marker=2, line=1,
+    plot(kids_mds, marker=2, line=1,
         zcolor=kids_proteo, primary = false, color=:plasma,
         title="Kids, Proteobacteria"),
     )
-savefig("../../data/figures/03-taxonomic-profiles-kids-phyla.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-phyla.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-kids-phyla.svg)
+![](../../data/figures/03-taxonomic-profiles-kids-phyla.svg)
 
 In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
@@ -360,7 +293,7 @@ I'll use the [`getmetadata`]@ref function.
 
 #### Brain Data
 
-```@example 2
+```@example tax_profiles
 brainvol = CSV.read("../../data/brain/brain_volumes.csv")
 names!(brainvol, map(names(brainvol)) do n
                         replace(String(n), " "=>"_") |> lowercase |> Symbol
@@ -378,11 +311,15 @@ brainsid = match.(r"(\d+)([a-z])", brainvol[:studyID])
 brainvol[:studyID] = [parse(Int, String(m.captures[1])) for m in brainsid]
 brainvol[:timepoint] = [gettp(m.captures[2]) for m in brainsid]
 brainvol[:parent_table] = "brainVolume"
+brainvol[:sampleID] = ""
+
+allmeta = CSV.File("../../data/metadata/merged.csv") |> DataFrame
 allmeta = vcat(allmeta, brainvol)
+CSV.write("../../data/metadata/merged_brain.csv", allmeta)
 ```
 
 
-```@example 2
+```@example tax_profiles
 samples = resolve_sampleID.(samplenames(kids))
 
 subjects = [s.subject for s in samples]
@@ -396,32 +333,60 @@ metadata = ["correctedAgeDays", "childGender", "APOE", "birthType",
             "mullen_VerbalComposite", "VCI_Percentile", "languagePercentile"]
 
 focusmeta = getmetadata(allmeta, subjects, timepoints, metadata)
+
+using StatsPlots
+
+focusmeta[:correctedAgeDays] = [ismissing(x) ? x : parse(Int, x) for x in focusmeta[:correctedAgeDays]]
+scatter(focusmeta[:correctedAgeDays], proj[:,1], legend = false)
+xlabel!("correctedAgeDays")
+ylabel!("PCo.1")
+
+
 focusmeta[:motherSES] = map(x-> ismissing(x) || x == "9999" ? missing : parse(Int, x), focusmeta[:motherSES])
 
 focusmeta[:shannon] = shannon(kids)
 focusmeta[:ginisimpson] = ginisimpson(kids)
 
-focusmeta |> CSV.write("focus.csv") # hide
+focusmeta |> CSV.write("../../data/metadata/focus.csv") # hide
 
 map(row-> any(!ismissing,
         [row[:mullen_VerbalComposite], row[:VCI_Percentile], row[:languagePercentile]]), eachrow(focusmeta)) |> sum
-println() # hide
+```
+
+```@example tax_profiles
+ukids_samples = resolve_sampleID.(samplenames(unique_kids))
+ukids_subjects = [s.subject for s in ukids_samples]
+ukids_timepoints = [s.timepoint for s in ukids_samples]
+ukidsmeta = getmetadata(allmeta, ukids_subjects, ukids_timepoints, metadata)
+ukidsmeta[:correctedAgeDays] = numberify(ukidsmeta[:correctedAgeDays])
+youngkids = ukidsmeta[:correctedAgeDays] ./ 365 .< 2
+youngkids = [ismissing(x) ? false : x for x in youngkids]
+
+ykids = view(unique_kids, sites = youngkids)
+ykids_dm = getdm(ykids, BrayCurtis())
+ykids_mds = fit(MDS, ykids_dm, distances=true)
+
+ykids_hcl = hclust(ykids_dm.dm, linkage=:average)
+abundanceplot(ykids, srt = ykids_hcl.order, title="Kids under 2, top 10 species",
+    xticks=false, color=color4')
+savefig(joinpath(figsdir, "05-young-kids-abundanceplot.svg"))
+
 ```
 
 ##### Birth type
 
-```@example 2
-plot(kids_pco, marker=3, line=1,
-    color=metacolor(df[:birthType], color2[4:5], missing_color=color2[end]),
+```@example tax_profiles
+plot(kids_mds, marker=3, line=1,
+    color=metacolor(focusmeta[:birthType], color2[4:5], missing_color=color2[end]),
     title="Kids, BirthType", primary=false)
-scatter!([],[], color=color2[4], label=unique(df[:birthType])[1])
-scatter!([],[], color=color2[5], label=unique(df[:birthType])[2])
+scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
+scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomright)
 
-savefig("../../data/figures/03-taxonomic-profiles-kids-birth.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-birth.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-kids-birth.svg)
+![](../../data/figures/03-taxonomic-profiles-kids-birth.svg)
 
 ##### Breastfeeding
 
@@ -442,7 +407,7 @@ In principle, they shouldn't both be `false`.
 I defined [`breastfeeding`]@ref and [`formulafeeding`]@ref
 to calculate these values.
 
-```@example 2
+```@example tax_profiles
 # Make this function return `missing` instead of throwing an error
 import Base.occursin
 occursin(::String, ::Missing) = missing
@@ -461,7 +426,7 @@ focusmeta[:formulafed] = formulafeeding.(eachrow(focusmeta))
 focusmeta |> CSV.write("../../data/metadata/metadata_with_brain.csv") # hide
 ```
 
-```@example 2
+```@example tax_profiles
 bfcolor = let bf = []
     for row in eachrow(focusmeta)
         if row[:breastfed] && row[:formulafed]
@@ -477,7 +442,7 @@ bfcolor = let bf = []
     bf
 end
 
-plot(kids_pco, marker=3, line=1,
+plot(kids_mds, marker=3, line=1,
     color=bfcolor,
     title="Kids, Breastfeeding", primary=false)
 scatter!([],[], color=color1[2], label="breastfed")
@@ -485,18 +450,24 @@ scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
 scatter!([],[], color=color1[end], label="missing", legend=:bottomright)
 
-savefig("../../data/figures/03-taxonomic-profiles-kids-breastfeeding.svg") # hide
+savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-breastfeeding.svg")) # hide
 ```
 
-![(../../data/figures/03-taxonomic-profiles-kids-breastfeeding.svg)
+![](../../data/figures/03-taxonomic-profiles-kids-breastfeeding.svg)
 
-```@example filter(focusmeta) do row
+```@example tax_profiles
+filter(focusmeta) do row
     !row[:breastfed] && !row[:formulafed]
-end |> CSV.write("breastfeeding_missing.csv")
+end |> CSV.write("../../data/metadata/breastfeeding_missing.csv")
 ```
 
-```@example 2
+```@example tax_profiles
 focusmeta[:correctedAgeDays] = [ismissing(x) ? missing : parse(Int, x) for x in focusmeta[:correctedAgeDays]]
+focusmeta[:white_matter_volume] = [x for x in focusmeta[:white_matter_volume]]
+focusmeta[:grey_matter_volume] = [x for x in focusmeta[:grey_matter_volume]]
+focusmeta[:csf_volume] = [x for x in focusmeta[:csf_volume]]
+
+
 
 @df focusmeta scatter(:correctedAgeDays, :white_matter_volume, label="wmv",
     xlabel="Age in Days", ylabel="Volume")
@@ -504,36 +475,57 @@ focusmeta[:correctedAgeDays] = [ismissing(x) ? missing : parse(Int, x) for x in 
 @df focusmeta scatter!(:correctedAgeDays, :csf_volume, label="csf", legend=:bottomright)
 title!("Brain Volumes")
 ylims!(0, 3e5)
-savefig("../../data/figures/03-brain-structures.svg") # hide
+savefig(joinpath(figsdir, "05-brain-structures.svg")) # hide
 ```
 
-![(../../data/figures/03-brain-structures.svg)
+![](../../data/figures/03-brain-structures.svg)
 
-```@example 2
+```@example tax_profiles
 wgr = focusmeta[:white_matter_volume] ./ focusmeta[:grey_matter_volume]
 @df focusmeta scatter(:correctedAgeDays, wgr, title="White/Grey Matter Ratio", primary=false,
     xlabel="Age in Days", ylabel="WMV / GMV")
-savefig("../../data/figures/03-brain-wgr.svg") # hide
+savefig(joinpath(figsdir, "05-brain-wgr.svg")) # hide
 ```
 
-![(../../data/figures/03-brain-wgr.svg)
+![](../../data/figures/03-brain-wgr.svg)
 
-```@example 2
+```@example tax_profiles
 gcr = focusmeta[:grey_matter_volume] ./ focusmeta[:csf_volume]
 @df focusmeta scatter(:correctedAgeDays, gcr, title="Grey Matter/CSF Ratio", primary=false,
     xlabel="Age in Days", ylabel="GMV / CSF")
-savefig("../../data/figures/03-brain-gcr.svg") #hide
+savefig(joinpath(figsdir, "05-brain-gcr.svg")) # hide
 ```
 
 ![](../../data/figures/03-brain-gcr.svg)
 
+```@example tax_profiles
+describe(focusmeta[:grey_matter_volume])
+```
 
-## Functions
+```@example tax_profiles
+using StatsBase
 
-```@docs
-resolve_sampleID
-merge_tables
-getmetadata
-breastfeeding
-formulafeeding
+function colorquartile(arr, clrs)
+    (q1, q2, q3) = percentile(collect(skipmissing(arr)), [25, 50, 75])
+    length(clrs) > 4 ? mis = colorant"gray" : clrs[5]
+    map(arr) do x
+        ismissing(x) && return mis
+        x < q1 && return clrs[1]
+        x < q2 && return clrs[2]
+        x < q3 && return clrs[3]
+        return clrs[4]
+    end
+end
+
+colorquartile(focusmeta[:grey_matter_volume], color2[[1,2,3,4,end]])
+
+
+scatter(projection(kids_mds)[:,1], focusmeta[:correctedAgeDays] ./ 365,
+    color=colorquartile(focusmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
+    legend=:topleft, primary=false)
+scatter!([], [], color=color2[1], label="25th percentile")
+scatter!([], [], color=color2[2], label="50th percentile")
+scatter!([], [], color=color2[3], label="75th percentile")
+scatter!([], [], color=color2[4], label="100th percentile")
+scatter!([], [], color=color2[end], label="missing")
 ```

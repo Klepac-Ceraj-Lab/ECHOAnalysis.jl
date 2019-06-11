@@ -58,17 +58,21 @@ end
 Merge tables with a given subject based on their first column
 
 Usage:
-    merge_tables("metaplan", "profiles")
+    merge_tables("biobakery", "metaphlan2", "profile.tsv")
 """
-function merge_tables(dir, suffix)
-    isdir(dir) || throw(ArgumentError, "$dir is not a Directory")
+function merge_tables(folder, dataroot, filt; suffix=filt)
+    isdir(folder) || throw(ArgumentError("$folder is not a Directory"))
     df = DataFrame(col1=[])
 
-    for f in filter(x-> occursin(suffix, x), readdir(dir))
-        t = CSV.File(joinpath(dir, f)) |> DataFrame!
-        fname = Symbol(replace(f, suffix=>""))
-        rename!(t, names(t)[1]=> :col1, names(t)[2]=>fname)
-        df = join(df,t, on=:col1, kind=:outer)
+    for (root, dirs, files) in walkdir(folder)
+        occursin(dataroot, root) || continue
+
+        for f in filter(x-> occursin(filt, x), files)
+            t = CSV.File(joinpath(root, f)) |> DataFrame!
+            fname = Symbol(replace(f, suffix=>""))
+            rename!(t, names(t)[1]=> :col1, names(t)[2]=>fname)
+            df = join(df,t, on=:col1, kind=:outer)
+        end
     end
     for n in names(df[2:end])
         df[n] = coalesce.(df[n], 0.)
@@ -202,4 +206,48 @@ function formulafeeding(row)
         row[:amountFormulaPerFeed] > 0
         ])
     return !ismissing(ff) && ff
+end
+
+"""
+firstkids(samples)
+
+From a list of sample ids, extract the earliest sample for
+each child.
+"""
+function firstkids(samples)
+    subjects = Dict()
+
+    for i in eachindex(samples)
+        s = samples[i]
+        startswith(s[:sample], "C") || continue
+        if s[:subject] in keys(subjects)
+            if s[:timepoint] < subjects[s[:subject]][:timepoint]
+                continue
+            end
+        end
+
+        subjects[s[:subject]] = (timepoint=s[:timepoint], index=i)
+    end
+    [subjects[k][:index] for k in keys(subjects)]
+end
+
+
+function numberify(x)
+    ismissing(x) && return missing
+    x isa Real && return x
+    if x isa AbstractString
+        occursin(".", x) ? parse(Float64, x) : parse(Int, x)
+    else
+        @warn "Something weird" x typeof(x)
+        return missing
+    end
+end
+
+function numberify(x::AbstractArray)
+    v = numberify.(x)
+    if any(i -> i isa Float64, v)
+        return Union{Missing, Float64}[y for y in v]
+    else
+        return Union{Missing, Int}[y for y in v]
+    end
 end

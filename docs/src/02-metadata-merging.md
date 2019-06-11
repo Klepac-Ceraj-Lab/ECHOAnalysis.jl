@@ -9,12 +9,12 @@ Now, we'll get these into a more usable format for analysis.
 Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
-```@example
-cd(dirname(@__FILE__))
+```@example metadata
+# cd(dirname(@__FILE__))
 using ECHOAnalysis # hide
 ```
 
-```@example 1
+```@example metadata
 using Pkg.TOML: parsefile
 
 files = parsefile("../../data/data.toml")
@@ -30,7 +30,7 @@ The `metascrubjl` script generates a table in long-form,
 meaning each metadatum has its own row.
 
 
-```@example 1
+```@example metadata
 using CSV
 using DataFrames
 using PrettyTables
@@ -46,7 +46,7 @@ it assumes that the matadatum applies to all timepoints for that subject.
 These are marked with `timepoint = 0`.
 Let's look at which variables that applies to:
 
-```@example 1
+```@example metadata
 allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique;
 ```
 
@@ -60,7 +60,7 @@ In this case, `timepoint` and `studyID` do not uniquely identify samples,
 since we can have multiple samples per timepoint.
 `sampleID`s should be unique though.
 
-```@example 1
+```@example metadata
 samples = CSV.File(files["tables"]["metadata"]["samples"]["path"]) |> DataFrame
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
@@ -75,7 +75,7 @@ so I'll add a `sampleID` to all of the other observations.
 The fecal sample `sampleID`s are build from the subjectID and timepoint,
 so I'll do the same for other observations
 
-```@example 1
+```@example metadata
 allmeta[:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(allmeta))
@@ -94,7 +94,7 @@ allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :] |> pretty_table
 A some of the `:value` fields have quotes or newlines in the field,
 which screws up parsing later. For now I will just replace them.
 
-```@example 1
+```@example metadata
 for i in eachindex(allmeta[:value])
     v = allmeta[i, :value]
     ismissing(v) && continue

@@ -9,7 +9,9 @@ export
     metacolor,
     convert2num,
     breastfeeding,
-    formulafeeding
+    formulafeeding,
+    firstkids,
+    numberify
 
 using DataFrames
 using CSV

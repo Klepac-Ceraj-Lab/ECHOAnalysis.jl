@@ -9,7 +9,8 @@ I'm using the macros available from the [DataFramesMeta](https://github.com/Juli
 As an example, how many unique subjects do we have at least one sample for?
 
 ```@example 1
-# cd(dirname(@__FILE__)) # hide
+cd(dirname(@__FILE__)) # hide
+ENV["GKSwstype"] = "100" # hide
 using ECHOAnalysis # hide
 ```
 
@@ -55,6 +56,8 @@ highsamplers = @linq allmeta |>
     by(:studyID, nsamples = length(:studyID)) |>
     where(:nsamples .>= 5) |>
     select(:studyID)
+
+pretty_table(highsamplers)
 ```
 
 ```@example 1
@@ -63,7 +66,7 @@ highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) 
     where(:metadatum .== "DOM") |>
     orderby(:studyID, :timepoint)
 
-first(highsamplers, 15)
+first(highsamplers, 15) |> pretty_table
 ```
 
 So a bunch of these are where
@@ -83,7 +86,7 @@ mgxsamples = @linq allmeta |>
     unique
 
 sort!(mgxsamples, :studyID);
-first(mgxsamples, 5)
+first(mgxsamples, 5) |> pretty_table
 ```
 
 
@@ -95,5 +98,5 @@ mgxmeta = let pairs = Set(zip(mgxsamples[:studyID], mgxsamples[:timepoint])), si
 end
 
 # show ~10 random rows
-allmeta[rand(nrow(mgxmeta)) .< 10 / nrow(mgxmeta), :] |> pretty_table
+mgxmeta[rand(nrow(mgxmeta)) .< 10 / nrow(mgxmeta), :] |> pretty_table
 ```
