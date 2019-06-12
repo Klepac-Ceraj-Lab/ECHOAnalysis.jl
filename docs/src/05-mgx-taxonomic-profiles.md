@@ -199,9 +199,9 @@ end
 
 
 umoms = view(moms, sites=unique_moms)
-umoms_dm = getdm(umoms, BrayCurtis())
-
-umoms_hcl = hclust(umoms_dm.dm, linkage=:average)
+umoms_dm = pairwise(BrayCurtis(), umoms)
+umoms_hcl = hclust(umoms_dm, linkage=:average)
+optimalorder!(umoms_hcl, umoms_dm)
 
 abundanceplot(umoms, srt=umoms_hcl.order, title="Moms, top 10 species",
     xticks=false, color=color4')
@@ -216,13 +216,14 @@ kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:s
                     resolve_sampleID.(sitenames(abt))))
 unique_kids = view(abt, sites=firstkids(resolve_sampleID.(sitenames(abt))))
 
-kids_dm = getdm(kids, BrayCurtis())
+kids_dm = pairwise(BrayCurtis(), kids)
 kids_mds = fit(MDS, kids_dm, distances=true)
 
-ukids_dm = getdm(unique_kids, BrayCurtis())
+ukids_dm = pairwise(BrayCurtis(), ukids)
 ukids_mds = fit(MDS, ukids_dm, distances=true)
+ukids_hcl = hclust(ukids_dm, linkage=:average)
+optimalorder!(ukids_hcl, ukids_dm)
 
-ukids_hcl = hclust(ukids_dm.dm, linkage=:average)
 abundanceplot(unique_kids, srt = ukids_hcl.order, title="Kids, top 10 species",
     xticks=false, color=color4')
 savefig(joinpath(figsdir, "05-kids-abundanceplot.svg"))
@@ -363,10 +364,11 @@ youngkids = ukidsmeta[:correctedAgeDays] ./ 365 .< 2
 youngkids = [ismissing(x) ? false : x for x in youngkids]
 
 ykids = view(unique_kids, sites = youngkids)
-ykids_dm = getdm(ykids, BrayCurtis())
+ykids_dm = pairwise(BrayCurtis(), ykids)
 ykids_mds = fit(MDS, ykids_dm, distances=true)
 
-ykids_hcl = hclust(ykids_dm.dm, linkage=:average)
+ykids_hcl = hclust(ykids_dm, linkage=:average)
+optimalorder!(ykids_hcl, ykids_dm)
 abundanceplot(ykids, srt = ykids_hcl.order, title="Kids under 2, top 10 species",
     xticks=false, color=color4')
 savefig(joinpath(figsdir, "05-young-kids-abundanceplot.svg"))

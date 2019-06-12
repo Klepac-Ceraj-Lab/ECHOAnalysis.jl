@@ -275,9 +275,29 @@ const metadata_focus_headers = String[
     "white_matter_volume",
     "grey_matter_volume",
     "csf_volume",
+    ## Cognitive assessments
+    ### Mullen
     "mullen_VerbalComposite",
-    "VCI_Percentile",
-    "languagePercentile"
+    "mullen_NonVerbalComposite",
+    "mullen_EarlyLearningComposite",
+    ### WSSPI-IV
+    "fluidReasoningComposite",
+    "fullScaleComposite",
+    "verbalComprehensionComposite",
+    "visualSpatialComposite",
+    "workingMemoryComposite",
+    ### WISC-V
+    "FRI_CompositeScore",
+    "FSIQ_Composite",
+    "PSI_Composite",
+    "VCI_CompositeScore",
+    "VSI_CompositeScore",
+    "WMI_Composite",
+    ### Bayley's
+    "adaptiveBehaviorComposite",
+    "languageComposite",
+    "socialEmotionalComposite",
+    "motorComposite"
     ]
 
 # Use value types for special cases. See
@@ -292,20 +312,38 @@ MDColumn(s::Symbol) = MDColumn{s}()
 customprocess(col, ::MDColumn) = col
 
 # Make numeric
-customprocess(col, ::MDColumn{:correctedAgeDays})                 = numberify(col)
-customprocess(col, ::MDColumn{:amountFormulaPerFeed})             = numberify(col)
-customprocess(col, ::MDColumn{:typicalNumberOfEpressedMilkFeeds}) = numberify(col)
-customprocess(col, ::MDColumn{:typicalNumberOfFeedsFromBreast})   = numberify(col)
-customprocess(col, ::MDColumn{:noLongerFeedBreastmilkAge})        = numberify(col)
-customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})          = numberify(col)
-customprocess(col, ::MDColumn{:childHeight})                      = numberify(col)
-customprocess(col, ::MDColumn{:childWeight})                      = numberify(col)
-customprocess(col, ::MDColumn{:white_matter_volume})              = numberify(col)
-customprocess(col, ::MDColumn{:grey_matter_volume})               = numberify(col)
-customprocess(col, ::MDColumn{:csf_volume})                       = numberify(col)
-customprocess(col, ::MDColumn{:mullen_VerbalComposite})           = numberify(col)
-customprocess(col, ::MDColumn{:VCI_Percentile})                   = numberify(col)
-customprocess(col, ::MDColumn{:languagePercentile})               = numberify(col)
+customprocess(col, ::MDColumn{:correctedAgeDays})                   = numberify(col)
+customprocess(col, ::MDColumn{:amountFormulaPerFeed})               = numberify(col)
+customprocess(col, ::MDColumn{:typicalNumberOfEpressedMilkFeeds})   = numberify(col)
+customprocess(col, ::MDColumn{:typicalNumberOfFeedsFromBreast})     = numberify(col)
+customprocess(col, ::MDColumn{:noLongerFeedBreastmilkAge})          = numberify(col)
+customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})            = numberify(col)
+customprocess(col, ::MDColumn{:childHeight})                        = numberify(col)
+customprocess(col, ::MDColumn{:childWeight})                        = numberify(col)
+customprocess(col, ::MDColumn{:white_matter_volume})                = numberify(col)
+customprocess(col, ::MDColumn{:grey_matter_volume})                 = numberify(col)
+### Mullen
+customprocess(col, ::MDColumn{:mullen_VerbalComposite})             = numberify(col)
+customprocess(col, ::MDColumn{:mullen_NonVerbalComposite})          = numberify(col)
+customprocess(col, ::MDColumn{:mullen_EarlyLearningComposite})      = numberify(col)
+### WSSPI-IV
+customprocess(col, ::MDColumn{:fluidReasoningComposite})            = numberify(col)
+customprocess(col, ::MDColumn{:fullScaleComposite})                 = numberify(col)
+customprocess(col, ::MDColumn{:verbalComprehensionComposite})       = numberify(col)
+customprocess(col, ::MDColumn{:visualSpatialComposite})             = numberify(col)
+customprocess(col, ::MDColumn{:workingMemoryComposite})             = numberify(col)
+### WISC-V
+customprocess(col, ::MDColumn{:FRI_CompositeScore})                 = numberify(col)
+customprocess(col, ::MDColumn{:FSIQ_Composite})                     = numberify(col)
+customprocess(col, ::MDColumn{:PSI_Composite})                      = numberify(col)
+customprocess(col, ::MDColumn{:VCI_CompositeScore})                 = numberify(col)
+customprocess(col, ::MDColumn{:VSI_CompositeScore})                 = numberify(col)
+customprocess(col, ::MDColumn{:WMI_Composite})                      = numberify(col)
+### Bayley's
+customprocess(col, ::MDColumn{:adaptiveBehaviorComposite})          = numberify(col)
+customprocess(col, ::MDColumn{:languageComposite})                  = numberify(col)
+customprocess(col, ::MDColumn{:socialEmotionalComposite})           = numberify(col)
+customprocess(col, ::MDColumn{:motorComposite})                     = numberify(col)
 
 # other custom processing
 function customprocess(col, ::Union{MDColumn{:motherSES}, MDColumn{:fatherSES}})

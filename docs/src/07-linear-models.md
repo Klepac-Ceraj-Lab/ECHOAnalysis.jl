@@ -11,12 +11,15 @@ using Pkg.TOML: parsefile
 using DataFrames
 using PrettyTables
 using CSV
+using Statistics
+using Distances
 using Microbiome
 using MultivariateStats
 using StatsPlots
 using MicrobiomePlots
 using BiobakeryUtils
 using ColorBrewer
+using Clustering
 
 tables = parsefile("../../data/data.toml")["tables"]
 figsdir = parsefile("../../data/data.toml")["figures"]["path"]
@@ -42,28 +45,15 @@ abt = abundancetable(tax)
 
 ```@example glm
 samples = resolve_sampleID.(samplenames(abt))
-idx = firstkids(samples)
+samples = samples[firstkids(samples)]
 
-ukids_samples = samples[idx]
-ukids_abt = view(abt, sites=idx)
-ukids_dm = getdm(ukids_abt, BrayCurtis())
-ukids_mds = fit(MDS, ukids_dm.dm, distances=true)
+ukids_abt = view(abt, sites=firstkids(samples))
+ukids_dm = pairwise(BrayCurtis(), ukids_abt)
+ukids_mds = fit(MDS, ukids_dm, distances=true)
 
 allmeta = CSV.File("../../data/metadata/merged_brain.csv") |> DataFrame
 
-samples = samples[idx]
-
-subjects = [s.subject for s in samples]
-timepoints = [s.timepoint for s in samples]
-metadata = ["correctedAgeDays", "childGender", "APOE", "birthType",
-            "exclusivelyNursed", "exclusiveFormulaFed", "lengthExclusivelyNursedMonths",
-            "amountFormulaPerFeed", "formulaTypicalType", "milkFeedingMethods",
-            "typicalNumberOfEpressedMilkFeeds", "typicalNumberOfFeedsFromBreast",
-            "noLongerFeedBreastmilkAge", "ageStartSolidFoodMonths", "motherSES",
-            "childHeight", "childWeight", "white_matter_volume", "grey_matter_volume", "csf_volume",
-            "mullen_VerbalComposite", "VCI_Percentile", "languagePercentile"]
-
-focusmeta = getmetadata(allmeta, subjects, timepoints, metadata)
+focusmeta = getfocusmetadata(tables["metadata"]["merged_brain"]["path"], samples)
 ```
 
 
