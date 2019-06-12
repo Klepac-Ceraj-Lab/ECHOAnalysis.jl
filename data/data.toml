@@ -101,6 +101,15 @@ description = """\
                 unified by row."""
     date="2019-01-29"
 
+    [tables.metadata.merged_brain]
+    path="../../data/metadata/merged_brain.csv"
+    name="Merged long form"
+    description="""\
+                See Notebook 5 -
+                Long form metadata, including brain volumes. \
+                Use `getmetadata()` function to generate wide form \
+                data for a given set of samples (with type corrections)"""
+    date="2019-06-11"
 
 [tables.biobakery]
     path = "../../data/engaging"

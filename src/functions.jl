@@ -243,11 +243,100 @@ function numberify(x)
     end
 end
 
-function numberify(x::AbstractArray)
-    v = numberify.(x)
+function numberify(v::AbstractArray)
+    eltype(v) <: Union{Missing, <:Real} && return v
+    v = numberify.(v)
     if any(i -> i isa Float64, v)
         return Union{Missing, Float64}[y for y in v]
     else
         return Union{Missing, Int}[y for y in v]
     end
+end
+
+const metadata_focus_headers = String[
+    "childGender",
+    "milkFeedingMethods",
+    "APOE",
+    "birthType",
+    "exclusivelyNursed",
+    "exclusiveFormulaFed",
+    "lengthExclusivelyNursedMonths",
+    "formulaTypicalType",
+    "motherSES",
+    # numeric
+    "correctedAgeDays",
+    "amountFormulaPerFeed",
+    "typicalNumberOfEpressedMilkFeeds",
+    "typicalNumberOfFeedsFromBreast",
+    "noLongerFeedBreastmilkAge",
+    "ageStartSolidFoodMonths",
+    "childHeight",
+    "childWeight",
+    "white_matter_volume",
+    "grey_matter_volume",
+    "csf_volume",
+    "mullen_VerbalComposite",
+    "VCI_Percentile",
+    "languagePercentile"
+    ]
+
+# Use value types for special cases. See
+#   https://docs.julialang.org/en/v1/manual/types/#%22Value-types%22-1
+#   https://discourse.julialang.org/t/special-case-handling-alternatives-to-if-else/21608/4
+struct MDColumn{T}
+end
+
+MDColumn(s::String) = MDColumn{Symbol(s)}()
+MDColumn(s::Symbol) = MDColumn{s}()
+
+customprocess(col, ::MDColumn) = col
+
+# Make numeric
+customprocess(col, ::MDColumn{:correctedAgeDays})                 = numberify(col)
+customprocess(col, ::MDColumn{:amountFormulaPerFeed})             = numberify(col)
+customprocess(col, ::MDColumn{:typicalNumberOfEpressedMilkFeeds}) = numberify(col)
+customprocess(col, ::MDColumn{:typicalNumberOfFeedsFromBreast})   = numberify(col)
+customprocess(col, ::MDColumn{:noLongerFeedBreastmilkAge})        = numberify(col)
+customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})          = numberify(col)
+customprocess(col, ::MDColumn{:childHeight})                      = numberify(col)
+customprocess(col, ::MDColumn{:childWeight})                      = numberify(col)
+customprocess(col, ::MDColumn{:white_matter_volume})              = numberify(col)
+customprocess(col, ::MDColumn{:grey_matter_volume})               = numberify(col)
+customprocess(col, ::MDColumn{:csf_volume})                       = numberify(col)
+customprocess(col, ::MDColumn{:mullen_VerbalComposite})           = numberify(col)
+customprocess(col, ::MDColumn{:VCI_Percentile})                   = numberify(col)
+customprocess(col, ::MDColumn{:languagePercentile})               = numberify(col)
+
+# other custom processing
+function customprocess(col, ::Union{MDColumn{:motherSES}, MDColumn{:fatherSES}})
+    col = numberify(col)
+    # some missing entries are encoded as 9999
+    for i in eachindex(col)
+        if !ismissing(col[i]) && col[i] == 9999
+            col[i] = missing
+        end
+    end
+end
+
+"""
+    getfocusmetadata(longfilepath, samples; focus=metadata_focus_headers)
+
+Get a wide-form metadata table with a subset of headers for a subset of subject/sample IDs
+"""
+function getfocusmetadata(longfilepath, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
+    md = CSV.read(longfilepath)
+    subjects = [s.subject for s in samples]
+    timepoints = [s.timepoint for s in samples]
+    md = getmetadata(md, subjects, timepoints, metadata_focus_headers)
+
+    for n in names(md)
+        md[n] = customprocess(md[n], MDColumn(n))
+    end
+
+    return md
+end
+
+#
+function getfocusmetadata(longfilepath, samples::Vector{<:AbstractString}; focus=metadata_focus_headers)
+    getfocusmetadata(longfilepath, resolve_sampleID.(samples), focus=focus)
 end

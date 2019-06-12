@@ -40,10 +40,10 @@ uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
 version = "0.5.4"
 
 [[BiobakeryUtils]]
-deps = ["CSV", "DataFrames", "Microbiome", "RCall", "Random", "Statistics", "Test"]
+deps = ["CSV", "DataFrames", "Microbiome", "RCall", "Statistics"]
 path = "/home/kevin/.julia/dev/BiobakeryUtils"
 uuid = "fa5322f5-bd84-5069-834a-abf3230fb8f8"
-version = "0.1.0+"
+version = "0.0.1"
 
 [[CSV]]
 deps = ["CategoricalArrays", "DataFrames", "Dates", "Mmap", "Parsers", "PooledArrays", "Profile", "Tables", "Unicode", "WeakRefStrings"]
@@ -359,7 +359,7 @@ uuid = "442fdcdd-2543-5da2-b0f3-8c86c306513e"
 version = "0.3.0"
 
 [[Microbiome]]
-deps = ["Clustering", "DataFrames", "Distances", "LinearAlgebra", "MultivariateStats", "Reexport", "SpatialEcology", "Statistics", "StatsBase"]
+deps = ["DataFrames", "MultivariateStats", "Reexport", "SpatialEcology", "Statistics", "StatsBase"]
 path = "/home/kevin/.julia/dev/Microbiome"
 uuid = "3bd8f0ae-a0f2-5238-a5af-e1b399a4940c"
 version = "0.4.1"
@@ -604,10 +604,12 @@ deps = ["LinearAlgebra", "Random"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[SpatialEcology]]
-deps = ["DataFrames", "DataFramesMeta", "EcoBase", "Random", "RandomBooleanMatrices", "RandomNumbers", "RecipesBase", "SparseArrays", "Statistics", "StatsBase", "Test"]
-git-tree-sha1 = "7e4ae3dd9cd98ac6127a28fc5bc46bdf5e28d86b"
+deps = ["DataFrames", "DataFramesMeta", "Distances", "EcoBase", "Random", "RandomBooleanMatrices", "RandomNumbers", "RecipesBase", "SparseArrays", "Statistics", "StatsBase"]
+git-tree-sha1 = "0dc34039544c5d70a71b45c264c9653649fd9be8"
+repo-rev = "master"
+repo-url = "https://github.com/EcoJulia/SpatialEcology.jl.git"
 uuid = "348f2d5d-71a3-5ad4-b565-8af070f99681"
-version = "0.7.0"
+version = "0.7.1"
 
 [[SpecialFunctions]]
 deps = ["BinDeps", "BinaryProvider", "Libdl", "Test"]
@@ -644,12 +646,10 @@ uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 version = "0.8.0"
 
 [[StatsModels]]
-deps = ["CategoricalArrays", "DataStructures", "LinearAlgebra", "Missings", "SparseArrays", "StatsBase", "Tables"]
-git-tree-sha1 = "57025cb6b01da3cf27fd68dccfd9b3ea1134c3c9"
-repo-rev = "master"
-repo-url = "https://github.com/JuliaStats/StatsModels.jl.git"
+deps = ["Compat", "DataFrames", "StatsBase", "Test"]
+git-tree-sha1 = "b5a735dcd2be05f0af86709750d4d5f62ca4a25d"
 uuid = "3eaba693-59b7-5ba5-a881-562e759f1c8d"
-version = "0.6.0"
+version = "0.5.0"
 
 [[StatsPlots]]
 deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "KernelDensity", "MultivariateStats", "Observables", "Plots", "RecipesBase", "Reexport", "StatsBase", "Tables", "Widgets"]

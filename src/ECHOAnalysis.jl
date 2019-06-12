@@ -11,7 +11,8 @@ export
     breastfeeding,
     formulafeeding,
     firstkids,
-    numberify
+    numberify,
+    getfocusmetadata
 
 using DataFrames
 using CSV
