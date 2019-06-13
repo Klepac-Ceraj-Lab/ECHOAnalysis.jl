@@ -1,7 +1,5 @@
 # Linear Models
 
-
-
 ```@example glm
 cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
@@ -63,7 +61,7 @@ relativeabundance!(ukids_abt)
 focusmeta[:sample] = samplenames(ukids_abt)
 complete = map(eachrow(focusmeta)) do df
     !ismissing(df.birthType) &&
-    !ismissing(df. correctedAgeDays)
+    !ismissing(df.correctedAgeDays)
 end
 
 
@@ -74,26 +72,6 @@ let sn = samplenames(ukids_abt)
         kids_spec[Symbol(sn[i])] = occurrences(ukids_abt)[:, i]
     end
 end
-
-import Base.occursin
-occursin(::String, ::Missing) = missing
-occursin(::Regex, ::Missing) = missing
-
-# make sure number rows are actually number types
-for c in [:typicalNumberOfFeedsFromBreast, :typicalNumberOfEpressedMilkFeeds,
-          :lengthExclusivelyNursedMonths, :noLongerFeedBreastmilkAge,
-          :amountFormulaPerFeed]
-    focusmeta[c] = [ismissing(x) ? missing : parse(Float64, x) for x in focusmeta[c]]
-end
-
-focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
-focusmeta[:formulafed] = formulafeeding.(eachrow(focusmeta))
-focusmeta[:motherSES] = [(ismissing(x) || x == "9999") ? missing : parse(Int, x) for x in focusmeta[:motherSES]]
-focusmeta[:white_matter_volume] = numberify(focusmeta[:white_matter_volume])
-focusmeta[:grey_matter_volume] = numberify(focusmeta[:grey_matter_volume])
-focusmeta[:csf_volume] = numberify(focusmeta[:csf_volume])
-focusmeta[:correctedAgeDays] = numberify(focusmeta[:correctedAgeDays])
-
 
 CSV.write("../../data/metadata/unique_kids_metadata.tsv",
             focusmeta[[:sample, :correctedAgeDays, :motherSES, :birthType, :white_matter_volume, :grey_matter_volume, :csf_volume, :formulafed]],

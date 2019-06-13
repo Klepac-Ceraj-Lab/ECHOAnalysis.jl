@@ -292,34 +292,6 @@ In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
 I'll use the [`getmetadata`]@ref function.
 
-#### Brain Data
-
-```@example tax_profiles
-brainvol = CSV.read("../../data/brain/brain_volumes.csv")
-names!(brainvol, map(names(brainvol)) do n
-                        replace(String(n), " "=>"_") |> lowercase |> Symbol
-                    end
-        )
-
-
-brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :study_id, variable_name=:metadatum)
-rename!(brainvol, :study_id => :studyID)
-
-# convert letter timepoint into number
-gettp(x) = findfirst(lowercase(String(x)), "abcdefghijklmnopqrstuvwxyz")[1]
-
-brainsid = match.(r"(\d+)([a-z])", brainvol[:studyID])
-brainvol[:studyID] = [parse(Int, String(m.captures[1])) for m in brainsid]
-brainvol[:timepoint] = [gettp(m.captures[2]) for m in brainsid]
-brainvol[:parent_table] = "brainVolume"
-brainvol[:sampleID] = ""
-
-allmeta = CSV.File("../../data/metadata/merged.csv") |> DataFrame
-allmeta = vcat(allmeta, brainvol)
-CSV.write("../../data/metadata/merged_brain.csv", allmeta)
-```
-
-
 ```@example tax_profiles
 samples = resolve_sampleID.(samplenames(kids))
 
@@ -330,8 +302,7 @@ metadata = ["correctedAgeDays", "childGender", "APOE", "birthType",
             "amountFormulaPerFeed", "formulaTypicalType", "milkFeedingMethods",
             "typicalNumberOfEpressedMilkFeeds", "typicalNumberOfFeedsFromBreast",
             "noLongerFeedBreastmilkAge", "ageStartSolidFoodMonths", "motherSES",
-            "childHeight", "childWeight", "white_matter_volume", "grey_matter_volume", "csf_volume",
-            "mullen_VerbalComposite", "VCI_Percentile", "languagePercentile"]
+            "childHeight", "childWeight"]
 
 focusmeta = getmetadata(allmeta, subjects, timepoints, metadata)
 
@@ -349,9 +320,6 @@ focusmeta[:shannon] = shannon(kids)
 focusmeta[:ginisimpson] = ginisimpson(kids)
 
 focusmeta |> CSV.write("../../data/metadata/focus.csv") # hide
-
-map(row-> any(!ismissing,
-        [row[:mullen_VerbalComposite], row[:VCI_Percentile], row[:languagePercentile]]), eachrow(focusmeta)) |> sum
 ```
 
 ```@example tax_profiles
@@ -461,73 +429,4 @@ savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-breastfeeding.svg")) # hid
 filter(focusmeta) do row
     !row[:breastfed] && !row[:formulafed]
 end |> CSV.write("../../data/metadata/breastfeeding_missing.csv")
-```
-
-```@example tax_profiles
-focusmeta[:correctedAgeDays] = [ismissing(x) ? missing : parse(Int, x) for x in focusmeta[:correctedAgeDays]]
-focusmeta[:white_matter_volume] = [x for x in focusmeta[:white_matter_volume]]
-focusmeta[:grey_matter_volume] = [x for x in focusmeta[:grey_matter_volume]]
-focusmeta[:csf_volume] = [x for x in focusmeta[:csf_volume]]
-
-
-
-@df focusmeta scatter(:correctedAgeDays, :white_matter_volume, label="wmv",
-    xlabel="Age in Days", ylabel="Volume")
-@df focusmeta scatter!(:correctedAgeDays, :grey_matter_volume, label="gmv")
-@df focusmeta scatter!(:correctedAgeDays, :csf_volume, label="csf", legend=:bottomright)
-title!("Brain Volumes")
-ylims!(0, 3e5)
-savefig(joinpath(figsdir, "05-brain-structures.svg")) # hide
-```
-
-![](../../data/figures/03-brain-structures.svg)
-
-```@example tax_profiles
-wgr = focusmeta[:white_matter_volume] ./ focusmeta[:grey_matter_volume]
-@df focusmeta scatter(:correctedAgeDays, wgr, title="White/Grey Matter Ratio", primary=false,
-    xlabel="Age in Days", ylabel="WMV / GMV")
-savefig(joinpath(figsdir, "05-brain-wgr.svg")) # hide
-```
-
-![](../../data/figures/03-brain-wgr.svg)
-
-```@example tax_profiles
-gcr = focusmeta[:grey_matter_volume] ./ focusmeta[:csf_volume]
-@df focusmeta scatter(:correctedAgeDays, gcr, title="Grey Matter/CSF Ratio", primary=false,
-    xlabel="Age in Days", ylabel="GMV / CSF")
-savefig(joinpath(figsdir, "05-brain-gcr.svg")) # hide
-```
-
-![](../../data/figures/03-brain-gcr.svg)
-
-```@example tax_profiles
-describe(focusmeta[:grey_matter_volume])
-```
-
-```@example tax_profiles
-using StatsBase
-
-function colorquartile(arr, clrs)
-    (q1, q2, q3) = percentile(collect(skipmissing(arr)), [25, 50, 75])
-    length(clrs) > 4 ? mis = colorant"gray" : clrs[5]
-    map(arr) do x
-        ismissing(x) && return mis
-        x < q1 && return clrs[1]
-        x < q2 && return clrs[2]
-        x < q3 && return clrs[3]
-        return clrs[4]
-    end
-end
-
-colorquartile(focusmeta[:grey_matter_volume], color2[[1,2,3,4,end]])
-
-
-scatter(projection(kids_mds)[:,1], focusmeta[:correctedAgeDays] ./ 365,
-    color=colorquartile(focusmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
-    legend=:topleft, primary=false)
-scatter!([], [], color=color2[1], label="25th percentile")
-scatter!([], [], color=color2[2], label="50th percentile")
-scatter!([], [], color=color2[3], label="75th percentile")
-scatter!([], [], color=color2[4], label="100th percentile")
-scatter!([], [], color=color2[end], label="missing")
 ```

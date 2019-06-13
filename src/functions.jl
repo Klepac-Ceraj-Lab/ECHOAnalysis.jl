@@ -272,32 +272,36 @@ const metadata_focus_headers = String[
     "ageStartSolidFoodMonths",
     "childHeight",
     "childWeight",
-    "white_matter_volume",
-    "grey_matter_volume",
-    "csf_volume",
+    ## From brain data
+    "LThickness",
+    "RThickness",
+    "LSurfArea",
+    "RSurfArea",
+    "ICV",
+    "subcortical_volume",
     ## Cognitive assessments
     ### Mullen
     "mullen_VerbalComposite",
     "mullen_NonVerbalComposite",
-    "mullen_EarlyLearningComposite",
-    ### WSSPI-IV
-    "fluidReasoningComposite",
-    "fullScaleComposite",
-    "verbalComprehensionComposite",
-    "visualSpatialComposite",
-    "workingMemoryComposite",
-    ### WISC-V
-    "FRI_CompositeScore",
-    "FSIQ_Composite",
-    "PSI_Composite",
-    "VCI_CompositeScore",
-    "VSI_CompositeScore",
-    "WMI_Composite",
+    "mullen_EarlyLearningComposite", # average of other two
     ### Bayley's
     "adaptiveBehaviorComposite",
     "languageComposite",
     "socialEmotionalComposite",
-    "motorComposite"
+    "motorComposite",
+    ### WISC-V
+    "FRI_CompositeScore",
+    "PSI_Composite",
+    "VCI_CompositeScore",
+    "VSI_CompositeScore",
+    "WMI_Composite",
+    "FSIQ_Composite", # average
+    ### WSSPI-IV
+    "fluidReasoningComposite",
+    "verbalComprehensionComposite",
+    "visualSpatialComposite",
+    "workingMemoryComposite",
+    "fullScaleComposite", # average
     ]
 
 # Use value types for special cases. See
@@ -319,9 +323,15 @@ customprocess(col, ::MDColumn{:typicalNumberOfFeedsFromBreast})     = numberify(
 customprocess(col, ::MDColumn{:noLongerFeedBreastmilkAge})          = numberify(col)
 customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})            = numberify(col)
 customprocess(col, ::MDColumn{:childHeight})                        = numberify(col)
-customprocess(col, ::MDColumn{:childWeight})                        = numberify(col)
-customprocess(col, ::MDColumn{:white_matter_volume})                = numberify(col)
-customprocess(col, ::MDColumn{:grey_matter_volume})                 = numberify(col)
+
+## brain volumes
+customprocess(col, ::MDColumn{:LThickness})                         = numberify(col)
+customprocess(col, ::MDColumn{:RThickness})                         = numberify(col)
+customprocess(col, ::MDColumn{:LSurfArea})                          = numberify(col)
+customprocess(col, ::MDColumn{:RSurfArea})                          = numberify(col)
+customprocess(col, ::MDColumn{:ICV})                                = numberify(col)
+customprocess(col, ::MDColumn{:subcortical_volume})                 = numberify(col)
+
 ### Mullen
 customprocess(col, ::MDColumn{:mullen_VerbalComposite})             = numberify(col)
 customprocess(col, ::MDColumn{:mullen_NonVerbalComposite})          = numberify(col)
@@ -377,4 +387,17 @@ end
 #
 function getfocusmetadata(longfilepath, samples::Vector{<:AbstractString}; focus=metadata_focus_headers)
     getfocusmetadata(longfilepath, resolve_sampleID.(samples), focus=focus)
+end
+
+
+letter2number(l) = findfirst(lowercase(l), "abcdefghijklmnopqrstuvwxyz")[1]
+
+function parseletterid(sid)
+    m = match(r"(\d+)(\w)?", sid)
+    isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
+    if isnothing(m.captures[2])
+        return (subject=parse(Int, sid), timepoint=1)
+    else
+        return (subject=parse(Int, m.captures[1]), timepoint=letter2number(m.captures[2]))
+    end
 end

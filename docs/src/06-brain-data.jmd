@@ -1,0 +1,57 @@
+# Parsing Brain Data
+
+```@example brain
+cd(dirname(@__FILE__)) # hide
+ENV["GKSwstype"] = "100" # hideusing ECHOAnalysis
+using ECHOAnalysis
+using CSV
+using DataFrames
+
+cortical = CSV.read("../../data/brain/Cortical_June3rd2019.csv")
+subcortical = CSV.read("../../data/brain/Subcortical_June3rd2019.csv")
+
+letter2number(l) = findfirst(lowercase(l), "abcdefghijklmnopqrstuvwxyz")[1]
+
+function parseid(sid)
+    m = match(r"(\d+)(\w)?", sid)
+    isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
+    if isnothing(m.captures[2])
+        return (subject=parse(Int, sid), timepoint=1)
+    else
+        return (subject=parse(Int, m.captures[1]), timepoint=letter2number(m.captures[2]))
+    end
+end
+
+
+cortical[:subject] = getfield.(parseid.(cortical[:SubjID]), :subject)
+cortical[:timepoint] = getfield.(parseid.(cortical[:SubjID]), :timepoint)
+cortical = cortical[[:subject, :timepoint,
+                    :LThickness, :RThickness, :LSurfArea, :RSurfArea, :ICV]]
+
+subcortical[:sc_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
+subcortical[:subject] = getfield.(parseid.(subcortical[:SubjID]), :subject)
+subcortical[:timepoint] = getfield.(parseid.(subcortical[:SubjID]), :timepoint)
+subcortical = subcortical[[:subject, :timepoint, :sc_volume, :ICV]]
+
+
+```
+
+
+
+
+
+```@example brain
+using StatsBase
+
+function colorquartile(arr, clrs)
+    (q1, q2, q3) = percentile(collect(skipmissing(arr)), [25, 50, 75])
+    length(clrs) > 4 ? mis = colorant"gray" : clrs[5]
+    map(arr) do x
+        ismissing(x) && return mis
+        x < q1 && return clrs[1]
+        x < q2 && return clrs[2]
+        x < q3 && return clrs[3]
+        return clrs[4]
+    end
+end
+```

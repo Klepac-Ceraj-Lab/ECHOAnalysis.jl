@@ -10,7 +10,7 @@ Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
 ```@example metadata
-# cd(dirname(@__FILE__))
+cd(dirname(@__FILE__))
 using ECHOAnalysis # hide
 ```
 
@@ -47,7 +47,7 @@ These are marked with `timepoint = 0`.
 Let's look at which variables that applies to:
 
 ```@example metadata
-allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique;
+allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
 ```
 
 Those all look reasonable!
@@ -70,8 +70,42 @@ disallowmissing!(samples)
 samples[:parent_table] = "FecalProcessing";
 ```
 
+## Brain Data
+
+Finally, we also have tables of brain volumes for many of our subjects.
+
+```@example metadata
+files["tables"]["brain"]["cortical"]["path"]
+cortical = CSV.read(files["tables"]["brain"]["cortical"]["path"])
+subcortical = CSV.read(files["tables"]["brain"]["subcortical"]["path"])
+
+
+cortical[:studyID] = getfield.(parseletterid.(cortical[:SubjID]), :subject)
+cortical[:timepoint] = getfield.(parseletterid.(cortical[:SubjID]), :timepoint)
+
+# we only care about a subset of values for now
+cortical = cortical[[:studyID, :timepoint, :LThickness, :RThickness,
+                                           :LSurfArea,  :RSurfArea,
+                                           :ICV]]
+
+# convert to longform
+cortical = melt(cortical, [:studyID, :timepoint], variable_name=:metadatum)
+cortical[:parent_table] = "corticalVolumes"
+
+# for the subcortex we mostly care about the total volume rather than individual values
+subcortical[:subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
+subcortical[:studyID] = getfield.(parseletterid.(subcortical[:SubjID]), :subject)
+subcortical[:timepoint] = getfield.(parseletterid.(subcortical[:SubjID]), :timepoint)
+subcortical = subcortical[[:studyID, :timepoint, :subcortical_volume]]
+
+# convert to longform
+subcortical = melt(subcortical, [:studyID, :timepoint], variable_name=:metadatum)
+subcortical[:parent_table] = "subcorticalVolumes"
+```
+
 We can only concatenate tables if they all have the same columns,
-so I'll add a `sampleID` to all of the other observations.
+so I'll add a `sampleID` to all of the other observations
+to match what's in `samples`.
 The fecal sample `sampleID`s are build from the subjectID and timepoint,
 so I'll do the same for other observations
 
@@ -80,7 +114,16 @@ allmeta[:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(allmeta))
 
-allmeta = vcat(allmeta, samples)
+cortical[:sampleID] = map(r->
+        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+        eachrow(cortical))
+
+subcortical[:sampleID] = map(r->
+        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+        eachrow(subcortical))
+
+
+allmeta = vcat(allmeta, cortical, subcortical, samples)
 # reorder columns
 allmeta = allmeta[[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
 # remove rows with missing values

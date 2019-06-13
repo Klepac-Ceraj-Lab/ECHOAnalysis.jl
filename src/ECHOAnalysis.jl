@@ -12,7 +12,9 @@ export
     formulafeeding,
     firstkids,
     numberify,
-    getfocusmetadata
+    getfocusmetadata,
+    letter2number,
+    parseletterid
 
 using DataFrames
 using CSV

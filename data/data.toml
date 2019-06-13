@@ -150,11 +150,23 @@ description = """\
 
 [tables.brain]
 
-    [tables.brain.highres]
-    path="../../data/highres.csv"
-    name="High res structural and behavioral data"
-    description="Table provided by Sean through Samepage"
-    date="2018-05-12"
+    [tables.brain.cortical]
+    path="../../data/brain/Cortical_June3rd2019.csv"
+    name="High res structural data"
+    description="Table provided by Muriel through Samepage"
+    date="2019-06-03"
+
+    [tables.brain.cortical_thickness]
+    path="../../data/brain/CorticalThickness_June3rd2019.csv"
+    name="High res structural data"
+    description="Table provided by Muriel through Samepage"
+    date="2019-06-03"
+
+    [tables.brain.subcortical]
+    path="../../data/brain/Subcortical_June3rd2019.csv"
+    name="High res structural data"
+    description="Table provided by Muriel through Samepage"
+    date="2019-06-03"
 
 [figures]
 path = "../../data/figures"
