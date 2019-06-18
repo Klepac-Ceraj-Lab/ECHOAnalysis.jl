@@ -49,9 +49,13 @@ ukids_abt = view(abt, sites=firstkids(samples))
 ukids_dm = pairwise(BrayCurtis(), ukids_abt)
 ukids_mds = fit(MDS, ukids_dm, distances=true)
 
-allmeta = CSV.File("../../data/metadata/merged_brain.csv") |> DataFrame
 
-focusmeta = getfocusmetadata(tables["metadata"]["merged_brain"]["path"], samples)
+allmeta = CSV.read("../../data/metadata/merged.csv")
+filter(allmeta) do row
+    row[:metadatum] == "motherSES"
+end
+
+focusmeta = getfocusmetadata("../../data/metadata/merged.csv", samples)
 ```
 
 
@@ -59,11 +63,6 @@ focusmeta = getfocusmetadata(tables["metadata"]["merged_brain"]["path"], samples
 relativeabundance!(ukids_abt)
 
 focusmeta[:sample] = samplenames(ukids_abt)
-complete = map(eachrow(focusmeta)) do df
-    !ismissing(df.birthType) &&
-    !ismissing(df.correctedAgeDays)
-end
-
 
 kids_spec = DataFrame(species=speciesnames(ukids_abt))
 
@@ -74,33 +73,11 @@ let sn = samplenames(ukids_abt)
 end
 
 CSV.write("../../data/metadata/unique_kids_metadata.tsv",
-            focusmeta[[:sample, :correctedAgeDays, :motherSES, :birthType, :white_matter_volume, :grey_matter_volume, :csf_volume, :formulafed]],
+            focusmeta[[:sample, :correctedAgeDays, :motherSES, :birthType, :white_matter_volume, :grey_matter_volume, :csf_volume]],
             delim='\t')
 
 !isdir("../../data/maaslin") && mkdir("../../data/maaslin")
 CSV.write("../../data/maaslin/kids_species.tsv", kids_spec, delim='\t')
-```
-
-
-
-```@example glm
-
-birthType = by(focusmeta, [:motherSES]) do df
-    vag = count(isequal("Vaginal"), df[:birthType])
-    csec = count(isequal("Cesarean"), df[:birthType])
-    total = vag+csec
-    DataFrame(percent_vag=(vag / total), count=total)
-end
-
-filter!(birthType) do row
-    !ismissing(row[:motherSES])
-end
-sort!(birthType[:motherSES])
-
-@df birthType bar(:motherSES, :percent_vag, legend = false,
-    xlabel="Maternal SES", ylabel="Fraction vaginal birth")
-ylims!(0, 0.9)
-ylabel!("Fraction Vaginal Birth")
 ```
 
 ```@example glm
@@ -118,7 +95,7 @@ using GLM
 sn = speciesnames(ukids_abt)
 occ = occurrences(ukids_abt)
 for i in eachindex(sn)
-    focusmeta[Symbol(sn[i])] = collect(occ[i, :])
+    focusmeta[Symbol(sn[i])] = asin.(sqrt.(collect(occ[i, :])))
 end
 
 let proj = projection(ukids_mds)
@@ -127,34 +104,40 @@ let proj = projection(ukids_mds)
     end
 end
 
-focusmeta[:white_matter_volume] = Union{Missing, Float64}[x for x in focusmeta[:white_matter_volume]]
-focusmeta[:logage] = log.(focusmeta[:correctedAgeDays])
+focusmeta[:bayleysComposite] = map(row->
+    mean([row[:languageComposite], row[:motorComposite]]),
+    eachrow(focusmeta))
 
-@df focusmeta scatter(:logage, :white_matter_volume)
-
-my_fit = lm(@formula(white_matter_volume ~ logage), focusmeta)
-
-m = filter(focusmeta) do row
-    !ismissing(row[:white_matter_volume]) && !ismissing(row[:logage])
-end[:white_matter_volume]
-
-plot(
-    scatter(predict(my_fit, focusmeta), focusmeta[:white_matter_volume], xlabel="predict"),
-    scatter(focusmeta[:logage], focusmeta[:white_matter_volume], xlabel="X"),
-    scatter(residuals(my_fit), m, xlabel="residuals"),
-    legend=false)
-
-predict(my_fit, focusmeta)
-
-m = filter(focusmeta) do row
-    !ismissing(row[:white_matter_volume]) && !ismissing(row[:logage])
+focusmeta[:cogAssessment] = map(eachrow(focusmeta)) do row
+    cogs = row[[
+                :mullen_EarlyLearningComposite,
+                :fullScaleComposite,
+                :FSIQ_Composite,
+                :bayleysComposite
+            ]]
+    all(ismissing, cogs) && return missing
+    return Float64(collect(skipmissing(cogs))[1])
 end
 
-m[:wm_residuals] = residuals(my_fit)
+focusmeta[:cogAssessment] = Union{Missing, Float64}[focusmeta[:cogAssessment]...]
+describe(focusmeta[:cogAssessment])
 
-@df m scatter(:PCo1, :correctedAgeDays ./ 365, zcolor=:wm_residuals, primary=false,
-    xlabel="PCo1 (16.95%)", ylabel="Age in years", title="White matter volume ~ Age")
-savefig("../../data/figures/07-wm-residuals-age.svg") # hide
+@df focusmeta scatter(:correctedAgeDays ./ 365, :cogAssessment,
+    ylabel="Composite score", xlabel="Age in years", legend=false)
+
+@df focusmeta scatter(:ginisimpson, :cogAssessment,
+    ylabel="Composite score", xlabel="Gini Simpson", legend=false)
+
+
+@df focusmeta scatter(:white_matter_volume, :cogAssessment,
+    ylabel="Composite score", xlabel="White Matter Volume", legend=false)
+
+
 ```
 
-![](../../data/figures/07-wm-residuals-age.svg)
+
+```@example glm
+
+
+
+```

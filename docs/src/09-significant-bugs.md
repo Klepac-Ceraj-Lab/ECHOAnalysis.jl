@@ -42,14 +42,17 @@ names!(tax,
 
 abt = abundancetable(taxfilter(tax))
 abtg = abundancetable(taxfilter(tax, :genus))
+
 relativeabundance!(abt)
 relativeabundance!(abtg)
 
-kids_fecal = map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
-                    resolve_sampleID.(sitenames(abt)))
+kids_fecal = findall(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
+                    resolve_sampleID.(samplenames(abt)))
 
 kidsp = view(abt, sites=kids_fecal)
 kidgn = view(abtg, sites=kids_fecal)
+
+println.(sort(sitenames(kidsp)))
 ```
 
 ## Define bugs

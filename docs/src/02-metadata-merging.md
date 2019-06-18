@@ -75,6 +75,25 @@ samples[:parent_table] = "FecalProcessing";
 Finally, we also have tables of brain volumes for many of our subjects.
 
 ```@example metadata
+brainvol = CSV.read("../../data/brain/brain_volumes.csv")
+names!(brainvol, map(names(brainvol)) do n
+                        replace(String(n), " "=>"_") |> lowercase |> Symbol
+                    end
+        )
+
+
+brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :study_id, variable_name=:metadatum)
+rename!(brainvol, :study_id => :studyID)
+
+# convert letter timepoint into number
+gettp(x) = findfirst(lowercase(String(x)), "abcdefghijklmnopqrstuvwxyz")[1]
+
+brainsid = match.(r"(\d+)([a-z])", brainvol[:studyID])
+brainvol[:studyID] = [parse(Int, String(m.captures[1])) for m in brainsid]
+brainvol[:timepoint] = [gettp(m.captures[2]) for m in brainsid]
+brainvol[:parent_table] = "brainVolume"
+brainvol[:sampleID] = ""
+
 files["tables"]["brain"]["cortical"]["path"]
 cortical = CSV.read(files["tables"]["brain"]["cortical"]["path"])
 subcortical = CSV.read(files["tables"]["brain"]["subcortical"]["path"])
@@ -114,6 +133,10 @@ allmeta[:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(allmeta))
 
+brainvol[:sampleID] = map(r->
+        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+        eachrow(brainvol))
+
 cortical[:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(cortical))
@@ -123,7 +146,7 @@ subcortical[:sampleID] = map(r->
         eachrow(subcortical))
 
 
-allmeta = vcat(allmeta, cortical, subcortical, samples)
+allmeta = vcat(allmeta, brainvol, cortical, subcortical, samples)
 # reorder columns
 allmeta = allmeta[[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
 # remove rows with missing values

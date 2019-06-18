@@ -20,6 +20,7 @@ using StatsPlots
 using MicrobiomePlots
 using BiobakeryUtils
 using ColorBrewer
+using Distances
 using Clustering
 
 tables = parsefile("../../data/data.toml")["tables"]
@@ -28,6 +29,8 @@ datafolder = tables["biobakery"]["path"]
 metaphlan = tables["biobakery"]["metaphlan2"]
 outdir = metaphlan["analysis_output"]
 isdir(outdir) || mkdir(outdir)
+allmeta = CSV.File("../../data/metadata/merged_brain.csv") |> DataFrame
+
 
 tax = merge_tables(datafolder, metaphlan["root"], metaphlan["filter"],
     suffix="_profile.tsv")
@@ -123,8 +126,8 @@ c = [startswith(x, "C") ? color2[1] : color2[2] for x in samplenames(abt)]
 
 p1 = plot(mds, marker=3, line=1, framestyle=1,
     color=c, primary=false)
-scatter!([],[], color=color2[1], label="kids", legend=:topleft)
-scatter!([],[], color=color2[2], label="moms", legend=:topleft)
+scatter!([],[], color=color2[1], label="kids", legend=:topright)
+scatter!([],[], color=color2[2], label="moms", legend=:topright)
 title!("All samples taxonomic profiles")
 
 savefig(joinpath(figsdir, "05-taxonomic-profiles-moms-kids.svg")) # hide
@@ -179,6 +182,85 @@ the samples that were stored in Genotek
 and also remove duplicates
 (since many of the kids are sampled more than once).
 
+```@example
+function optimalorder(hc::Hclust, dm::Array{Float64,2})
+    ord = deepcopy(hc)
+    optimalorder!(ord, dm)
+    return ord
+end
+
+
+function optimalorder!(hc::Hclust, dm::Array{Float64,2})
+    ord = hc.order
+    orderleaves!(ord, hc, dm)
+end
+
+function orderleaves!(order::Vector{Int}, hcl::Hclust, dm::Array{Float64,2})
+    extents = Tuple{Int,Int}[]
+    for (vl, vr) in zip(hcl.merges[:,1], hcl.merges[:,2])
+        (u, m, uidx, midx) = leaflocs(vl, order, extents)
+        (k, w, kidx, widx) = leaflocs(vr, order, extents)
+        if vl < 0 && vr < 0
+            # Nothing needs to be done
+        elseif vl < 0
+            flp = flip1(m, k, w, dm)
+            flp == 2 && reverse!(order, kidx, widx)
+        elseif vr < 0
+            flp = flip1(k, m, u, dm)
+            (dm[k, m] > dm[k, u]) && reverse!(order, uidx, midx)
+            flp == 2 && reverse!(order, uidx, midx)
+       elseif vl > 0 && vr > 0
+           flp = flip2(u, m, k, w, dm)
+           (flp == 2 || flp == 4) && reverse!(order, uidx, midx)
+           (flp == 3 || flp == 4) && reverse!(order, kidx, widx)
+       else
+           error("invalid 'merge' order in Hclust: ($vl, $vr) ")
+       end
+       push!(extents, (uidx, widx))
+   end
+end
+
+
+function leaflocs(v::Int, order::Vector{Int}, extents::Vector{Tuple{Int,Int}})
+    if v < 0
+        leftextent = findfirst(abs(v) .== order)
+        leftextent = rightextent = findfirst(==(-v), order)
+        rightextent = leftextent
+    elseif v > 0
+        leftextent = extents[v][1]
+        rightextent = extents[v][2]
+    else
+        error("leaf position cannot be zero")
+    end
+        left = order[leftextent]
+        right = order[rightextent]
+    return left, right, leftextent, rightextent
+end
+
+
+
+"""
+For 1 multi-leaf branch and a leaf, determine if flipping branch is required
+1 = do not flip
+2 = flip right
+"""
+function flip1(m::Int, k::Int, w::Int, dm::Array{Float64,2})
+    dm[m,k] <= dm[m,w] ? 1 : 2
+end
+
+"""
+For 2 multi-leaf branches, determine if one or two flips is required
+1 = do not flip
+2 = flip left
+3 = flip right
+4 = flip both
+"""
+function flip2(u::Int, m::Int, k::Int, w::Int, dm::Array{Float64,2})
+    argmin([dm[m,k], dm[u,k], dm[m,w], dm[u,w]])
+end
+```
+
+
 ```@example tax_profiles
 moms = view(abt, sites=map(s-> occursin(r"^M", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(abt))))
@@ -214,7 +296,7 @@ savefig(joinpath(figsdir, "05-moms-abundanceplot.svg"))
 
 kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
                     resolve_sampleID.(sitenames(abt))))
-unique_kids = view(abt, sites=firstkids(resolve_sampleID.(sitenames(abt))))
+ukids = view(abt, sites=firstkids(resolve_sampleID.(sitenames(abt))))
 
 kids_dm = pairwise(BrayCurtis(), kids)
 kids_mds = fit(MDS, kids_dm, distances=true)
@@ -224,7 +306,7 @@ ukids_mds = fit(MDS, ukids_dm, distances=true)
 ukids_hcl = hclust(ukids_dm, linkage=:average)
 optimalorder!(ukids_hcl, ukids_dm)
 
-abundanceplot(unique_kids, srt = ukids_hcl.order, title="Kids, top 10 species",
+abundanceplot(ukids, srt = ukids_hcl.order, title="Kids, top 10 species",
     xticks=false, color=color4')
 savefig(joinpath(figsdir, "05-kids-abundanceplot.svg"))
 ```
@@ -295,26 +377,13 @@ I'll use the [`getmetadata`]@ref function.
 ```@example tax_profiles
 samples = resolve_sampleID.(samplenames(kids))
 
-subjects = [s.subject for s in samples]
-timepoints = [s.timepoint for s in samples]
-metadata = ["correctedAgeDays", "childGender", "APOE", "birthType",
-            "exclusivelyNursed", "exclusiveFormulaFed", "lengthExclusivelyNursedMonths",
-            "amountFormulaPerFeed", "formulaTypicalType", "milkFeedingMethods",
-            "typicalNumberOfEpressedMilkFeeds", "typicalNumberOfFeedsFromBreast",
-            "noLongerFeedBreastmilkAge", "ageStartSolidFoodMonths", "motherSES",
-            "childHeight", "childWeight"]
-
-focusmeta = getmetadata(allmeta, subjects, timepoints, metadata)
+focusmeta = getfocusmetadata(allmeta, samples)
 
 using StatsPlots
 
-focusmeta[:correctedAgeDays] = [ismissing(x) ? x : parse(Int, x) for x in focusmeta[:correctedAgeDays]]
 scatter(focusmeta[:correctedAgeDays], proj[:,1], legend = false)
 xlabel!("correctedAgeDays")
 ylabel!("PCo.1")
-
-
-focusmeta[:motherSES] = map(x-> ismissing(x) || x == "9999" ? missing : parse(Int, x), focusmeta[:motherSES])
 
 focusmeta[:shannon] = shannon(kids)
 focusmeta[:ginisimpson] = ginisimpson(kids)
@@ -323,15 +392,14 @@ focusmeta |> CSV.write("../../data/metadata/focus.csv") # hide
 ```
 
 ```@example tax_profiles
-ukids_samples = resolve_sampleID.(samplenames(unique_kids))
+ukids_samples = resolve_sampleID.(samplenames(ukids))
 ukids_subjects = [s.subject for s in ukids_samples]
 ukids_timepoints = [s.timepoint for s in ukids_samples]
-ukidsmeta = getmetadata(allmeta, ukids_subjects, ukids_timepoints, metadata)
-ukidsmeta[:correctedAgeDays] = numberify(ukidsmeta[:correctedAgeDays])
+ukidsmeta = getfocusmetadata(allmeta, ukids_samples)
 youngkids = ukidsmeta[:correctedAgeDays] ./ 365 .< 2
 youngkids = [ismissing(x) ? false : x for x in youngkids]
 
-ykids = view(unique_kids, sites = youngkids)
+ykids = view(ukids, sites = youngkids)
 ykids_dm = pairwise(BrayCurtis(), ykids)
 ykids_mds = fit(MDS, ykids_dm, distances=true)
 
@@ -341,14 +409,93 @@ abundanceplot(ykids, srt = ykids_hcl.order, title="Kids under 2, top 10 species"
     xticks=false, color=color4')
 savefig(joinpath(figsdir, "05-young-kids-abundanceplot.svg"))
 
+
+
+plot(
+    abundanceplot(ukids, srt = ukids_hcl.order, title="Kids, top 10 species",
+        xticks=false, color=color4'),
+    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in ukidsmeta[:correctedAgeDays][ukids_hcl.order]]'),
+        xticks=false, yticks=false),
+    layout = grid(2,1,heights=[0.9, 0.1])
+    )
+
+savefig(joinpath(figsdir, "05-kids-abundanceplot-age-heatmap.svg"))
+
+plot(
+    abundanceplot(ukids, srt=sortperm(ukidsmeta[:correctedAgeDays]), title="Kids, age sorted",
+        xticks=false, color=color4'),
+    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in ukidsmeta[:correctedAgeDays][sortperm(ukidsmeta[:correctedAgeDays])]]'),
+        xticks=false, yticks=false),
+    layout = grid(2,1,heights=[0.9, 0.1])
+    )
+
+savefig(joinpath(figsdir, "05-kids-abundanceplot-age-sorted.svg"))
+
+ukidsmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in ukidsmeta[:correctedAgeDays]]
+ukidsmeta[:ginisimpson] = ginisimpson(ukids)
+
+boxplot(collect(skipmissing(ukidsmeta[:floorAge])), ukidsmeta[:ginisimpson][.!ismissing.(ukidsmeta[:floorAge])],
+    color=:lightgrey, legend=false, xlabel="Age in Years", ylabel="Alpha diversity (GiniSimpson)")
+savefig(joinpath(figsdir, "05-kids-alpha-diversity-box.svg"))
+
+
+let sn = speciesnames(ukids)
+    for (i, sample) in enumerate(sn)
+        ukidsmeta[Symbol(sample)] = asin.(sqrt.(occurrences(ukids)[i, :]))
+    end
+end
+
+
+dm = pairwise(BrayCurtis(), ukids)
+mds = fit(MDS, dm, distances=true)
+proj = projection(mds)
+for i in 1:nrow(ukidsmeta) -1
+    ukidsmeta[Symbol("PCo$i")] = proj[:, i]
+end
+
+using StatsBase
+
+function colorquartile(arr, clrs)
+    (q1, q2, q3) = percentile(collect(skipmissing(arr)), [25, 50, 75])
+    length(clrs) > 4 ? mis = colorant"gray" : clrs[5]
+    map(arr) do x
+        ismissing(x) && return mis
+        x < q1 && return clrs[1]
+        x < q2 && return clrs[2]
+        x < q3 && return clrs[3]
+        return clrs[4]
+    end
+end
+
+
+ukidsmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in ukidsmeta[:correctedAgeDays]]
+scatter(proj[:, 1], ukidsmeta[:correctedAgeDays] ./ 365,
+    color=colorquartile(ukidsmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
+    markersize=5, primary=false)
+scatter!([],[], color=color2[1], label="25th percentile")
+scatter!([],[], color=color2[2], label="50th percentile")
+scatter!([],[], color=color2[3], label="75th percentile")
+scatter!([],[], color=color2[4], label="99th percentile")
+scatter!([],[], color=color2[end], label="missing", legend=:topleft)
+xlabel!("MDS1 (14.47%)")
+ylabel!("Age (years)")
+
+savefig(joinpath(figsdir, "05-kids-brain-quartiles.svg"))
+
+
+plot(mds, zcolor=[ismissing(x) ? 0 : x for x in ukidsmeta[:Escherichia_coli]])
+
+focusmeta[:index] = [i for i in 1:nrow(focusmeta)]
+
 ```
 
 ##### Birth type
 
 ```@example tax_profiles
 plot(kids_mds, marker=3, line=1,
+
     color=metacolor(focusmeta[:birthType], color2[4:5], missing_color=color2[end]),
-    title="Kids, BirthType", primary=false)
+    title="Kids, BirthType", primary=fale)
 scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomright)

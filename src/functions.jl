@@ -236,7 +236,7 @@ function numberify(x)
     ismissing(x) && return missing
     x isa Real && return x
     if x isa AbstractString
-        occursin(".", x) ? parse(Float64, x) : parse(Int, x)
+        occursin(r"[\.e]", x) ? parse(Float64, x) : parse(Int, x)
     else
         @warn "Something weird" x typeof(x)
         return missing
@@ -263,6 +263,7 @@ const metadata_focus_headers = String[
     "lengthExclusivelyNursedMonths",
     "formulaTypicalType",
     "motherSES",
+    "assessmentDate",
     # numeric
     "correctedAgeDays",
     "amountFormulaPerFeed",
@@ -279,24 +280,27 @@ const metadata_focus_headers = String[
     "RSurfArea",
     "ICV",
     "subcortical_volume",
+    "white_matter_volume",
+    "grey_matter_volume",
+    "csf_volume",
     ## Cognitive assessments
-    ### Mullen
+    ### Mullen (0-3 years 11 months)
     "mullen_VerbalComposite",
     "mullen_NonVerbalComposite",
     "mullen_EarlyLearningComposite", # average of other two
-    ### Bayley's
+    ### Bayley's (1-25 months)
     "adaptiveBehaviorComposite",
     "languageComposite",
     "socialEmotionalComposite",
     "motorComposite",
-    ### WISC-V
+    ### WISC- (6-16 years)
     "FRI_CompositeScore",
     "PSI_Composite",
     "VCI_CompositeScore",
     "VSI_CompositeScore",
     "WMI_Composite",
     "FSIQ_Composite", # average
-    ### WSSPI-IV
+    ### WPPSI-IV (4-5 years 11 months)
     "fluidReasoningComposite",
     "verbalComprehensionComposite",
     "visualSpatialComposite",
@@ -331,6 +335,12 @@ customprocess(col, ::MDColumn{:LSurfArea})                          = numberify(
 customprocess(col, ::MDColumn{:RSurfArea})                          = numberify(col)
 customprocess(col, ::MDColumn{:ICV})                                = numberify(col)
 customprocess(col, ::MDColumn{:subcortical_volume})                 = numberify(col)
+customprocess(col, ::MDColumn{:white_matter_volume})                = numberify(col)
+customprocess(col, ::MDColumn{:grey_matter_volume})                 = numberify(col)
+customprocess(col, ::MDColumn{:csf_volume})                         = numberify(col)
+
+
+
 
 ### Mullen
 customprocess(col, ::MDColumn{:mullen_VerbalComposite})             = numberify(col)
@@ -356,7 +366,7 @@ customprocess(col, ::MDColumn{:socialEmotionalComposite})           = numberify(
 customprocess(col, ::MDColumn{:motorComposite})                     = numberify(col)
 
 # other custom processing
-function customprocess(col, ::Union{MDColumn{:motherSES}, MDColumn{:fatherSES}})
+function customprocess(col, ::MDColumn{:motherSES})
     col = numberify(col)
     # some missing entries are encoded as 9999
     for i in eachindex(col)
@@ -364,24 +374,35 @@ function customprocess(col, ::Union{MDColumn{:motherSES}, MDColumn{:fatherSES}})
             col[i] = missing
         end
     end
+    return col
 end
+
+"""
+    getfocusmetadata(df, samples; focus=metadata_focus_headers)
+
+Get a wide-form metadata table with a subset of headers for a subset of subject/sample IDs
+"""
+function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
+    subjects = [s.subject for s in samples]
+    timepoints = [s.timepoint for s in samples]
+    df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
+
+    for n in names(df)
+        df[n] = customprocess(df[n], MDColumn(n))
+    end
+
+    return df
+end
+
 
 """
     getfocusmetadata(longfilepath, samples; focus=metadata_focus_headers)
 
 Get a wide-form metadata table with a subset of headers for a subset of subject/sample IDs
 """
-function getfocusmetadata(longfilepath, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
+function getfocusmetadata(longfilepath::AbstractString, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
     md = CSV.read(longfilepath)
-    subjects = [s.subject for s in samples]
-    timepoints = [s.timepoint for s in samples]
-    md = getmetadata(md, subjects, timepoints, metadata_focus_headers)
-
-    for n in names(md)
-        md[n] = customprocess(md[n], MDColumn(n))
-    end
-
-    return md
+    getfocusmetadata(md, samples; focus=focus)
 end
 
 #

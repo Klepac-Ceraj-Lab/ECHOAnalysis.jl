@@ -14,38 +14,20 @@ description = """\
     name="FilemakerPro Database Export"
     description="""\
                 Using FilemakerPro Database from {{date}} \
-                Exported all fields under "AAB", \
+                Exported all fields under \
                 "Allergies", \
                 "AntibioticsPrescriptions", \
                 "BasicFamilyAndChild", \
                 "Bayley's", \
-                "Beery", \
                 "BeforePregnancy", \
-                "BITSEA", \
                 "Blood_Pressure", \
                 "BreastfeedingDone", \
                 "BreastfeedingStill", \
-                "Brief", \
-                "CBCLOlder", \
-                "CBClYounger", \
-                "CCTQ", \
                 "ChildBodyComposition", \
-                "ChildcareDynamic", \
-                "ChildcareStatic", \
-                "ChildDiagnoses", \
-                "ChildMedHistVar", \
-                "CSBS", \
-                "Ctopp2", \
                 "Delivery", \
-                "DevelopmentDynamic", \
-                "DevelopmentStatic", \
-                "EducationalHistory", \
                 "FamilyInformation", \
-                "FamilyMedicalHistory", \
                 "Fecal_with_Ethanol", \
                 "FecalSampleCollection", \
-                "Handedness", \
-                "Homes", \
                 "HouseholdComposition", \
                 "immunizationHistory", \
                 "LeadHemoglobin", \
@@ -53,7 +35,7 @@ description = """\
                 "MOM_WASI-II", \
                 "MomBodyComposition", \
                 "Mullen", \
-                "OralSampleCollection", \
+                "NewbornInfo",
                 "Parent_Demographics", \
                 "Pets", \
                 "Postnatal", \
@@ -61,11 +43,6 @@ description = """\
                 "Pregnancy", \
                 "PregnancyProbioticsVitamins", \
                 "Prenatal", \
-                "PreschoolSRS", \
-                "RelativeInformation", \
-                "ResidentialHistoryFormRecord", \
-                "SchoolageSRS", \
-                "SiblingInformation", \
                 "TimepointInfo", \
                 "WeightHeight", \
                 "WISC_IV", \
@@ -150,14 +127,14 @@ description = """\
 
 [tables.brain]
 
-    [tables.brain.cortical]
-    path="../../data/brain/Cortical_June3rd2019.csv"
+    [tables.brain.gross_volumes]
+    path="../../data/brain/brain_volumes.csv"
     name="High res structural data"
     description="Table provided by Muriel through Samepage"
     date="2019-06-03"
 
-    [tables.brain.cortical_thickness]
-    path="../../data/brain/CorticalThickness_June3rd2019.csv"
+    [tables.brain.cortical]
+    path="../../data/brain/Cortical_June3rd2019.csv"
     name="High res structural data"
     description="Table provided by Muriel through Samepage"
     date="2019-06-03"

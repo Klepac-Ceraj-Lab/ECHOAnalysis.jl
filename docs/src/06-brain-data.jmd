@@ -6,38 +6,93 @@ ENV["GKSwstype"] = "100" # hideusing ECHOAnalysis
 using ECHOAnalysis
 using CSV
 using DataFrames
+using Pkg.TOML: parsefile
+using Microbiome
+using BiobakeryUtils
 
-cortical = CSV.read("../../data/brain/Cortical_June3rd2019.csv")
-subcortical = CSV.read("../../data/brain/Subcortical_June3rd2019.csv")
+tables = parsefile("../../data/data.toml")["tables"]
+figsdir = parsefile("../../data/data.toml")["figures"]["path"]
+datafolder = tables["biobakery"]["path"]
+metaphlan = tables["biobakery"]["metaphlan2"]
 
-letter2number(l) = findfirst(lowercase(l), "abcdefghijklmnopqrstuvwxyz")[1]
+tax = merge_tables(datafolder, metaphlan["root"], metaphlan["filter"],
+    suffix="_profile.tsv")
 
-function parseid(sid)
-    m = match(r"(\d+)(\w)?", sid)
-    isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
-    if isnothing(m.captures[2])
-        return (subject=parse(Int, sid), timepoint=1)
-    else
-        return (subject=parse(Int, m.captures[1]), timepoint=letter2number(m.captures[2]))
-    end
-end
+# clean up sample names
+names!(tax,
+    map(n-> Symbol(
+        resolve_sampleID(String(n))[:sample]),
+        names(tax)
+        )
+    )
 
+taxfilter!(tax)
+abt = abundancetable(tax)
+relativeabundance!(abt)
 
-cortical[:subject] = getfield.(parseid.(cortical[:SubjID]), :subject)
-cortical[:timepoint] = getfield.(parseid.(cortical[:SubjID]), :timepoint)
-cortical = cortical[[:subject, :timepoint,
-                    :LThickness, :RThickness, :LSurfArea, :RSurfArea, :ICV]]
+kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
+                    resolve_sampleID.(sitenames(abt))))
 
-subcortical[:sc_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
-subcortical[:subject] = getfield.(parseid.(subcortical[:SubjID]), :subject)
-subcortical[:timepoint] = getfield.(parseid.(subcortical[:SubjID]), :timepoint)
-subcortical = subcortical[[:subject, :timepoint, :sc_volume, :ICV]]
-
-
+ktps = map(x-> (x.subject, x.timepoint), resolve_sampleID.(samplenames(kids)))
 ```
 
 
+```@example metadata
+cortical = CSV.read(tables["brain"]["cortical"]["path"])
+subcortical = CSV.read(tables["brain"]["subcortical"]["path"])
+vols = CSV.read(tables["brain"]["gross_volumes"]["path"])
 
+cortical[:studyID] = getfield.(parseletterid.(cortical[:SubjID]), :subject)
+cortical[:timepoint] = getfield.(parseletterid.(cortical[:SubjID]), :timepoint)
+
+# we only care about a subset of values for now
+cortical = cortical[[:studyID, :timepoint, :LThickness, :RThickness,
+                                           :LSurfArea,  :RSurfArea,
+                                           :ICV]]
+
+# convert to longform
+# cortical = melt(cortical, [:studyID, :timepoint], variable_name=:metadatum)
+cortical[:parent_table] = "corticalVolumes"
+
+# for the subcortex we mostly care about the total volume rather than individual values
+subcortical[:subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
+subcortical[:studyID] = getfield.(parseletterid.(subcortical[:SubjID]), :subject)
+subcortical[:timepoint] = getfield.(parseletterid.(subcortical[:SubjID]), :timepoint)
+subcortical = subcortical[[:studyID, :timepoint, :subcortical_volume]]
+
+# convert to longform
+# subcortical = melt(subcortical, [:studyID, :timepoint], variable_name=:metadatum)
+subcortical[:parent_table] = "subcorticalVolumes"
+
+vols[:studyID] = getfield.(parseletterid.(vols[Symbol("Study ID")]), :subject)
+vols[:timepoint] = getfield.(parseletterid.(vols[Symbol("Study ID")]), :timepoint)
+
+
+
+brainids = map(row-> (subject=row.studyID, timepoint=row.timepoint),
+                eachrow(cortical))
+volids = map(row-> (subject=row.studyID, timepoint=row.timepoint),
+                eachrow(vols))
+
+
+mgxids = map(s-> (subject=s.subject, timepoint=s.timepoint),
+                resolve_sampleID.(samplenames(kids)))
+
+setdiff(brainids, mgxids) |> length
+setdiff(mgxids, brainids) |> length
+
+setdiff(brainids, volids) |> length
+setdiff(volids, brainids) |> length
+
+setdiff(mgxids, volids) |> length
+setdiff(volids, mgxids) |> length
+
+intersect(brainids, mgxids) |> length
+
+intersect(brainids, volids) |> length
+
+intersect(mgxids, volids) |> length
+```
 
 
 ```@example brain
