@@ -260,13 +260,13 @@ const metadata_focus_headers = String[
     "birthType",
     "exclusivelyNursed",
     "exclusiveFormulaFed",
-    "lengthExclusivelyNursedMonths",
     "formulaTypicalType",
     "motherSES",
     "assessmentDate",
     # numeric
     "correctedAgeDays",
     "amountFormulaPerFeed",
+    "lengthExclusivelyNursedMonths",
     "typicalNumberOfEpressedMilkFeeds",
     "typicalNumberOfFeedsFromBreast",
     "noLongerFeedBreastmilkAge",
@@ -322,6 +322,7 @@ customprocess(col, ::MDColumn) = col
 # Make numeric
 customprocess(col, ::MDColumn{:correctedAgeDays})                   = numberify(col)
 customprocess(col, ::MDColumn{:amountFormulaPerFeed})               = numberify(col)
+customprocess(col, ::MDColumn{:lengthExclusivelyNursedMonths})      = numberify(col)
 customprocess(col, ::MDColumn{:typicalNumberOfEpressedMilkFeeds})   = numberify(col)
 customprocess(col, ::MDColumn{:typicalNumberOfFeedsFromBreast})     = numberify(col)
 customprocess(col, ::MDColumn{:noLongerFeedBreastmilkAge})          = numberify(col)
@@ -385,6 +386,8 @@ Get a wide-form metadata table with a subset of headers for a subset of subject/
 function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
     subjects = [s.subject for s in samples]
     timepoints = [s.timepoint for s in samples]
+    @show first(subjects)
+    @show first(timepoints)
     df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
 
     for n in names(df)

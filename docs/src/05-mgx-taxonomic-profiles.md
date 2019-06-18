@@ -296,25 +296,9 @@ savefig(joinpath(figsdir, "05-moms-abundanceplot.svg"))
 
 kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
                     resolve_sampleID.(sitenames(abt))))
-ukids = view(abt, sites=firstkids(resolve_sampleID.(sitenames(abt))))
 
 kids_dm = pairwise(BrayCurtis(), kids)
 kids_mds = fit(MDS, kids_dm, distances=true)
-
-ukids_dm = pairwise(BrayCurtis(), ukids)
-ukids_mds = fit(MDS, ukids_dm, distances=true)
-ukids_hcl = hclust(ukids_dm, linkage=:average)
-optimalorder!(ukids_hcl, ukids_dm)
-
-abundanceplot(ukids, srt = ukids_hcl.order, title="Kids, top 10 species",
-    xticks=false, color=color4')
-savefig(joinpath(figsdir, "05-kids-abundanceplot.svg"))
-```
-
-![](../../figures/05-kids-abundanceplot.svg)
-
-
-```@example tax_profiles
 pcos = DataFrame(sampleID=samplenames(kids))
 samples = resolve_sampleID.(samplenames(kids))
 pcos[:studyID] = map(s-> s[:subject], samples)
@@ -323,13 +307,6 @@ pcos[:ginisimpson] = ginisimpson(kids)
 pcos[:shannon] = shannon(kids)
 
 proj = projection(kids_mds)
-
-
-for i in 1:size(proj, 2)
-    pcos[Symbol("Pco$i")] = proj[:,i]
-end
-
-CSV.write("/home/kevin/Desktop/tax_profile_pcos.csv", pcos)
 
 p5 = plot(kids_mds, marker=3, line=1,
     zcolor=shannon(kids), primary = false, color=:plasma,
@@ -344,7 +321,6 @@ savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-shannon.svg")) # hide
 
 pkids = view(pabt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(pabt))))
-upkids = view(pkids, sites=firstkids(resolve_sampleID.(sitenames(pkids))))
 
 kids_bact = vec(collect(occurrences(view(pkids, species=occursin.("Bact", speciesnames(pkids))))))
 kids_firm = vec(collect(occurrences(view(pkids, species=occursin.("Firm", speciesnames(pkids))))))
@@ -378,24 +354,73 @@ I'll use the [`getmetadata`]@ref function.
 samples = resolve_sampleID.(samplenames(kids))
 
 focusmeta = getfocusmetadata(allmeta, samples)
-
-using StatsPlots
-
-scatter(focusmeta[:correctedAgeDays], proj[:,1], legend = false)
-xlabel!("correctedAgeDays")
-ylabel!("PCo.1")
-
 focusmeta[:shannon] = shannon(kids)
 focusmeta[:ginisimpson] = ginisimpson(kids)
 
-focusmeta |> CSV.write("../../data/metadata/focus.csv") # hide
+scatter(proj[:,1], focusmeta[:correctedAgeDays] ./365,
+    primary=false, zcolor = focusmeta[:shannon])
+ylabel!("Age (years)")
+xlabel!("MDS1 (14.29%)")
+title!("All kids age / PCoA 1 / Alpha diversity")
+
+savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-age-pco1-diversity.svg"))
 ```
 
+![](../../data/figures/05-taxonomic-profiles-kids-age-pco1-diversity.svg)
+
 ```@example tax_profiles
+ukids = view(abt, sites=firstkids(resolve_sampleID.(sitenames(abt))))
 ukids_samples = resolve_sampleID.(samplenames(ukids))
-ukids_subjects = [s.subject for s in ukids_samples]
-ukids_timepoints = [s.timepoint for s in ukids_samples]
 ukidsmeta = getfocusmetadata(allmeta, ukids_samples)
+
+
+ukids_dm = pairwise(BrayCurtis(), ukids)
+ukids_mds = fit(MDS, ukids_dm, distances=true)
+
+ukids_hcl = hclust(ukids_dm, linkage=:average)
+optimalorder!(ukids_hcl, ukids_dm)
+abundanceplot(ukids, srt = ukids_hcl.order,
+    title="Unique kids, top 10 species",
+    xticks=false, color=color4')
+savefig(joinpath(figsdir, "05-young-kids-abundanceplot.svg"))
+
+plot(ukids_mds, zcolor=[ismissing(x) ? 0 : x/365 for x in ukidsmeta[:correctedAgeDays]],
+    primary=false, title = "Unique Kids Taxonomic Profiles, Age")
+savefig(joinpath(figsdir, "05-taxonomic-profiles-mds-kids-age.svg"))
+
+
+upkids = view(pabt, sites=firstkids(resolve_sampleID.(sitenames(pabt))))
+ukids_bact = vec(collect(occurrences(view(upkids, species=occursin.("Bact", speciesnames(upkids))))))
+ukids_firm = vec(collect(occurrences(view(upkids, species=occursin.("Firm", speciesnames(upkids))))))
+ukids_act = vec(collect(occurrences(view(upkids, species=occursin.("Actino", speciesnames(upkids))))))
+ukids_proteo = vec(collect(occurrences(view(upkids, species=occursin.("Proteo", speciesnames(upkids))))))
+
+
+plot(
+    plot(ukids_mds, marker=3, line=1,
+        zcolor=ukids_bact, primary = false, color=:plasma,
+        title="Unique Kids, Bacteroidetes"),
+    plot(ukids_mds, marker=3, line=1,
+        zcolor=ukids_firm, primary = false, color=:plasma,
+        title="Unique Kids, Firmicutes"),
+    plot(ukids_mds, marker=3, line=1,
+        zcolor=ukids_act, primary = false, color=:plasma,
+        title="Unique Kids, Actinobacteria"),
+    plot(ukids_mds, marker=3, line=1,
+        zcolor=ukids_proteo, primary = false, color=:plasma,
+        title="Unique Kids, Proteobacteria"),
+    )
+
+
+savefig(joinpath(figsdir, "05-taxonomic-profiles-ukids-phyla.svg")) # hide
+
+abundanceplot(ukids, srt = ukids_hcl.order, title="Unique Kids, top 10 species",
+    xticks=false, color=color4')
+savefig(joinpath(figsdir, "05-kids-abundanceplot.svg"))
+```
+
+
+```@example tax_profiles
 youngkids = ukidsmeta[:correctedAgeDays] ./ 365 .< 2
 youngkids = [ismissing(x) ? false : x for x in youngkids]
 
@@ -446,10 +471,8 @@ let sn = speciesnames(ukids)
 end
 
 
-dm = pairwise(BrayCurtis(), ukids)
-mds = fit(MDS, dm, distances=true)
-proj = projection(mds)
-for i in 1:nrow(ukidsmeta) -1
+proj = projection(ukids_mds)
+for i in 1:nrow(ukidsmeta)-1
     ukidsmeta[Symbol("PCo$i")] = proj[:, i]
 end
 
@@ -467,7 +490,6 @@ function colorquartile(arr, clrs)
     end
 end
 
-
 ukidsmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in ukidsmeta[:correctedAgeDays]]
 scatter(proj[:, 1], ukidsmeta[:correctedAgeDays] ./ 365,
     color=colorquartile(ukidsmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
@@ -477,16 +499,41 @@ scatter!([],[], color=color2[2], label="50th percentile")
 scatter!([],[], color=color2[3], label="75th percentile")
 scatter!([],[], color=color2[4], label="99th percentile")
 scatter!([],[], color=color2[end], label="missing", legend=:topleft)
-xlabel!("MDS1 (14.47%)")
+xlabel!("MDS1 (14.29%)")
 ylabel!("Age (years)")
 
 savefig(joinpath(figsdir, "05-kids-brain-quartiles.svg"))
 
+using Combinatorics
+age = findall(x-> !ismissing(x) && x == 1, ukidsmeta[:floorAge])
+for (i, j) in combinations(age1, 2)
+    @show i, j
+end
 
-plot(mds, zcolor=[ismissing(x) ? 0 : x for x in ukidsmeta[:Escherichia_coli]])
 
-focusmeta[:index] = [i for i in 1:nrow(focusmeta)]
+betadiv = let df = DataFrame(age=Int[], distance=Float64[], type=Symbol[])
+    for i in 1:10
+        age = findall(x-> !ismissing(x) && x == i, ukidsmeta[:floorAge])
+        for (j, k) in combinations(age, 2)
+            append!(df, DataFrame(age=i, distance=ukids_dm[j,k], type=:self))
+        end
+    end
+    df
+end
 
+@df betadiv boxplot(:age, :distance)
+
+
+beta110 = let
+    ones = findall(row-> !ismissing(row[:floorAge]) && row[:floorAge] == 1, eachrow(ukidsmeta))
+    tens = findall(row-> !ismissing(row[:floorAge]) && row[:floorAge] == 10, eachrow(ukidsmeta))
+    for i in ones
+        for j in tens
+            append!(betadiv, DataFrame(age=13, distance=ukids_dm[i,j], type=:other))
+        end
+    end
+end
+boxplot(betadig)
 ```
 
 ##### Birth type
