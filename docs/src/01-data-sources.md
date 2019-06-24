@@ -65,10 +65,12 @@ Third, some custom processing is done for certain tables -
 for example,
 `collectionNum` in `FecalSampleCollection`
 is renamed to `timepoint` to be consistent with other tables.
-See the `customprocess()` function to see the table-specific steps.
+See the `customprocess()`function inside the script
+to see the table-specific steps.
 
 Finally, the data is converted to long form.
 
+<!-- TODO: Switch to feather output to preserve type info -->
 
 | studyID  | timepoint | metadatum | value    | parent_table |
 |----------|-----------|-----------|----------|--------------|
@@ -128,6 +130,9 @@ generating paired-end reads.
 
 ### Concatenating raw sequencing files
 
+!!! note
+    This is no longer necessary when using the snakemake workflow.
+
 Each set of 4 forward and reverse reads
 were concatenated using the `catfastq.jl` script.
 
@@ -161,6 +166,9 @@ $ julia --project=@. bin/catfastq.jl -i rawfastq/ -o catfastq/ -vl batch001_conc
 
 ### Running the bioBakery workflow
 
+!!! note
+    This has been deprecated in favor of the snakemake workflow
+
 The bioBakery `wmgx` workflow was used on all samples
 with the following software versions:
 
@@ -177,6 +185,27 @@ research computing (a Centos7 environment).
 $ biobakery_workflows wmgx --input catfastq/ --output analysis/ \
   --bypass-strain-profiling --pair-identifier .1 \
   --grid-jobs 96 --grid-partition serial_requeue,shared,240 # grid options
+```
+
+### Running the snakemake workflow
+
+[See here](https://github.com/Klepac-Ceraj-Lab/snakemake_workflows)
+
+A custom snakemake workflow was used on all samples
+with the following software versions:
+
+- kneaddata v0.7.1
+- metaphlan2 v2.7.7
+- humann2 v0.11.1
+
+The following command was run on the `engaging` compute cluster (`eofe7.mit.edu`)
+from MIT (a Centos7 environment).
+
+```
+$ snakemake -s /home/vklepacc/software/repos/snakemake_workflows/biobakery_all.snakefile \
+    --configfile config.yaml --cluster-config cluster.yaml \
+    --cluster "sbatch -n {cluster.processors} -N {cluster.nodes} -t {cluster.time} --mem {cluster.memory} -o output/logs/{rule}-%j.out -e output/logs/{rule}-%j.err -p newnodes --exclude=node119" \
+    --latency-wait 15
 ```
 
 ## 16S data
