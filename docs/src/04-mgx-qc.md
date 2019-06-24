@@ -6,17 +6,13 @@ using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/
 ```@example qc
 cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
-using ECHOAnalysis # hide
 ```
 
 ```@example qc
-using Pkg.TOML: parsefile
+using ECHOAnalysis
 using CSV, DataFrames
 using DataFramesMeta
 using PrettyTables
-
-tables = parsefile("../../data/data.toml")["tables"]
-datafolder = tables["biobakery"]["path"]
 ```
 
 ## Quality control
@@ -24,10 +20,8 @@ datafolder = tables["biobakery"]["path"]
 First, I'll look at the QC results from `kneaddata`.
 
 ```@example qc
-kd = tables["biobakery"]["kneaddata"]
-
 qc_files = let qcfiles=[]
-    for (root, dirs, files) in walkdir(datafolder)
+    for (root, dirs, files) in walkdir(datatoml["tables"]["biobakery"]["path"])
         occursin("kneaddata", root) || continue
         filter!(files) do f
             occursin("read_counts", f)
@@ -53,7 +47,7 @@ pretty_table(first(qc, 15))
 ```
 
 To keep the formatting of sample IDs consistant across data types,
-I'll use the [`resolve_sampleID`]@ref function.
+I'll use the [`resolve_sampleID`](@ref) function.
 
 
 ```@example qc
@@ -86,6 +80,8 @@ qc = @linq qc |>
 pretty_table(first(qc,5)[[:Sample, :batch, :raw, :trimmed, :orphan, :final]])
 ```
 
+Now let's take a look at them with some plots.
+
 ```@example qc
 using StatsPlots
 
@@ -96,23 +92,25 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     title = "QC from Kneaddata", label=["Raw" "Final"],
     line=0)
 
-savefig("../../data/figures/04-knead-qc.svg"); # hide
+savefig("../../data/figures/04-knead-qc.svg"); nothing# hide
+savefig("../../data/figures/04-knead-qc.png"); nothing# hide
 ```
 
-![](../../data/figures/04-knead-qc.svg)
+![](../../data/figures/04-knead-qc.png)
 
 
 These are a little more variable than I'd like.
+Let's take a look at their properties:
 
 ```@example qc
 using Statistics
 
 qc_stats = by(qc, :batch) do df
                 DataFrame(
-                  mean=round(mean(df[:final]) / 1e6, digits=2),
-                  med=round(median(df[:final]) / 1e6, digits=2),
-                  max=round(maximum(df[:final]) / 1e6, digits=2),
-                  min=round(minimum(df[:final]) / 1e6, digits=2),
+                  mean = round(mean(df[:final]) / 1e6, digits=2),
+                  med  = round(median(df[:final]) / 1e6, digits=2),
+                  max  = round(maximum(df[:final]) / 1e6, digits=2),
+                  min  = round(minimum(df[:final]) / 1e6, digits=2),
                   )
 end
 CSV.write("../../data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
@@ -125,6 +123,4 @@ pretty_table(qc_stats)
 resolve_sampleID
 merge_tables
 getmetadata
-breastfeeding
-formulafeeding
 ```
