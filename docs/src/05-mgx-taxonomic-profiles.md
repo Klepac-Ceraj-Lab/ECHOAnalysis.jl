@@ -117,10 +117,7 @@ savefig(joinpath(figsdir, "05-scree.svg")) # hide
 ![](../../data/figures/03-scree.svg)
 
 ```@example tax_profiles
-color1 = ColorBrewer.palette("Set1", 9)
-color2 = ColorBrewer.palette("Set2", 8)
-color3 = ColorBrewer.palette("Set3", 12)
-color4 = ColorBrewer.palette("Paired", 12)
+# colors defined in `startup.jl`
 
 c = [startswith(x, "C") ? color2[1] : color2[2] for x in samplenames(abt)]
 

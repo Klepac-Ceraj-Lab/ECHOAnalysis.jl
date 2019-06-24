@@ -8,18 +8,17 @@ export
     formulafeeding,
     firstkids,
     numberify,
-
     getmetadatum,
     getmetadata,
     metacolor,
-    convert2num,
     getfocusmetadata,
-    letter2number,
-    parseletterid,
 
     #File Handling
     add_batch_info,
     merge_tables,
+
+    # Startup Functions
+    load_taxonomic_profiles,
 
 
 using DataFrames
@@ -32,5 +31,6 @@ using Microbiome
 
 include("metadata_handling.jl")
 include("file_handling.jl")
+include("startup.jl")
 
 end  # module ECHOAnalysis

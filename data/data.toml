@@ -59,6 +59,12 @@ description = """\
     description="Downloaded \"Everything\" view from AirTable database"
     date="2019-06-24"
 
+    [tables.metadata.all]
+    path="../../data/metadata/merged.csv"
+    name="Fecal Samples DNA processing"
+    description="Downloaded \"Everything\" view from AirTable database"
+    date="2019-06-24"
+
 [tables.biobakery]
     path = "../../data/engaging"
 
