@@ -39,7 +39,7 @@ description = """\
                 and "Wppsi_IV", \
                 to filemakerall.xlsx. Then ran metascrub.jl (See Notebook 1)"""
     log="../../data/metadata/filemakerdb.log"
-    date="2019-04-03"
+    date="2019-06-13"
 
     [tables.metadata.samples]
     path="../../data/metadata/fecal_samples.csv"
