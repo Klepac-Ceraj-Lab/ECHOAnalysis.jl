@@ -7,6 +7,12 @@ description = """\
               though some data are sensitive and are therefore restricted.
               """
 
+[filemaker]
+    path="data/metadata/20190613_deidentified.fmp12"
+    name="Deidentified FilemakerPro database"
+    description="Obtained from ABI on {{date}}"
+    date="2019-06-13"
+
 [tables.metadata]
 
     [tables.metadata.filemakerdb]
@@ -15,41 +21,23 @@ description = """\
     description="""\
                 Using FilemakerPro Database from {{date}} \
                 Exported all fields under \
-                "Allergies", \
-                "AntibioticsPrescriptions", \
                 "BasicFamilyAndChild", \
                 "Bayley's", \
-                "BeforePregnancy", \
-                "Blood_Pressure", \
                 "BreastfeedingDone", \
                 "BreastfeedingStill", \
                 "ChildBodyComposition", \
                 "Delivery", \
-                "FamilyInformation", \
                 "Fecal_with_Ethanol", \
                 "FecalSampleCollection", \
-                "HouseholdComposition", \
-                "immunizationHistory", \
-                "LeadHemoglobin", \
-                "MedicalHistory", \
-                "MOM_WASI-II", \
-                "MomBodyComposition", \
                 "Mullen", \
-                "NewbornInfo",
                 "Parent_Demographics", \
-                "Pets", \
-                "Postnatal", \
-                "PrebioticsProbiotics", \
-                "Pregnancy", \
-                "PregnancyProbioticsVitamins", \
-                "Prenatal", \
                 "TimepointInfo", \
                 "WeightHeight", \
                 "WISC_IV", \
                 "Wisc_V", \
                 "WPPSI_III", \
                 and "Wppsi_IV", \
-                then ran metascrub.jl"""
+                to filemakerall.xlsx. Then ran metascrub.jl (See Notebook 1)"""
     log="../../data/metadata/filemakerdb.log"
     date="2019-04-03"
 
@@ -62,7 +50,7 @@ description = """\
     [tables.metadata.all]
     path="../../data/metadata/merged.csv"
     name="Fecal Samples DNA processing"
-    description="Downloaded \"Everything\" view from AirTable database"
+    description="Merged filemakerdb with fecal_samples (see Notebook 2)"
     date="2019-06-24"
 
 [tables.biobakery]

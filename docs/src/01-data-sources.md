@@ -112,7 +112,7 @@ optional arguments:
 For example, to run this script on our example above:
 
 ```sh
-$ julia --project=@. bin/metascrub.jl ~/Desktop/echo_stuff/all.xlsx -vl data/metadata/filemakerdb.log -o data/metadata/filemakerdb.csv
+$ julia --project=@. bin/metascrub.jl data/metadata/filemakerall.xlsx -vl data/metadata/filemakerdb.log -o data/metadata/filemakerdb.csv
 ```
 
 Additional transformations of the metadata to get it into a usable form
