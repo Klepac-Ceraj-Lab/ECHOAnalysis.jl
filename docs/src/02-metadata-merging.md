@@ -16,10 +16,12 @@ using ECHOAnalysis # hide
 
 ```@example metadata
 using Pkg.TOML: parsefile
-
 files = parsefile("../../data/data.toml")
 println.(keys(files))
-files["description"]
+```
+
+```@example metadata
+@show files["description"]
 ```
 
 The metadata tables are found under `["tables"]["metadata"]`
@@ -41,13 +43,21 @@ allmeta = CSV.File(files["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFr
 allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :] |> pretty_table
 ```
 
+Alternatively, we can use the [`load_metadata`](@ref) function.
+
+```@example metadata
+allmeta_startup = load_metadata(files, "filemakerdb")
+@assert names(allmeta) == names(allmeta_startup)
+@assert size(allmeta) == size(allmeta_startup)
+```
+
 The script tries to find `timepoint` values for everything, and if it can't,
 it assumes that the matadatum applies to all timepoints for that subject.
 These are marked with `timepoint = 0`.
 Let's look at which variables that applies to:
 
 ```@example metadata
-allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
+@show allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
 ```
 
 Those all look reasonable!
@@ -61,9 +71,10 @@ since we can have multiple samples per timepoint.
 `sampleID`s should be unique though.
 
 ```@example metadata
-samples = CSV.File(files["tables"]["metadata"]["samples"]["path"]) |> DataFrame
+samples = load_metadata(files, "samples")
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
+# convert to longform
 samples = melt(samples, [:studyID, :timepoint, :sampleID], variable_name=:metadatum)
 samples = filter(r-> !any(ismissing, [r[:studyID], r[:sampleID]]), samples)
 disallowmissing!(samples)
@@ -75,32 +86,47 @@ samples[:parent_table] = "FecalProcessing";
 Finally, we also have tables of brain volumes for many of our subjects.
 
 ```@example metadata
-brainvol = CSV.read("../../data/brain/brain_volumes.csv")
+brainfiles = files["tables"]["brain"]
+brainvol = CSV.read(brainfiles["gross_volumes"]["path"])
+
+# remove spaces from columns names
 names!(brainvol, map(names(brainvol)) do n
                         replace(String(n), " "=>"_") |> lowercase |> Symbol
-                    end
-        )
-
-
-brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :study_id, variable_name=:metadatum)
+                    end)
 rename!(brainvol, :study_id => :studyID)
 
+# Convert to longform
+brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :studyID, variable_name=:metadatum)
+pretty_table(brainvol)
+```
+
+We need to fix the studyIDs - the letters represent timepoints -
+using the [`resolve_letter_timepoint`](@ref) function.
+
+```@example metadata
 # convert letter timepoint into number
-gettp(x) = findfirst(lowercase(String(x)), "abcdefghijklmnopqrstuvwxyz")[1]
+brainsid = resolve_letter_timepoint.(brainvol[:studyID])
+brainsid[1:5]
+```
 
-brainsid = match.(r"(\d+)([a-z])", brainvol[:studyID])
-brainvol[:studyID] = [parse(Int, String(m.captures[1])) for m in brainsid]
-brainvol[:timepoint] = [gettp(m.captures[2]) for m in brainsid]
+```@example metadata
+brainvol[:studyID] = getfield.(brainsid, :subject)
+brainvol[:timepoint] = getfield.(brainsid, :timepoint)
+brainvol[:sampleID] = getfield.(brainsid, :sample)
 brainvol[:parent_table] = "brainVolume"
-brainvol[:sampleID] = ""
 
-files["tables"]["brain"]["cortical"]["path"]
-cortical = CSV.read(files["tables"]["brain"]["cortical"]["path"])
-subcortical = CSV.read(files["tables"]["brain"]["subcortical"]["path"])
+pretty_table(brainvol)
+```
 
+And now the same thing for the cortical and subcortical volume tables:
 
-cortical[:studyID] = getfield.(parseletterid.(cortical[:SubjID]), :subject)
-cortical[:timepoint] = getfield.(parseletterid.(cortical[:SubjID]), :timepoint)
+```@example metadata
+cortical = CSV.read(brainfiles["cortical"]["path"])
+subcortical = CSV.read(brainfiles["subcortical"]["path"])
+
+corticalids = resolve_letter_timepoint.(cortical[:SubjID])
+cortical[:studyID] = getfield.(corticalids, :subject)
+cortical[:timepoint] = getfield.(corticalids, :timepoint)
 
 # we only care about a subset of values for now
 cortical = cortical[[:studyID, :timepoint, :LThickness, :RThickness,
@@ -113,8 +139,10 @@ cortical[:parent_table] = "corticalVolumes"
 
 # for the subcortex we mostly care about the total volume rather than individual values
 subcortical[:subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
-subcortical[:studyID] = getfield.(parseletterid.(subcortical[:SubjID]), :subject)
-subcortical[:timepoint] = getfield.(parseletterid.(subcortical[:SubjID]), :timepoint)
+
+subcorticalids = resolve_letter_timepoint.(subcortical[:SubjID])
+subcortical[:studyID] = getfield.(subcorticalids, :subject)
+subcortical[:timepoint] = getfield.(subcorticalids, :timepoint)
 subcortical = subcortical[[:studyID, :timepoint, :subcortical_volume]]
 
 # convert to longform
@@ -144,8 +172,11 @@ cortical[:sampleID] = map(r->
 subcortical[:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(subcortical))
+```
 
+And then concatenate all the tables together
 
+```@example metadata
 allmeta = vcat(allmeta, brainvol, cortical, subcortical, samples)
 # reorder columns
 allmeta = allmeta[[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
@@ -174,5 +205,6 @@ for i in eachindex(allmeta[:value])
 end
 
 
-CSV.write("../../data/metadata/merged.csv", allmeta);
+CSV.write(files["tables"]["metadata"]["all"]["path"], allmeta);
+@assert isfile(files["tables"]["metadata"]["all"]["path"]); nothing # hide
 ```

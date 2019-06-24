@@ -38,11 +38,11 @@ function resolve_letter_timepoint(sid::AbstractString)
     m = match(r"(\d+)([a-zA-Z])?", sid)
     isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
     if isnothing(m.captures[2])
-        return (sample = s,
-                subject=parse(Int, sid)
+        return (sample = sid,
+                subject=parse(Int, sid),
                 timepoint=1)
     else
-        return (sample  = s,
+        return (sample  = sid,
                 subject = parse(Int, m.captures[1]),
                 timepoint = findfirst(
                                 lowercase(m.captures[2]),

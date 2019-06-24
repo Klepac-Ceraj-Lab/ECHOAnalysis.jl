@@ -19,7 +19,11 @@ export
 
     # Startup Functions
     load_taxonomic_profiles,
-
+    load_metadata,
+    color1,
+    color2,
+    color3,
+    color4
 
 using DataFrames
 using CSV

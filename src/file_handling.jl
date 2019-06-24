@@ -46,7 +46,7 @@ end of the filename and removed, but a different `suffix` may be provided.
 Usage:
     merge_tables("biobakery", "metaphlan2", "_profile.tsv")
 """
-function
+function merge_tables(folder, dataroot, fltr; suffix=fltr)
     isdir(folder) || throw(ArgumentError("$folder is not a Directory"))
     df = DataFrame(col1=[])
 
