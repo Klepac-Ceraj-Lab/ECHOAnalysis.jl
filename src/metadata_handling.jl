@@ -1,7 +1,15 @@
 """
-Parse a sample name and return its components.
+    resolve_sampleID(sid::Union{AbstractString,Symbol})
 
-Sample
+Parse a sample name and return its components as a named tuple:
+
+Example: For the sample `C0040_3F_1A`:
+- `C0040` means ""**C**hild, subject ID **40**"
+- `3F` means "timepoint **3**", **F**ecal (genotech).
+  May also be `E` for **E**thanol.
+- 1A means "replicate **1**, aliquot **A**"
+
+This function returns the `NamedTuple` `(sample="C0040_3F_1A", subject=40, timepoint=3)`
 """
 function resolve_sampleID(sid::Union{AbstractString,Symbol})
     sid = String(sid)
@@ -19,66 +27,166 @@ function resolve_sampleID(sid::Union{AbstractString,Symbol})
 end
 
 """
-Add batch info to `merged/` folders.
+    resolve_letter_timepoint(sid::AbstractString)
+    resolve_letter_timepoint(sid::Missing)
 
-    Example:
-        `batch001/metaplan2/merged/metaphlan2_taxonomic_profiles.tsv`
-        to
-        `batch001/metaplan2/merged/batch001_metaphlan2_taxonomic_profiles.tsv`
+Deals with sampleIDs in which the timepoint is given as a letter.
+Eg. `40b` indicates timepoint 2 from subject ID 40. If no letter
+is provided, timepoint is assumed to be 1.
 """
-function add_batch_info(folder)
-    batch = ""
-    for (root, dirs, files) in walkdir(folder)
-        if occursin(r"batch\d+$", root)
-            batch = match(r"(batch\d+)", root).captures[1]
-            @warn batch
+function resolve_letter_timepoint(sid::AbstractString)
+    m = match(r"(\d+)([a-zA-Z])?", sid)
+    isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
+    if isnothing(m.captures[2])
+        return (sample = s,
+                subject=parse(Int, sid)
+                timepoint=1)
+    else
+        return (sample  = s,
+                subject = parse(Int, m.captures[1]),
+                timepoint = findfirst(
+                                lowercase(m.captures[2]),
+                                "abcdefghijklmnopqrstuvwxyz")[1])
+    end
+end
+resolve_letter_timepoint(sid::Missing) = missing
+
+import Base.occursin
+
+# WARNING: This is type piracy.
+# But it beats having to check if the thing is missing each time
+occursin(::String, ::Missing) = missing
+occursin(::Regex, ::Missing) = missing
+
+"""
+    breastfeeding(row::DataFrameRow)
+
+Checks a wide-form metadata row for breastfeeding information.
+Returns `true` if any of the following are `true`:
+- `:milkFeedingMethods` contains "breast"
+- `:exclusivelyNursed` is "Yes" (or "yes")
+- Both `:exclusivelyNursed` and `:exclusiveFormulaFed` are "No" (or "no")
+- Any of the following have values > 0:
+    - `:typicalNumberOfFeedsFromBreast`
+    - `:typicalNumberOfEpressedMilkFeeds`
+    - `:lengthExclusivelyNursedMonths`
+    - `:noLongerFeedBreastmilkAge`
+
+Otherwise returns `false`.
+"""
+function breastfeeding(row)
+    bf = any([
+        occursin(r"[Bb]reast", row[:milkFeedingMethods]),
+        occursin(r"[Yy]es", row[:exclusivelyNursed]),
+        all(occursin.(r"[Nn]o", row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        row[:typicalNumberOfFeedsFromBreast] > 0,
+        row[:typicalNumberOfEpressedMilkFeeds] > 0,
+        row[:lengthExclusivelyNursedMonths] > 0,
+        row[:noLongerFeedBreastmilkAge] > 0
+        ])
+    return !ismissing(bf) && bf
+end
+
+"""
+    formulafeeding(row::DataFrameRow)
+
+Checks a wide-form metadata row for formula feeding information.
+Returns `true` if any of the following are `true`:
+- `:milkFeedingMethods` contains "Formula" (or "formula")
+- `:exclusivelyFormulaFed` is "Yes" (or "yes")
+- Both `:exclusivelyNursed` and `:exclusiveFormulaFed` are "No" (or "no")
+- `:amountFormulaPerFeed` is > 0:
+- Either `:amountFormulaPerFeed` or `:formulaTypicalType` have (non-missing) values
+
+Otherwise returns `false`.
+"""
+function formulafeeding(row)
+    ff = any([
+        occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
+        occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
+        all(occursin.(r"[Nn]o", row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        !ismissing(row[:amountFormulaPerFeed]),
+        !ismissing(row[:formulaTypicalType]),
+        row[:amountFormulaPerFeed] > 0
+        ])
+    return !ismissing(ff) && ff
+end
+
+"""
+    firstkids(samples::Vector{<:NamedTuple})
+    firstkids(samples::Vector{<:AbstractString})
+
+From a list of sample ids, identify the earliest sample for each child.
+`Samples` may be sample IDs that can be parsed by [`resolve_sampleID`](@ref),
+or `NamedTuple`s containing `:subject` and `:timepoint` fields.
+
+Returns a vector of indicies that can be used to slice the original vector.
+"""
+function firstkids(samples::AbstractVector{<:NamedTuple})
+    subjects = Dict()
+
+    for i in eachindex(samples)
+        s = samples[i]
+        startswith(s[:sample], "C") || continue
+        if s[:subject] in keys(subjects)
+            if s[:timepoint] < subjects[s[:subject]][:timepoint]
+                continue
+            end
         end
 
-        if occursin(r"merged$", root)
-            for file in files
-                if !occursin("batch", file)
-                    oldpath = joinpath(root, file)
-                    newpath = joinpath(root, "$(batch)_$file")
-                    @info "moving $oldpath to $newpath"
-                    mv(oldpath, newpath)
-                end
-            end
-        elseif occursin(r"kneaddata$", root)
-            if "kneaddata_read_counts.txt" in files
-                oldpath = joinpath(root, "kneaddata_read_counts.txt")
-                newpath = joinpath(root, "$(batch)_kneaddata_read_counts.txt")
-                @info "moving $oldpath to $newpath"
-                mv(oldpath,newpath)
-            end
-        end
+        subjects[s[:subject]] = (timepoint=s[:timepoint], index=i)
+    end
+    [subjects[k][:index] for k in keys(subjects)]
+end
+
+firstkids(samples::AbstractVector{<:AbstractString}) = firstkids(resolve_sampleID.(samples))
+
+
+"""
+    numberify(x)
+    numberify(v::AbstractArray)
+
+Try to convert something into a number or array of numbers using the heuristics:
+- if x is already a number or is `missing`, return x
+- if v is already an array of numbers, return v
+- if x is a `String`:
+    - if x contains a `.` or `e`, parse as a `Float64`
+    - Otherwise parse as an Int
+- if numberified vector contains any `Float`s, return a vector of `missing` and `Float64`
+- if x is anything other than a String or a number, return `missing`
+"""
+function numberify(x)
+    ismissing(x) && return missing
+    x isa Real && return x
+    if x isa AbstractString
+        occursin(r"[\.e]", x) ? parse(Float64, x) : parse(Int, x)
+    else
+        @warn "Something weird" x typeof(x)
+        return missing
+    end
+end
+
+function numberify(v::AbstractArray)
+    eltype(v) <: Union{Missing, <:Real} && return v
+    v = numberify.(v)
+    if any(i -> i isa Float64, v)
+        return Union{Missing, Float64}[y for y in v]
+    else
+        return Union{Missing, Int}[y for y in v]
     end
 end
 
 """
-Merge tables with a given subject based on their first column
+    metacolor(metadata::AbstractVector, colorlevels::AbstractVector; missing_color=colorant"gray")
 
-Usage:
-    merge_tables("biobakery", "metaphlan2", "profile.tsv")
+Convert metadata into colors
 """
-function merge_tables(folder, dataroot, filt; suffix=filt)
-    isdir(folder) || throw(ArgumentError("$folder is not a Directory"))
-    df = DataFrame(col1=[])
+function metacolor(metadata::AbstractVector, colorlevels::AbstractVector; missing_color=colorant"gray")
+    um = unique(skipmissing(metadata))
+    length(um) <= length(colorlevels) || throw(ErrorException("Not enough colors"))
 
-    for (root, dirs, files) in walkdir(folder)
-        occursin(dataroot, root) || continue
-
-        for f in filter(x-> occursin(filt, x), files)
-            t = CSV.File(joinpath(root, f)) |> DataFrame!
-            fname = Symbol(replace(f, suffix=>""))
-            rename!(t, names(t)[1]=> :col1, names(t)[2]=>fname)
-            df = join(df,t, on=:col1, kind=:outer)
-        end
-    end
-    for n in names(df[2:end])
-        df[n] = coalesce.(df[n], 0.)
-    end
-    disallowmissing!(df)
-    return df
+    color_dict = Dict(um[i] => colorlevels[i] for i in eachindex(um))
+    return [ismissing(m) ? missing_color : color_dict[m] for m in metadata]
 end
 
 """
@@ -142,115 +250,6 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
         end
     end
     return df
-end
-
-
-"""
-Convert metadata into colors
-"""
-function metacolor(metadata::AbstractVector, colorlevels::AbstractVector; missing_color=colorant"gray")
-    um = unique(skipmissing(metadata))
-    length(um) <= length(colorlevels) || throw(ErrorException("Not enough colors"))
-
-    color_dict = Dict(um[i] => colorlevels[i] for i in eachindex(um))
-    return [ismissing(m) ? missing_color : color_dict[m] for m in metadata]
-end
-
-function convert2num(s)
-    ismissing(s) && return missing
-    typeof(s) <: Number && return s
-    if typeof(s) <: AbstractString
-        @warn "$s is a string"
-        s = occursin(".", s) ? parse(Float64, s) : parse(Int, s)
-        @info typeof(s)
-    end
-    return s
-end
-
-
-import Base.occursin
-occursin(::String, ::Missing) = missing
-occursin(::Regex, ::Missing) = missing
-
-
-function breastfeeding(row)
-    bf = any([
-        occursin(r"[Bb]reast", row[:milkFeedingMethods]),
-        occursin(r"[Yy]es", row[:exclusivelyNursed]),
-        (
-            !ismissing(row[:exclusiveFormulaFed]) &&
-            !ismissing(row[:exclusivelyNursed]) &&
-            occursin(r"[Nn]o", row[:exclusiveFormulaFed]) &&
-            occursin(r"[Nn]o", row[:exclusivelyNursed])
-        ),
-        row[:typicalNumberOfFeedsFromBreast] > 0,
-        row[:typicalNumberOfEpressedMilkFeeds] > 0,
-        row[:lengthExclusivelyNursedMonths] > 0,
-        row[:noLongerFeedBreastmilkAge] > 0
-        ])
-    return !ismissing(bf) && bf
-end
-
-function formulafeeding(row)
-    ff = any([
-        occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
-        occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
-        (
-            !ismissing(row[:exclusiveFormulaFed]) &&
-            !ismissing(row[:exclusivelyNursed]) &&
-            occursin(r"[Nn]o", row[:exclusiveFormulaFed]) &&
-            occursin(r"[Nn]o", row[:exclusivelyNursed])
-        ),
-        !ismissing(row[:amountFormulaPerFeed]),
-        !ismissing(row[:formulaTypicalType]),
-        row[:amountFormulaPerFeed] > 0
-        ])
-    return !ismissing(ff) && ff
-end
-
-"""
-firstkids(samples)
-
-From a list of sample ids, extract the earliest sample for
-each child.
-"""
-function firstkids(samples)
-    subjects = Dict()
-
-    for i in eachindex(samples)
-        s = samples[i]
-        startswith(s[:sample], "C") || continue
-        if s[:subject] in keys(subjects)
-            if s[:timepoint] < subjects[s[:subject]][:timepoint]
-                continue
-            end
-        end
-
-        subjects[s[:subject]] = (timepoint=s[:timepoint], index=i)
-    end
-    [subjects[k][:index] for k in keys(subjects)]
-end
-
-
-function numberify(x)
-    ismissing(x) && return missing
-    x isa Real && return x
-    if x isa AbstractString
-        occursin(r"[\.e]", x) ? parse(Float64, x) : parse(Int, x)
-    else
-        @warn "Something weird" x typeof(x)
-        return missing
-    end
-end
-
-function numberify(v::AbstractArray)
-    eltype(v) <: Union{Missing, <:Real} && return v
-    v = numberify.(v)
-    if any(i -> i isa Float64, v)
-        return Union{Missing, Float64}[y for y in v]
-    else
-        return Union{Missing, Int}[y for y in v]
-    end
 end
 
 const metadata_focus_headers = String[
@@ -411,17 +410,4 @@ end
 #
 function getfocusmetadata(longfilepath, samples::Vector{<:AbstractString}; focus=metadata_focus_headers)
     getfocusmetadata(longfilepath, resolve_sampleID.(samples), focus=focus)
-end
-
-
-letter2number(l) = findfirst(lowercase(l), "abcdefghijklmnopqrstuvwxyz")[1]
-
-function parseletterid(sid)
-    m = match(r"(\d+)(\w)?", sid)
-    isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
-    if isnothing(m.captures[2])
-        return (subject=parse(Int, sid), timepoint=1)
-    else
-        return (subject=parse(Int, m.captures[1]), timepoint=letter2number(m.captures[2]))
-    end
 end

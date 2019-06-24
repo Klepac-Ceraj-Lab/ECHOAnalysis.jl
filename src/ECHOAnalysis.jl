@@ -1,20 +1,26 @@
 module ECHOAnalysis
 
 export
+    # Metadata handling
     resolve_sampleID,
-    add_batch_info,
-    merge_tables,
-    getmetadatum,
-    getmetadata,
-    metacolor,
-    convert2num,
+    resolve_letter_timepoint,
     breastfeeding,
     formulafeeding,
     firstkids,
     numberify,
+
+    getmetadatum,
+    getmetadata,
+    metacolor,
+    convert2num,
     getfocusmetadata,
     letter2number,
-    parseletterid
+    parseletterid,
+
+    #File Handling
+    add_batch_info,
+    merge_tables,
+
 
 using DataFrames
 using CSV
@@ -24,7 +30,7 @@ using PrettyTables
 
 using Microbiome
 
-include("functions.jl")
-
+include("metadata_handling.jl")
+include("file_handling.jl")
 
 end  # module ECHOAnalysis
