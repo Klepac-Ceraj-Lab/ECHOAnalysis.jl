@@ -321,7 +321,19 @@ savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg")); no
 
 ![](../../data/figures/05/taxonomic-profiles-kids-age-pco1-diversity.svg)
 
-Here we can see that alpha diversity increases with age (not too surprising)
+Here we can see that alpha diversity increases with age (not too surprising).
+Another way to look at it is to plot the alpha diversity at each age:
+
+```@example tax_profiles
+focusmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in focusmeta[:correctedAgeDays]]
+
+boxplot(collect(skipmissing(focusmeta[:floorAge])), focusmeta[:ginisimpson][.!ismissing.(focusmeta[:floorAge])],
+    color=:lightgrey, legend=false, xlabel="Age in Years", ylabel="Alpha diversity (GiniSimpson)")
+savefig(joinpath(figures, "kids-alpha-diversity-box.svg")); nothing # hide
+```
+
+![](../../data/figures/05/kids-alpha-diversity-box.svg)
+
 
 ```@example tax_profiles
 kids_hcl = hclust(kids_dm, linkage=:average, branchorder=:optimal)
@@ -395,28 +407,14 @@ savefig(joinpath(figures, "young-kids-abundanceplot.svg")); nothing # hide
 
 ![](../../data/figures/05/young-kids-abundanceplot.svg)
 
+### Other Metadata Overviews
+
+Eventually, we'll want to do statistical tests for associations,
+but for now, just a bit more exploratory visualization.
+
+#### Brain Volume Quartiles
 
 ```@example tax_profiles
-ukidsmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in ukidsmeta[:correctedAgeDays]]
-ukidsmeta[:ginisimpson] = ginisimpson(ukids)
-
-boxplot(collect(skipmissing(ukidsmeta[:floorAge])), ukidsmeta[:ginisimpson][.!ismissing.(ukidsmeta[:floorAge])],
-    color=:lightgrey, legend=false, xlabel="Age in Years", ylabel="Alpha diversity (GiniSimpson)")
-savefig(joinpath(figures, "kids-alpha-diversity-box.svg")); nothing # hide
-
-
-let sn = speciesnames(ukids)
-    for (i, sample) in enumerate(sn)
-        ukidsmeta[Symbol(sample)] = asin.(sqrt.(occurrences(ukids)[i, :]))
-    end
-end
-
-
-proj = projection(ukids_mds)
-for i in 1:nrow(ukidsmeta)-1
-    ukidsmeta[Symbol("PCo$i")] = proj[:, i]
-end
-
 using StatsBase
 
 function colorquartile(arr, clrs)
@@ -431,69 +429,42 @@ function colorquartile(arr, clrs)
     end
 end
 
-ukidsmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in ukidsmeta[:correctedAgeDays]]
-scatter(proj[:, 1], ukidsmeta[:correctedAgeDays] ./ 365,
-    color=colorquartile(ukidsmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
+scatter(pco_axes[:, 1], focusmeta[:correctedAgeDays] ./ 365,
+    color=colorquartile(focusmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
     markersize=5, primary=false)
 scatter!([],[], color=color2[1], label="25th percentile")
 scatter!([],[], color=color2[2], label="50th percentile")
 scatter!([],[], color=color2[3], label="75th percentile")
 scatter!([],[], color=color2[4], label="99th percentile")
 scatter!([],[], color=color2[end], label="missing", legend=:topleft)
-xlabel!("MDS1 (14.29%)")
+xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 ylabel!("Age (years)")
 
 savefig(joinpath(figures, "kids-brain-quartiles.svg")); nothing # hide
-
-using Combinatorics
-age = findall(x-> !ismissing(x) && x == 1, ukidsmeta[:floorAge])
-for (i, j) in combinations(age1, 2)
-    @show i, j
-end
-
-
-betadiv = let df = DataFrame(age=Int[], distance=Float64[], type=Symbol[])
-    for i in 1:10
-        age = findall(x-> !ismissing(x) && x == i, ukidsmeta[:floorAge])
-        for (j, k) in combinations(age, 2)
-            append!(df, DataFrame(age=i, distance=ukids_dm[j,k], type=:self))
-        end
-    end
-    df
-end
-
-@df betadiv boxplot(:age, :distance)
-
-
-beta110 = let
-    ones = findall(row-> !ismissing(row[:floorAge]) && row[:floorAge] == 1, eachrow(ukidsmeta))
-    tens = findall(row-> !ismissing(row[:floorAge]) && row[:floorAge] == 10, eachrow(ukidsmeta))
-    for i in ones
-        for j in tens
-            append!(betadiv, DataFrame(age=13, distance=ukids_dm[i,j], type=:other))
-        end
-    end
-end
-boxplot(betadig)
 ```
 
-##### Birth type
+![](../../data/figures/05/kids-brain-quartiles.svg)
+
+
+#### Birth type
+
+Birth type (vaginal or cesarean) is known to have a substantial affect on kids'
+microbiomes. Let's see where that falls in our data:
 
 ```@example tax_profiles
 plot(kids_mds, marker=3, line=1,
-
     color=metacolor(focusmeta[:birthType], color2[4:5], missing_color=color2[end]),
-    title="Kids, BirthType", primary=fale)
+    title="Kids, BirthType", primary=false)
 scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
-scatter!([],[], color=color2[end], label="missing", legend=:bottomright)
+scatter!([],[], color=color2[end], label="missing", legend=:bottomleft)
 
 savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg")); nothing # hide
 ```
 
 ![](../../data/figures/05/taxonomic-profiles-kids-birth.svg)
 
-##### Breastfeeding
+#### Breastfeeding
 
 Information about braestfeeding is spread across 2 different parent tables.
 `BreastfeedingDone` indicates that the child is no longer breastfeeding,
@@ -509,29 +480,13 @@ I'd like to distill all of this into:
 Both of these might be `true`.
 In principle, they shouldn't both be `false`.
 
-I defined [`breastfeeding`]@ref and [`formulafeeding`]@ref
+I defined [`breastfeeding`](@ref) and [`formulafeeding`](@ref)
 to calculate these values.
 
 ```@example tax_profiles
-# Make this function return `missing` instead of throwing an error
-import Base.occursin
-occursin(::String, ::Missing) = missing
-occursin(::Regex, ::Missing) = missing
-
-# make sure number rows are actually number types
-for c in [:typicalNumberOfFeedsFromBreast, :typicalNumberOfEpressedMilkFeeds,
-          :lengthExclusivelyNursedMonths, :noLongerFeedBreastmilkAge,
-          :amountFormulaPerFeed]
-    focusmeta[c] = [ismissing(x) ? missing : parse(Float64, x) for x in focusmeta[c]]
-end
-
-
 focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
 focusmeta[:formulafed] = formulafeeding.(eachrow(focusmeta))
-focusmeta |> CSV.write("../../data/metadata/metadata_with_brain.csv") # hide
-```
 
-```@example tax_profiles
 bfcolor = let bf = []
     for row in eachrow(focusmeta)
         if row[:breastfed] && row[:formulafed]
@@ -553,18 +508,21 @@ plot(kids_mds, marker=3, line=1,
 scatter!([],[], color=color1[2], label="breastfed")
 scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
-scatter!([],[], color=color1[end], label="missing", legend=:bottomright)
+scatter!([],[], color=color1[end], label="missing", legend=:bottomleft)
 
 savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg")); nothing # hide
 ```
 
 ![](../../data/figures/05/taxonomic-profiles-kids-breastfeeding.svg)
 
-```@example tax_profiles
-filter(focusmeta) do row
-    !row[:breastfed] && !row[:formulafed]
-end |> CSV.write("../../data/metadata/breastfeeding_missing.csv")
-```
+Nothing obvious from this level, but that's not necessarily surprising.
+We need stats!
 
 ```@docs
 load_taxonomic_profiles
+load_metadata
+shannon
+getfocusmetadata
+breastfeeding
+formulafeeding
+```
