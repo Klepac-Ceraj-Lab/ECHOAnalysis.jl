@@ -15,13 +15,12 @@ using ECHOAnalysis # hide
 ```
 
 ```@example 1
-using CSV
 using DataFrames
 using DataFramesMeta
 using PrettyTables
 using StatsPlots
 
-allmeta = CSV.File("../../data/metadata/merged.csv") |> DataFrame
+allmeta = load_metadata(datatoml)
 
 @linq allmeta |>
     select(:studyID) |>
@@ -40,8 +39,8 @@ histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 
-isdir("../../data/figures") || mkdir("../../data/figures") # hide
-savefig("../../data/figures/03-samples-per-subject.png") # hide
+isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"]) # hide
+savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png")) # hide
 ```
 
 ![](../../data/figures/03-samples-per-subject.png)
@@ -55,10 +54,17 @@ highsamplers = @linq allmeta |>
     where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID)) |>
     where(:nsamples .>= 5) |>
-    select(:studyID)
+    select(:studyID, :nsamples)
 
 pretty_table(highsamplers)
 ```
+
+
+## Metagenomes
+
+At this stage, what I care about are samples with metagenomes,
+which are inidcated by the `DOM` metadatum.
+To find all of the studyID/timepoint combos that have that have metagenomes:
 
 ```@example 1
 # filter on metagenomes (DOM = "Date of Metagenome")
@@ -73,12 +79,6 @@ So a bunch of these are where
 multiple samples were given for the same timepoint (eg `C0202_4F_1A` and `_2A`)
 and/or both genotech and enthanol samples.
 
-## Metagenomes
-
-At this stage, what I care about are samples with metagenomes,
-which are inidcated by the `DOM` metadatum.
-To find all of the studyID/timepoint combos that have that have metagenomes:
-
 ```@example 1
 mgxsamples = @linq allmeta |>
     where(:metadatum .== "DOM") |>
@@ -89,14 +89,14 @@ sort!(mgxsamples, :studyID);
 first(mgxsamples, 5) |> pretty_table
 ```
 
+And we can get metadata for these samples using the [`getfocusmetadata`](@ref) function,
+which converts the longform data into a wide table with one row per subject/timepoint pair.
+Metadata from "timpoint 0" (that is, non time-dependent data) is added to every row for
+that subject.
 
 ```@example 1
-mgxmeta = let pairs = Set(zip(mgxsamples[:studyID], mgxsamples[:timepoint])), sids = Set(mgxsamples[:studyID])
-    filter(row-> (row[:studyID] in sids && row[:timepoint] == 0) || # this captures metadata that's not linked to timepoints
-                 (row[:studyID], row[:timepoint]) in pairs,
-                 allmeta)
-end
-
-# show ~10 random rows
-mgxmeta[rand(nrow(mgxmeta)) .< 10 / nrow(mgxmeta), :] |> pretty_table
+samples = map(row-> (subject=row[:studyID], timepoint=row[:timepoint]), eachrow(mgxsamples))
+focus = getfocusmetadata(allmeta, samples)
+sort!(focus, [:subject, :timepoint])
+pretty_table(focus)
 ```
