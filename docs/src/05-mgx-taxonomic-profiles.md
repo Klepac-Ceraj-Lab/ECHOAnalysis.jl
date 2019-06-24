@@ -2,7 +2,7 @@
 
 Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/src).
 Each sample is run separately, and needs to be joined in a single table.
-I'll use the function [`merge_tables`]@ref
+I'll use the function [`load_taxonomic_profiles`]@ref
 
 
 ```@example tax_profiles
@@ -10,7 +10,6 @@ cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis
-using Pkg.TOML: parsefile
 using DataFrames
 using PrettyTables
 using CSV
@@ -19,29 +18,12 @@ using MultivariateStats
 using StatsPlots
 using MicrobiomePlots
 using BiobakeryUtils
-using ColorBrewer
 using Distances
 using Clustering
 
-tables = parsefile("../../data/data.toml")["tables"]
-figsdir = parsefile("../../data/data.toml")["figures"]["path"]
-datafolder = tables["biobakery"]["path"]
-metaphlan = tables["biobakery"]["metaphlan2"]
-outdir = metaphlan["analysis_output"]
-isdir(outdir) || mkdir(outdir)
-allmeta = CSV.File("../../data/metadata/merged_brain.csv") |> DataFrame
+outpath, figures = notebookpaths!(@__FILE__)
 
-
-tax = merge_tables(datafolder, metaphlan["root"], metaphlan["filter"],
-    suffix="_profile.tsv")
-
-# clean up sample names
-names!(tax,
-    map(n-> Symbol(
-        resolve_sampleID(String(n))[:sample]),
-        names(tax)
-        )
-    )
+tax = load_taxonomic_profiles()
 pretty_table(first(tax, 10))
 ```
 
@@ -56,16 +38,16 @@ end
 euk = euk[map(c->
     !(eltype(euk[c]) <: Number) || sum(euk[c]) > 0, names(euk))]
 
-CSV.write(joinpath(outdir, "euk.csv"), euk)
+CSV.write(joinpath(outpath, "euk.csv"), euk)
 # get a df with only species
 taxfilter!(euk)
-CSV.write(joinpath(outdir, "euk_sp.csv"), euk)
+CSV.write(joinpath(outpath, "euk_sp.csv"), euk)
 pretty_table(euk)
 ```
 
 Those numbers are out of 100...
 so really not much fungi at all,
-at least according to metaplan.
+at least according to metaphlan.
 There are some other methods to look more specifically at fungi,
 which will have to wait for another time.
 
@@ -82,6 +64,9 @@ phyla = taxfilter(tax, :phylum)
 first(spec, 10) |> pretty_table
 ```
 
+Now I'll convert these to the `AbundanceTable` type from `Microbiome.jl`
+for easier maniplation, and do Total Sum Scaling (convert to relative abundance).
+
 
 ```@example tax_profiles
 abt = abundancetable(spec)
@@ -90,16 +75,24 @@ relativeabundance!(abt)
 relativeabundance!(pabt);
 ```
 
+Using `pairwise` from `Distances.jl` and `MDS` from `MultivariateStats.jl`,
+we perform classical multidimensional scaling (which is the same thing
+as principle coordinates analysis).
+
 ```@example tax_profiles
 dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
 
+include("pcoa_recipe.jl") # this won't be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
+
 plot(mds, primary=false)
-savefig(joinpath(figsdir, "05-basic_pcoa.svg")) # hide
+savefig(joinpath(figures, "basic_pcoa.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-basic_pcoa.svg)
+![](../../data/figures/05/basic_pcoa.svg)
 
+A scree plot can be used to visualize how many dimensions are necessary
+to explain the bulk of the variance.
 
 ```@example tax_profiles
 function scree(mds)
@@ -111,14 +104,25 @@ end
 scree(mds)
 ylabel!("Variance explained")
 xlabel!("Principal coordinate axis")
-savefig(joinpath(figsdir, "05-scree.svg")) # hide
+savefig(joinpath(figures, "scree.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-scree.svg)
+![](../../data/figures/05/scree.svg)
+
+It looks like there are a couple of "elbows" in the plot,
+but nice to see that the first few axes explain the bulk of the variance.
+Later on, we'll try to determine what's driving those axes.
+
+Now let's put some decoration on that PCoA plot.
+
+##### Sample type
+
+First, children vs mothers.
+We can identify the difference by the "C" or "M"
+at the beginning of the sample ID.
 
 ```@example tax_profiles
 # colors defined in `startup.jl`
-
 c = [startswith(x, "C") ? color2[1] : color2[2] for x in samplenames(abt)]
 
 p1 = plot(mds, marker=3, line=1, framestyle=1,
@@ -127,20 +131,34 @@ scatter!([],[], color=color2[1], label="kids", legend=:topright)
 scatter!([],[], color=color2[2], label="moms", legend=:topright)
 title!("All samples taxonomic profiles")
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-moms-kids.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-moms-kids.svg)
+![](../../data/figures/05/taxonomic-profiles-moms-kids.svg)
+
+##### Diversity
+
+The [`shannon`](@ref) function can calculate Shannon diversity for the entire `AbundanceTable`.
 
 ```@example tax_profiles
 p2 = plot(mds, marker=3, line=1,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-shannon.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-shannon.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-shannon.svg)
+![](../../data/figures/05/taxonomic-profiles-shannon.svg)
+
+Neat! It looks like both of the first 2 axes of variation are related
+to low vs high diversity.
+
+##### Major Phyla
+
+Because we were able to filter the original taxonomic profile by phyla,
+we can also plot the relative abundace of the major phyla.
+The ration of Bacteroidetes and Firmicutes are often visible in the first
+axes of variation in adult microbiomes.
 
 ```@example tax_profiles
 bacteroidetes = vec(Matrix(phyla[phyla[1] .== "Bacteroidetes", 2:end]))
@@ -150,117 +168,42 @@ p3 = plot(mds, marker=3, line=1,
     zcolor=bacteroidetes, primary = false, color=:plasma,
     title="All samples, Bacteroidetes")
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-bacteroidetes.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-bacteroidetes.svg)
+![](../../data/figures/05/taxonomic-profiles-bacteroidetes.svg)
 
 ```@example tax_profiles
 p4 = plot(mds, marker=3, line=1,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-firmicutes.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-firmicutes.svg)
+![](../../data/figures/05/taxonomic-profiles-firmicutes.svg)
 
 ```@example tax_profiles
 plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
-savefig(joinpath(figsdir, "05-taxonomic-profiles-grid.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-grid.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-grid.svg)
+![](../../data/figures/05/taxonomic-profiles-grid.svg)
 
-#### Kids
+So that balance is somewhat visible, but there's something else going on too.
 
-Now, I'll focus on the kids in the group,
-the samples that were stored in Genotek
-and also remove duplicates
-(since many of the kids are sampled more than once).
+#### Moms
 
-```@example
-function optimalorder(hc::Hclust, dm::Array{Float64,2})
-    ord = deepcopy(hc)
-    optimalorder!(ord, dm)
-    return ord
-end
-
-
-function optimalorder!(hc::Hclust, dm::Array{Float64,2})
-    ord = hc.order
-    orderleaves!(ord, hc, dm)
-end
-
-function orderleaves!(order::Vector{Int}, hcl::Hclust, dm::Array{Float64,2})
-    extents = Tuple{Int,Int}[]
-    for (vl, vr) in zip(hcl.merges[:,1], hcl.merges[:,2])
-        (u, m, uidx, midx) = leaflocs(vl, order, extents)
-        (k, w, kidx, widx) = leaflocs(vr, order, extents)
-        if vl < 0 && vr < 0
-            # Nothing needs to be done
-        elseif vl < 0
-            flp = flip1(m, k, w, dm)
-            flp == 2 && reverse!(order, kidx, widx)
-        elseif vr < 0
-            flp = flip1(k, m, u, dm)
-            (dm[k, m] > dm[k, u]) && reverse!(order, uidx, midx)
-            flp == 2 && reverse!(order, uidx, midx)
-       elseif vl > 0 && vr > 0
-           flp = flip2(u, m, k, w, dm)
-           (flp == 2 || flp == 4) && reverse!(order, uidx, midx)
-           (flp == 3 || flp == 4) && reverse!(order, kidx, widx)
-       else
-           error("invalid 'merge' order in Hclust: ($vl, $vr) ")
-       end
-       push!(extents, (uidx, widx))
-   end
-end
-
-
-function leaflocs(v::Int, order::Vector{Int}, extents::Vector{Tuple{Int,Int}})
-    if v < 0
-        leftextent = findfirst(abs(v) .== order)
-        leftextent = rightextent = findfirst(==(-v), order)
-        rightextent = leftextent
-    elseif v > 0
-        leftextent = extents[v][1]
-        rightextent = extents[v][2]
-    else
-        error("leaf position cannot be zero")
-    end
-        left = order[leftextent]
-        right = order[rightextent]
-    return left, right, leftextent, rightextent
-end
-
-
-
-"""
-For 1 multi-leaf branch and a leaf, determine if flipping branch is required
-1 = do not flip
-2 = flip right
-"""
-function flip1(m::Int, k::Int, w::Int, dm::Array{Float64,2})
-    dm[m,k] <= dm[m,w] ? 1 : 2
-end
-
-"""
-For 2 multi-leaf branches, determine if one or two flips is required
-1 = do not flip
-2 = flip left
-3 = flip right
-4 = flip both
-"""
-function flip2(u::Int, m::Int, k::Int, w::Int, dm::Array{Float64,2})
-    argmin([dm[m,k], dm[u,k], dm[m,w], dm[u,w]])
-end
-```
-
+There aren't a ton of moms in the samples yet,
+but let's just see what they look like on their own
 
 ```@example tax_profiles
+# get a sub abundance table with only samples that start with "M"
 moms = view(abt, sites=map(s-> occursin(r"^M", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(abt))))
+
+# this will get us a boolean vector to filter further so we only have
+# one sample per mom.
 unique_moms = let
     subjects= []
     unique = Bool[]
@@ -278,46 +221,58 @@ end
 
 
 umoms = view(moms, sites=unique_moms)
-umoms_dm = pairwise(BrayCurtis(), umoms)
-umoms_hcl = hclust(umoms_dm, linkage=:average)
-optimalorder!(umoms_hcl, umoms_dm)
 
-abundanceplot(umoms, srt=umoms_hcl.order, title="Moms, top 10 species",
+# get pairwise Bray Curtis distance matrix
+umoms_dm = pairwise(BrayCurtis(), umoms, dims=2)
+
+# hierarchical clustering to put similar samples together
+umoms_hcl = hclust(umoms_dm, linkage=:average, branchorder=:optimal)
+
+abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
     xticks=false, color=color4')
-savefig(joinpath(figsdir, "05-moms-abundanceplot.svg"))
+savefig(joinpath(figures, "moms-abundanceplot.svg")); nothing # hide
 ```
 
 ![](../../figures/05-moms-abundanceplot.svg)
 
 ```@example tax_profiles
+abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
+    xticks=false, color=color4', legend=false)
+savefig(joinpath(figures, "moms-abundanceplot-nolegend.svg")); nothing # hide
+```
 
-kids = view(abt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
-                    resolve_sampleID.(sitenames(abt))))
+Those look like normal adult microbiomes.
+
+#### Kids
+
+Now, I'll focus on the kids in the group,
+the samples that were stored in Genotek
+and also remove duplicates
+(since many of the kids are sampled more than once).
+The [`firstkids`](@ref) function identifies the first sample
+for each kid
+
+```@example tax_profiles
+
+kids = view(abt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
 
 kids_dm = pairwise(BrayCurtis(), kids)
 kids_mds = fit(MDS, kids_dm, distances=true)
-pcos = DataFrame(sampleID=samplenames(kids))
-samples = resolve_sampleID.(samplenames(kids))
-pcos[:studyID] = map(s-> s[:subject], samples)
-pcos[:timepoint] = map(s-> s[:timepoint], samples)
-pcos[:ginisimpson] = ginisimpson(kids)
-pcos[:shannon] = shannon(kids)
-
-proj = projection(kids_mds)
 
 p5 = plot(kids_mds, marker=3, line=1,
     zcolor=shannon(kids), primary = false, color=:plasma,
     title="Kids, shannon diversity")
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-shannon.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-kids-shannon.svg)
+![](../../data/figures/05/taxonomic-profiles-kids-shannon.svg)
+
+Let's look at the phyla too:
 
 ```@example tax_profiles
 
-pkids = view(pabt, sites=map(s-> occursin(r"^C", s[:sample]) && occursin("F", s[:sample]),
-                            resolve_sampleID.(sitenames(pabt))))
+pkids = view(pabt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
 
 kids_bact = vec(collect(occurrences(view(pkids, species=occursin.("Bact", speciesnames(pkids))))))
 kids_firm = vec(collect(occurrences(view(pkids, species=occursin.("Firm", speciesnames(pkids))))))
@@ -338,127 +293,116 @@ plot(
         zcolor=kids_proteo, primary = false, color=:plasma,
         title="Kids, Proteobacteria"),
     )
-savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-phyla.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-phyla.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-kids-phyla.svg)
+![](../../data/figures/05/taxonomic-profiles-kids-phyla.svg)
 
 In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
-I'll use the [`getmetadata`]@ref function.
+I'll use the [`getfocusmetadata`]@ref function.
 
 ```@example tax_profiles
 samples = resolve_sampleID.(samplenames(kids))
-
-focusmeta = getfocusmetadata(allmeta, samples)
+focusmeta = getfocusmetadata(datatoml["tables"]["metadata"]["all"]["path"], samples)
 focusmeta[:shannon] = shannon(kids)
 focusmeta[:ginisimpson] = ginisimpson(kids)
 
-scatter(proj[:,1], focusmeta[:correctedAgeDays] ./365,
-    primary=false, zcolor = focusmeta[:shannon])
+var_explained, eigenvalues, pco_axes = mds_axis_values(kids_mds)
+
+scatter(pco_axes[:, 1], focusmeta[:correctedAgeDays] ./365,
+    primary=false, zcolor = focusmeta[:shannon], color=:viridis)
 ylabel!("Age (years)")
-xlabel!("MDS1 (14.29%)")
+xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 title!("All kids age / PCoA 1 / Alpha diversity")
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-age-pco1-diversity.svg"))
+savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg")); nothing # hide
 ```
 
-![](../../data/figures/05-taxonomic-profiles-kids-age-pco1-diversity.svg)
+![](../../data/figures/05/taxonomic-profiles-kids-age-pco1-diversity.svg)
+
+Here we can see that alpha diversity increases with age (not too surprising)
 
 ```@example tax_profiles
-ukids = view(abt, sites=firstkids(resolve_sampleID.(sitenames(abt))))
-ukids_samples = resolve_sampleID.(samplenames(ukids))
-ukidsmeta = getfocusmetadata(allmeta, ukids_samples)
+kids_hcl = hclust(kids_dm, linkage=:average, branchorder=:optimal)
 
-
-ukids_dm = pairwise(BrayCurtis(), ukids)
-ukids_mds = fit(MDS, ukids_dm, distances=true)
-
-ukids_hcl = hclust(ukids_dm, linkage=:average)
-optimalorder!(ukids_hcl, ukids_dm)
-abundanceplot(ukids, srt = ukids_hcl.order,
+abundanceplot(kids, srt = kids_hcl.order,
     title="Unique kids, top 10 species",
     xticks=false, color=color4')
-savefig(joinpath(figsdir, "05-young-kids-abundanceplot.svg"))
 
-plot(ukids_mds, zcolor=[ismissing(x) ? 0 : x/365 for x in ukidsmeta[:correctedAgeDays]],
-    primary=false, title = "Unique Kids Taxonomic Profiles, Age")
-savefig(joinpath(figsdir, "05-taxonomic-profiles-mds-kids-age.svg"))
+savefig(joinpath(figures, "kids-abundanceplot.svg")); nothing # hide
 
+abundanceplot(kids, srt = kids_hcl.order,
+    title="Unique kids, top 10 species",
+    xticks=false, color=color4', legend=false)
 
-upkids = view(pabt, sites=firstkids(resolve_sampleID.(sitenames(pabt))))
-ukids_bact = vec(collect(occurrences(view(upkids, species=occursin.("Bact", speciesnames(upkids))))))
-ukids_firm = vec(collect(occurrences(view(upkids, species=occursin.("Firm", speciesnames(upkids))))))
-ukids_act = vec(collect(occurrences(view(upkids, species=occursin.("Actino", speciesnames(upkids))))))
-ukids_proteo = vec(collect(occurrences(view(upkids, species=occursin.("Proteo", speciesnames(upkids))))))
-
-
-plot(
-    plot(ukids_mds, marker=3, line=1,
-        zcolor=ukids_bact, primary = false, color=:plasma,
-        title="Unique Kids, Bacteroidetes"),
-    plot(ukids_mds, marker=3, line=1,
-        zcolor=ukids_firm, primary = false, color=:plasma,
-        title="Unique Kids, Firmicutes"),
-    plot(ukids_mds, marker=3, line=1,
-        zcolor=ukids_act, primary = false, color=:plasma,
-        title="Unique Kids, Actinobacteria"),
-    plot(ukids_mds, marker=3, line=1,
-        zcolor=ukids_proteo, primary = false, color=:plasma,
-        title="Unique Kids, Proteobacteria"),
-    )
-
-
-savefig(joinpath(figsdir, "05-taxonomic-profiles-ukids-phyla.svg")) # hide
-
-abundanceplot(ukids, srt = ukids_hcl.order, title="Unique Kids, top 10 species",
-    xticks=false, color=color4')
-savefig(joinpath(figsdir, "05-kids-abundanceplot.svg"))
+savefig(joinpath(figures, "kids-abundanceplot-nolegend.svg")); nothing # hide
 ```
+![](../../data/figures/05/kids-abundanceplot.svg)
+![](../../data/figures/05/kids-abundanceplot-nolegend.svg)
+
+These also look like adult microbiomes, with a smattering of young-kids
+microbes thrown in for good measure (eg _Bifidobacterium longum_).
+
+We can also annotate this plot with the age of the kids
+
+```@example tax_profiles
+plot(
+    abundanceplot(kids, srt = kids_hcl.order, title="Kids, top 10 species",
+        xticks=false, color=color4', legend=false),
+    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta[:correctedAgeDays][kids_hcl.order]]'),
+        xticks=false, yticks=false, color=:PuBu, colorbar=false),
+    layout = grid(2,1,heights=[0.9, 0.1])
+    )
+savefig(joinpath(figures, "kids-abundanceplot-age.svg")); nothing # hide
+```
+
+![](../../data/figures/05/kids-abundanceplot-age.svg)
 
 
 ```@example tax_profiles
-youngkids = ukidsmeta[:correctedAgeDays] ./ 365 .< 2
-youngkids = [ismissing(x) ? false : x for x in youngkids]
+x = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 1]
+y = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 2]
 
-ykids = view(ukids, sites = youngkids)
+scatter(x, y, zcolor=focusmeta[.!ismissing.(focusmeta[:correctedAgeDays]), :correctedAgeDays] ./365,
+    primary=false, color=:PuBu, title = "Unique Kids Taxonomic Profiles, Age")
+xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
+ylabel!("MDS2 ($(round(var_explained[2], digits = 2))%)")
+savefig(joinpath(figures, "taxonomic-profiles-mds-kids-age.svg")); nothing # hide
+```
+
+![](../../data/figures/05/taxonomic-profiles-mds-kids-age.svg)
+
+Here' it looks like the outlying tail is the youngest kids.
+Again, this makes sense. We know that infants microbiomes change quite a bit
+over the first years of life.
+
+Let's focus on just the youngest kids:
+
+```@example tax_profiles
+youngkids = map(x-> ismissing(x) ? false : x/365 < 2, focusmeta[:correctedAgeDays])
+
+ykids = view(kids, sites = youngkids)
 ykids_dm = pairwise(BrayCurtis(), ykids)
 ykids_mds = fit(MDS, ykids_dm, distances=true)
 
-ykids_hcl = hclust(ykids_dm, linkage=:average)
-optimalorder!(ykids_hcl, ykids_dm)
-abundanceplot(ykids, srt = ykids_hcl.order, title="Kids under 2, top 10 species",
+ykids_hcl = hclust(ykids_dm, linkage=:average, branchorder=:optimal)
+abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 10 species",
     xticks=false, color=color4')
-savefig(joinpath(figsdir, "05-young-kids-abundanceplot.svg"))
+
+savefig(joinpath(figures, "young-kids-abundanceplot.svg")); nothing # hide
+```
+
+![](../../data/figures/05/young-kids-abundanceplot.svg)
 
 
-
-plot(
-    abundanceplot(ukids, srt = ukids_hcl.order, title="Kids, top 10 species",
-        xticks=false, color=color4'),
-    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in ukidsmeta[:correctedAgeDays][ukids_hcl.order]]'),
-        xticks=false, yticks=false),
-    layout = grid(2,1,heights=[0.9, 0.1])
-    )
-
-savefig(joinpath(figsdir, "05-kids-abundanceplot-age-heatmap.svg"))
-
-plot(
-    abundanceplot(ukids, srt=sortperm(ukidsmeta[:correctedAgeDays]), title="Kids, age sorted",
-        xticks=false, color=color4'),
-    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in ukidsmeta[:correctedAgeDays][sortperm(ukidsmeta[:correctedAgeDays])]]'),
-        xticks=false, yticks=false),
-    layout = grid(2,1,heights=[0.9, 0.1])
-    )
-
-savefig(joinpath(figsdir, "05-kids-abundanceplot-age-sorted.svg"))
-
+```@example tax_profiles
 ukidsmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in ukidsmeta[:correctedAgeDays]]
 ukidsmeta[:ginisimpson] = ginisimpson(ukids)
 
 boxplot(collect(skipmissing(ukidsmeta[:floorAge])), ukidsmeta[:ginisimpson][.!ismissing.(ukidsmeta[:floorAge])],
     color=:lightgrey, legend=false, xlabel="Age in Years", ylabel="Alpha diversity (GiniSimpson)")
-savefig(joinpath(figsdir, "05-kids-alpha-diversity-box.svg"))
+savefig(joinpath(figures, "kids-alpha-diversity-box.svg")); nothing # hide
 
 
 let sn = speciesnames(ukids)
@@ -499,7 +443,7 @@ scatter!([],[], color=color2[end], label="missing", legend=:topleft)
 xlabel!("MDS1 (14.29%)")
 ylabel!("Age (years)")
 
-savefig(joinpath(figsdir, "05-kids-brain-quartiles.svg"))
+savefig(joinpath(figures, "kids-brain-quartiles.svg")); nothing # hide
 
 using Combinatorics
 age = findall(x-> !ismissing(x) && x == 1, ukidsmeta[:floorAge])
@@ -544,10 +488,10 @@ scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomright)
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-birth.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-kids-birth.svg)
+![](../../data/figures/05/taxonomic-profiles-kids-birth.svg)
 
 ##### Breastfeeding
 
@@ -611,13 +555,16 @@ scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
 scatter!([],[], color=color1[end], label="missing", legend=:bottomright)
 
-savefig(joinpath(figsdir, "05-taxonomic-profiles-kids-breastfeeding.svg")) # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg")); nothing # hide
 ```
 
-![](../../data/figures/03-taxonomic-profiles-kids-breastfeeding.svg)
+![](../../data/figures/05/taxonomic-profiles-kids-breastfeeding.svg)
 
 ```@example tax_profiles
 filter(focusmeta) do row
     !row[:breastfed] && !row[:formulafed]
 end |> CSV.write("../../data/metadata/breastfeeding_missing.csv")
 ```
+
+```@docs
+load_taxonomic_profiles

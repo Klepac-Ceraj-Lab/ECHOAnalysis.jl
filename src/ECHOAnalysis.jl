@@ -18,13 +18,14 @@ export
     merge_tables,
 
     # Startup Functions
-    load_taxonomic_profiles,
-    load_metadata,
+    datatoml,
     color1,
     color2,
     color3,
     color4,
-    datatoml
+    load_taxonomic_profiles,
+    load_metadata,
+    notebookpaths!
 
 using DataFrames
 using CSV
