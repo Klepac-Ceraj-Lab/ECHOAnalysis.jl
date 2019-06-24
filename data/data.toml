@@ -56,37 +56,8 @@ description = """\
     [tables.metadata.samples]
     path="../../data/metadata/fecal_samples.csv"
     name="Fecal Samples DNA processing"
-    description="""\
-                Downloaded "Everything" view from AirTable database"""
-    date="2019-05-07"
-
-    [tables.metadata.merged_metadata]
-    path="../../data/metadata/merged.csv"
-    name="Merged Metadata"
-    description="""\
-                See Notebook 2 -
-                Contains metadata from filemaker and sample collection \
-                database, merged into long format."""
-    date="2019-01-29"
-
-    [tables.metadata.sample_metadata]
-    path="../../data/metadata/metadata_with_brain.csv"
-    name="Merged Metadata"
-    description="""\
-                See Notebook 4 -
-                Contains selected metadata for each mgx sample\
-                unified by row."""
-    date="2019-01-29"
-
-    [tables.metadata.merged_brain]
-    path="../../data/metadata/merged_brain.csv"
-    name="Merged long form"
-    description="""\
-                See Notebook 5 -
-                Long form metadata, including brain volumes. \
-                Use `getmetadata()` function to generate wide form \
-                data for a given set of samples (with type corrections)"""
-    date="2019-06-11"
+    description="Downloaded \"Everything\" view from AirTable database"
+    date="2019-06-24"
 
 [tables.biobakery]
     path = "../../data/engaging"
@@ -106,24 +77,6 @@ description = """\
     root = "humann2"
     filter = "genefamilies"
     analysis_output = "../../data/biobakery/humann2"
-
-[tables.mgxmetadata]
-
-    [tables.mgxmetadata.all_long]
-    path="../../data/biobakery/mgxmetadata/mgxmetadata.csv"
-    name="See Notebook 2 - All metadata for mgx samples in long format"
-
-    [tables.mgxmetadata.all_wide]
-    path="../../data/biobakery/mgxmetadata/mgxmetadatawide.csv"
-    name="See Notebook 2 - All metadata for mgx samples in wide format"
-
-    [tables.mgxmetadata.tp0]
-    path="../../data/biobakery/mgxmetadata/mgxtp0.csv"
-    name="See Notebook 2 - Wide table of timpoint-independent metadata for mgx samples"
-
-    [tables.mgxmetadata.tps]
-    path="../../data/biobakery/mgxmetadata/mgxtps.csv"
-    name="See Notebook 2 - Wide table of timepoint-specific metadata for mgx samples"
 
 [tables.brain]
 
