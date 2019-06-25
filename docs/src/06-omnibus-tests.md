@@ -66,6 +66,7 @@ p[:feature] = "species"
 p[:variable] = "Subject ID"
 perm = vcat(perm, p)
 ```
+## Kids metadata PERMANOVAs
 
 Now we'll focus on the kids.
 
@@ -116,6 +117,8 @@ formatter = Dict(0 => (v,i) -> round(v,digits=3));
 pretty_table(perm, formatter=formatter)
 ```
 
+### Young kids
+
 It's a bit surprising that breastfeeding and birth type are not significant,
 though it may be because we're including older kids.
 What happens if we only look at the kids under 2 years old?
@@ -143,6 +146,78 @@ pretty_table(perm, formatter=formatter)
 Still not significant.
 It could be that we don't have enough young kids to see the effect,
 or that for some reason this cohort doesn't have major differences based on these factors.
+
+### Brain Data
+
+All of the brain data is really affected by the age of the kids,
+so we need to subtract out that variation.
+BiobakeryUtils can't handle this yet, so we need to do this directly using RCall.
+
+```@example omnibus
+using RCall
+
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:white_matter_volume]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :white_matter_volume]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+
+R"""
+p <- adonis(r_dm ~ white_matter_volume + correctedAgeDays,
+            method = "bray", data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+```
+
+The second row is the white_matter_volume.
+
+```@example omnibus
+p[:feature] = "species"
+p[:variable] = "white_matter_volume"
+perm = vcat(perm, p[[2],:])
+```
+
+Let's look at some other brain measures.
+
+```@example
+## grey matter
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:grey_matter_volume]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :grey_matter_volume]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+
+R"""
+p <- adonis(r_dm ~ grey_matter_volume + correctedAgeDays,
+            method = "bray", data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+p[:feature] = "species"
+p[:variable] = "grey_matter_volume"
+perm = vcat(perm, p[[2],:])
+
+## CSF
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:csf_volume]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :csf_volume]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+
+R"""
+p <- adonis(r_dm ~ csf_volume + correctedAgeDays,
+            method = "bray", data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+p[:feature] = "species"
+p[:variable] = "csf_volume"
+perm = vcat(perm, p[[2],:])
+```
 
 Let's save the output after correcting for multiple testing.
 
