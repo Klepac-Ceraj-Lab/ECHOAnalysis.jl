@@ -47,7 +47,7 @@ version = "0.5.4"
 
 [[BiobakeryUtils]]
 deps = ["CSV", "DataFrames", "Microbiome", "RCall", "Statistics"]
-git-tree-sha1 = "18b1ffc3e26b7c705ee45d3eefbea8cab2c11b16"
+git-tree-sha1 = "d38037e53ee0206f5f56003be6d2e0bc13619ea0"
 repo-rev = "master"
 repo-url = "https://github.com/BioJulia/BiobakeryUtils.jl.git"
 uuid = "fa5322f5-bd84-5069-834a-abf3230fb8f8"

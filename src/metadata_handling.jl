@@ -385,8 +385,17 @@ Get a wide-form metadata table with a subset of headers for a subset of subject/
 function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
     subjects = [s.subject for s in samples]
     timepoints = [s.timepoint for s in samples]
-    @show first(subjects)
-    @show first(timepoints)
+
+    # # This code can be used if samples don't conform to normal pattern,
+    # # but we don't actually want to deal with that at this stage.
+    # nothings = union(findall(isnothing, subjects), findall(isnothing, timepoints))
+    # if length(nothings) > 0
+    #     @warn "Some samples couldn't be resolved" samples[nothings]
+    #     nothings = sort(collect(nothings))
+    #     deleteat!(subjects, nothings); deleteat!(timepoints, nothings)
+    #     subjects = Int.(subjects); timepoints = Int.(timepoints)
+    # end
+
     df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
 
     for n in names(df)
