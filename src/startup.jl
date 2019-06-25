@@ -22,6 +22,15 @@ function load_taxonomic_profiles()
     return tax
 end
 
+function first_kids_tax_profiles(taxlevel=:species)
+    tax = load_taxonomic_profiles()
+    taxfilter!(tax, taxlevel)
+    abt = abundancetable(tax)
+    relativeabundance!(abt)
+    kids = view(abt, sites=firstkids(samplenames(abt)))
+    return kids
+end
+
 function load_metadata(datatoml, metadatakey="all"; samples::Union{Nothing,Vector{<:NamedTuple}}=nothing)
     long = CSV.read(datatoml["tables"]["metadata"][metadatakey]["path"])
     if !isnothing(samples)

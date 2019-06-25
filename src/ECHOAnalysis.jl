@@ -24,6 +24,7 @@ export
     color3,
     color4,
     load_taxonomic_profiles,
+    first_kids_tax_profiles,
     load_metadata,
     notebookpaths!
 
