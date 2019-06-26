@@ -1,14 +1,15 @@
 # Linear Models
 
+Now that we've done omnibus tests,
+it's time to look at per-feature tests with multivariate linear models.
+
 ```@example glm
 cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis
-using Pkg.TOML: parsefile
 using DataFrames
 using PrettyTables
-using CSV
 using Statistics
 using Distances
 using Microbiome
@@ -16,180 +17,181 @@ using MultivariateStats
 using StatsPlots
 using MicrobiomePlots
 using BiobakeryUtils
-using ColorBrewer
 using Clustering
+using CSV
 
-tables = parsefile("../../data/data.toml")["tables"]
-figsdir = parsefile("../../data/data.toml")["figures"]["path"]
-datafolder = tables["biobakery"]["path"]
-metaphlan = tables["biobakery"]["metaphlan2"]
-outdir = "../../data/glms"
-isdir(outdir) || mkdir(outdir)
+outpath, figures = notebookpaths!(@__FILE__)
 
-tax = merge_tables(datafolder, metaphlan["root"], metaphlan["filter"], suffix="_profile.tsv")
-
-# clean up sample names
-names!(tax,
-    map(n-> Symbol(
-        resolve_sampleID(String(n))[:sample]),
-        names(tax)
-        )
-    )
-
+tax = load_taxonomic_profiles()
 taxfilter!(tax, :species)
-
 abt = abundancetable(tax)
+relativeabundance!(abt)
+kids_abt = view(abt, sites=firstkids(samplenames(abt)))
+
+focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)))
 ```
 
-```@example glm
-samples = resolve_sampleID.(samplenames(abt))
+First, we'll use Maaslin2 from the huttenhower lab.
+To do this, we need to first save the abundance table as a feature/sample table,
+and the metadata we want to include in the model as a sample/feature table.
 
-ukids_abt = view(abt, sites=firstkids(samples))
-ukids_dm = pairwise(BrayCurtis(), ukids_abt)
-ukids_mds = fit(MDS, ukids_dm, distances=true)
+Maaslin2 doesn't play nice with missing categorical data,
+so I'll manually remove samples that don't have `birthType` information
 
+```@example glms
+species = DataFrame(species=speciesnames(kids_abt))
 
-allmeta = CSV.read("../../data/metadata/merged.csv")
-filter(allmeta) do row
-    row[:metadatum] == "motherSES"
-end
-
-focusmeta = getfocusmetadata("../../data/metadata/merged.csv",
-    resolve_sampleID.(samplenames(ukids_abt)))
-```
-
-
-```@example glm
-relativeabundance!(ukids_abt)
-
-focusmeta[:sample] = samplenames(ukids_abt)
-
-```
-
-```@example glm
-using RCall
-
-R"""
- library(Maaslin2)
- fit_data <- Maaslin2("../../data/maaslin/kids_species.tsv", "../../data/metadata/unique_kids_metadata.tsv", "../../data/maaslin2_spec/")
- """
-```
-
-```@example glm
-using GLM
-
-sn = speciesnames(ukids_abt)
-occ = occurrences(ukids_abt)
-for i in eachindex(sn)
-    focusmeta[Symbol(sn[i])] = asin.(sqrt.(collect(occ[i, :])))
-end
-
-let proj = projection(ukids_mds)
-    for i in 1:size(proj, 2)
-        focusmeta[Symbol("PCo$i")] = proj[:, i]
+let occ = occurrences(kids_abt)
+    for (i, sample) in enumerate(samplenames(kids_abt))
+        ismissing(focusmeta[i, :birthType]) && continue
+        # Make a column for each sample
+        species[Symbol(sample)] = occ[:, i]
     end
 end
+```
 
+Now we'll subset the metadata DataFrame to include a subset of the metadata.
+
+```@example glms
+# add a sample id column
+focusmeta[:sample] = collect(samplenames(kids_abt))
+focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
+filter!(row-> !ismissing(row[:birthType]), focusmeta)
+
+# view() does not create a new dataframe, but allows us to subset it.
+whitematterdf = view(focusmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+
+# Maaslin2 also wants tab separated values
+CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
+CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
+```
+
+Now, we'll run Maaslin2. from the commandline.
+You need to have Maaslin2 installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
+
+```@example glms
+using RCall
+
+R"library(Maaslin2)"
+let version = R"packageVersion('Maaslin2')"
+    @show version
+end
+```
+
+```@example glms
+R"""
+fit_data <- Maaslin2(
+            $(joinpath(outpath, "kids_species_abundance.tsv")),
+            $(joinpath(outpath, "kids_white_matter.tsv")),
+            $(joinpath(outpath, "species__wm_age_ses_bf_birth")))
+"""
+```
+
+We can do this with some other brain data as well:
+
+
+```@example glms
+greymatterdf = view(focusmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
+
+R"""
+fit_data <- Maaslin2(
+            $(joinpath(outpath, "kids_species_abundance.tsv")),
+            $(joinpath(outpath, "kids_grey_matter.tsv")),
+            $(joinpath(outpath, "species__gm_age_ses_bf_birth")))
+"""
+
+csfdf = view(focusmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
+
+R"""
+fit_data <- Maaslin2(
+             $(joinpath(outpath, "kids_species_abundance.tsv")),
+             $(joinpath(outpath, "kids_csf.tsv")),
+             $(joinpath(outpath, "species__csf_age_ses_bf_birth")))
+"""
+```
+
+## Cognitive Assessments
+
+There are a number of age-appropriate cognitive assessments
+that our collaborators are collecting for the kids.
+All of these have been normalized in a similar way to IQ,
+that is, they are scaled to the mean (100) and standard deviation (10)
+of the population of kids that age.
+
+- Mullen is for kids < 4 years old
+- Bayley's is used for some kids under 2 years old
+- WSSPI is for 4yo <= kids < 6yo
+- WISC is for kids older than 6
+
+So we'll create a new column that contains the composite score
+for each kids, regardless of which version of the test they took.
+
+```@example glm
+# Bayleys doesn't have a compositve score calculated, but we can get it:
 focusmeta[:bayleysComposite] = map(row->
     mean([row[:languageComposite], row[:motorComposite]]),
     eachrow(focusmeta))
 
-focusmeta[:cogAssessment] = map(eachrow(focusmeta)) do row
+focusmeta[:cogScore] = Vector{Union{Float64,Missing}}(missing, size(focusmeta,1))
+focusmeta[:cogAssessment] = Vector{Union{String,Missing}}(missing, size(focusmeta,1))
+
+map(enumerate(eachrow(focusmeta))) do (i, row)
+    # get just the cognitive assessment columns
     cogs = row[[
                 :mullen_EarlyLearningComposite,
-                :fullScaleComposite,
-                :FSIQ_Composite,
+                :fullScaleComposite, # this is from WSSPI
+                :FSIQ_Composite, # this is from WISC
                 :bayleysComposite
             ]]
-    all(ismissing, cogs) && return missing
-    return Float64(collect(skipmissing(cogs))[1])
-end
-
-focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
-
-@df focusmeta scatter(:correctedAgeDays ./ 365, :cogAssessment,
-    ylabel="Composite score", xlabel="Age in years", legend=false)
-
-@df focusmeta scatter(:white_matter_volume, :cogAssessment,
-    ylabel="Composite score", xlabel="White Matter Volume", legend=false)
-
-mylms = let df = DataFrame(bug=Symbol[], variable=String[], coef=Float64[], err=Float64[], t_value=Float64[], p_value=Float64[])
-    for (i, sp) in enumerate(speciesnames(ukids_abt))
-        sp = Symbol(sp)
-        if prevalence(focusmeta[sp]) > 0.1
-            mylm = @eval(lm(@formula($sp ~ cogAssessment + correctedAgeDays + motherSES + breastfed), focusmeta))
-            tbl = coeftable(mylm)
-            append!(df, DataFrame(
-                bug      = sp,
-                variable = tbl.rownms[2:end],
-                coef     = coef(mylm)[2:end],
-                err      = stderror(mylm)[2:end],
-                t_value  = tbl.cols[3][2:end],
-                p_value  = tbl.cols[4][2:end]
-            ))
+    # if there's no score, skip row
+    all(ismissing, cogs) && return
+    # otherwise, get the first non-missing value (no timepoints have multiple scores)
+    col = findall(!ismissing, cogs)
+    let assessment = col[1]
+        if assessment == :mullen_EarlyLearningComposite
+            assessment = "Mullen"
+        elseif assessment == :fullScaleComposite
+            assessment = "WSSPI"
+        elseif assessment == :FSIQ_Composite
+            assessment = "WISC"
+        else assessment == :bayleysComposite
+            assessment = "Bayleys"
         end
+
+        focusmeta[i, :cogAssessment] = assessment
+        focusmeta[i, :cogScore] = cogs[col[1]]
     end
-    df
 end
 
-using MultipleTesting
-filter!(row-> !isnan(row[:p_value]) && row[:variable] != "correctedAgeDays", mylms)
-mylms[:q_value] = adjust(mylms[:p_value], BenjaminiHochberg())
-sort!(mylms, :q_value)
-mylms[:q_value]
-CSV.write("../../data/glms/julia-glms.csv", mylms)
+describe(focusmeta[:cogScore])
+describe(focusmeta[:cogAssessment])
 ```
+
 
 ```@example glm
-oldermeta = filter(row-> !ismissing(row[:correctedAgeDays]) && row[:correctedAgeDays] / 365 > 1, focusmeta)
+@df focusmeta scatter(:correctedAgeDays ./ 365, :cogScore,
+        group = map(a-> ismissing(a) ? "Missing" : a, :cogAssessment),
+        legend = :bottomright, color=color1')
+title!("Cognitive Assessment Composite Scores")
+xlabel!("Age (years)")
+ylabel!("Composite Score")
 
-oldlms = let df = DataFrame(bug=Symbol[], variable=String[], coef=Float64[], err=Float64[], t_value=Float64[], p_value=Float64[])
-    for (i, sp) in enumerate(speciesnames(ukids_abt))
-        sp = Symbol(sp)
-        if prevalence(oldermeta[sp]) > 0.1
-            mylm = @eval(lm(@formula($sp ~ cogAssessment + correctedAgeDays + motherSES + breastfed), oldermeta))
-            tbl = coeftable(mylm)
-            append!(df, DataFrame(
-                bug      = sp,
-                variable = tbl.rownms[2:end],
-                coef     = coef(mylm)[2:end],
-                err      = stderror(mylm)[2:end],
-                t_value  = tbl.cols[3][2:end],
-                p_value  = tbl.cols[4][2:end]
-            ))
-        end
-    end
-    df
-end
-
-using MultipleTesting
-filter!(row-> !isnan(row[:p_value]) && row[:variable] != "correctedAgeDays", oldlms)
-oldlms[:q_value] = adjust(oldlms[:p_value], BenjaminiHochberg())
-sort!(oldlms, :q_value)
-oldlms[:q_value]
-CSV.write("../../data/glms/julia-glms.csv", oldlms)
-
-compl = focusmeta[completecases(focusmeta, [:correctedAgeDays, :cogAssessment, :motherSES, :breastfed]), :]
-
-boxplot(compl[present.(compl[:Bacteroides_stercoris]), :motherSES], compl[present.(compl[:Bacteroides_stercoris]), :Bacteroides_stercoris])
-scatter!(compl[:motherSES], compl[:Bacteroides_stercoris])
+savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
 ```
 
+![](../../data/figures/07/cognitive-scores.svg)
 
-```@example glms
-kids_spec = DataFrame(species=speciesnames(ukids_abt))
+```@example glm
+cogdf = view(focusmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
-let sn = samplenames(ukids_abt)
-    for i in eachindex(sn)
-        kids_spec[Symbol(sn[i])] = occurrences(ukids_abt)[:, i]
-    end
-end
-
-CSV.write("../../data/metadata/unique_kids_metadata.tsv",
-            focusmeta[[:sample, :correctedAgeDays, :motherSES, :breastfed, :cogAssessment]],
-            delim='\t')
-
-!isdir("../../data/maaslin") && mkdir("../../data/maaslin")
-CSV.write("../../data/maaslin/kids_species.tsv", kids_spec, delim='\t')
+R"""
+Maaslin2(
+     $(joinpath(outpath, "kids_species_abundance.tsv")),
+     $(joinpath(outpath, "kids_cog.tsv")),
+     $(joinpath(outpath, "species__cog_age_ses_bf_birth")))
+"""
 
 ```
