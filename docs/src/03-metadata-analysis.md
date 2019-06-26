@@ -9,7 +9,7 @@ I'm using the macros available from the [DataFramesMeta](https://github.com/Juli
 As an example, how many unique subjects do we have at least one sample for?
 
 ```@example 1
-cd(dirname(@__FILE__)) # hide
+# cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 using ECHOAnalysis # hide
 ```

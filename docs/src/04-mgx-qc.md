@@ -4,7 +4,7 @@ All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
 ```@example qc
-cd(dirname(@__FILE__)) # hide
+# cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 ```
 

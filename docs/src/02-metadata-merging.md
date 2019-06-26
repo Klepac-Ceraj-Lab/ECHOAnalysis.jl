@@ -10,7 +10,7 @@ Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
 ```@example metadata
-cd(dirname(@__FILE__))
+# cd(dirname(@__FILE__))
 using ECHOAnalysis # hide
 ```
 

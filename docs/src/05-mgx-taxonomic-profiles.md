@@ -6,7 +6,7 @@ I'll use the function [`load_taxonomic_profiles`]@ref
 
 
 ```@example tax_profiles
-cd(dirname(@__FILE__)) # hide
+# cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis

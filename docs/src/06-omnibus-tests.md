@@ -8,7 +8,7 @@ BiobakeryUtils.jl uses RCall to call the R package [vegan](https://cran.r-projec
 for their implimentation.
 
 ```@example omnibus
-cd(dirname(@__FILE__)) # hide
+# cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis
