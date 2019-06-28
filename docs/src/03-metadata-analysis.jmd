@@ -39,8 +39,9 @@ histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 
-isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"]) # hide
-savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png")) # hide
+# make directory if it doesn't exist
+isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"])
+savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png"))
 ```
 
 ![](data/figures/03-samples-per-subject.png)

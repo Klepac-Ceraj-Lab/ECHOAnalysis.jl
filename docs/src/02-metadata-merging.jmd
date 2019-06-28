@@ -16,11 +16,11 @@ using ECHOAnalysis
 ```julia
 using Pkg.TOML: parsefile
 files = parsefile("data/data.toml")
-println.(keys(files))
+keys(files)
 ```
 
 ```julia
-@show files["description"]
+print(files["description"])
 ```
 
 The metadata tables are found under `["tables"]["metadata"]`
@@ -39,13 +39,15 @@ using PrettyTables
 allmeta = CSV.File(files["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
 
 # show ~10 random rows
-allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :] |> pretty_table
+allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :]
 ```
 
-Alternatively, we can use the [`load_metadata`](@ref) function.
+Alternatively, we can use the `load_metadata` function.
 
 ```julia
 allmeta_startup = load_metadata(files, "filemakerdb")
+
+# these would throw errors if false
 @assert names(allmeta) == names(allmeta_startup)
 @assert size(allmeta) == size(allmeta_startup)
 ```
@@ -56,7 +58,7 @@ These are marked with `timepoint = 0`.
 Let's look at which variables that applies to:
 
 ```julia
-@show allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
+allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
 ```
 
 Those all look reasonable!
@@ -146,7 +148,7 @@ subcortical = subcortical[[:studyID, :timepoint, :subcortical_volume]]
 
 # convert to longform
 subcortical = melt(subcortical, [:studyID, :timepoint], variable_name=:metadatum)
-subcortical[:parent_table] = "subcorticalVolumes"
+subcortical[:parent_table] = "subcorticalVolumes";
 ```
 
 We can only concatenate tables if they all have the same columns,
@@ -170,7 +172,7 @@ cortical[:sampleID] = map(r->
 
 subcortical[:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
-        eachrow(subcortical))
+        eachrow(subcortical));
 ```
 
 And then concatenate all the tables together
@@ -205,5 +207,5 @@ end
 
 
 CSV.write(files["tables"]["metadata"]["all"]["path"], allmeta);
-@assert isfile(files["tables"]["metadata"]["all"]["path"]); nothing # hide
+@assert isfile(files["tables"]["metadata"]["all"]["path"])
 ```

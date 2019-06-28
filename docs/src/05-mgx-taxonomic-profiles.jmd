@@ -86,7 +86,7 @@ mds = fit(MDS, dm, distances=true)
 include("pcoa_recipe.jl") # this won't be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
 
 plot(mds, primary=false)
-savefig(joinpath(figures, "basic_pcoa.svg")); nothing # hide
+savefig(joinpath(figures, "basic_pcoa.svg"));
 ```
 
 ![](data/figures/05/basic_pcoa.svg)
@@ -104,7 +104,7 @@ end
 scree(mds)
 ylabel!("Variance explained")
 xlabel!("Principal coordinate axis")
-savefig(joinpath(figures, "scree.svg")); nothing # hide
+savefig(joinpath(figures, "scree.svg"));
 ```
 
 ![](data/figures/05/scree.svg)
@@ -131,7 +131,7 @@ scatter!([],[], color=color2[1], label="kids", legend=:topright)
 scatter!([],[], color=color2[2], label="moms", legend=:topright)
 title!("All samples taxonomic profiles")
 
-savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-moms-kids.svg)
@@ -145,7 +145,7 @@ p2 = plot(mds, marker=3, line=1,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
 
-savefig(joinpath(figures, "taxonomic-profiles-shannon.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-shannon.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-shannon.svg)
@@ -168,7 +168,7 @@ p3 = plot(mds, marker=3, line=1,
     zcolor=bacteroidetes, primary = false, color=:plasma,
     title="All samples, Bacteroidetes")
 
-savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-bacteroidetes.svg)
@@ -178,14 +178,14 @@ p4 = plot(mds, marker=3, line=1,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
 
-savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-firmicutes.svg)
 
 ```julia
 plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
-savefig(joinpath(figures, "taxonomic-profiles-grid.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-grid.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-grid.svg)
@@ -230,7 +230,7 @@ umoms_hcl = hclust(umoms_dm, linkage=:average, branchorder=:optimal)
 
 abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
     xticks=false, color=color4')
-savefig(joinpath(figures, "moms-abundanceplot.svg")); nothing # hide
+savefig(joinpath(figures, "moms-abundanceplot.svg"));
 ```
 
 ![](figures/05-moms-abundanceplot.svg)
@@ -238,7 +238,7 @@ savefig(joinpath(figures, "moms-abundanceplot.svg")); nothing # hide
 ```julia
 abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
     xticks=false, color=color4', legend=false)
-savefig(joinpath(figures, "moms-abundanceplot-nolegend.svg")); nothing # hide
+savefig(joinpath(figures, "moms-abundanceplot-nolegend.svg"));
 ```
 
 Those look like normal adult microbiomes.
@@ -263,7 +263,7 @@ p5 = plot(kids_mds, marker=3, line=1,
     zcolor=shannon(kids), primary = false, color=:plasma,
     title="Kids, shannon diversity")
 
-savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-kids-shannon.svg)
@@ -293,10 +293,10 @@ plot(
         zcolor=kids_proteo, primary = false, color=:plasma,
         title="Kids, Proteobacteria"),
     )
-savefig(joinpath(figures, "taxonomic-profiles-kids-phyla.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-phyla.svg"))
 ```
 
-![](data/figures/05/taxonomic-profiles-kids-phyla.svg)
+![](data/figures/05/taxonomic-profiles-kids-phyla.svg);
 
 In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
@@ -316,7 +316,7 @@ ylabel!("Age (years)")
 xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 title!("All kids age / PCoA 1 / Alpha diversity")
 
-savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-kids-age-pco1-diversity.svg)
@@ -329,7 +329,7 @@ focusmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in fo
 
 boxplot(collect(skipmissing(focusmeta[:floorAge])), focusmeta[:ginisimpson][.!ismissing.(focusmeta[:floorAge])],
     color=:lightgrey, legend=false, xlabel="Age in Years", ylabel="Alpha diversity (GiniSimpson)")
-savefig(joinpath(figures, "kids-alpha-diversity-box.svg")); nothing # hide
+savefig(joinpath(figures, "kids-alpha-diversity-box.svg"));
 ```
 
 ![](data/figures/05/kids-alpha-diversity-box.svg)
@@ -342,13 +342,13 @@ abundanceplot(kids, srt = kids_hcl.order,
     title="Unique kids, top 10 species",
     xticks=false, color=color4')
 
-savefig(joinpath(figures, "kids-abundanceplot.svg")); nothing # hide
+savefig(joinpath(figures, "kids-abundanceplot.svg"))
 
 abundanceplot(kids, srt = kids_hcl.order,
     title="Unique kids, top 10 species",
     xticks=false, color=color4', legend=false)
 
-savefig(joinpath(figures, "kids-abundanceplot-nolegend.svg")); nothing # hide
+savefig(joinpath(figures, "kids-abundanceplot-nolegend.svg"));
 ```
 ![](data/figures/05/kids-abundanceplot.svg)
 ![](data/figures/05/kids-abundanceplot-nolegend.svg)
@@ -366,7 +366,7 @@ plot(
         xticks=false, yticks=false, color=:PuBu, colorbar=false),
     layout = grid(2,1,heights=[0.9, 0.1])
     )
-savefig(joinpath(figures, "kids-abundanceplot-age.svg")); nothing # hide
+savefig(joinpath(figures, "kids-abundanceplot-age.svg"));
 ```
 
 ![](data/figures/05/kids-abundanceplot-age.svg)
@@ -380,7 +380,7 @@ scatter(x, y, zcolor=focusmeta[.!ismissing.(focusmeta[:correctedAgeDays]), :corr
     primary=false, color=:PuBu, title = "Unique Kids Taxonomic Profiles, Age")
 xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 ylabel!("MDS2 ($(round(var_explained[2], digits = 2))%)")
-savefig(joinpath(figures, "taxonomic-profiles-mds-kids-age.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-mds-kids-age.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-mds-kids-age.svg)
@@ -402,7 +402,7 @@ ykids_hcl = hclust(ykids_dm, linkage=:average, branchorder=:optimal)
 abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 10 species",
     xticks=false, color=color4')
 
-savefig(joinpath(figures, "young-kids-abundanceplot.svg")); nothing # hide
+savefig(joinpath(figures, "young-kids-abundanceplot.svg"));
 ```
 
 ![](data/figures/05/young-kids-abundanceplot.svg)
@@ -440,7 +440,7 @@ scatter!([],[], color=color2[end], label="missing", legend=:topleft)
 xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 ylabel!("Age (years)")
 
-savefig(joinpath(figures, "kids-brain-quartiles.svg")); nothing # hide
+savefig(joinpath(figures, "kids-brain-quartiles.svg"));
 ```
 
 ![](data/figures/05/kids-brain-quartiles.svg)
@@ -459,7 +459,7 @@ scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomleft)
 
-savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-kids-birth.svg)
@@ -510,7 +510,7 @@ scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
 scatter!([],[], color=color1[end], label="missing", legend=:bottomleft)
 
-savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg")); nothing # hide
+savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg"));
 ```
 
 ![](data/figures/05/taxonomic-profiles-kids-breastfeeding.svg)

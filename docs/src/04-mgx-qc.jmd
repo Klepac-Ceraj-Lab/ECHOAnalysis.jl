@@ -12,7 +12,7 @@ ENV["GKSwstype"] = "100" # hide
 using ECHOAnalysis
 using CSV, DataFrames
 using DataFramesMeta
-using PrettyTables
+using PrettyTables;
 ```
 
 ## Quality control
@@ -47,7 +47,7 @@ pretty_table(first(qc, 15))
 ```
 
 To keep the formatting of sample IDs consistant across data types,
-I'll use the [`resolve_sampleID`](@ref) function.
+I'll use the `resolve_sampleID` function.
 
 
 ```julia
@@ -92,8 +92,8 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     title = "QC from Kneaddata", label=["Raw" "Final"],
     line=0)
 
-savefig("data/figures/04-knead-qc.svg"); nothing# hide
-savefig("data/figures/04-knead-qc.png"); nothing# hide
+savefig("data/figures/04-knead-qc.svg")
+savefig("data/figures/04-knead-qc.png");
 ```
 
 ![](data/figures/04-knead-qc.png)
@@ -115,12 +115,4 @@ qc_stats = by(qc, :batch) do df
 end
 CSV.write("data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
 pretty_table(qc_stats)
-```
-
-## Functions
-
-```@docs
-resolve_sampleID
-merge_tables
-getmetadata
 ```
