@@ -2,7 +2,7 @@
 
 Looking at the literature and at the results from previous notebooks.
 
-```@example sigbugs
+```julia
 cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
@@ -57,7 +57,7 @@ println.(sort(sitenames(kidsp)))
 
 ## Define bugs
 
-```@example sigbugs
+```julia
 genera = [
     "Bacillus",
     "Bacteroides",
@@ -84,7 +84,7 @@ species = [
 
 ## Sample metadata
 
-```@example sigbugs
+```julia
 meta = getfocusmetadata(tables["metadata"]["merged_brain"]["path"],
     collect(samplenames(kidsp)))
 

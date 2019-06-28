@@ -7,8 +7,8 @@ is explainable by different bits of metadata.
 BiobakeryUtils.jl uses RCall to call the R package [vegan](https://cran.r-project.org/web/packages/vegan/index.html)
 for their implimentation.
 
-```@example omnibus
-# cd(dirname(@__FILE__)) # hide
+```julia
+cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis
@@ -47,7 +47,7 @@ and we don't *really* need that number.
 One way to demonstrate why this is a problem
 is to look at how much of the variation is attributable to the subject ID.
 
-```@example omnibus
+```julia
 metadata = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(abt)))
 
 # need to convert subject IDs to `String` so it's not treated as continuous variable
@@ -61,7 +61,7 @@ but even small differences are interesting.
 
 Now we'll concatenate this new PERMANOVA into the previous dataframe to keep stuff together.
 
-```@example ombnibus
+```julia
 p[:feature] = "species"
 p[:variable] = "Subject ID"
 perm = vcat(perm, p)
@@ -70,7 +70,7 @@ perm = vcat(perm, p)
 
 Now we'll focus on the kids.
 
-```@example omnibus
+```julia
 kids = view(abt, sites=firstkids(samplenames(abt)))
 kids_dm = pairwise(BrayCurtis(), kids, dims=2)
 
@@ -123,7 +123,7 @@ It's a bit surprising that breastfeeding and birth type are not significant,
 though it may be because we're including older kids.
 What happens if we only look at the kids under 2 years old?
 
-```@example ombnibus
+```julia
 young = map(a-> !ismissing(a) && a < 365*2, kidsmeta[:correctedAgeDays])
 youngkids = view(kids, sites=young)
 youngkids_dm = pairwise(BrayCurtis(), youngkids, dims=2)
@@ -153,7 +153,7 @@ All of the brain data is really affected by the age of the kids,
 so we need to subtract out that variation.
 BiobakeryUtils can't handle this yet, so we need to do this directly using RCall.
 
-```@example omnibus
+```julia
 using RCall
 
 filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:white_matter_volume]), eachrow(kidsmeta))
@@ -173,7 +173,7 @@ p = p[:aov_tab]
 
 The second row is the white_matter_volume.
 
-```@example omnibus
+```julia
 p[:feature] = "species"
 p[:variable] = "white_matter_volume"
 perm = vcat(perm, p[[2],:])
@@ -181,7 +181,7 @@ perm = vcat(perm, p[[2],:])
 
 Let's look at some other brain measures.
 
-```@example
+```julia
 ## grey matter
 filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:grey_matter_volume]), eachrow(kidsmeta))
 r_meta = kidsmeta[filt, [:correctedAgeDays, :grey_matter_volume]]
@@ -221,7 +221,7 @@ perm = vcat(perm, p[[2],:])
 
 Let's save the output after correcting for multiple testing.
 
-```@example omnibus
+```julia
 using MultipleTesting
 
 perm[:p_value] = Float64.(perm[Symbol("Pr(>F)")])
@@ -237,7 +237,7 @@ CSV.write(joinpath(outpath, "permanovas.csv"), perm)
 
 Let's see what that looks like in graphical form using StatsPlots
 
-```@example omnibus
+```julia
 sort!(perm, [:R2])
 
 # [1:end-1] removes the ~80% from subject ID

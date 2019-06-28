@@ -5,8 +5,8 @@ Each sample is run separately, and needs to be joined in a single table.
 I'll use the function [`load_taxonomic_profiles`]@ref
 
 
-```@example tax_profiles
-# cd(dirname(@__FILE__)) # hide
+```julia
+cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis
@@ -29,7 +29,7 @@ pretty_table(first(tax, 10))
 
 Some analysis of the fungi:
 
-```@example tax_profiles
+```julia
 euk = filter(tax) do row
     occursin(r"^k__Eukaryota", row[1])
 end
@@ -58,7 +58,7 @@ let's look at the PCoA plots using BrayCurtis dissimilarity.
 
 #### All Samples
 
-```@example tax_profiles
+```julia
 spec = taxfilter(tax)
 phyla = taxfilter(tax, :phylum)
 first(spec, 10) |> pretty_table
@@ -68,7 +68,7 @@ Now I'll convert these to the `AbundanceTable` type from `Microbiome.jl`
 for easier maniplation, and do Total Sum Scaling (convert to relative abundance).
 
 
-```@example tax_profiles
+```julia
 abt = abundancetable(spec)
 pabt = abundancetable(phyla)
 relativeabundance!(abt)
@@ -79,7 +79,7 @@ Using `pairwise` from `Distances.jl` and `MDS` from `MultivariateStats.jl`,
 we perform classical multidimensional scaling (which is the same thing
 as principle coordinates analysis).
 
-```@example tax_profiles
+```julia
 dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
 
@@ -94,7 +94,7 @@ savefig(joinpath(figures, "basic_pcoa.svg")); nothing # hide
 A scree plot can be used to visualize how many dimensions are necessary
 to explain the bulk of the variance.
 
-```@example tax_profiles
+```julia
 function scree(mds)
     ev = eigvals(mds)
     var_explained = [v / sum(ev) for v in ev]
@@ -121,7 +121,7 @@ First, children vs mothers.
 We can identify the difference by the "C" or "M"
 at the beginning of the sample ID.
 
-```@example tax_profiles
+```julia
 # colors defined in `startup.jl`
 c = [startswith(x, "C") ? color2[1] : color2[2] for x in samplenames(abt)]
 
@@ -140,7 +140,7 @@ savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg")); nothing # hide
 
 The [`shannon`](@ref) function can calculate Shannon diversity for the entire `AbundanceTable`.
 
-```@example tax_profiles
+```julia
 p2 = plot(mds, marker=3, line=1,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
@@ -160,7 +160,7 @@ we can also plot the relative abundace of the major phyla.
 The ration of Bacteroidetes and Firmicutes are often visible in the first
 axes of variation in adult microbiomes.
 
-```@example tax_profiles
+```julia
 bacteroidetes = vec(Matrix(phyla[phyla[1] .== "Bacteroidetes", 2:end]))
 firmicutes = vec(Matrix(phyla[phyla[1] .== "Firmicutes", 2:end]))
 
@@ -173,7 +173,7 @@ savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg")); nothing # hi
 
 ![](../../data/figures/05/taxonomic-profiles-bacteroidetes.svg)
 
-```@example tax_profiles
+```julia
 p4 = plot(mds, marker=3, line=1,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
@@ -183,7 +183,7 @@ savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg")); nothing # hide
 
 ![](../../data/figures/05/taxonomic-profiles-firmicutes.svg)
 
-```@example tax_profiles
+```julia
 plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
 savefig(joinpath(figures, "taxonomic-profiles-grid.svg")); nothing # hide
 ```
@@ -197,7 +197,7 @@ So that balance is somewhat visible, but there's something else going on too.
 There aren't a ton of moms in the samples yet,
 but let's just see what they look like on their own
 
-```@example tax_profiles
+```julia
 # get a sub abundance table with only samples that start with "M"
 moms = view(abt, sites=map(s-> occursin(r"^M", s[:sample]) && occursin("F", s[:sample]),
                             resolve_sampleID.(sitenames(abt))))
@@ -235,7 +235,7 @@ savefig(joinpath(figures, "moms-abundanceplot.svg")); nothing # hide
 
 ![](../../figures/05-moms-abundanceplot.svg)
 
-```@example tax_profiles
+```julia
 abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
     xticks=false, color=color4', legend=false)
 savefig(joinpath(figures, "moms-abundanceplot-nolegend.svg")); nothing # hide
@@ -252,7 +252,7 @@ and also remove duplicates
 The [`firstkids`](@ref) function identifies the first sample
 for each kid
 
-```@example tax_profiles
+```julia
 
 kids = view(abt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
 
@@ -270,7 +270,7 @@ savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg")); nothing # hid
 
 Let's look at the phyla too:
 
-```@example tax_profiles
+```julia
 
 pkids = view(pabt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
 
@@ -302,7 +302,7 @@ In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
 I'll use the [`getfocusmetadata`]@ref function.
 
-```@example tax_profiles
+```julia
 samples = resolve_sampleID.(samplenames(kids))
 focusmeta = getfocusmetadata(datatoml["tables"]["metadata"]["all"]["path"], samples)
 focusmeta[:shannon] = shannon(kids)
@@ -324,7 +324,7 @@ savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg")); no
 Here we can see that alpha diversity increases with age (not too surprising).
 Another way to look at it is to plot the alpha diversity at each age:
 
-```@example tax_profiles
+```julia
 focusmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in focusmeta[:correctedAgeDays]]
 
 boxplot(collect(skipmissing(focusmeta[:floorAge])), focusmeta[:ginisimpson][.!ismissing.(focusmeta[:floorAge])],
@@ -335,7 +335,7 @@ savefig(joinpath(figures, "kids-alpha-diversity-box.svg")); nothing # hide
 ![](../../data/figures/05/kids-alpha-diversity-box.svg)
 
 
-```@example tax_profiles
+```julia
 kids_hcl = hclust(kids_dm, linkage=:average, branchorder=:optimal)
 
 abundanceplot(kids, srt = kids_hcl.order,
@@ -358,7 +358,7 @@ microbes thrown in for good measure (eg _Bifidobacterium longum_).
 
 We can also annotate this plot with the age of the kids
 
-```@example tax_profiles
+```julia
 plot(
     abundanceplot(kids, srt = kids_hcl.order, title="Kids, top 10 species",
         xticks=false, color=color4', legend=false),
@@ -372,7 +372,7 @@ savefig(joinpath(figures, "kids-abundanceplot-age.svg")); nothing # hide
 ![](../../data/figures/05/kids-abundanceplot-age.svg)
 
 
-```@example tax_profiles
+```julia
 x = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 1]
 y = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 2]
 
@@ -391,7 +391,7 @@ over the first years of life.
 
 Let's focus on just the youngest kids:
 
-```@example tax_profiles
+```julia
 youngkids = map(x-> ismissing(x) ? false : x/365 < 2, focusmeta[:correctedAgeDays])
 
 ykids = view(kids, sites = youngkids)
@@ -414,7 +414,7 @@ but for now, just a bit more exploratory visualization.
 
 #### Brain Volume Quartiles
 
-```@example tax_profiles
+```julia
 using StatsBase
 
 function colorquartile(arr, clrs)
@@ -451,7 +451,7 @@ savefig(joinpath(figures, "kids-brain-quartiles.svg")); nothing # hide
 Birth type (vaginal or cesarean) is known to have a substantial affect on kids'
 microbiomes. Let's see where that falls in our data:
 
-```@example tax_profiles
+```julia
 plot(kids_mds, marker=3, line=1,
     color=metacolor(focusmeta[:birthType], color2[4:5], missing_color=color2[end]),
     title="Kids, BirthType", primary=false)
@@ -483,7 +483,7 @@ In principle, they shouldn't both be `false`.
 I defined [`breastfeeding`](@ref) and [`formulafeeding`](@ref)
 to calculate these values.
 
-```@example tax_profiles
+```julia
 focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
 focusmeta[:formulafed] = formulafeeding.(eachrow(focusmeta))
 

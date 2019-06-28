@@ -3,12 +3,12 @@
 All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
-```@example qc
-# cd(dirname(@__FILE__)) # hide
+```julia
+cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 ```
 
-```@example qc
+```julia
 using ECHOAnalysis
 using CSV, DataFrames
 using DataFramesMeta
@@ -19,7 +19,7 @@ using PrettyTables
 
 First, I'll look at the QC results from `kneaddata`.
 
-```@example qc
+```julia
 qc_files = let qcfiles=[]
     for (root, dirs, files) in walkdir(datatoml["tables"]["biobakery"]["path"])
         occursin("kneaddata", root) || continue
@@ -50,7 +50,7 @@ To keep the formatting of sample IDs consistant across data types,
 I'll use the [`resolve_sampleID`](@ref) function.
 
 
-```@example qc
+```julia
 qc[:Sample] = map(qc[:Sample]) do s
     s = replace(s, "_kneaddata"=> "")
     resolve_sampleID(s)[:sample]
@@ -59,7 +59,7 @@ end
 pretty_table(first(qc,5))
 ```
 
-```@example qc
+```julia
 # cleaning up the column names a bit
 names!(qc,
     map(n-> Symbol(replace(String(n), " "=>"_")),
@@ -70,7 +70,7 @@ pretty_table(first(qc,5))
 I don't really care about each mate pair individually,
 so I'll sum them up
 
-```@example qc
+```julia
 qc = @linq qc |>
   transform(raw = :raw_pair1 .+ :raw_pair2,
             trimmed = :trimmed_pair1 .+ :trimmed_pair2,
@@ -82,7 +82,7 @@ pretty_table(first(qc,5)[[:Sample, :batch, :raw, :trimmed, :orphan, :final]])
 
 Now let's take a look at them with some plots.
 
-```@example qc
+```julia
 using StatsPlots
 
 sort!(qc, [:batch, :raw])
@@ -102,7 +102,7 @@ savefig("../../data/figures/04-knead-qc.png"); nothing# hide
 These are a little more variable than I'd like.
 Let's take a look at their properties:
 
-```@example qc
+```julia
 using Statistics
 
 qc_stats = by(qc, :batch) do df

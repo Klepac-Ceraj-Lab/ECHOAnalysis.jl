@@ -3,7 +3,7 @@
 Now that we've done omnibus tests,
 it's time to look at per-feature tests with multivariate linear models.
 
-```@example glm
+```julia
 cd(dirname(@__FILE__)) # hide
 ENV["GKSwstype"] = "100" # hide
 
@@ -38,7 +38,7 @@ and the metadata we want to include in the model as a sample/feature table.
 Maaslin2 doesn't play nice with missing categorical data,
 so I'll manually remove samples that don't have `birthType` information
 
-```@example glms
+```julia
 species = DataFrame(species=speciesnames(kids_abt))
 
 let occ = occurrences(kids_abt)
@@ -52,7 +52,7 @@ end
 
 Now we'll subset the metadata DataFrame to include a subset of the metadata.
 
-```@example glms
+```julia
 # add a sample id column
 focusmeta[:sample] = collect(samplenames(kids_abt))
 focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
@@ -69,7 +69,7 @@ CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
 Now, we'll run Maaslin2. from the commandline.
 You need to have Maaslin2 installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
 
-```@example glms
+```julia
 using RCall
 
 R"library(Maaslin2)"
@@ -78,7 +78,7 @@ let version = R"packageVersion('Maaslin2')"
 end
 ```
 
-```@example glms
+```julia
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
@@ -90,7 +90,7 @@ fit_data <- Maaslin2(
 We can do this with some other brain data as well:
 
 
-```@example glms
+```julia
 greymatterdf = view(focusmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
@@ -128,7 +128,7 @@ of the population of kids that age.
 So we'll create a new column that contains the composite score
 for each kids, regardless of which version of the test they took.
 
-```@example glm
+```julia
 # Bayleys doesn't have a compositve score calculated, but we can get it:
 focusmeta[:bayleysComposite] = map(row->
     mean([row[:languageComposite], row[:motorComposite]]),
@@ -170,7 +170,7 @@ describe(focusmeta[:cogAssessment])
 ```
 
 
-```@example glm
+```julia
 @df focusmeta scatter(:correctedAgeDays ./ 365, :cogScore,
         group = map(a-> ismissing(a) ? "Missing" : a, :cogAssessment),
         legend = :bottomright, color=color1')
@@ -183,7 +183,7 @@ savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
 
 ![](../../data/figures/07/cognitive-scores.svg)
 
-```@example glm
+```julia
 cogdf = view(focusmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
