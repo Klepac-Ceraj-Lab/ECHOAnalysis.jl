@@ -33,7 +33,7 @@ subject_type = [startswith(s, "M") ? "Mother" : "Child" for s in samples]
 perm = permanova(dm, subject_type)
 perm[:feature] = "species"
 perm[:variable] = "Subject Type"
-pretty_table(perm)
+randrows(perm)
 ```
 
 This tells us that, when comparing all the samples, whether the sample
@@ -114,7 +114,7 @@ filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
 
 # round values in the table output (see https://ronisbr.github.io/PrettyTables.jl/stable/man/formatter/)
 formatter = Dict(0 => (v,i) -> round(v,digits=3));
-pretty_table(perm, formatter=formatter)
+randrows(perm, formatter=formatter)
 ```
 
 ### Young kids
@@ -140,7 +140,7 @@ p[:variable] = "young kids formulafed"
 perm = vcat(perm, p)
 
 filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
-pretty_table(perm, formatter=formatter)
+randrows(perm, formatter=formatter)
 ```
 
 Still not significant.

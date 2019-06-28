@@ -4,7 +4,6 @@ All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
 ```julia
-
 ENV["GKSwstype"] = "100" # hide
 ```
 
@@ -43,7 +42,7 @@ for f in qc_files[2:end]
     global qc = vcat(qc, df)
 end
 
-pretty_table(first(qc, 15))
+randrows(first(qc, 15))
 ```
 
 To keep the formatting of sample IDs consistant across data types,
@@ -56,7 +55,7 @@ qc[:Sample] = map(qc[:Sample]) do s
     resolve_sampleID(s)[:sample]
 end
 
-pretty_table(first(qc,5))
+randrows(first(qc,5))
 ```
 
 ```julia
@@ -64,7 +63,7 @@ pretty_table(first(qc,5))
 names!(qc,
     map(n-> Symbol(replace(String(n), " "=>"_")),
     names(qc)))
-pretty_table(first(qc,5))
+randrows(first(qc,5))
 ```
 
 I don't really care about each mate pair individually,
@@ -77,7 +76,7 @@ qc = @linq qc |>
             orphan = :final_orphan1 .+ :final_orphan2,
             final = :final_pair1 .+ :final_pair2,
             )
-pretty_table(first(qc,5)[[:Sample, :batch, :raw, :trimmed, :orphan, :final]])
+randrows(qc,[[:Sample, :batch, :raw, :trimmed, :orphan, :final]])
 ```
 
 Now let's take a look at them with some plots.
@@ -92,12 +91,11 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     title = "QC from Kneaddata", label=["Raw" "Final"],
     line=0)
 
-savefig("data/figures/04-knead-qc.svg")
-savefig("data/figures/04-knead-qc.png");
 ```
 
-![](data/figures/04-knead-qc.png)
-
+```julia
+savefig("data/figures/04-knead-qc.svg")
+```
 
 These are a little more variable than I'd like.
 Let's take a look at their properties:
@@ -114,5 +112,5 @@ qc_stats = by(qc, :batch) do df
                   )
 end
 CSV.write("data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
-pretty_table(qc_stats)
+randrows(qc_stats)
 ```

@@ -98,7 +98,7 @@ rename!(brainvol, :study_id => :studyID)
 
 # Convert to longform
 brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :studyID, variable_name=:metadatum)
-pretty_table(brainvol)
+randrows(brainvol)
 ```
 
 We need to fix the studyIDs - the letters represent timepoints -
@@ -116,7 +116,7 @@ brainvol[:timepoint] = getfield.(brainsid, :timepoint)
 brainvol[:sampleID] = getfield.(brainsid, :sample)
 brainvol[:parent_table] = "brainVolume"
 
-pretty_table(brainvol)
+brainvol
 ```
 
 And now the same thing for the cortical and subcortical volume tables:
@@ -186,7 +186,7 @@ filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID], r[:timepoint], r[:metada
 disallowmissing!(allmeta)
 
 # show a random assortment of ~ 10 rows
-allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :] |> pretty_table
+randrows(allmeta)
 ```
 
 A some of the `:value` fields have quotes or newlines in the field,
