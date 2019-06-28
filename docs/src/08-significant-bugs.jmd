@@ -3,7 +3,7 @@
 Looking at the literature and at the results from previous notebooks.
 
 ```julia
-cd(dirname(@__FILE__)) # hide
+
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis

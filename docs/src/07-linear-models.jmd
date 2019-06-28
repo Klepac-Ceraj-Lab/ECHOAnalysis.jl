@@ -4,7 +4,7 @@ Now that we've done omnibus tests,
 it's time to look at per-feature tests with multivariate linear models.
 
 ```julia
-cd(dirname(@__FILE__)) # hide
+
 ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis
