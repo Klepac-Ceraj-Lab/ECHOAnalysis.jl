@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<HTML lang = "en">
+<HEAD>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  
+  
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+  
+<style>
+pre.hljl {
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    overflow-x: auto;
+    color: rgb(68,68,68); background-color: rgb(251,251,251); }
+pre.hljl > span.hljl-t { }
+pre.hljl > span.hljl-w { }
+pre.hljl > span.hljl-e { }
+pre.hljl > span.hljl-eB { }
+pre.hljl > span.hljl-o { }
+pre.hljl > span.hljl-k { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kc { color: rgb(59,151,46); font-style: italic; }
+pre.hljl > span.hljl-kd { color: rgb(214,102,97); font-style: italic; }
+pre.hljl > span.hljl-kn { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kp { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kr { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kt { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-n { }
+pre.hljl > span.hljl-na { }
+pre.hljl > span.hljl-nb { }
+pre.hljl > span.hljl-nbp { }
+pre.hljl > span.hljl-nc { }
+pre.hljl > span.hljl-ncB { }
+pre.hljl > span.hljl-nd { color: rgb(214,102,97); }
+pre.hljl > span.hljl-ne { }
+pre.hljl > span.hljl-neB { }
+pre.hljl > span.hljl-nf { color: rgb(66,102,213); }
+pre.hljl > span.hljl-nfm { color: rgb(66,102,213); }
+pre.hljl > span.hljl-np { }
+pre.hljl > span.hljl-nl { }
+pre.hljl > span.hljl-nn { }
+pre.hljl > span.hljl-no { }
+pre.hljl > span.hljl-nt { }
+pre.hljl > span.hljl-nv { }
+pre.hljl > span.hljl-nvc { }
+pre.hljl > span.hljl-nvg { }
+pre.hljl > span.hljl-nvi { }
+pre.hljl > span.hljl-nvm { }
+pre.hljl > span.hljl-l { }
+pre.hljl > span.hljl-ld { color: rgb(148,91,176); font-style: italic; }
+pre.hljl > span.hljl-s { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sa { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sb { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sc { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sd { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdC { color: rgb(201,61,57); }
+pre.hljl > span.hljl-se { color: rgb(59,151,46); }
+pre.hljl > span.hljl-sh { color: rgb(201,61,57); }
+pre.hljl > span.hljl-si { }
+pre.hljl > span.hljl-so { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sr { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ss { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ssB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-nB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nbB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nfB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nh { color: rgb(59,151,46); }
+pre.hljl > span.hljl-ni { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nil { color: rgb(59,151,46); }
+pre.hljl > span.hljl-noB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-oB { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-ow { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-p { }
+pre.hljl > span.hljl-c { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-ch { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cm { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cp { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cpB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cs { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-csB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-g { }
+pre.hljl > span.hljl-gd { }
+pre.hljl > span.hljl-ge { }
+pre.hljl > span.hljl-geB { }
+pre.hljl > span.hljl-gh { }
+pre.hljl > span.hljl-gi { }
+pre.hljl > span.hljl-go { }
+pre.hljl > span.hljl-gp { }
+pre.hljl > span.hljl-gs { }
+pre.hljl > span.hljl-gsB { }
+pre.hljl > span.hljl-gt { }
+</style>
+
+
+
+  <style type="text/css">
+  @font-face {
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 600;
+}
+html {
+  font-family: sans-serif; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+body {
+  margin: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+audio,
+canvas,
+progress,
+video {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+[hidden],
+template {
+  display: none;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+b,
+strong {
+  font-weight: bold;
+}
+dfn {
+  font-style: italic;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+mark {
+  background: #ff0;
+  color: #000;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+figure {
+  margin: 1em 40px;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+pre {
+  overflow: auto;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+button {
+  overflow: visible;
+}
+button,
+select {
+  text-transform: none;
+}
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+input {
+  line-height: normal;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+input[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box; /* 2 */
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend {
+  border: 0; /* 1 */
+  padding: 0; /* 2 */
+}
+textarea {
+  overflow: auto;
+}
+optgroup {
+  font-weight: bold;
+}
+table {
+  font-family: monospace, monospace;
+  font-size : 0.8em;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,
+th {
+  padding: 0;
+}
+thead th {
+    border-bottom: 1px solid black;
+    background-color: white;
+}
+tr:nth-child(odd){
+  background-color: rgb(248,248,248);
+}
+
+
+/*
+* Skeleton V2.0.4
+* Copyright 2014, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 12/29/2014
+*/
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box; }
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0; }
+}
+@media (min-width: 550px) {
+  .container {
+    width: 80%; }
+  .column,
+  .columns {
+    margin-left: 4%; }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0; }
+
+  .one.column,
+  .one.columns                    { width: 4.66666666667%; }
+  .two.columns                    { width: 13.3333333333%; }
+  .three.columns                  { width: 22%;            }
+  .four.columns                   { width: 30.6666666667%; }
+  .five.columns                   { width: 39.3333333333%; }
+  .six.columns                    { width: 48%;            }
+  .seven.columns                  { width: 56.6666666667%; }
+  .eight.columns                  { width: 65.3333333333%; }
+  .nine.columns                   { width: 74.0%;          }
+  .ten.columns                    { width: 82.6666666667%; }
+  .eleven.columns                 { width: 91.3333333333%; }
+  .twelve.columns                 { width: 100%; margin-left: 0; }
+
+  .one-third.column               { width: 30.6666666667%; }
+  .two-thirds.column              { width: 65.3333333333%; }
+
+  .one-half.column                { width: 48%; }
+
+  /* Offsets */
+  .offset-by-one.column,
+  .offset-by-one.columns          { margin-left: 8.66666666667%; }
+  .offset-by-two.column,
+  .offset-by-two.columns          { margin-left: 17.3333333333%; }
+  .offset-by-three.column,
+  .offset-by-three.columns        { margin-left: 26%;            }
+  .offset-by-four.column,
+  .offset-by-four.columns         { margin-left: 34.6666666667%; }
+  .offset-by-five.column,
+  .offset-by-five.columns         { margin-left: 43.3333333333%; }
+  .offset-by-six.column,
+  .offset-by-six.columns          { margin-left: 52%;            }
+  .offset-by-seven.column,
+  .offset-by-seven.columns        { margin-left: 60.6666666667%; }
+  .offset-by-eight.column,
+  .offset-by-eight.columns        { margin-left: 69.3333333333%; }
+  .offset-by-nine.column,
+  .offset-by-nine.columns         { margin-left: 78.0%;          }
+  .offset-by-ten.column,
+  .offset-by-ten.columns          { margin-left: 86.6666666667%; }
+  .offset-by-eleven.column,
+  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }
+
+  .offset-by-one-third.column,
+  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }
+  .offset-by-two-thirds.column,
+  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }
+
+  .offset-by-one-half.column,
+  .offset-by-one-half.columns     { margin-left: 52%; }
+
+}
+html {
+  font-size: 62.5%; }
+body {
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222; }
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300; }
+h1 { font-size: 3.6rem; line-height: 1.2;  letter-spacing: -.1rem;}
+h2 { font-size: 3.4rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.2rem; line-height: 1.3;  letter-spacing: -.1rem; }
+h4 { font-size: 2.8rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 2.4rem; line-height: 1.5;  letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+p {
+  margin-top: 0; }
+a {
+  color: #1EAEDB; }
+a:hover {
+  color: #0FA0CE; }
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #333;
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box; }
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+textarea {
+  min-height: 65px;
+  padding-top: 6px;
+  padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0; }
+label,
+legend {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600; }
+fieldset {
+  padding: 0;
+  border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline; }
+label > .label-body {
+  display: inline-block;
+  margin-left: .5rem;
+  font-weight: normal; }
+ul {
+  list-style: circle; }
+ol {
+  list-style: decimal; }
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 1.5rem 0 1.5rem 3rem;
+  font-size: 90%; }
+li > p {margin : 0;}
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+  padding-left: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0; }
+button,
+.button {
+  margin-bottom: 1rem; }
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 1.5rem; }
+pre,
+blockquote,
+dl,
+figure,
+table,
+p,
+ul,
+ol,
+form {
+  margin-bottom: 1.0rem; }
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
+.u-max-full-width {
+  max-width: 100%;
+  box-sizing: border-box; }
+.u-pull-right {
+  float: right; }
+.u-pull-left {
+  float: left; }
+hr {
+  margin-top: 3rem;
+  margin-bottom: 3.5rem;
+  border-width: 0;
+  border-top: 1px solid #E1E1E1; }
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre.hljl {
+  margin: 0 0 10px;
+  display: block;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding : 5px;
+}
+
+pre.output {
+  background: #ffffff;
+}
+
+pre.code {
+  background: #ffffff;
+}
+
+pre.julia-error {
+  color : red
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
+
+@media (min-width: 400px) {}
+@media (min-width: 550px) {}
+@media (min-width: 750px) {}
+@media (min-width: 1000px) {}
+@media (min-width: 1200px) {}
+
+h1.title {margin-top : 20px}
+img {max-width : 100%}
+div.title {text-align: center;}
+
+  </style>
+
+
+
+</HEAD>
+  <BODY>
+    <div class ="container">
+      <div class = "row">
+        <div class = "col-md-12 twelve columns">
+
+          <div class="title">
+            
+            
+            
+          </div>
+
+          <h1>Taxonomic Profiles</h1>
+<p>Taxonomic profiles come from <a href="https://bitbucket.org/biobakery/metaphlan2/src">MetaPhlAn2</a>. Each sample is run separately, and needs to be joined in a single table. I&#39;ll use the function &#91;<code>load_taxonomic_profiles</code>&#93;@ref</p>
+<pre><code class="language-@example tax_profiles"># cd&#40;dirname&#40;@__FILE__&#41;&#41; # hide
+ENV&#91;&quot;GKSwstype&quot;&#93; &#61; &quot;100&quot; # hide
+
+using ECHOAnalysis
+using DataFrames
+using PrettyTables
+using CSV
+using Microbiome
+using MultivariateStats
+using StatsPlots
+using MicrobiomePlots
+using BiobakeryUtils
+using Distances
+using Clustering
+
+outpath, figures &#61; notebookpaths&#33;&#40;@__FILE__&#41;
+
+tax &#61; load_taxonomic_profiles&#40;&#41;
+pretty_table&#40;first&#40;tax, 10&#41;&#41;</code></pre>
+<p>Some analysis of the fungi:</p>
+<pre><code class="language-@example tax_profiles">euk &#61; filter&#40;tax&#41; do row
+    occursin&#40;r&quot;^k__Eukaryota&quot;, row&#91;1&#93;&#41;
+end
+
+# remove columns that don&#39;t have any fungi
+euk &#61; euk&#91;map&#40;c-&gt;
+    &#33;&#40;eltype&#40;euk&#91;c&#93;&#41; &lt;: Number&#41; || sum&#40;euk&#91;c&#93;&#41; &gt; 0, names&#40;euk&#41;&#41;&#93;
+
+CSV.write&#40;joinpath&#40;outpath, &quot;euk.csv&quot;&#41;, euk&#41;
+# get a df with only species
+taxfilter&#33;&#40;euk&#41;
+CSV.write&#40;joinpath&#40;outpath, &quot;euk_sp.csv&quot;&#41;, euk&#41;
+pretty_table&#40;euk&#41;</code></pre>
+<p>Those numbers are out of 100... so really not much fungi at all, at least according to metaphlan. There are some other methods to look more specifically at fungi, which will have to wait for another time.</p>
+<h3>PCoA Plots</h3>
+<p>For an initial overview, let&#39;s look at the PCoA plots using BrayCurtis dissimilarity.</p>
+<h4>All Samples</h4>
+<pre><code class="language-@example tax_profiles">spec &#61; taxfilter&#40;tax&#41;
+phyla &#61; taxfilter&#40;tax, :phylum&#41;
+first&#40;spec, 10&#41; |&gt; pretty_table</code></pre>
+<p>Now I&#39;ll convert these to the <code>AbundanceTable</code> type from <code>Microbiome.jl</code> for easier maniplation, and do Total Sum Scaling &#40;convert to relative abundance&#41;.</p>
+<pre><code class="language-@example tax_profiles">abt &#61; abundancetable&#40;spec&#41;
+pabt &#61; abundancetable&#40;phyla&#41;
+relativeabundance&#33;&#40;abt&#41;
+relativeabundance&#33;&#40;pabt&#41;;</code></pre>
+<p>Using <code>pairwise</code> from <code>Distances.jl</code> and <code>MDS</code> from <code>MultivariateStats.jl</code>, we perform classical multidimensional scaling &#40;which is the same thing as principle coordinates analysis&#41;.</p>
+<pre><code class="language-@example tax_profiles">dm &#61; pairwise&#40;BrayCurtis&#40;&#41;, occurrences&#40;abt&#41;, dims&#61;2&#41;
+mds &#61; fit&#40;MDS, dm, distances&#61;true&#41;
+
+include&#40;&quot;pcoa_recipe.jl&quot;&#41; # this won&#39;t be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
+
+plot&#40;mds, primary&#61;false&#41;
+savefig&#40;joinpath&#40;figures, &quot;basic_pcoa.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/basic_pcoa.svg" alt="" /></p>
+<p>A scree plot can be used to visualize how many dimensions are necessary to explain the bulk of the variance.</p>
+<pre><code class="language-@example tax_profiles">function scree&#40;mds&#41;
+    ev &#61; eigvals&#40;mds&#41;
+    var_explained &#61; &#91;v / sum&#40;ev&#41; for v in ev&#93;
+    bar&#40;var_explained, primary&#61;false, line&#61;0&#41;
+end
+
+scree&#40;mds&#41;
+ylabel&#33;&#40;&quot;Variance explained&quot;&#41;
+xlabel&#33;&#40;&quot;Principal coordinate axis&quot;&#41;
+savefig&#40;joinpath&#40;figures, &quot;scree.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/scree.svg" alt="" /></p>
+<p>It looks like there are a couple of &quot;elbows&quot; in the plot, but nice to see that the first few axes explain the bulk of the variance. Later on, we&#39;ll try to determine what&#39;s driving those axes.</p>
+<p>Now let&#39;s put some decoration on that PCoA plot.</p>
+<h5>Sample type</h5>
+<p>First, children vs mothers. We can identify the difference by the &quot;C&quot; or &quot;M&quot; at the beginning of the sample ID.</p>
+<pre><code class="language-@example tax_profiles"># colors defined in &#96;startup.jl&#96;
+c &#61; &#91;startswith&#40;x, &quot;C&quot;&#41; ? color2&#91;1&#93; : color2&#91;2&#93; for x in samplenames&#40;abt&#41;&#93;
+
+p1 &#61; plot&#40;mds, marker&#61;3, line&#61;1, framestyle&#61;1,
+    color&#61;c, primary&#61;false&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;1&#93;, label&#61;&quot;kids&quot;, legend&#61;:topright&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;2&#93;, label&#61;&quot;moms&quot;, legend&#61;:topright&#41;
+title&#33;&#40;&quot;All samples taxonomic profiles&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-moms-kids.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-moms-kids.svg" alt="" /></p>
+<h5>Diversity</h5>
+<p>The <a href="@ref"><code>shannon</code></a> function can calculate Shannon diversity for the entire <code>AbundanceTable</code>.</p>
+<pre><code class="language-@example tax_profiles">p2 &#61; plot&#40;mds, marker&#61;3, line&#61;1,
+    zcolor&#61;shannon&#40;abt&#41;, primary &#61; false, color&#61;:plasma,
+    title&#61;&quot;All samples, shannon diversity&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-shannon.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-shannon.svg" alt="" /></p>
+<p>Neat&#33; It looks like both of the first 2 axes of variation are related to low vs high diversity.</p>
+<h5>Major Phyla</h5>
+<p>Because we were able to filter the original taxonomic profile by phyla, we can also plot the relative abundace of the major phyla. The ration of Bacteroidetes and Firmicutes are often visible in the first axes of variation in adult microbiomes.</p>
+<pre><code class="language-@example tax_profiles">bacteroidetes &#61; vec&#40;Matrix&#40;phyla&#91;phyla&#91;1&#93; .&#61;&#61; &quot;Bacteroidetes&quot;, 2:end&#93;&#41;&#41;
+firmicutes &#61; vec&#40;Matrix&#40;phyla&#91;phyla&#91;1&#93; .&#61;&#61; &quot;Firmicutes&quot;, 2:end&#93;&#41;&#41;
+
+p3 &#61; plot&#40;mds, marker&#61;3, line&#61;1,
+    zcolor&#61;bacteroidetes, primary &#61; false, color&#61;:plasma,
+    title&#61;&quot;All samples, Bacteroidetes&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-bacteroidetes.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-bacteroidetes.svg" alt="" /></p>
+<pre><code class="language-@example tax_profiles">p4 &#61; plot&#40;mds, marker&#61;3, line&#61;1,
+    zcolor&#61;firmicutes, primary &#61; false, color&#61;:plasma,
+    title&#61;&quot;All samples, Firmicutes&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-firmicutes.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-firmicutes.svg" alt="" /></p>
+<pre><code class="language-@example tax_profiles">plot&#40;p1, p2, p3, p4, marker &#61; 2, markerstroke&#61;0&#41;
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-grid.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-grid.svg" alt="" /></p>
+<p>So that balance is somewhat visible, but there&#39;s something else going on too.</p>
+<h4>Moms</h4>
+<p>There aren&#39;t a ton of moms in the samples yet, but let&#39;s just see what they look like on their own</p>
+<pre><code class="language-@example tax_profiles"># get a sub abundance table with only samples that start with &quot;M&quot;
+moms &#61; view&#40;abt, sites&#61;map&#40;s-&gt; occursin&#40;r&quot;^M&quot;, s&#91;:sample&#93;&#41; &amp;&amp; occursin&#40;&quot;F&quot;, s&#91;:sample&#93;&#41;,
+                            resolve_sampleID.&#40;sitenames&#40;abt&#41;&#41;&#41;&#41;
+
+# this will get us a boolean vector to filter further so we only have
+# one sample per mom.
+unique_moms &#61; let
+    subjects&#61; &#91;&#93;
+    unique &#61; Bool&#91;&#93;
+    for sample in sitenames&#40;moms&#41;
+        s &#61; resolve_sampleID&#40;sample&#41;
+        if &#33;in&#40;s&#91;:subject&#93;, subjects&#41;
+            push&#33;&#40;subjects, s&#91;:subject&#93;&#41;
+            push&#33;&#40;unique,true&#41;
+        else
+            push&#33;&#40;unique,false&#41;
+        end
+    end
+    unique
+end
+
+
+umoms &#61; view&#40;moms, sites&#61;unique_moms&#41;
+
+# get pairwise Bray Curtis distance matrix
+umoms_dm &#61; pairwise&#40;BrayCurtis&#40;&#41;, umoms, dims&#61;2&#41;
+
+# hierarchical clustering to put similar samples together
+umoms_hcl &#61; hclust&#40;umoms_dm, linkage&#61;:average, branchorder&#61;:optimal&#41;
+
+abundanceplot&#40;umoms, srt&#61;umoms_hcl.order, topabund&#61;11, title&#61;&quot;Moms, top 11 species&quot;,
+    xticks&#61;false, color&#61;color4&#39;&#41;
+savefig&#40;joinpath&#40;figures, &quot;moms-abundanceplot.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../figures/05-moms-abundanceplot.svg" alt="" /></p>
+<pre><code class="language-@example tax_profiles">abundanceplot&#40;umoms, srt&#61;umoms_hcl.order, topabund&#61;11, title&#61;&quot;Moms, top 11 species&quot;,
+    xticks&#61;false, color&#61;color4&#39;, legend&#61;false&#41;
+savefig&#40;joinpath&#40;figures, &quot;moms-abundanceplot-nolegend.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p>Those look like normal adult microbiomes.</p>
+<h4>Kids</h4>
+<p>Now, I&#39;ll focus on the kids in the group, the samples that were stored in Genotek and also remove duplicates &#40;since many of the kids are sampled more than once&#41;. The <a href="@ref"><code>firstkids</code></a> function identifies the first sample for each kid</p>
+<pre><code class="language-@example tax_profiles">
+kids &#61; view&#40;abt, sites&#61;firstkids&#40;resolve_sampleID.&#40;samplenames&#40;abt&#41;&#41;&#41;&#41;
+
+kids_dm &#61; pairwise&#40;BrayCurtis&#40;&#41;, kids&#41;
+kids_mds &#61; fit&#40;MDS, kids_dm, distances&#61;true&#41;
+
+p5 &#61; plot&#40;kids_mds, marker&#61;3, line&#61;1,
+    zcolor&#61;shannon&#40;kids&#41;, primary &#61; false, color&#61;:plasma,
+    title&#61;&quot;Kids, shannon diversity&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-kids-shannon.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-kids-shannon.svg" alt="" /></p>
+<p>Let&#39;s look at the phyla too:</p>
+<pre><code class="language-@example tax_profiles">
+pkids &#61; view&#40;pabt, sites&#61;firstkids&#40;resolve_sampleID.&#40;samplenames&#40;abt&#41;&#41;&#41;&#41;
+
+kids_bact &#61; vec&#40;collect&#40;occurrences&#40;view&#40;pkids, species&#61;occursin.&#40;&quot;Bact&quot;, speciesnames&#40;pkids&#41;&#41;&#41;&#41;&#41;&#41;
+kids_firm &#61; vec&#40;collect&#40;occurrences&#40;view&#40;pkids, species&#61;occursin.&#40;&quot;Firm&quot;, speciesnames&#40;pkids&#41;&#41;&#41;&#41;&#41;&#41;
+kids_act &#61; vec&#40;collect&#40;occurrences&#40;view&#40;pkids, species&#61;occursin.&#40;&quot;Actino&quot;, speciesnames&#40;pkids&#41;&#41;&#41;&#41;&#41;&#41;
+kids_proteo &#61; vec&#40;collect&#40;occurrences&#40;view&#40;pkids, species&#61;occursin.&#40;&quot;Proteo&quot;, speciesnames&#40;pkids&#41;&#41;&#41;&#41;&#41;&#41;
+
+plot&#40;
+    plot&#40;kids_mds, marker&#61;2, line&#61;1,
+        zcolor&#61;kids_bact, primary &#61; false, color&#61;:plasma,
+        title&#61;&quot;Kids, Bacteroidetes&quot;&#41;,
+    plot&#40;kids_mds, marker&#61;2, line&#61;1,
+        zcolor&#61;kids_firm, primary &#61; false, color&#61;:plasma,
+        title&#61;&quot;Kids, Firmicutes&quot;&#41;,
+    plot&#40;kids_mds, marker&#61;2, line&#61;1,
+        zcolor&#61;kids_act, primary &#61; false, color&#61;:plasma,
+        title&#61;&quot;Kids, Actinobacteria&quot;&#41;,
+    plot&#40;kids_mds, marker&#61;2, line&#61;1,
+        zcolor&#61;kids_proteo, primary &#61; false, color&#61;:plasma,
+        title&#61;&quot;Kids, Proteobacteria&quot;&#41;,
+    &#41;
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-kids-phyla.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-kids-phyla.svg" alt="" /></p>
+<p>In order to decorate these PCoA plots with other useful information, we need to return to the metadata. I&#39;ll use the &#91;<code>getfocusmetadata</code>&#93;@ref function.</p>
+<pre><code class="language-@example tax_profiles">samples &#61; resolve_sampleID.&#40;samplenames&#40;kids&#41;&#41;
+focusmeta &#61; getfocusmetadata&#40;datatoml&#91;&quot;tables&quot;&#93;&#91;&quot;metadata&quot;&#93;&#91;&quot;all&quot;&#93;&#91;&quot;path&quot;&#93;, samples&#41;
+focusmeta&#91;:shannon&#93; &#61; shannon&#40;kids&#41;
+focusmeta&#91;:ginisimpson&#93; &#61; ginisimpson&#40;kids&#41;
+
+var_explained, eigenvalues, pco_axes &#61; mds_axis_values&#40;kids_mds&#41;
+
+scatter&#40;pco_axes&#91;:, 1&#93;, focusmeta&#91;:correctedAgeDays&#93; ./365,
+    primary&#61;false, zcolor &#61; focusmeta&#91;:shannon&#93;, color&#61;:viridis&#41;
+ylabel&#33;&#40;&quot;Age &#40;years&#41;&quot;&#41;
+xlabel&#33;&#40;&quot;MDS1 &#40;&#36;&#40;round&#40;var_explained&#91;1&#93;, digits &#61; 2&#41;&#41;&#37;&#41;&quot;&#41;
+title&#33;&#40;&quot;All kids age / PCoA 1 / Alpha diversity&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-kids-age-pco1-diversity.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-kids-age-pco1-diversity.svg" alt="" /></p>
+<p>Here we can see that alpha diversity increases with age &#40;not too surprising&#41;. Another way to look at it is to plot the alpha diversity at each age:</p>
+<pre><code class="language-@example tax_profiles">focusmeta&#91;:floorAge&#93; &#61; &#91;ismissing&#40;x&#41; ? missing : Int&#40;floor&#40;x / 365&#41;&#41; for x in focusmeta&#91;:correctedAgeDays&#93;&#93;
+
+boxplot&#40;collect&#40;skipmissing&#40;focusmeta&#91;:floorAge&#93;&#41;&#41;, focusmeta&#91;:ginisimpson&#93;&#91;.&#33;ismissing.&#40;focusmeta&#91;:floorAge&#93;&#41;&#93;,
+    color&#61;:lightgrey, legend&#61;false, xlabel&#61;&quot;Age in Years&quot;, ylabel&#61;&quot;Alpha diversity &#40;GiniSimpson&#41;&quot;&#41;
+savefig&#40;joinpath&#40;figures, &quot;kids-alpha-diversity-box.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/kids-alpha-diversity-box.svg" alt="" /></p>
+<pre><code class="language-@example tax_profiles">kids_hcl &#61; hclust&#40;kids_dm, linkage&#61;:average, branchorder&#61;:optimal&#41;
+
+abundanceplot&#40;kids, srt &#61; kids_hcl.order,
+    title&#61;&quot;Unique kids, top 10 species&quot;,
+    xticks&#61;false, color&#61;color4&#39;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;kids-abundanceplot.svg&quot;&#41;&#41;; nothing # hide
+
+abundanceplot&#40;kids, srt &#61; kids_hcl.order,
+    title&#61;&quot;Unique kids, top 10 species&quot;,
+    xticks&#61;false, color&#61;color4&#39;, legend&#61;false&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;kids-abundanceplot-nolegend.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/kids-abundanceplot.svg" alt="" /> <img src="../../data/figures/05/kids-abundanceplot-nolegend.svg" alt="" /></p>
+<p>These also look like adult microbiomes, with a smattering of young-kids microbes thrown in for good measure &#40;eg <em>Bifidobacterium longum</em>&#41;.</p>
+<p>We can also annotate this plot with the age of the kids</p>
+<pre><code class="language-@example tax_profiles">plot&#40;
+    abundanceplot&#40;kids, srt &#61; kids_hcl.order, title&#61;&quot;Kids, top 10 species&quot;,
+        xticks&#61;false, color&#61;color4&#39;, legend&#61;false&#41;,
+    heatmap&#40;collect&#40;Float64&#91;ismissing&#40;x&#41; ? 0 : x / 365 for x in focusmeta&#91;:correctedAgeDays&#93;&#91;kids_hcl.order&#93;&#93;&#39;&#41;,
+        xticks&#61;false, yticks&#61;false, color&#61;:PuBu, colorbar&#61;false&#41;,
+    layout &#61; grid&#40;2,1,heights&#61;&#91;0.9, 0.1&#93;&#41;
+    &#41;
+savefig&#40;joinpath&#40;figures, &quot;kids-abundanceplot-age.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/kids-abundanceplot-age.svg" alt="" /></p>
+<pre><code class="language-@example tax_profiles">x &#61; pco_axes&#91;.&#33;ismissing.&#40;focusmeta&#91;:correctedAgeDays&#93;&#41;, 1&#93;
+y &#61; pco_axes&#91;.&#33;ismissing.&#40;focusmeta&#91;:correctedAgeDays&#93;&#41;, 2&#93;
+
+scatter&#40;x, y, zcolor&#61;focusmeta&#91;.&#33;ismissing.&#40;focusmeta&#91;:correctedAgeDays&#93;&#41;, :correctedAgeDays&#93; ./365,
+    primary&#61;false, color&#61;:PuBu, title &#61; &quot;Unique Kids Taxonomic Profiles, Age&quot;&#41;
+xlabel&#33;&#40;&quot;MDS1 &#40;&#36;&#40;round&#40;var_explained&#91;1&#93;, digits &#61; 2&#41;&#41;&#37;&#41;&quot;&#41;
+ylabel&#33;&#40;&quot;MDS2 &#40;&#36;&#40;round&#40;var_explained&#91;2&#93;, digits &#61; 2&#41;&#41;&#37;&#41;&quot;&#41;
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-mds-kids-age.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-mds-kids-age.svg" alt="" /></p>
+<p>Here&#39; it looks like the outlying tail is the youngest kids. Again, this makes sense. We know that infants microbiomes change quite a bit over the first years of life.</p>
+<p>Let&#39;s focus on just the youngest kids:</p>
+<pre><code class="language-@example tax_profiles">youngkids &#61; map&#40;x-&gt; ismissing&#40;x&#41; ? false : x/365 &lt; 2, focusmeta&#91;:correctedAgeDays&#93;&#41;
+
+ykids &#61; view&#40;kids, sites &#61; youngkids&#41;
+ykids_dm &#61; pairwise&#40;BrayCurtis&#40;&#41;, ykids&#41;
+ykids_mds &#61; fit&#40;MDS, ykids_dm, distances&#61;true&#41;
+
+ykids_hcl &#61; hclust&#40;ykids_dm, linkage&#61;:average, branchorder&#61;:optimal&#41;
+abundanceplot&#40;ykids, srt &#61; ykids_hcl.order, topabund&#61;11, title&#61;&quot;Kids under 2, top 10 species&quot;,
+    xticks&#61;false, color&#61;color4&#39;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;young-kids-abundanceplot.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/young-kids-abundanceplot.svg" alt="" /></p>
+<h3>Other Metadata Overviews</h3>
+<p>Eventually, we&#39;ll want to do statistical tests for associations, but for now, just a bit more exploratory visualization.</p>
+<h4>Brain Volume Quartiles</h4>
+<pre><code class="language-@example tax_profiles">using StatsBase
+
+function colorquartile&#40;arr, clrs&#41;
+    &#40;q1, q2, q3&#41; &#61; percentile&#40;collect&#40;skipmissing&#40;arr&#41;&#41;, &#91;25, 50, 75&#93;&#41;
+    length&#40;clrs&#41; &gt; 4 ? mis &#61; colorant&quot;gray&quot; : clrs&#91;5&#93;
+    map&#40;arr&#41; do x
+        ismissing&#40;x&#41; &amp;&amp; return mis
+        x &lt; q1 &amp;&amp; return clrs&#91;1&#93;
+        x &lt; q2 &amp;&amp; return clrs&#91;2&#93;
+        x &lt; q3 &amp;&amp; return clrs&#91;3&#93;
+        return clrs&#91;4&#93;
+    end
+end
+
+scatter&#40;pco_axes&#91;:, 1&#93;, focusmeta&#91;:correctedAgeDays&#93; ./ 365,
+    color&#61;colorquartile&#40;focusmeta&#91;:grey_matter_volume&#93;, color2&#91;&#91;1,2,3,4,end&#93;&#93;&#41;,
+    markersize&#61;5, primary&#61;false&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;1&#93;, label&#61;&quot;25th percentile&quot;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;2&#93;, label&#61;&quot;50th percentile&quot;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;3&#93;, label&#61;&quot;75th percentile&quot;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;4&#93;, label&#61;&quot;99th percentile&quot;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;end&#93;, label&#61;&quot;missing&quot;, legend&#61;:topleft&#41;
+xlabel&#33;&#40;&quot;MDS1 &#40;&#36;&#40;round&#40;var_explained&#91;1&#93;, digits &#61; 2&#41;&#41;&#37;&#41;&quot;&#41;
+ylabel&#33;&#40;&quot;Age &#40;years&#41;&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;kids-brain-quartiles.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/kids-brain-quartiles.svg" alt="" /></p>
+<h4>Birth type</h4>
+<p>Birth type &#40;vaginal or cesarean&#41; is known to have a substantial affect on kids&#39; microbiomes. Let&#39;s see where that falls in our data:</p>
+<pre><code class="language-@example tax_profiles">plot&#40;kids_mds, marker&#61;3, line&#61;1,
+    color&#61;metacolor&#40;focusmeta&#91;:birthType&#93;, color2&#91;4:5&#93;, missing_color&#61;color2&#91;end&#93;&#41;,
+    title&#61;&quot;Kids, BirthType&quot;, primary&#61;false&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;4&#93;, label&#61;unique&#40;focusmeta&#91;:birthType&#93;&#41;&#91;1&#93;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;5&#93;, label&#61;unique&#40;focusmeta&#91;:birthType&#93;&#41;&#91;2&#93;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color2&#91;end&#93;, label&#61;&quot;missing&quot;, legend&#61;:bottomleft&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-kids-birth.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-kids-birth.svg" alt="" /></p>
+<h4>Breastfeeding</h4>
+<p>Information about braestfeeding is spread across 2 different parent tables. <code>BreastfeedingDone</code> indicates that the child is no longer breastfeeding, and has a lot of information about formula use, solid food etc, <code>BreastfeedingStill</code> is for kids that are still breastfeeding, and has different information.</p>
+<p>I&#39;d like to distill all of this into:</p>
+<ol>
+<li><p>breastfeeding: <code>true</code>/<code>false</code>,</p>
+</li>
+<li><p>formula: <code>true</code>/<code>false</code></p>
+</li>
+</ol>
+<p>Both of these might be <code>true</code>. In principle, they shouldn&#39;t both be <code>false</code>.</p>
+<p>I defined <a href="@ref"><code>breastfeeding</code></a> and <a href="@ref"><code>formulafeeding</code></a> to calculate these values.</p>
+<pre><code class="language-@example tax_profiles">focusmeta&#91;:breastfed&#93; &#61; breastfeeding.&#40;eachrow&#40;focusmeta&#41;&#41;
+focusmeta&#91;:formulafed&#93; &#61; formulafeeding.&#40;eachrow&#40;focusmeta&#41;&#41;
+
+bfcolor &#61; let bf &#61; &#91;&#93;
+    for row in eachrow&#40;focusmeta&#41;
+        if row&#91;:breastfed&#93; &amp;&amp; row&#91;:formulafed&#93;
+            push&#33;&#40;bf, color1&#91;1&#93;&#41;
+        elseif row&#91;:breastfed&#93;
+            push&#33;&#40;bf, color1&#91;2&#93;&#41;
+        elseif row&#91;:formulafed&#93;
+            push&#33;&#40;bf, color1&#91;3&#93;&#41;
+        else
+            push&#33;&#40;bf, color1&#91;end&#93;&#41;
+        end
+    end
+    bf
+end
+
+plot&#40;kids_mds, marker&#61;3, line&#61;1,
+    color&#61;bfcolor,
+    title&#61;&quot;Kids, Breastfeeding&quot;, primary&#61;false&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color1&#91;2&#93;, label&#61;&quot;breastfed&quot;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color1&#91;3&#93;, label&#61;&quot;formula fed&quot;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color1&#91;1&#93;, label&#61;&quot;both&quot;&#41;
+scatter&#33;&#40;&#91;&#93;,&#91;&#93;, color&#61;color1&#91;end&#93;, label&#61;&quot;missing&quot;, legend&#61;:bottomleft&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;taxonomic-profiles-kids-breastfeeding.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/05/taxonomic-profiles-kids-breastfeeding.svg" alt="" /></p>
+<p>Nothing obvious from this level, but that&#39;s not necessarily surprising. We need stats&#33;</p>
+<pre><code class="language-@docs">load_taxonomic_profiles
+load_metadata
+shannon
+getfocusmetadata
+breastfeeding
+formulafeeding</code></pre>
+
+
+
+          <HR/>
+          <div class="footer"><p>
+          Published from <a href="05-mgx-taxonomic-profiles.md">05-mgx-taxonomic-profiles.md</a> using
+          <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
+           on 2019-06-28.
+          <p></div>
+
+
+        </div>
+      </div>
+    </div>
+  </BODY>
+</HTML>

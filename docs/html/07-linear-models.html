@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<HTML lang = "en">
+<HEAD>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  
+  
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: { equationNumbers: { autoNumber: "AMS" } }
+    });
+  </script>
+
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+  
+<style>
+pre.hljl {
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    overflow-x: auto;
+    color: rgb(68,68,68); background-color: rgb(251,251,251); }
+pre.hljl > span.hljl-t { }
+pre.hljl > span.hljl-w { }
+pre.hljl > span.hljl-e { }
+pre.hljl > span.hljl-eB { }
+pre.hljl > span.hljl-o { }
+pre.hljl > span.hljl-k { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kc { color: rgb(59,151,46); font-style: italic; }
+pre.hljl > span.hljl-kd { color: rgb(214,102,97); font-style: italic; }
+pre.hljl > span.hljl-kn { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kp { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kr { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-kt { color: rgb(148,91,176); font-weight: bold; }
+pre.hljl > span.hljl-n { }
+pre.hljl > span.hljl-na { }
+pre.hljl > span.hljl-nb { }
+pre.hljl > span.hljl-nbp { }
+pre.hljl > span.hljl-nc { }
+pre.hljl > span.hljl-ncB { }
+pre.hljl > span.hljl-nd { color: rgb(214,102,97); }
+pre.hljl > span.hljl-ne { }
+pre.hljl > span.hljl-neB { }
+pre.hljl > span.hljl-nf { color: rgb(66,102,213); }
+pre.hljl > span.hljl-nfm { color: rgb(66,102,213); }
+pre.hljl > span.hljl-np { }
+pre.hljl > span.hljl-nl { }
+pre.hljl > span.hljl-nn { }
+pre.hljl > span.hljl-no { }
+pre.hljl > span.hljl-nt { }
+pre.hljl > span.hljl-nv { }
+pre.hljl > span.hljl-nvc { }
+pre.hljl > span.hljl-nvg { }
+pre.hljl > span.hljl-nvi { }
+pre.hljl > span.hljl-nvm { }
+pre.hljl > span.hljl-l { }
+pre.hljl > span.hljl-ld { color: rgb(148,91,176); font-style: italic; }
+pre.hljl > span.hljl-s { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sa { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sb { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sc { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sd { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sdC { color: rgb(201,61,57); }
+pre.hljl > span.hljl-se { color: rgb(59,151,46); }
+pre.hljl > span.hljl-sh { color: rgb(201,61,57); }
+pre.hljl > span.hljl-si { }
+pre.hljl > span.hljl-so { color: rgb(201,61,57); }
+pre.hljl > span.hljl-sr { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ss { color: rgb(201,61,57); }
+pre.hljl > span.hljl-ssB { color: rgb(201,61,57); }
+pre.hljl > span.hljl-nB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nbB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nfB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nh { color: rgb(59,151,46); }
+pre.hljl > span.hljl-ni { color: rgb(59,151,46); }
+pre.hljl > span.hljl-nil { color: rgb(59,151,46); }
+pre.hljl > span.hljl-noB { color: rgb(59,151,46); }
+pre.hljl > span.hljl-oB { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-ow { color: rgb(102,102,102); font-weight: bold; }
+pre.hljl > span.hljl-p { }
+pre.hljl > span.hljl-c { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-ch { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cm { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cp { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cpB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-cs { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-csB { color: rgb(153,153,119); font-style: italic; }
+pre.hljl > span.hljl-g { }
+pre.hljl > span.hljl-gd { }
+pre.hljl > span.hljl-ge { }
+pre.hljl > span.hljl-geB { }
+pre.hljl > span.hljl-gh { }
+pre.hljl > span.hljl-gi { }
+pre.hljl > span.hljl-go { }
+pre.hljl > span.hljl-gp { }
+pre.hljl > span.hljl-gs { }
+pre.hljl > span.hljl-gsB { }
+pre.hljl > span.hljl-gt { }
+</style>
+
+
+
+  <style type="text/css">
+  @font-face {
+  font-style: normal;
+  font-weight: 300;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-style: normal;
+  font-weight: 600;
+}
+html {
+  font-family: sans-serif; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+body {
+  margin: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+audio,
+canvas,
+progress,
+video {
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+[hidden],
+template {
+  display: none;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+b,
+strong {
+  font-weight: bold;
+}
+dfn {
+  font-style: italic;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+mark {
+  background: #ff0;
+  color: #000;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+figure {
+  margin: 1em 40px;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+pre {
+  overflow: auto;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+button {
+  overflow: visible;
+}
+button,
+select {
+  text-transform: none;
+}
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+input {
+  line-height: normal;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+input[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box; /* 2 */
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend {
+  border: 0; /* 1 */
+  padding: 0; /* 2 */
+}
+textarea {
+  overflow: auto;
+}
+optgroup {
+  font-weight: bold;
+}
+table {
+  font-family: monospace, monospace;
+  font-size : 0.8em;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,
+th {
+  padding: 0;
+}
+thead th {
+    border-bottom: 1px solid black;
+    background-color: white;
+}
+tr:nth-child(odd){
+  background-color: rgb(248,248,248);
+}
+
+
+/*
+* Skeleton V2.0.4
+* Copyright 2014, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 12/29/2014
+*/
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box; }
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0; }
+}
+@media (min-width: 550px) {
+  .container {
+    width: 80%; }
+  .column,
+  .columns {
+    margin-left: 4%; }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0; }
+
+  .one.column,
+  .one.columns                    { width: 4.66666666667%; }
+  .two.columns                    { width: 13.3333333333%; }
+  .three.columns                  { width: 22%;            }
+  .four.columns                   { width: 30.6666666667%; }
+  .five.columns                   { width: 39.3333333333%; }
+  .six.columns                    { width: 48%;            }
+  .seven.columns                  { width: 56.6666666667%; }
+  .eight.columns                  { width: 65.3333333333%; }
+  .nine.columns                   { width: 74.0%;          }
+  .ten.columns                    { width: 82.6666666667%; }
+  .eleven.columns                 { width: 91.3333333333%; }
+  .twelve.columns                 { width: 100%; margin-left: 0; }
+
+  .one-third.column               { width: 30.6666666667%; }
+  .two-thirds.column              { width: 65.3333333333%; }
+
+  .one-half.column                { width: 48%; }
+
+  /* Offsets */
+  .offset-by-one.column,
+  .offset-by-one.columns          { margin-left: 8.66666666667%; }
+  .offset-by-two.column,
+  .offset-by-two.columns          { margin-left: 17.3333333333%; }
+  .offset-by-three.column,
+  .offset-by-three.columns        { margin-left: 26%;            }
+  .offset-by-four.column,
+  .offset-by-four.columns         { margin-left: 34.6666666667%; }
+  .offset-by-five.column,
+  .offset-by-five.columns         { margin-left: 43.3333333333%; }
+  .offset-by-six.column,
+  .offset-by-six.columns          { margin-left: 52%;            }
+  .offset-by-seven.column,
+  .offset-by-seven.columns        { margin-left: 60.6666666667%; }
+  .offset-by-eight.column,
+  .offset-by-eight.columns        { margin-left: 69.3333333333%; }
+  .offset-by-nine.column,
+  .offset-by-nine.columns         { margin-left: 78.0%;          }
+  .offset-by-ten.column,
+  .offset-by-ten.columns          { margin-left: 86.6666666667%; }
+  .offset-by-eleven.column,
+  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }
+
+  .offset-by-one-third.column,
+  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }
+  .offset-by-two-thirds.column,
+  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }
+
+  .offset-by-one-half.column,
+  .offset-by-one-half.columns     { margin-left: 52%; }
+
+}
+html {
+  font-size: 62.5%; }
+body {
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222; }
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300; }
+h1 { font-size: 3.6rem; line-height: 1.2;  letter-spacing: -.1rem;}
+h2 { font-size: 3.4rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.2rem; line-height: 1.3;  letter-spacing: -.1rem; }
+h4 { font-size: 2.8rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 2.4rem; line-height: 1.5;  letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+p {
+  margin-top: 0; }
+a {
+  color: #1EAEDB; }
+a:hover {
+  color: #0FA0CE; }
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; }
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  color: #333;
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB; }
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+  height: 38px;
+  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box; }
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none; }
+textarea {
+  min-height: 65px;
+  padding-top: 6px;
+  padding-bottom: 6px; }
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #33C3F0;
+  outline: 0; }
+label,
+legend {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600; }
+fieldset {
+  padding: 0;
+  border-width: 0; }
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline; }
+label > .label-body {
+  display: inline-block;
+  margin-left: .5rem;
+  font-weight: normal; }
+ul {
+  list-style: circle; }
+ol {
+  list-style: decimal; }
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 1.5rem 0 1.5rem 3rem;
+  font-size: 90%; }
+li > p {margin : 0;}
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+  padding-left: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0; }
+button,
+.button {
+  margin-bottom: 1rem; }
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 1.5rem; }
+pre,
+blockquote,
+dl,
+figure,
+table,
+p,
+ul,
+ol,
+form {
+  margin-bottom: 1.0rem; }
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
+.u-max-full-width {
+  max-width: 100%;
+  box-sizing: border-box; }
+.u-pull-right {
+  float: right; }
+.u-pull-left {
+  float: left; }
+hr {
+  margin-top: 3rem;
+  margin-bottom: 3.5rem;
+  border-width: 0;
+  border-top: 1px solid #E1E1E1; }
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+pre.hljl {
+  margin: 0 0 10px;
+  display: block;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding : 5px;
+}
+
+pre.output {
+  background: #ffffff;
+}
+
+pre.code {
+  background: #ffffff;
+}
+
+pre.julia-error {
+  color : red
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
+
+@media (min-width: 400px) {}
+@media (min-width: 550px) {}
+@media (min-width: 750px) {}
+@media (min-width: 1000px) {}
+@media (min-width: 1200px) {}
+
+h1.title {margin-top : 20px}
+img {max-width : 100%}
+div.title {text-align: center;}
+
+  </style>
+
+
+
+</HEAD>
+  <BODY>
+    <div class ="container">
+      <div class = "row">
+        <div class = "col-md-12 twelve columns">
+
+          <div class="title">
+            
+            
+            
+          </div>
+
+          <h1>Linear Models</h1>
+<p>Now that we&#39;ve done omnibus tests, it&#39;s time to look at per-feature tests with multivariate linear models.</p>
+<pre><code class="language-@example glm">cd&#40;dirname&#40;@__FILE__&#41;&#41; # hide
+ENV&#91;&quot;GKSwstype&quot;&#93; &#61; &quot;100&quot; # hide
+
+using ECHOAnalysis
+using DataFrames
+using PrettyTables
+using Statistics
+using Distances
+using Microbiome
+using MultivariateStats
+using StatsPlots
+using MicrobiomePlots
+using BiobakeryUtils
+using Clustering
+using CSV
+
+outpath, figures &#61; notebookpaths&#33;&#40;@__FILE__&#41;
+
+tax &#61; load_taxonomic_profiles&#40;&#41;
+taxfilter&#33;&#40;tax, :species&#41;
+abt &#61; abundancetable&#40;tax&#41;
+relativeabundance&#33;&#40;abt&#41;
+kids_abt &#61; view&#40;abt, sites&#61;firstkids&#40;samplenames&#40;abt&#41;&#41;&#41;
+
+focusmeta &#61; load_metadata&#40;datatoml, samples&#61;resolve_sampleID.&#40;samplenames&#40;kids_abt&#41;&#41;&#41;</code></pre>
+<p>First, we&#39;ll use Maaslin2 from the huttenhower lab. To do this, we need to first save the abundance table as a feature/sample table, and the metadata we want to include in the model as a sample/feature table.</p>
+<p>Maaslin2 doesn&#39;t play nice with missing categorical data, so I&#39;ll manually remove samples that don&#39;t have <code>birthType</code> information</p>
+<pre><code class="language-@example glms">species &#61; DataFrame&#40;species&#61;speciesnames&#40;kids_abt&#41;&#41;
+
+let occ &#61; occurrences&#40;kids_abt&#41;
+    for &#40;i, sample&#41; in enumerate&#40;samplenames&#40;kids_abt&#41;&#41;
+        ismissing&#40;focusmeta&#91;i, :birthType&#93;&#41; &amp;&amp; continue
+        # Make a column for each sample
+        species&#91;Symbol&#40;sample&#41;&#93; &#61; occ&#91;:, i&#93;
+    end
+end</code></pre>
+<p>Now we&#39;ll subset the metadata DataFrame to include a subset of the metadata.</p>
+<pre><code class="language-@example glms"># add a sample id column
+focusmeta&#91;:sample&#93; &#61; collect&#40;samplenames&#40;kids_abt&#41;&#41;
+focusmeta&#91;:breastfed&#93; &#61; breastfeeding.&#40;eachrow&#40;focusmeta&#41;&#41;
+filter&#33;&#40;row-&gt; &#33;ismissing&#40;row&#91;:birthType&#93;&#41;, focusmeta&#41;
+
+# view&#40;&#41; does not create a new dataframe, but allows us to subset it.
+whitematterdf &#61; view&#40;focusmeta, &#91;:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType&#93;&#41;
+
+# Maaslin2 also wants tab separated values
+CSV.write&#40;joinpath&#40;outpath, &quot;kids_species_abundance.tsv&quot;&#41;, delim&#61;&#39;\t&#39;, species&#41;
+CSV.write&#40;joinpath&#40;outpath, &quot;kids_white_matter.tsv&quot;&#41;, delim&#61;&#39;\t&#39;, whitematterdf&#41;</code></pre>
+<p>Now, we&#39;ll run Maaslin2. from the commandline. You need to have Maaslin2 installed for this to work - <a href="https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation">see here</a></p>
+<pre><code class="language-@example glms">using RCall
+
+R&quot;library&#40;Maaslin2&#41;&quot;
+let version &#61; R&quot;packageVersion&#40;&#39;Maaslin2&#39;&#41;&quot;
+    @show version
+end</code></pre>
+<pre><code class="language-@example glms">R&quot;&quot;&quot;
+fit_data &lt;- Maaslin2&#40;
+            &#36;&#40;joinpath&#40;outpath, &quot;kids_species_abundance.tsv&quot;&#41;&#41;,
+            &#36;&#40;joinpath&#40;outpath, &quot;kids_white_matter.tsv&quot;&#41;&#41;,
+            &#36;&#40;joinpath&#40;outpath, &quot;species__wm_age_ses_bf_birth&quot;&#41;&#41;&#41;
+&quot;&quot;&quot;</code></pre>
+<p>We can do this with some other brain data as well:</p>
+<pre><code class="language-@example glms">greymatterdf &#61; view&#40;focusmeta, &#91;:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType&#93;&#41;
+CSV.write&#40;joinpath&#40;outpath, &quot;kids_grey_matter.tsv&quot;&#41;, delim&#61;&#39;\t&#39;, greymatterdf&#41;
+
+R&quot;&quot;&quot;
+fit_data &lt;- Maaslin2&#40;
+            &#36;&#40;joinpath&#40;outpath, &quot;kids_species_abundance.tsv&quot;&#41;&#41;,
+            &#36;&#40;joinpath&#40;outpath, &quot;kids_grey_matter.tsv&quot;&#41;&#41;,
+            &#36;&#40;joinpath&#40;outpath, &quot;species__gm_age_ses_bf_birth&quot;&#41;&#41;&#41;
+&quot;&quot;&quot;
+
+csfdf &#61; view&#40;focusmeta, &#91;:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType&#93;&#41;
+CSV.write&#40;joinpath&#40;outpath, &quot;kids_csf.tsv&quot;&#41;, delim&#61;&#39;\t&#39;, csfdf&#41;
+
+R&quot;&quot;&quot;
+fit_data &lt;- Maaslin2&#40;
+             &#36;&#40;joinpath&#40;outpath, &quot;kids_species_abundance.tsv&quot;&#41;&#41;,
+             &#36;&#40;joinpath&#40;outpath, &quot;kids_csf.tsv&quot;&#41;&#41;,
+             &#36;&#40;joinpath&#40;outpath, &quot;species__csf_age_ses_bf_birth&quot;&#41;&#41;&#41;
+&quot;&quot;&quot;</code></pre>
+<h2>Cognitive Assessments</h2>
+<p>There are a number of age-appropriate cognitive assessments that our collaborators are collecting for the kids. All of these have been normalized in a similar way to IQ, that is, they are scaled to the mean &#40;100&#41; and standard deviation &#40;10&#41; of the population of kids that age.</p>
+<ul>
+<li><p>Mullen is for kids &lt; 4 years old</p>
+</li>
+<li><p>Bayley&#39;s is used for some kids under 2 years old</p>
+</li>
+<li><p>WSSPI is for 4yo &lt;&#61; kids &lt; 6yo</p>
+</li>
+<li><p>WISC is for kids older than 6</p>
+</li>
+</ul>
+<p>So we&#39;ll create a new column that contains the composite score for each kids, regardless of which version of the test they took.</p>
+<pre><code class="language-@example glm"># Bayleys doesn&#39;t have a compositve score calculated, but we can get it:
+focusmeta&#91;:bayleysComposite&#93; &#61; map&#40;row-&gt;
+    mean&#40;&#91;row&#91;:languageComposite&#93;, row&#91;:motorComposite&#93;&#93;&#41;,
+    eachrow&#40;focusmeta&#41;&#41;
+
+focusmeta&#91;:cogScore&#93; &#61; Vector&#123;Union&#123;Float64,Missing&#125;&#125;&#40;missing, size&#40;focusmeta,1&#41;&#41;
+focusmeta&#91;:cogAssessment&#93; &#61; Vector&#123;Union&#123;String,Missing&#125;&#125;&#40;missing, size&#40;focusmeta,1&#41;&#41;
+
+map&#40;enumerate&#40;eachrow&#40;focusmeta&#41;&#41;&#41; do &#40;i, row&#41;
+    # get just the cognitive assessment columns
+    cogs &#61; row&#91;&#91;
+                :mullen_EarlyLearningComposite,
+                :fullScaleComposite, # this is from WSSPI
+                :FSIQ_Composite, # this is from WISC
+                :bayleysComposite
+            &#93;&#93;
+    # if there&#39;s no score, skip row
+    all&#40;ismissing, cogs&#41; &amp;&amp; return
+    # otherwise, get the first non-missing value &#40;no timepoints have multiple scores&#41;
+    col &#61; findall&#40;&#33;ismissing, cogs&#41;
+    let assessment &#61; col&#91;1&#93;
+        if assessment &#61;&#61; :mullen_EarlyLearningComposite
+            assessment &#61; &quot;Mullen&quot;
+        elseif assessment &#61;&#61; :fullScaleComposite
+            assessment &#61; &quot;WSSPI&quot;
+        elseif assessment &#61;&#61; :FSIQ_Composite
+            assessment &#61; &quot;WISC&quot;
+        else assessment &#61;&#61; :bayleysComposite
+            assessment &#61; &quot;Bayleys&quot;
+        end
+
+        focusmeta&#91;i, :cogAssessment&#93; &#61; assessment
+        focusmeta&#91;i, :cogScore&#93; &#61; cogs&#91;col&#91;1&#93;&#93;
+    end
+end
+
+describe&#40;focusmeta&#91;:cogScore&#93;&#41;
+describe&#40;focusmeta&#91;:cogAssessment&#93;&#41;</code></pre>
+<pre><code class="language-@example glm">@df focusmeta scatter&#40;:correctedAgeDays ./ 365, :cogScore,
+        group &#61; map&#40;a-&gt; ismissing&#40;a&#41; ? &quot;Missing&quot; : a, :cogAssessment&#41;,
+        legend &#61; :bottomright, color&#61;color1&#39;&#41;
+title&#33;&#40;&quot;Cognitive Assessment Composite Scores&quot;&#41;
+xlabel&#33;&#40;&quot;Age &#40;years&#41;&quot;&#41;
+ylabel&#33;&#40;&quot;Composite Score&quot;&#41;
+
+savefig&#40;joinpath&#40;figures, &quot;cognitive-scores.svg&quot;&#41;&#41;; nothing # hide</code></pre>
+<p><img src="../../data/figures/07/cognitive-scores.svg" alt="" /></p>
+<pre><code class="language-@example glm">cogdf &#61; view&#40;focusmeta, &#91;:sample, :cogScore, :motherSES, :breastfed, :birthType&#93;&#41;
+CSV.write&#40;joinpath&#40;outpath, &quot;kids_cog.tsv&quot;&#41;, delim&#61;&#39;\t&#39;, cogdf&#41;
+
+R&quot;&quot;&quot;
+Maaslin2&#40;
+     &#36;&#40;joinpath&#40;outpath, &quot;kids_species_abundance.tsv&quot;&#41;&#41;,
+     &#36;&#40;joinpath&#40;outpath, &quot;kids_cog.tsv&quot;&#41;&#41;,
+     &#36;&#40;joinpath&#40;outpath, &quot;species__cog_age_ses_bf_birth&quot;&#41;&#41;&#41;
+&quot;&quot;&quot;
+</code></pre>
+
+
+
+          <HR/>
+          <div class="footer"><p>
+          Published from <a href="07-linear-models.md">07-linear-models.md</a> using
+          <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
+           on 2019-06-28.
+          <p></div>
+
+
+        </div>
+      </div>
+    </div>
+  </BODY>
+</HTML>
