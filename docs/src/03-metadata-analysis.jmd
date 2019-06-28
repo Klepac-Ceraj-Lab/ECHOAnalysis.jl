@@ -38,13 +38,15 @@ sampleinfo = @linq allmeta |>
 histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
+```
 
+```julia
 # make directory if it doesn't exist
 isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"])
 savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png"))
 ```
 
-![](data/figures/03-samples-per-subject.png)
+![](../../data/figures/03-samples-per-subject.png)
 
 Wow - there are a couple of subjects that have a lot of samples.
 Taking a look to see what's going on there:
@@ -99,5 +101,5 @@ that subject.
 samples = map(row-> (subject=row[:studyID], timepoint=row[:timepoint]), eachrow(mgxsamples))
 focus = getfocusmetadata(allmeta, samples)
 sort!(focus, [:subject, :timepoint])
-pretty_table(focus)
+focus[rand(nrow(focus)) .< 10 / nrow(focus), :])
 ```
