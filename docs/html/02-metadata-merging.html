@@ -665,134 +665,698 @@ div.title {text-align: center;}
 <p>In the previous notebook, we generated separate metadata files for different tables in the FilemakerPro database. Now, we&#39;ll get these into a more usable format for analysis.</p>
 <h2>Accessing TOML data in julia</h2>
 <p>Information about the locations of data are found in <code>data/data.toml</code>. Parsing this file gives a set of nested key:value pairs.</p>
-<pre><code class="language-@example metadata"># cd&#40;dirname&#40;@__FILE__&#41;&#41;
-using ECHOAnalysis # hide</code></pre>
-<pre><code class="language-@example metadata">using Pkg.TOML: parsefile
-files &#61; parsefile&#40;&quot;../../data/data.toml&quot;&#41;
-println.&#40;keys&#40;files&#41;&#41;</code></pre>
-<pre><code class="language-@example metadata">@show files&#91;&quot;description&quot;&#93;</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@show</span><span class='hljl-t'> </span><span class='hljl-nf'>pwd</span><span class='hljl-p'>()</span>
+</pre>
+
+
+<pre class="output">
+pwd&#40;&#41; &#61; &quot;/home/kevin/repos/echo_analysis&quot;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># cd(dirname(@__FILE__))</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ECHOAnalysis</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: Failed to precompile ECHOAnalysis &#91;39b5b81a-5017-403f-bb48-824a42db2b1c&#93; to /home/kevin/.julia/compiled/v1.1/ECHOAnalysis/kIyeq.ji.
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Pkg</span><span class='hljl-oB'>.</span><span class='hljl-n'>TOML</span><span class='hljl-oB'>:</span><span class='hljl-t'> </span><span class='hljl-n'>parsefile</span><span class='hljl-t'>
+</span><span class='hljl-n'>files</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>parsefile</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;../../data/data.toml&quot;</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: SystemError: opening file &quot;../../data/data.toml&quot;: No such file or directory
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>println</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>keys</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: files not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@show</span><span class='hljl-t'> </span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;description&quot;</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: files not defined
+</pre>
+
+
 <p>The metadata tables are found under <code>&#91;&quot;tables&quot;&#93;&#91;&quot;metadata&quot;&#93;</code></p>
 <h2>Long form data</h2>
 <p>The <code>metascrubjl</code> script generates a table in long-form, meaning each metadatum has its own row.</p>
-<pre><code class="language-@example metadata">using CSV
-using DataFrames
-using PrettyTables
 
-allmeta &#61; CSV.File&#40;files&#91;&quot;tables&quot;&#93;&#91;&quot;metadata&quot;&#93;&#91;&quot;filemakerdb&quot;&#93;&#91;&quot;path&quot;&#93;&#41; |&gt; DataFrame
 
-# show ~10 random rows
-allmeta&#91;rand&#40;nrow&#40;allmeta&#41;&#41; .&lt; 10 / nrow&#40;allmeta&#41;, :&#93; |&gt; pretty_table</code></pre>
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrames</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>PrettyTables</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>File</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;filemakerdb&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrame</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: files not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># show ~10 random rows</span><span class='hljl-t'>
+</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>.&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>pretty_table</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
 <p>Alternatively, we can use the <a href="@ref"><code>load_metadata</code></a> function.</p>
-<pre><code class="language-@example metadata">allmeta_startup &#61; load_metadata&#40;files, &quot;filemakerdb&quot;&#41;
-@assert names&#40;allmeta&#41; &#61;&#61; names&#40;allmeta_startup&#41;
-@assert size&#40;allmeta&#41; &#61;&#61; size&#40;allmeta_startup&#41;</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>allmeta_startup</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_metadata</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;filemakerdb&quot;</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: load_metadata not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@assert</span><span class='hljl-t'> </span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>==</span><span class='hljl-t'> </span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta_startup</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@assert</span><span class='hljl-t'> </span><span class='hljl-nf'>size</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>==</span><span class='hljl-t'> </span><span class='hljl-nf'>size</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta_startup</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
 <p>The script tries to find <code>timepoint</code> values for everything, and if it can&#39;t, it assumes that the matadatum applies to all timepoints for that subject. These are marked with <code>timepoint &#61; 0</code>. Let&#39;s look at which variables that applies to:</p>
-<pre><code class="language-@example metadata">@show allmeta&#91;allmeta&#91;:timepoint&#93; .&#61;&#61; 0, :parent_table&#93; |&gt; unique</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@show</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>.==</span><span class='hljl-t'> </span><span class='hljl-ni'>0</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>unique</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
 <p>Those all look reasonable&#33;</p>
 <h2>Sample Metadata</h2>
 <p>In addition to the FilemakerPro database, we also have metdata info stored for each of the samples that are processed. In this case, <code>timepoint</code> and <code>studyID</code> do not uniquely identify samples, since we can have multiple samples per timepoint. <code>sampleID</code>s should be unique though.</p>
-<pre><code class="language-@example metadata">samples &#61; load_metadata&#40;files, &quot;samples&quot;&#41;
-rename&#33;&#40;samples, &#91;:TimePoint&#61;&gt;:timepoint, :DOC&#61;&gt;:date, :SubjectID&#61;&gt;:studyID, :SampleID&#61;&gt;:sampleID&#93;&#41;
 
-# convert to longform
-samples &#61; melt&#40;samples, &#91;:studyID, :timepoint, :sampleID&#93;, variable_name&#61;:metadatum&#41;
-samples &#61; filter&#40;r-&gt; &#33;any&#40;ismissing, &#91;r&#91;:studyID&#93;, r&#91;:sampleID&#93;&#93;&#41;, samples&#41;
-disallowmissing&#33;&#40;samples&#41;
-samples&#91;:parent_table&#93; &#61; &quot;FecalProcessing&quot;;</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-n'>samples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_metadata</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;samples&quot;</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: load_metadata not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>rename!</span><span class='hljl-p'>(</span><span class='hljl-n'>samples</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:TimePoint</span><span class='hljl-oB'>=&gt;:</span><span class='hljl-n'>timepoint</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:DOC</span><span class='hljl-oB'>=&gt;:</span><span class='hljl-n'>date</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:SubjectID</span><span class='hljl-oB'>=&gt;:</span><span class='hljl-n'>studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:SampleID</span><span class='hljl-oB'>=&gt;:</span><span class='hljl-n'>sampleID</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: samples not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># convert to longform</span><span class='hljl-t'>
+</span><span class='hljl-n'>samples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>melt</span><span class='hljl-p'>(</span><span class='hljl-n'>samples</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>variable_name</span><span class='hljl-oB'>=:</span><span class='hljl-n'>metadatum</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: samples not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>samples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>filter</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>any</span><span class='hljl-p'>(</span><span class='hljl-n'>ismissing</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]]),</span><span class='hljl-t'> </span><span class='hljl-n'>samples</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: samples not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>disallowmissing!</span><span class='hljl-p'>(</span><span class='hljl-n'>samples</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: samples not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>samples</span><span class='hljl-p'>[</span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;FecalProcessing&quot;</span><span class='hljl-p'>;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: samples not defined
+</pre>
+
+
 <h2>Brain Data</h2>
 <p>Finally, we also have tables of brain volumes for many of our subjects.</p>
-<pre><code class="language-@example metadata">brainfiles &#61; files&#91;&quot;tables&quot;&#93;&#91;&quot;brain&quot;&#93;
-brainvol &#61; CSV.read&#40;brainfiles&#91;&quot;gross_volumes&quot;&#93;&#91;&quot;path&quot;&#93;&#41;
 
-# remove spaces from columns names
-names&#33;&#40;brainvol, map&#40;names&#40;brainvol&#41;&#41; do n
-                        replace&#40;String&#40;n&#41;, &quot; &quot;&#61;&gt;&quot;_&quot;&#41; |&gt; lowercase |&gt; Symbol
-                    end&#41;
-rename&#33;&#40;brainvol, :study_id &#61;&gt; :studyID&#41;
 
-# Convert to longform
-brainvol &#61; stack&#40;brainvol, &#91;:white_matter_volume, :grey_matter_volume, :csf_volume&#93;, :studyID, variable_name&#61;:metadatum&#41;
-pretty_table&#40;brainvol&#41;</code></pre>
+<pre class='hljl'>
+<span class='hljl-n'>brainfiles</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;brain&quot;</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: files not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>brainvol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>read</span><span class='hljl-p'>(</span><span class='hljl-n'>brainfiles</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;gross_volumes&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainfiles not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># remove spaces from columns names</span><span class='hljl-t'>
+</span><span class='hljl-nf'>names!</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-k'>do</span><span class='hljl-t'> </span><span class='hljl-n'>n</span><span class='hljl-t'>
+                        </span><span class='hljl-nf'>replace</span><span class='hljl-p'>(</span><span class='hljl-nf'>String</span><span class='hljl-p'>(</span><span class='hljl-n'>n</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-s'>&quot; &quot;</span><span class='hljl-oB'>=&gt;</span><span class='hljl-s'>&quot;_&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>lowercase</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>Symbol</span><span class='hljl-t'>
+                    </span><span class='hljl-k'>end</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>rename!</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:study_id</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># Convert to longform</span><span class='hljl-t'>
+</span><span class='hljl-n'>brainvol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>stack</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:white_matter_volume</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:grey_matter_volume</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:csf_volume</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>variable_name</span><span class='hljl-oB'>=:</span><span class='hljl-n'>metadatum</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>pretty_table</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
 <p>We need to fix the studyIDs - the letters represent timepoints - using the <a href="@ref"><code>resolve_letter_timepoint</code></a> function.</p>
-<pre><code class="language-@example metadata"># convert letter timepoint into number
-brainsid &#61; resolve_letter_timepoint.&#40;brainvol&#91;:studyID&#93;&#41;
-brainsid&#91;1:5&#93;</code></pre>
-<pre><code class="language-@example metadata">brainvol&#91;:studyID&#93; &#61; getfield.&#40;brainsid, :subject&#41;
-brainvol&#91;:timepoint&#93; &#61; getfield.&#40;brainsid, :timepoint&#41;
-brainvol&#91;:sampleID&#93; &#61; getfield.&#40;brainsid, :sample&#41;
-brainvol&#91;:parent_table&#93; &#61; &quot;brainVolume&quot;
 
-pretty_table&#40;brainvol&#41;</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-cs'># convert letter timepoint into number</span><span class='hljl-t'>
+</span><span class='hljl-n'>brainsid</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>resolve_letter_timepoint</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>brainsid</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-ni'>5</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainsid not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>brainsid</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:subject</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainsid not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>brainsid</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainsid not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>brainsid</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:sample</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainsid not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;brainVolume&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>pretty_table</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
 <p>And now the same thing for the cortical and subcortical volume tables:</p>
-<pre><code class="language-@example metadata">cortical &#61; CSV.read&#40;brainfiles&#91;&quot;cortical&quot;&#93;&#91;&quot;path&quot;&#93;&#41;
-subcortical &#61; CSV.read&#40;brainfiles&#91;&quot;subcortical&quot;&#93;&#91;&quot;path&quot;&#93;&#41;
 
-corticalids &#61; resolve_letter_timepoint.&#40;cortical&#91;:SubjID&#93;&#41;
-cortical&#91;:studyID&#93; &#61; getfield.&#40;corticalids, :subject&#41;
-cortical&#91;:timepoint&#93; &#61; getfield.&#40;corticalids, :timepoint&#41;
 
-# we only care about a subset of values for now
-cortical &#61; cortical&#91;&#91;:studyID, :timepoint, :LThickness, :RThickness,
-                                           :LSurfArea,  :RSurfArea,
-                                           :ICV&#93;&#93;
+<pre class='hljl'>
+<span class='hljl-n'>cortical</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>read</span><span class='hljl-p'>(</span><span class='hljl-n'>brainfiles</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;cortical&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span>
+</pre>
 
-# convert to longform
-cortical &#61; melt&#40;cortical, &#91;:studyID, :timepoint&#93;, variable_name&#61;:metadatum&#41;
-cortical&#91;:parent_table&#93; &#61; &quot;corticalVolumes&quot;
 
-# for the subcortex we mostly care about the total volume rather than individual values
-subcortical&#91;:subcortical_volume&#93; &#61; map&#40;row-&gt; sum&#40;Vector&#40;row&#91;2:end-1&#93;&#41;&#41;, eachrow&#40;subcortical&#41;&#41;
+<pre class="julia-error">
+ERROR: UndefVarError: brainfiles not defined
+</pre>
 
-subcorticalids &#61; resolve_letter_timepoint.&#40;subcortical&#91;:SubjID&#93;&#41;
-subcortical&#91;:studyID&#93; &#61; getfield.&#40;subcorticalids, :subject&#41;
-subcortical&#91;:timepoint&#93; &#61; getfield.&#40;subcorticalids, :timepoint&#41;
-subcortical &#61; subcortical&#91;&#91;:studyID, :timepoint, :subcortical_volume&#93;&#93;
 
-# convert to longform
-subcortical &#61; melt&#40;subcortical, &#91;:studyID, :timepoint&#93;, variable_name&#61;:metadatum&#41;
-subcortical&#91;:parent_table&#93; &#61; &quot;subcorticalVolumes&quot;</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-n'>subcortical</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>read</span><span class='hljl-p'>(</span><span class='hljl-n'>brainfiles</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;subcortical&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainfiles not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>corticalids</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>resolve_letter_timepoint</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>cortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:SubjID</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: cortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>cortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>corticalids</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:subject</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: corticalids not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>cortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>corticalids</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: corticalids not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># we only care about a subset of values for now</span><span class='hljl-t'>
+</span><span class='hljl-n'>cortical</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>cortical</span><span class='hljl-p'>[[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:LThickness</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:RThickness</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                                           </span><span class='hljl-sc'>:LSurfArea</span><span class='hljl-p'>,</span><span class='hljl-t'>  </span><span class='hljl-sc'>:RSurfArea</span><span class='hljl-p'>,</span><span class='hljl-t'>
+                                           </span><span class='hljl-sc'>:ICV</span><span class='hljl-p'>]]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: cortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># convert to longform</span><span class='hljl-t'>
+</span><span class='hljl-n'>cortical</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>melt</span><span class='hljl-p'>(</span><span class='hljl-n'>cortical</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>variable_name</span><span class='hljl-oB'>=:</span><span class='hljl-n'>metadatum</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: cortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>cortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;corticalVolumes&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: cortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># for the subcortex we mostly care about the total volume rather than individual values</span><span class='hljl-t'>
+</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:subcortical_volume</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>sum</span><span class='hljl-p'>(</span><span class='hljl-nf'>Vector</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-oB'>:</span><span class='hljl-k'>end</span><span class='hljl-oB'>-</span><span class='hljl-ni'>1</span><span class='hljl-p'>])),</span><span class='hljl-t'> </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>subcorticalids</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>resolve_letter_timepoint</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:SubjID</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>subcorticalids</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:subject</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcorticalids not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>subcorticalids</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcorticalids not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>subcortical</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>subcortical</span><span class='hljl-p'>[[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:subcortical_volume</span><span class='hljl-p'>]]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># convert to longform</span><span class='hljl-t'>
+</span><span class='hljl-n'>subcortical</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>melt</span><span class='hljl-p'>(</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>variable_name</span><span class='hljl-oB'>=:</span><span class='hljl-n'>metadatum</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;subcorticalVolumes&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcortical not defined
+</pre>
+
+
 <p>We can only concatenate tables if they all have the same columns, so I&#39;ll add a <code>sampleID</code> to all of the other observations to match what&#39;s in <code>samples</code>. The fecal sample <code>sampleID</code>s are build from the subjectID and timepoint, so I&#39;ll do the same for other observations</p>
-<pre><code class="language-@example metadata">allmeta&#91;:sampleID&#93; &#61; map&#40;r-&gt;
-        &quot;C&quot; * lpad&#40;string&#40;r&#91;:studyID&#93;&#41;, 4, &quot;0&quot;&#41; * &quot;_&#36;&#40;Int&#40;floor&#40;r&#91;:timepoint&#93;&#41;&#41;&#41;M&quot;,
-        eachrow&#40;allmeta&#41;&#41;
 
-brainvol&#91;:sampleID&#93; &#61; map&#40;r-&gt;
-        &quot;C&quot; * lpad&#40;string&#40;r&#91;:studyID&#93;&#41;, 4, &quot;0&quot;&#41; * &quot;_&#36;&#40;Int&#40;floor&#40;r&#91;:timepoint&#93;&#41;&#41;&#41;M&quot;,
-        eachrow&#40;brainvol&#41;&#41;
 
-cortical&#91;:sampleID&#93; &#61; map&#40;r-&gt;
-        &quot;C&quot; * lpad&#40;string&#40;r&#91;:studyID&#93;&#41;, 4, &quot;0&quot;&#41; * &quot;_&#36;&#40;Int&#40;floor&#40;r&#91;:timepoint&#93;&#41;&#41;&#41;M&quot;,
-        eachrow&#40;cortical&#41;&#41;
+<pre class='hljl'>
+<span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'>
+        </span><span class='hljl-s'>&quot;C&quot;</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-nf'>lpad</span><span class='hljl-p'>(</span><span class='hljl-nf'>string</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-ni'>4</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;0&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;_</span><span class='hljl-si'>$</span><span class='hljl-p'>(</span><span class='hljl-nf'>Int</span><span class='hljl-p'>(</span><span class='hljl-nf'>floor</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>])))</span><span class='hljl-s'>M&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>))</span>
+</pre>
 
-subcortical&#91;:sampleID&#93; &#61; map&#40;r-&gt;
-        &quot;C&quot; * lpad&#40;string&#40;r&#91;:studyID&#93;&#41;, 4, &quot;0&quot;&#41; * &quot;_&#36;&#40;Int&#40;floor&#40;r&#91;:timepoint&#93;&#41;&#41;&#41;M&quot;,
-        eachrow&#40;subcortical&#41;&#41;</code></pre>
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'>
+        </span><span class='hljl-s'>&quot;C&quot;</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-nf'>lpad</span><span class='hljl-p'>(</span><span class='hljl-nf'>string</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-ni'>4</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;0&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;_</span><span class='hljl-si'>$</span><span class='hljl-p'>(</span><span class='hljl-nf'>Int</span><span class='hljl-p'>(</span><span class='hljl-nf'>floor</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>])))</span><span class='hljl-s'>M&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: brainvol not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>cortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'>
+        </span><span class='hljl-s'>&quot;C&quot;</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-nf'>lpad</span><span class='hljl-p'>(</span><span class='hljl-nf'>string</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-ni'>4</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;0&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;_</span><span class='hljl-si'>$</span><span class='hljl-p'>(</span><span class='hljl-nf'>Int</span><span class='hljl-p'>(</span><span class='hljl-nf'>floor</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>])))</span><span class='hljl-s'>M&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>cortical</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: cortical not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'>
+        </span><span class='hljl-s'>&quot;C&quot;</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-nf'>lpad</span><span class='hljl-p'>(</span><span class='hljl-nf'>string</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-ni'>4</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;0&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;_</span><span class='hljl-si'>$</span><span class='hljl-p'>(</span><span class='hljl-nf'>Int</span><span class='hljl-p'>(</span><span class='hljl-nf'>floor</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>])))</span><span class='hljl-s'>M&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: subcortical not defined
+</pre>
+
+
 <p>And then concatenate all the tables together</p>
-<pre><code class="language-@example metadata">allmeta &#61; vcat&#40;allmeta, brainvol, cortical, subcortical, samples&#41;
-# reorder columns
-allmeta &#61; allmeta&#91;&#91;:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table&#93;&#93;
-# remove rows with missing values
-filter&#33;&#40;r-&gt; &#33;any&#40;ismissing, &#91;r&#91;:studyID&#93;, r&#91;:sampleID&#93;, r&#91;:timepoint&#93;, r&#91;:metadatum&#93;&#93;&#41;, allmeta&#41;
-disallowmissing&#33;&#40;allmeta&#41;
 
-# show a random assortment of ~ 10 rows
-allmeta&#91;rand&#40;nrow&#40;allmeta&#41;&#41; .&lt; 10 / nrow&#40;allmeta&#41;, :&#93; |&gt; pretty_table</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>brainvol</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>cortical</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>subcortical</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>samples</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># reorder columns</span><span class='hljl-t'>
+</span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:metadatum</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:value</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># remove rows with missing values</span><span class='hljl-t'>
+</span><span class='hljl-nf'>filter!</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>any</span><span class='hljl-p'>(</span><span class='hljl-n'>ismissing</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:metadatum</span><span class='hljl-p'>]]),</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>disallowmissing!</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># show a random assortment of ~ 10 rows</span><span class='hljl-t'>
+</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>.&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>pretty_table</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
 <p>A some of the <code>:value</code> fields have quotes or newlines in the field, which screws up parsing later. For now I will just replace them.</p>
-<pre><code class="language-@example metadata">for i in eachindex&#40;allmeta&#91;:value&#93;&#41;
-    v &#61; allmeta&#91;i, :value&#93;
-    ismissing&#40;v&#41; &amp;&amp; continue
-    if isa&#40;v, AbstractString&#41; &amp;&amp; occursin&#40;r&quot;\n&quot;, v&#41;
-        v &#61; replace&#40;v, r&quot;\n&quot;&#61;&gt;&quot;___&quot;&#41;
-        allmeta&#91;i, :value&#93; &#61; v
-    elseif isa&#40;v, AbstractString&#41; &amp;&amp; occursin&#40;r&quot;\&quot;&quot;, v&#41;
-        v &#61; replace&#40;v, r&quot;\&quot;&quot;&#61;&gt;&quot;&#39;&quot;&#41;
-        allmeta&#91;i, :value&#93; &#61; v
-    end
-end
 
 
-CSV.write&#40;files&#91;&quot;tables&quot;&#93;&#91;&quot;metadata&quot;&#93;&#91;&quot;all&quot;&#93;&#91;&quot;path&quot;&#93;, allmeta&#41;;
-@assert isfile&#40;files&#91;&quot;tables&quot;&#93;&#91;&quot;metadata&quot;&#93;&#91;&quot;all&quot;&#93;&#91;&quot;path&quot;&#93;&#41;; nothing # hide</code></pre>
+<pre class='hljl'>
+<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-nf'>eachindex</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:value</span><span class='hljl-p'>])</span><span class='hljl-t'>
+    </span><span class='hljl-n'>v</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:value</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>v</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-k'>continue</span><span class='hljl-t'>
+    </span><span class='hljl-k'>if</span><span class='hljl-t'> </span><span class='hljl-nf'>isa</span><span class='hljl-p'>(</span><span class='hljl-n'>v</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>AbstractString</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-so'>r&quot;\n&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>v</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-n'>v</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>replace</span><span class='hljl-p'>(</span><span class='hljl-n'>v</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-so'>r&quot;\n&quot;</span><span class='hljl-oB'>=&gt;</span><span class='hljl-s'>&quot;___&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:value</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>v</span><span class='hljl-t'>
+    </span><span class='hljl-k'>elseif</span><span class='hljl-t'> </span><span class='hljl-nf'>isa</span><span class='hljl-p'>(</span><span class='hljl-n'>v</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>AbstractString</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-so'>r&quot;\&quot;</span><span class='hljl-s'>&quot;, v)
+        v = replace(v, r&quot;</span><span class='hljl-oB'>\</span><span class='hljl-s'>&quot;&quot;</span><span class='hljl-oB'>=&gt;</span><span class='hljl-s'>&quot;&#39;&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:value</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>v</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: allmeta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>write</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;all&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>);</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: files not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@assert</span><span class='hljl-t'> </span><span class='hljl-nf'>isfile</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;all&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>]);</span><span class='hljl-t'> </span><span class='hljl-n'>nothing</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: files not defined
+</pre>
+
 
 
 

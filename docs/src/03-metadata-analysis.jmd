@@ -43,7 +43,7 @@ isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"]) # hide
 savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png")) # hide
 ```
 
-![](../../data/figures/03-samples-per-subject.png)
+![](data/figures/03-samples-per-subject.png)
 
 Wow - there are a couple of subjects that have a lot of samples.
 Taking a look to see what's going on there:

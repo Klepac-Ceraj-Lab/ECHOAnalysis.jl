@@ -181,7 +181,7 @@ ylabel!("Composite Score")
 savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
 ```
 
-![](../../data/figures/07/cognitive-scores.svg)
+![](data/figures/07/cognitive-scores.svg)
 
 ```julia
 cogdf = view(focusmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])

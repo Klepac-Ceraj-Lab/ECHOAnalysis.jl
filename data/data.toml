@@ -16,7 +16,7 @@ description = """\
 [tables.metadata]
 
     [tables.metadata.filemakerdb]
-    path="../../data/metadata/filemakerdb.csv"
+    path="data/metadata/filemakerdb.csv"
     name="FilemakerPro Database Export"
     description="""\
                 Using FilemakerPro Database from {{date}} \
@@ -38,23 +38,23 @@ description = """\
                 "WPPSI_III", \
                 and "Wppsi_IV", \
                 to filemakerall.xlsx. Then ran metascrub.jl (See Notebook 1)"""
-    log="../../data/metadata/filemakerdb.log"
+    log="data/metadata/filemakerdb.log"
     date="2019-06-13"
 
     [tables.metadata.samples]
-    path="../../data/metadata/fecal_samples.csv"
+    path="data/metadata/fecal_samples.csv"
     name="Fecal Samples DNA processing"
     description="Downloaded \"Everything\" view from AirTable database"
     date="2019-06-24"
 
     [tables.metadata.all]
-    path="../../data/metadata/merged.csv"
+    path="data/metadata/merged.csv"
     name="Fecal Samples DNA processing"
     description="Merged filemakerdb with fecal_samples (see Notebook 2)"
     date="2019-06-24"
 
 [tables.biobakery]
-    path = "../../data/engaging"
+    path = "data/engaging"
 
     [tables.biobakery.kneaddata]
     root = "kneaddata"
@@ -65,62 +65,62 @@ description = """\
     [tables.biobakery.metaphlan2]
     root = "metaphlan2"
     filter = "profile"
-    analysis_output = "../../data/biobakery/metaphlan2"
+    analysis_output = "data/biobakery/metaphlan2"
 
     [tables.biobakery.humann2]
     root = "humann2"
     filter = "genefamilies"
-    analysis_output = "../../data/biobakery/humann2"
+    analysis_output = "data/biobakery/humann2"
 
 [tables.brain]
 
     [tables.brain.gross_volumes]
-    path="../../data/brain/brain_volumes.csv"
+    path="data/brain/brain_volumes.csv"
     name="High res structural data"
     description="Table provided by Muriel through Samepage"
     date="2019-06-03"
 
     [tables.brain.cortical]
-    path="../../data/brain/Cortical_June3rd2019.csv"
+    path="data/brain/Cortical_June3rd2019.csv"
     name="High res structural data"
     description="Table provided by Muriel through Samepage"
     date="2019-06-03"
 
     [tables.brain.subcortical]
-    path="../../data/brain/Subcortical_June3rd2019.csv"
+    path="data/brain/Subcortical_June3rd2019.csv"
     name="High res structural data"
     description="Table provided by Muriel through Samepage"
     date="2019-06-03"
 
 [figures]
-path = "../../data/figures"
+path = "data/figures"
 
 [notebooks]
 
     [notebooks.01]
-    output = "../../data/notebooks/01"
-    figures = "../../data/figures/01"
+    output = "data/notebooks/01"
+    figures = "data/figures/01"
     [notebooks.02]
-    output = "../../data/notebooks/02"
-    figures = "../../data/figures/02"
+    output = "data/notebooks/02"
+    figures = "data/figures/02"
     [notebooks.03]
-    output = "../../data/notebooks/03"
-    figures = "../../data/figures/03"
+    output = "data/notebooks/03"
+    figures = "data/figures/03"
     [notebooks.04]
-    output = "../../data/notebooks/04"
-    figures = "../../data/figures/04"
+    output = "data/notebooks/04"
+    figures = "data/figures/04"
     [notebooks.05]
-    output = "../../data/notebooks/05"
-    figures = "../../data/figures/05"
+    output = "data/notebooks/05"
+    figures = "data/figures/05"
     [notebooks.06]
-    output = "../../data/notebooks/06"
-    figures = "../../data/figures/06"
+    output = "data/notebooks/06"
+    figures = "data/figures/06"
     [notebooks.07]
-    output = "../../data/notebooks/07"
-    figures = "../../data/figures/07"
+    output = "data/notebooks/07"
+    figures = "data/figures/07"
     [notebooks.08]
-    output = "../../data/notebooks/08"
-    figures = "../../data/figures/08"
+    output = "data/notebooks/08"
+    figures = "data/figures/08"
     [notebooks.09]
-    output = "../../data/notebooks/09"
-    figures = "../../data/figures/09"
+    output = "data/notebooks/09"
+    figures = "data/figures/09"

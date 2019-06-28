@@ -89,7 +89,7 @@ plot(mds, primary=false)
 savefig(joinpath(figures, "basic_pcoa.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/basic_pcoa.svg)
+![](data/figures/05/basic_pcoa.svg)
 
 A scree plot can be used to visualize how many dimensions are necessary
 to explain the bulk of the variance.
@@ -107,7 +107,7 @@ xlabel!("Principal coordinate axis")
 savefig(joinpath(figures, "scree.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/scree.svg)
+![](data/figures/05/scree.svg)
 
 It looks like there are a couple of "elbows" in the plot,
 but nice to see that the first few axes explain the bulk of the variance.
@@ -134,7 +134,7 @@ title!("All samples taxonomic profiles")
 savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-moms-kids.svg)
+![](data/figures/05/taxonomic-profiles-moms-kids.svg)
 
 ##### Diversity
 
@@ -148,7 +148,7 @@ p2 = plot(mds, marker=3, line=1,
 savefig(joinpath(figures, "taxonomic-profiles-shannon.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-shannon.svg)
+![](data/figures/05/taxonomic-profiles-shannon.svg)
 
 Neat! It looks like both of the first 2 axes of variation are related
 to low vs high diversity.
@@ -171,7 +171,7 @@ p3 = plot(mds, marker=3, line=1,
 savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-bacteroidetes.svg)
+![](data/figures/05/taxonomic-profiles-bacteroidetes.svg)
 
 ```julia
 p4 = plot(mds, marker=3, line=1,
@@ -181,14 +181,14 @@ p4 = plot(mds, marker=3, line=1,
 savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-firmicutes.svg)
+![](data/figures/05/taxonomic-profiles-firmicutes.svg)
 
 ```julia
 plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
 savefig(joinpath(figures, "taxonomic-profiles-grid.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-grid.svg)
+![](data/figures/05/taxonomic-profiles-grid.svg)
 
 So that balance is somewhat visible, but there's something else going on too.
 
@@ -233,7 +233,7 @@ abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 speci
 savefig(joinpath(figures, "moms-abundanceplot.svg")); nothing # hide
 ```
 
-![](../../figures/05-moms-abundanceplot.svg)
+![](figures/05-moms-abundanceplot.svg)
 
 ```julia
 abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
@@ -266,7 +266,7 @@ p5 = plot(kids_mds, marker=3, line=1,
 savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-kids-shannon.svg)
+![](data/figures/05/taxonomic-profiles-kids-shannon.svg)
 
 Let's look at the phyla too:
 
@@ -296,7 +296,7 @@ plot(
 savefig(joinpath(figures, "taxonomic-profiles-kids-phyla.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-kids-phyla.svg)
+![](data/figures/05/taxonomic-profiles-kids-phyla.svg)
 
 In order to decorate these PCoA plots with other useful information,
 we need to return to the metadata.
@@ -319,7 +319,7 @@ title!("All kids age / PCoA 1 / Alpha diversity")
 savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-kids-age-pco1-diversity.svg)
+![](data/figures/05/taxonomic-profiles-kids-age-pco1-diversity.svg)
 
 Here we can see that alpha diversity increases with age (not too surprising).
 Another way to look at it is to plot the alpha diversity at each age:
@@ -332,7 +332,7 @@ boxplot(collect(skipmissing(focusmeta[:floorAge])), focusmeta[:ginisimpson][.!is
 savefig(joinpath(figures, "kids-alpha-diversity-box.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/kids-alpha-diversity-box.svg)
+![](data/figures/05/kids-alpha-diversity-box.svg)
 
 
 ```julia
@@ -350,8 +350,8 @@ abundanceplot(kids, srt = kids_hcl.order,
 
 savefig(joinpath(figures, "kids-abundanceplot-nolegend.svg")); nothing # hide
 ```
-![](../../data/figures/05/kids-abundanceplot.svg)
-![](../../data/figures/05/kids-abundanceplot-nolegend.svg)
+![](data/figures/05/kids-abundanceplot.svg)
+![](data/figures/05/kids-abundanceplot-nolegend.svg)
 
 These also look like adult microbiomes, with a smattering of young-kids
 microbes thrown in for good measure (eg _Bifidobacterium longum_).
@@ -369,7 +369,7 @@ plot(
 savefig(joinpath(figures, "kids-abundanceplot-age.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/kids-abundanceplot-age.svg)
+![](data/figures/05/kids-abundanceplot-age.svg)
 
 
 ```julia
@@ -383,7 +383,7 @@ ylabel!("MDS2 ($(round(var_explained[2], digits = 2))%)")
 savefig(joinpath(figures, "taxonomic-profiles-mds-kids-age.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-mds-kids-age.svg)
+![](data/figures/05/taxonomic-profiles-mds-kids-age.svg)
 
 Here' it looks like the outlying tail is the youngest kids.
 Again, this makes sense. We know that infants microbiomes change quite a bit
@@ -405,7 +405,7 @@ abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, to
 savefig(joinpath(figures, "young-kids-abundanceplot.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/young-kids-abundanceplot.svg)
+![](data/figures/05/young-kids-abundanceplot.svg)
 
 ### Other Metadata Overviews
 
@@ -443,7 +443,7 @@ ylabel!("Age (years)")
 savefig(joinpath(figures, "kids-brain-quartiles.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/kids-brain-quartiles.svg)
+![](data/figures/05/kids-brain-quartiles.svg)
 
 
 #### Birth type
@@ -462,7 +462,7 @@ scatter!([],[], color=color2[end], label="missing", legend=:bottomleft)
 savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-kids-birth.svg)
+![](data/figures/05/taxonomic-profiles-kids-birth.svg)
 
 #### Breastfeeding
 
@@ -513,7 +513,7 @@ scatter!([],[], color=color1[end], label="missing", legend=:bottomleft)
 savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg")); nothing # hide
 ```
 
-![](../../data/figures/05/taxonomic-profiles-kids-breastfeeding.svg)
+![](data/figures/05/taxonomic-profiles-kids-breastfeeding.svg)
 
 Nothing obvious from this level, but that's not necessarily surprising.
 We need stats!

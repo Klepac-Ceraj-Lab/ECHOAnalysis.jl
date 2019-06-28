@@ -266,4 +266,4 @@ plot!(legend=false, title="Taxonomic Profiles PERMANOVA",
 savefig(joinpath(figures, "permanovas.svg"))
 ```
 
-![](../../data/figures/06/permanovas.svg)
+![](data/figures/06/permanovas.svg)

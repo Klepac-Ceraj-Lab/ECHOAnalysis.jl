@@ -92,11 +92,11 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     title = "QC from Kneaddata", label=["Raw" "Final"],
     line=0)
 
-savefig("../../data/figures/04-knead-qc.svg"); nothing# hide
-savefig("../../data/figures/04-knead-qc.png"); nothing# hide
+savefig("data/figures/04-knead-qc.svg"); nothing# hide
+savefig("data/figures/04-knead-qc.png"); nothing# hide
 ```
 
-![](../../data/figures/04-knead-qc.png)
+![](data/figures/04-knead-qc.png)
 
 
 These are a little more variable than I'd like.
@@ -113,7 +113,7 @@ qc_stats = by(qc, :batch) do df
                   min  = round(minimum(df[:final]) / 1e6, digits=2),
                   )
 end
-CSV.write("../../data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
+CSV.write("data/biobakery/kneaddata/qc_stats.csv", qc_stats) # hide
 pretty_table(qc_stats)
 ```
 

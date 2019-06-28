@@ -22,8 +22,8 @@ using Clustering
 
 # Setup
 
-tables = parsefile("../../data/data.toml")["tables"]
-figsdir = parsefile("../../data/data.toml")["figures"]["path"]
+tables = parsefile("data/data.toml")["tables"]
+figsdir = parsefile("data/data.toml")["figures"]["path"]
 datafolder = tables["biobakery"]["path"]
 metaphlan = tables["biobakery"]["metaphlan2"]
 outdir = metaphlan["analysis_output"]
@@ -111,7 +111,7 @@ for s in species
 end
 
 
-CSV.write("../../data/sigbugs.csv", meta)
+CSV.write("data/sigbugs.csv", meta)
 
 metapa = deepcopy(meta)
 for n in names(metapa[5:end])
@@ -119,6 +119,6 @@ for n in names(metapa[5:end])
 end
 
 metapa
-CSV.write("../../data/sigbugs_pa.csv", meta)
+CSV.write("data/sigbugs_pa.csv", meta)
 
 ```
