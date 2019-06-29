@@ -665,62 +665,230 @@ div.title {text-align: center;}
 <h2>Getting Data</h2>
 <p>Now that we have the metadata in long form, it&#39;s a bit easier to query it for the stuff we want. I&#39;m using the macros available from the <a href="https://github.com/JuliaData/DataFramesMeta.jl">DataFramesMeta</a> package.</p>
 <p>As an example, how many unique subjects do we have at least one sample for?</p>
-<pre><code class="language-@example 1"># cd&#40;dirname&#40;@__FILE__&#41;&#41; # hide
-ENV&#91;&quot;GKSwstype&quot;&#93; &#61; &quot;100&quot; # hide
-using ECHOAnalysis # hide</code></pre>
-<pre><code class="language-@example 1">using DataFrames
-using DataFramesMeta
-using PrettyTables
-using StatsPlots
 
-allmeta &#61; load_metadata&#40;datatoml&#41;
 
-@linq allmeta |&gt;
-    select&#40;:studyID&#41; |&gt;
-    unique |&gt; nrow</code></pre>
+<pre class='hljl'>
+<span class='hljl-n'>ENV</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;GKSwstype&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;100&quot;</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ECHOAnalysis</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span>
+</pre>
+
+
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrames</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DataFramesMeta</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>PrettyTables</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>StatsPlots</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_metadata</span><span class='hljl-p'>(</span><span class='hljl-n'>datatoml</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-nd'>@linq</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>select</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-n'>unique</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>nrow</span>
+</pre>
+
+
+<pre class="output">
+1276
+</pre>
+
+
 <p>Or, how many subjects have two or more fecal samples?</p>
-<pre><code class="language-@example 1">sampleinfo &#61; @linq allmeta |&gt;
-    where&#40;:metadatum .&#61;&#61; &quot;CollectionRep&quot;&#41; |&gt;
-    by&#40;:studyID, nsamples &#61; length&#40;:studyID&#41;&#41;
 
 
-histogram&#40;sampleinfo&#91;:nsamples&#93;, legend&#61;false,
-    title&#61;&quot;Samples per Subject ID&quot;,
-    xlabel&#61;&quot;# of fecal samples&quot;, ylabel&#61;&quot;# of subjects&quot;&#41;
+<pre class='hljl'>
+<span class='hljl-n'>sampleinfo</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@linq</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>where</span><span class='hljl-p'>(</span><span class='hljl-sc'>:metadatum</span><span class='hljl-t'> </span><span class='hljl-oB'>.==</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;CollectionRep&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>by</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>nsamples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>length</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>))</span><span class='hljl-t'>
 
-isdir&#40;datatoml&#91;&quot;figures&quot;&#93;&#91;&quot;path&quot;&#93;&#41; || mkdir&#40;datatoml&#91;&quot;figures&quot;&#93;&#91;&quot;path&quot;&#93;&#41; # hide
-savefig&#40;joinpath&#40;datatoml&#91;&quot;figures&quot;&#93;&#91;&quot;path&quot;&#93;, &quot;03-samples-per-subject.png&quot;&#41;&#41; # hide</code></pre>
+
+</span><span class='hljl-nf'>histogram</span><span class='hljl-p'>(</span><span class='hljl-n'>sampleinfo</span><span class='hljl-p'>[</span><span class='hljl-sc'>:nsamples</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>legend</span><span class='hljl-oB'>=</span><span class='hljl-kc'>false</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-n'>title</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;Samples per Subject ID&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-n'>xlabel</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;# of fecal samples&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>ylabel</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;# of subjects&quot;</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAIAAADK+EpIAAAABmJLR0QA/wD/AP+gvaeTAAAgAElEQVR4nO3de0BUdf7/8c+BGYaLckcEFPCG4N0wM7zf0lJEzfta2aabFUW5qW0pbmWbaKVsa7VuS6XlPWh1bbuoqXlLTcvVvOctnLzEcJfrnN8f5xs/FoaZgc4wHHg+/pr5cOZ93ucDzstzmTOSLMsCAACtcXF2AwAA1AUBBgDQJAIMAKBJBBjqidlsTk9PHzFiRJs2bdzd3du1a3fPPfds2LChvLzcuY1FR0dLkuTcHn47VabXzqlQd8aKi4uLioqsLCBJUnR0dMXjKgIDA4cNG7Zu3TpO5zdBEr911AOz2TxhwoSMjAx3d/fevXsHBgZeu3bt6NGjJSUlAwcO/PLLL/V6vbN6i46OPnPmjKb/Iag1vXZOhbozZrOaJEkdO3Y8ffq08tjDwyMuLk750e3bt0+ePJmTkyOEuP/++9euXevm5qZKV9AGGXC8t956SwgxfPjwGzduVAxeu3Zt2LBhQoiFCxc6sbeOHTtq/R+CWtNr51QcO3bswIEDdey19isVQnTs2LH6Y4XZbN67d294eLgQYu7cuWp1BU3gECLqw+effy6EeOedd4KCgioGQ0JC1q5dK4T497//7bTOGoV6nt4ePXr06dNH3Zp1JklS3759Dx065OXltXz5cqPR6OyOUH8IMNSHq1evCiF0Ol2V8aCgoBUrVkyZMqVi5Pjx41OmTOncubOnp2dQUFCfPn1WrVol/3p8STn7Ulpa+tJLL7Vp08bNzS0iImLx4sXl5eVHjx4dPny4r69veHj4vHnziouLK7+kuLh43rx5ISEhvr6+Q4cO3bRpk5Vut23bNmrUqLCwMG9v77vuuuvvf/975TNJ+/btmzBhgnKqqXXr1qNGjfrqq69qKmXn2q2sUakgy/KiRYu8vb2XLFlS5+m1eO6q+mBeXt4TTzzRokULHx+fgQMHrl692uZLrM+YEGLjxo3Dhw8PCAho06bNhAkTdu/erYxLknTmzBnx68mt6ptmp+Dg4NmzZ5eVlW3evLnORaA9zt4FRJPwhz/8QQjRvXv39evXFxUV1bTYmjVrlHexrl27Tp48efjw4crJm9dee01ZQDncNH78+MjIyFmzZk2aNEl51546daq3t/fIkSNnzpzZrFkzIcTLL79c+SX333+/wWAYNGhQXFycUvPPf/5z5QUqepg7d64Qwt/f/7777hs1apS/v78QIiEhoaysTJblDRs2SJKk0+kGDRo0ZcqU/v37S5Lk4uLy2WefWdwim2u3uUalwt///nchhLe398qVK+s8vRYP1lUeVB4PHDjQYDAMHjy4ots5c+ZYqWO9f1mWn3nmGSGEr6/vfffdN3ToUBcXFxcXl/T0dFmWly9fruw1Ll++fPny5RbbFlYPIVZQQjExMbGmzUfjQ4ChPmRmZnbq1En5P5Ofn19CQsJrr732zTfflJSUVF4sKipKCDF79myz2ayMfP3110KIu+66S3mqvHXec889BQUFysjGjRuVsosXL1ZGPv30UyFE3759K7+kZcuWJ06cUEYOHToUEBCg0+nOnz8v/+/bsbK6++67LycnRxnJzc2dNGmSEOKtt96SZblTp056vf7kyZMVPW/dulUIMWbMGIsbbnPtNteoVPD399+xY0fFtNRteu0MsOrdSpL0/fffW3yJzf737dsnhOjRo8fPP/+sLLB3716dThcVFWWlq8rsDLCLFy8KIe69914rpdDIEGCoJ4WFhR9++OH999+v/A9d4e3tPXPmzJ9++klZJi0t7R//+MeVK1cqXqVcYF3xnqW82R0/frxigYKCAiGEwWAoLi6uWFH1lyhvphVee+018es5/8pvoAkJCUKIs2fPVl44JyfH1dW1f//+six7e3v7+PiYTKaKn5aXlx84cKDy+3tlNtduc41Khbfffrvmqf2/rbY5vXYGmMVun3rqKYsvsdn/+PHjhRBfffVV5QUee+yx2NjY/Pz8mrqqzM4Au337trIbaqUUGhkCDPVNOV+VkpISGxurvM8GBgb++OOPlZfJzc3dv39/amrqkCFDqqdRxbEphRCiffv2VUaqvKRKfeW8S0JCgvy/b6Dt27cXQkRFRXX8X66urgEBAfKvB+t8fX1nzpy5YcOGS5cuWd9Ym2u3uUalgnKhuT2sTK+dAWax25EjR1p8ic3+o6Oj3dzcysvLrU+RlS2yM8AuXbqk7AtaKYVGhgBDfTCZTBWHmCqYzeY333xTeZOdMWOGLMsFBQVPP/1027ZthRB6vT42Nnb27NnV06hKnepvatVfcvv27coLKPttPXr0qFLT3d1d1MDNzU2W5dLS0lWrVsXFxbm6uirj0dHRb775ZpVM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eGHKlCnNmjWbNm1aaGjojRs31q1b9/rrr69evdqh/QEAYJG9e2D3339/RkbGJ5980r59ew8Pj4iIiNWrV3/00UfTpk1zaH8AAFhUi3shjh49evTo0cXFxUajsUWLFp6eno5rCwAA6+zdAxNCnD9/ftq0ae3atYuJibly5UpycnL1s2IAANQPewPs3Llzd95559atW++44w7ljoiHDh0aNGjQt99+68j2AACwzN4AS05O9vLyOnny5JYtW5SR9PT0qKioV155xWG9AQBQI3sDbMeOHc8++2x4eHjFiKen57Rp0w4ePOiYxgAAsMbeACstLQ0JCakyGBYWlp+fr3ZLAADYZm+A3X333Z9++mmVwc8//7x79+5qtwQAgG32Xka/YsWKu+666/HHH586daoQ4sSJE2vWrPnwww+/+uorR7YHAIBl9u6BRUVFnThxQqfTPfbYY56enk8++eTRo0f3798/YMAAh/YHAIBFtfggc1hY2F//+lfHtQIAgP1sBNjp06c9PT3Dw8NPnz5tfUlvb+/Q0FD1GgMAwBobARYTEzN06NDt27fHxMTYrDV//vwlS5ao1BgAANbYOAcmy/L27duVB1aUlJQsX778nXfeqZeeAQCozTkwK/R6/QMPPGA2m1WpBgCATbW4ma+isLDw8uXLJSUlVcYDAgLmzJmjUlcAANhQiwD74IMPoqOjvby8IiMjPTw8evfu/e9//9txnQEAYIW9AbZq1aoZM2aMGjXq1KlTBQUFp06d6t+/f3x8/ObNmx3aHwAAFtl7Diw1NXXWrFmvv/668jQqKur111/Pzs7+y1/+MmHCBIe1BwCAZfbugWVmZg4aNKjK4JAhQ3788UeVOwIAwA72Bljv3r2rf3PKwYMH+/Tpo3ZLAADYZu8hxJUrVw4YMMDb2/vhhx8OCwvLzMxMS0vbsmULN/MFADiFjQCTJKny01deeaXKVzC3a9dOlmX1+wIAwCobAXbq1Kn66QMAgFqxEWDR0dH10wcAALVi7zmwKscSK+MQIgCg/tkbYJWPJcqybDQaN27ceOjQodWrVzumMQAArLE3wKocS4yJiRkyZMjs2bPXrFmTkpLigMYAALCm1jfzrWz8+PFbt25VqxUAAOz3mwIsLy/vypUrarUCAID97D2EePr06Soj169fT05O7tWrl9otAQBgm70BFhMTU2XExcXljjvu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"  />
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># make directory if it doesn&#39;t exist</span><span class='hljl-t'>
+</span><span class='hljl-nf'>isdir</span><span class='hljl-p'>(</span><span class='hljl-n'>datatoml</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;figures&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>||</span><span class='hljl-t'> </span><span class='hljl-nf'>mkdir</span><span class='hljl-p'>(</span><span class='hljl-n'>datatoml</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;figures&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span><span class='hljl-t'>
+</span><span class='hljl-nf'>savefig</span><span class='hljl-p'>(</span><span class='hljl-nf'>joinpath</span><span class='hljl-p'>(</span><span class='hljl-n'>datatoml</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;figures&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;03-samples-per-subject.png&quot;</span><span class='hljl-p'>))</span>
+</pre>
+
+
+
 <p><img src="../../data/figures/03-samples-per-subject.png" alt="" /></p>
 <p>Wow - there are a couple of subjects that have a lot of samples. Taking a look to see what&#39;s going on there:</p>
-<pre><code class="language-@example 1"># Which subjects are those?
-highsamplers &#61; @linq allmeta |&gt;
-    where&#40;:metadatum .&#61;&#61; &quot;CollectionRep&quot;&#41; |&gt;
-    by&#40;:studyID, nsamples &#61; length&#40;:studyID&#41;&#41; |&gt;
-    where&#40;:nsamples .&gt;&#61; 5&#41; |&gt;
-    select&#40;:studyID, :nsamples&#41;
 
-pretty_table&#40;highsamplers&#41;</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-cs'># Which subjects are those?</span><span class='hljl-t'>
+</span><span class='hljl-n'>highsamplers</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@linq</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>where</span><span class='hljl-p'>(</span><span class='hljl-sc'>:metadatum</span><span class='hljl-t'> </span><span class='hljl-oB'>.==</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;CollectionRep&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>by</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>nsamples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>length</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>where</span><span class='hljl-p'>(</span><span class='hljl-sc'>:nsamples</span><span class='hljl-t'> </span><span class='hljl-oB'>.&gt;=</span><span class='hljl-t'> </span><span class='hljl-ni'>5</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>select</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:nsamples</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-n'>highsamplers</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+┌─────────┬──────────┐
+│ studyID │ nsamples │
+│   Int64 │    Int64 │
+├─────────┼──────────┤
+│     117 │        5 │
+│     200 │        6 │
+│     202 │        8 │
+│     511 │        5 │
+│     516 │        5 │
+│     537 │        6 │
+│     633 │        5 │
+│     634 │        7 │
+│     643 │        5 │
+│     647 │        8 │
+│     652 │        9 │
+│     656 │        6 │
+│     660 │        5 │
+│     661 │        7 │
+│     672 │        7 │
+│     682 │        5 │
+│     699 │        5 │
+│     703 │        6 │
+│     711 │        9 │
+│     713 │        9 │
+│     742 │        6 │
+│     752 │        6 │
+│     754 │        6 │
+│     769 │        6 │
+│     839 │        6 │
+│     863 │        8 │
+│     880 │        8 │
+│     932 │        6 │
+│    2014 │        5 │
+│    2018 │        6 │
+│     644 │        7 │
+│     651 │        5 │
+│     662 │        7 │
+│     685 │        5 │
+│     753 │        6 │
+│     790 │        6 │
+│     883 │        6 │
+│     886 │        6 │
+│     891 │        6 │
+│     896 │        6 │
+│     958 │        6 │
+│     973 │        6 │
+│    1008 │        6 │
+│    1056 │        6 │
+│    1064 │        6 │
+└─────────┴──────────┘
+</pre>
+
+
 <h2>Metagenomes</h2>
 <p>At this stage, what I care about are samples with metagenomes, which are inidcated by the <code>DOM</code> metadatum. To find all of the studyID/timepoint combos that have that have metagenomes:</p>
-<pre><code class="language-@example 1"># filter on metagenomes &#40;DOM &#61; &quot;Date of Metagenome&quot;&#41;
-highsamplers &#61; @linq filter&#40;r-&gt; r&#91;:studyID&#93; in highsamplers&#91;:studyID&#93;, allmeta&#41; |&gt;
-    where&#40;:metadatum .&#61;&#61; &quot;DOM&quot;&#41; |&gt;
-    orderby&#40;:studyID, :timepoint&#41;
 
-first&#40;highsamplers, 15&#41; |&gt; pretty_table</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-cs'># filter on metagenomes (DOM = &quot;Date of Metagenome&quot;)</span><span class='hljl-t'>
+</span><span class='hljl-n'>highsamplers</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@linq</span><span class='hljl-t'> </span><span class='hljl-nf'>filter</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>highsamplers</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>where</span><span class='hljl-p'>(</span><span class='hljl-sc'>:metadatum</span><span class='hljl-t'> </span><span class='hljl-oB'>.==</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;DOM&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>orderby</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>first</span><span class='hljl-p'>(</span><span class='hljl-n'>highsamplers</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>15</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>randrows</span>
+</pre>
+
+
+<pre class="output">
+┌─────────────┬─────────┬───────────┬───────────┬────────────────────────┬─
+────────────────┐
+│    sampleID │ studyID │ timepoint │ metadatum │                  value │ 
+   parent_table │
+│      String │   Int64 │     Int64 │    String │ Union&#123;Missing, String&#125; │ 
+         String │
+├─────────────┼─────────┼───────────┼───────────┼────────────────────────┼─
+────────────────┤
+│ C0117_4F_1A │     117 │         4 │       DOM │             2018-02-20 │ 
+FecalProcessing │
+│ C0117_4F_1B │     117 │         4 │       DOM │             2018-02-20 │ 
+FecalProcessing │
+│ C0117_4F_2A │     117 │         4 │       DOM │             2018-02-20 │ 
+FecalProcessing │
+│ C0117_5E_1A │     117 │         5 │       DOM │                missing │ 
+FecalProcessing │
+│ C0117_5F_1A │     117 │         5 │       DOM │             2018-12-19 │ 
+FecalProcessing │
+│ C0200_2E_1A │     200 │         2 │       DOM │                missing │ 
+FecalProcessing │
+│ C0200_2E_2A │     200 │         2 │       DOM │                missing │ 
+FecalProcessing │
+│ C0200_2F_1A │     200 │         2 │       DOM │             2018-12-19 │ 
+FecalProcessing │
+│ C0200_2F_2A │     200 │         2 │       DOM │                missing │ 
+FecalProcessing │
+│ C0200_3E_1A │     200 │         3 │       DOM │                missing │ 
+FecalProcessing │
+│ C0200_3F_1A │     200 │         3 │       DOM │                missing │ 
+FecalProcessing │
+│ C0202_3F_1A │     202 │         3 │       DOM │                missing │ 
+FecalProcessing │
+│ C0202_4F_1A │     202 │         4 │       DOM │             2018-02-20 │ 
+FecalProcessing │
+│ C0202_4F_2A │     202 │         4 │       DOM │             2018-02-20 │ 
+FecalProcessing │
+│ C0202_6E_1A │     202 │         6 │       DOM │             2018-10-03 │ 
+FecalProcessing │
+└─────────────┴─────────┴───────────┴───────────┴────────────────────────┴─
+────────────────┘
+</pre>
+
+
 <p>So a bunch of these are where multiple samples were given for the same timepoint &#40;eg <code>C0202_4F_1A</code> and <code>_2A</code>&#41; and/or both genotech and enthanol samples.</p>
-<pre><code class="language-@example 1">mgxsamples &#61; @linq allmeta |&gt;
-    where&#40;:metadatum .&#61;&#61; &quot;DOM&quot;&#41; |&gt;
-    select&#40;:studyID, :timepoint&#41; |&gt;
-    unique
 
-sort&#33;&#40;mgxsamples, :studyID&#41;;
-first&#40;mgxsamples, 5&#41; |&gt; pretty_table</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-n'>mgxsamples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@linq</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>where</span><span class='hljl-p'>(</span><span class='hljl-sc'>:metadatum</span><span class='hljl-t'> </span><span class='hljl-oB'>.==</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;DOM&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>select</span><span class='hljl-p'>(</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+    </span><span class='hljl-n'>unique</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>sort!</span><span class='hljl-p'>(</span><span class='hljl-n'>mgxsamples</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>);</span><span class='hljl-t'>
+</span><span class='hljl-nf'>first</span><span class='hljl-p'>(</span><span class='hljl-n'>mgxsamples</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>5</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>randrows</span>
+</pre>
+
+
+<pre class="output">
+┌─────────┬───────────┐
+│ studyID │ timepoint │
+│   Int64 │     Int64 │
+├─────────┼───────────┤
+│       5 │         3 │
+│      16 │         3 │
+│      17 │         2 │
+│      32 │         9 │
+│      43 │         7 │
+└─────────┴───────────┘
+</pre>
+
+
 <p>And we can get metadata for these samples using the <a href="@ref"><code>getfocusmetadata</code></a> function, which converts the longform data into a wide table with one row per subject/timepoint pair. Metadata from &quot;timpoint 0&quot; &#40;that is, non time-dependent data&#41; is added to every row for that subject.</p>
-<pre><code class="language-@example 1">samples &#61; map&#40;row-&gt; &#40;subject&#61;row&#91;:studyID&#93;, timepoint&#61;row&#91;:timepoint&#93;&#41;, eachrow&#40;mgxsamples&#41;&#41;
-focus &#61; getfocusmetadata&#40;allmeta, samples&#41;
-sort&#33;&#40;focus, &#91;:subject, :timepoint&#93;&#41;
-pretty_table&#40;focus&#41;</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>samples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>subject</span><span class='hljl-oB'>=</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>timepoint</span><span class='hljl-oB'>=</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>mgxsamples</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>focus</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>getfocusmetadata</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>samples</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>sort!</span><span class='hljl-p'>(</span><span class='hljl-n'>focus</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:subject</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>])</span><span class='hljl-t'>
+</span><span class='hljl-n'>focus</span><span class='hljl-p'>[</span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>focus</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>.&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>focus</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span>
+</pre>
+
+
+
+<table class="data-frame"><thead><tr><th></th><th>subject</th><th>timepoint</th><th>childGender</th><th>milkFeedingMethods</th><th>APOE</th><th>birthType</th><th>exclusivelyNursed</th><th>exclusiveFormulaFed</th><th>formulaTypicalType</th><th>motherSES</th><th>assessmentDate</th><th>correctedAgeDays</th><th>amountFormulaPerFeed</th><th>lengthExclusivelyNursedMonths</th><th>typicalNumberOfEpressedMilkFeeds</th><th>typicalNumberOfFeedsFromBreast</th><th>noLongerFeedBreastmilkAge</th><th>ageStartSolidFoodMonths</th><th>childHeight</th><th>childWeight</th><th>LThickness</th><th>RThickness</th><th>LSurfArea</th><th>RSurfArea</th><th>ICV</th><th>subcortical_volume</th><th>white_matter_volume</th><th>grey_matter_volume</th><th>csf_volume</th><th>mullen_VerbalComposite</th><th>mullen_NonVerbalComposite</th><th>mullen_EarlyLearningComposite</th><th>adaptiveBehaviorComposite</th><th>languageComposite</th><th>socialEmotionalComposite</th><th>motorComposite</th><th>FRI_CompositeScore</th><th>PSI_Composite</th><th>VCI_CompositeScore</th><th>VSI_CompositeScore</th><th>WMI_Composite</th><th>FSIQ_Composite</th><th>fluidReasoningComposite</th><th>verbalComprehensionComposite</th><th>visualSpatialComposite</th><th>workingMemoryComposite</th><th>fullScaleComposite</th></tr><tr><th></th><th>Int64</th><th>Int64</th><th>Any</th><th>Any</th><th>Any</th><th>Any</th><th>Any</th><th>Any</th><th>Any</th><th>Int64⍰</th><th>Any</th><th>Int64⍰</th><th>Int64⍰</th><th>Float64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Any</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Float64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th><th>Int64⍰</th></tr></thead><tbody><p>10 rows × 47 columns</p><tr><th>1</th><td>16</td><td>3</td><td>Male</td><td>missing</td><td>3/3___</td><td>Vaginal</td><td>Yes</td><td>No</td><td>missing</td><td>6</td><td>2018-03-12</td><td>2987</td><td>missing</td><td>6.0</td><td>missing</td><td>missing</td><td>24.0</td><td>6.0</td><td>missing</td><td>missing</td><td>2.3439</td><td>2.37959</td><td>106791.0</td><td>109340.0</td><td>1.77492e6</td><td>2.44898e5</td><td>208051.0</td><td>2.70235e5</td><td>1.4513e5</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>112</td><td>missing</td><td>124</td><td>missing</td><td>missing</td><td>117</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>2</th><td>229</td><td>5</td><td>Male</td><td>missing</td><td>2/3</td><td>Vaginal</td><td>Yes</td><td>No</td><td>missing</td><td>7</td><td>2019-01-05</td><td>3828</td><td>missing</td><td>1.0</td><td>missing</td><td>missing</td><td>4.0</td><td>5.0</td><td>57.0</td><td>74</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>3</th><td>537</td><td>2</td><td>Male</td><td>missing</td><td>missing</td><td>Cesarean</td><td>Yes</td><td>No</td><td>missing</td><td>7</td><td>2018-10-05</td><td>679</td><td>missing</td><td>6.0</td><td>missing</td><td>missing</td><td>13.0</td><td>6.0</td><td>36.0</td><td>missing</td><td>2.49135</td><td>2.39418</td><td>88584.7</td><td>90924.2</td><td>1.35115e6</td><td>1.58964e5</td><td>1.30593e5</td><td>1.85338e5</td><td>1.06969e5</td><td>90.9091</td><td>95.4545</td><td>91</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>4</th><td>575</td><td>2</td><td>Male</td><td>missing</td><td>missing</td><td>Vaginal</td><td>Yes</td><td>No</td><td>missing</td><td>6</td><td>2018-11-17</td><td>1388</td><td>missing</td><td>12.0</td><td>missing</td><td>missing</td><td>18.0</td><td>6.0</td><td>38.5</td><td>34.09</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>1.89562e5</td><td>2.61601e5</td><td>1.38228e5</td><td>105.556</td><td>107.778</td><td>112</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>5</th><td>656</td><td>2</td><td>Male</td><td>missing</td><td>missing</td><td>Cesarean</td><td>missing</td><td>missing</td><td>missing</td><td>7</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>4.0</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>6</th><td>676</td><td>1</td><td>Male</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>5</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>7</th><td>711</td><td>4</td><td>Female</td><td>missing</td><td>missing</td><td>Cesarean</td><td>Yes</td><td>No</td><td>missing</td><td>6</td><td>2018-11-30</td><td>78</td><td>missing</td><td>3.0</td><td>missing</td><td>missing</td><td>missing</td><td>5.5</td><td>24.82</td><td>13.33</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>8</th><td>715</td><td>2</td><td>Male</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>4</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>9</th><td>920</td><td>2</td><td>Male</td><td>missing</td><td>missing</td><td>Cesarean</td><td>No</td><td>No</td><td>missing</td><td>5</td><td>2019-05-08</td><td>584</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>4.0</td><td>6.0</td><td>32.0</td><td>30.8</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>64.2857</td><td>80.9524</td><td>65</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr><tr><th>10</th><td>1087</td><td>1</td><td>Female</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td><td>missing</td></tr></tbody></table>
 
 
 

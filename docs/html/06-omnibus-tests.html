@@ -663,206 +663,1004 @@ div.title {text-align: center;}
 
           <h1>Omnibus Tests</h1>
 <p>Here, we use permutational analysis of varianve &#40;or <a href="https://en.wikipedia.org/wiki/Permutational_analysis_of_variance">PERMANOVA</a>&#41; to identify how much of the variation in the microbiome is explainable by different bits of metadata. BiobakeryUtils.jl uses RCall to call the R package <a href="https://cran.r-project.org/web/packages/vegan/index.html">vegan</a> for their implimentation.</p>
-<pre><code class="language-@example omnibus"># cd&#40;dirname&#40;@__FILE__&#41;&#41; # hide
-ENV&#91;&quot;GKSwstype&quot;&#93; &#61; &quot;100&quot; # hide
-
-using ECHOAnalysis
-using DataFrames
-using PrettyTables
-using Microbiome
-using Distances
-using MultivariateStats
-using StatsPlots
-using CSV
-using BiobakeryUtils
-
-tax &#61; load_taxonomic_profiles&#40;&#41;
-abt &#61; abundancetable&#40;tax&#41;
-relativeabundance&#33;&#40;abt&#41;
-dm &#61; pairwise&#40;BrayCurtis&#40;&#41;, abt, dims&#61;2&#41;
 
 
-samples &#61; samplenames&#40;abt&#41;
-subject_type &#61; &#91;startswith&#40;s, &quot;M&quot;&#41; ? &quot;Mother&quot; : &quot;Child&quot; for s in samples&#93;
+<pre class='hljl'>
+<span class='hljl-n'>ENV</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;GKSwstype&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;100&quot;</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span><span class='hljl-t'>
 
-perm &#61; permanova&#40;dm, subject_type&#41;
-perm&#91;:feature&#93; &#61; &quot;species&quot;
-perm&#91;:variable&#93; &#61; &quot;Subject Type&quot;
-pretty_table&#40;perm&#41;</code></pre>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ECHOAnalysis</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrames</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>PrettyTables</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Microbiome</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Distances</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>MultivariateStats</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>StatsPlots</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>BiobakeryUtils</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: Failed to precompile BiobakeryUtils &#91;fa5322f5-bd84-5069-834a-abf3230fb8f8&#93; to /home/kevin/.julia/compiled/v1.1/BiobakeryUtils/N1SNr.ji.
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>tax</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_taxonomic_profiles</span><span class='hljl-p'>()</span><span class='hljl-t'>
+</span><span class='hljl-n'>abt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>abundancetable</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>relativeabundance!</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>dm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>pairwise</span><span class='hljl-p'>(</span><span class='hljl-nf'>BrayCurtis</span><span class='hljl-p'>(),</span><span class='hljl-t'> </span><span class='hljl-n'>abt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dims</span><span class='hljl-oB'>=</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+
+</span><span class='hljl-n'>samples</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>subject_type</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>startswith</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;M&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>?</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;Mother&quot;</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;Child&quot;</span><span class='hljl-t'> </span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>samples</span><span class='hljl-p'>]</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>subject_type</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;Subject Type&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
 <p>This tells us that, when comparing all the samples, whether the sample comes from a mom or a kid can explain ~3&#37; of the variation, and the result is significant &#40;p &lt; 0.001&#41;. Technically, this p value is a bit anti-conservative, since we have multiple samples per individual. But that would take a bit of tweaking, and we don&#39;t <em>really</em> need that number.</p>
 <p>One way to demonstrate why this is a problem is to look at how much of the variation is attributable to the subject ID.</p>
-<pre><code class="language-@example omnibus">metadata &#61; load_metadata&#40;datatoml, samples&#61;resolve_sampleID.&#40;samplenames&#40;abt&#41;&#41;&#41;
 
-# need to convert subject IDs to &#96;String&#96; so it&#39;s not treated as continuous variable
-p &#61; permanova&#40;dm, string.&#40;metadata&#91;:subject&#93;&#41;&#41;</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-n'>metadata</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_metadata</span><span class='hljl-p'>(</span><span class='hljl-n'>datatoml</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>samples</span><span class='hljl-oB'>=</span><span class='hljl-n'>resolve_sampleID</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)))</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># need to convert subject IDs to `String` so it&#39;s not treated as continuous variable</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>string</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>metadata</span><span class='hljl-p'>[</span><span class='hljl-sc'>:subject</span><span class='hljl-p'>]))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
 <p>Here, we can see that over 80&#37; of variability is attributable to who the person is. Which is to say that people are really different&#33; Because of this, the numbers from PERMANOVA tend to be small &#40;1-5&#37;&#41;, but even small differences are interesting.</p>
 <p>Now we&#39;ll concatenate this new PERMANOVA into the previous dataframe to keep stuff together.</p>
-<pre><code class="language-@example ombnibus">p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;Subject ID&quot;
-perm &#61; vcat&#40;perm, p&#41;</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;Subject ID&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
 <h2>Kids metadata PERMANOVAs</h2>
 <p>Now we&#39;ll focus on the kids.</p>
-<pre><code class="language-@example omnibus">kids &#61; view&#40;abt, sites&#61;firstkids&#40;samplenames&#40;abt&#41;&#41;&#41;
-kids_dm &#61; pairwise&#40;BrayCurtis&#40;&#41;, kids, dims&#61;2&#41;
 
-kidsmeta &#61; load_metadata&#40;datatoml, samples&#61;resolve_sampleID.&#40;samplenames&#40;kids&#41;&#41;&#41;
 
-p &#61; permanova&#40;kids_dm, kidsmeta&#91;:correctedAgeDays&#93;, filter&#61;.&#33;ismissing.&#40;kidsmeta&#91;:correctedAgeDays&#93;&#41;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;Age&quot;
-perm &#61; vcat&#40;perm, p&#41;
+<pre class='hljl'>
+<span class='hljl-n'>kids</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-nf'>firstkids</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)))</span><span class='hljl-t'>
+</span><span class='hljl-n'>kids_dm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>pairwise</span><span class='hljl-p'>(</span><span class='hljl-nf'>BrayCurtis</span><span class='hljl-p'>(),</span><span class='hljl-t'> </span><span class='hljl-n'>kids</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dims</span><span class='hljl-oB'>=</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-t'>
 
-kidsmeta&#91;:birthType&#93; &#61; Vector&#123;Union&#123;Missing,String&#125;&#125;&#40;kidsmeta&#91;:birthType&#93;&#41;
-p &#61; permanova&#40;kids_dm, kidsmeta&#91;:birthType&#93;, filter&#61;.&#33;ismissing.&#40;kidsmeta&#91;:birthType&#93;&#41;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;birthType&quot;
-perm &#61; vcat&#40;perm, p&#41;
+</span><span class='hljl-n'>kidsmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_metadata</span><span class='hljl-p'>(</span><span class='hljl-n'>datatoml</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>samples</span><span class='hljl-oB'>=</span><span class='hljl-n'>resolve_sampleID</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kids</span><span class='hljl-p'>)))</span><span class='hljl-t'>
 
-kidsmeta&#91;:breastfed&#93; &#61; breastfeeding.&#40;eachrow&#40;kidsmeta&#41;&#41;
-p &#61; permanova&#40;kids_dm, kidsmeta&#91;:breastfed&#93;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;breastfed&quot;
-perm &#61; vcat&#40;perm, p&#41;
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>filter</span><span class='hljl-oB'>=.!</span><span class='hljl-n'>ismissing</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>]))</span>
+</pre>
 
-kidsmeta&#91;:formulafed&#93; &#61; formulafeeding.&#40;eachrow&#40;kidsmeta&#41;&#41;
-p &#61; permanova&#40;kids_dm, kidsmeta&#91;:formulafed&#93;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot; lafed&quot;
-perm &#61; vcat&#40;perm, p&#41;
 
-kidsmeta&#91;:childGender&#93; &#61; Vector&#123;Union&#123;Missing,String&#125;&#125;&#40;kidsmeta&#91;:childGender&#93;&#41;
-p &#61; permanova&#40;kids_dm, kidsmeta&#91;:childGender&#93;, filter&#61;.&#33;ismissing.&#40;kidsmeta&#91;:childGender&#93;&#41;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;childGender&quot;
-perm &#61; vcat&#40;perm, p&#41;
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
 
-p &#61; permanova&#40;kids_dm, kidsmeta&#91;:motherSES&#93;, filter&#61;.&#33;ismissing.&#40;kidsmeta&#91;:motherSES&#93;&#41;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;motherSES&quot;
-perm &#61; vcat&#40;perm, p&#41;;
 
-filter&#33;&#40;r-&gt; &#33;ismissing&#40;r&#91;Symbol&#40;&quot;Pr&#40;&gt;F&#41;&quot;&#41;&#93;&#41;, perm&#41;
 
-# round values in the table output &#40;see https://ronisbr.github.io/PrettyTables.jl/stable/man/formatter/&#41;
-formatter &#61; Dict&#40;0 &#61;&gt; &#40;v,i&#41; -&gt; round&#40;v,digits&#61;3&#41;&#41;;
-pretty_table&#40;perm, formatter&#61;formatter&#41;</code></pre>
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;Age&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:birthType</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Vector</span><span class='hljl-p'>{</span><span class='hljl-nf'>Union</span><span class='hljl-p'>{</span><span class='hljl-n'>Missing</span><span class='hljl-p'>,</span><span class='hljl-n'>String</span><span class='hljl-p'>}}(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:birthType</span><span class='hljl-p'>])</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:birthType</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>filter</span><span class='hljl-oB'>=.!</span><span class='hljl-n'>ismissing</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:birthType</span><span class='hljl-p'>]))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;birthType&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:breastfed</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>breastfeeding</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:breastfed</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;breastfed&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:formulafed</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>formulafeeding</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:formulafed</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot; lafed&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:childGender</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Vector</span><span class='hljl-p'>{</span><span class='hljl-nf'>Union</span><span class='hljl-p'>{</span><span class='hljl-n'>Missing</span><span class='hljl-p'>,</span><span class='hljl-n'>String</span><span class='hljl-p'>}}(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:childGender</span><span class='hljl-p'>])</span><span class='hljl-t'>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:childGender</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>filter</span><span class='hljl-oB'>=.!</span><span class='hljl-n'>ismissing</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:childGender</span><span class='hljl-p'>]))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;childGender&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:motherSES</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>filter</span><span class='hljl-oB'>=.!</span><span class='hljl-n'>ismissing</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:motherSES</span><span class='hljl-p'>]))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;motherSES&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>);</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>filter!</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Pr(&gt;F)&quot;</span><span class='hljl-p'>)]),</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># round values in the table output (see https://ronisbr.github.io/PrettyTables.jl/stable/man/formatter/)</span><span class='hljl-t'>
+</span><span class='hljl-n'>formatter</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>Dict</span><span class='hljl-p'>(</span><span class='hljl-ni'>0</span><span class='hljl-t'> </span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>v</span><span class='hljl-p'>,</span><span class='hljl-n'>i</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>round</span><span class='hljl-p'>(</span><span class='hljl-n'>v</span><span class='hljl-p'>,</span><span class='hljl-n'>digits</span><span class='hljl-oB'>=</span><span class='hljl-ni'>3</span><span class='hljl-p'>));</span><span class='hljl-t'>
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>formatter</span><span class='hljl-oB'>=</span><span class='hljl-n'>formatter</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
 <h3>Young kids</h3>
 <p>It&#39;s a bit surprising that breastfeeding and birth type are not significant, though it may be because we&#39;re including older kids. What happens if we only look at the kids under 2 years old?</p>
-<pre><code class="language-@example ombnibus">young &#61; map&#40;a-&gt; &#33;ismissing&#40;a&#41; &amp;&amp; a &lt; 365*2, kidsmeta&#91;:correctedAgeDays&#93;&#41;
-youngkids &#61; view&#40;kids, sites&#61;young&#41;
-youngkids_dm &#61; pairwise&#40;BrayCurtis&#40;&#41;, youngkids, dims&#61;2&#41;
-youngkidsmeta &#61; kidsmeta&#91;young, :&#93;
 
-p &#61; permanova&#40;youngkids_dm, youngkidsmeta&#91;:breastfed&#93;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;young kids breastfed&quot;
-perm &#61; vcat&#40;perm, p&#41;
 
-p &#61; permanova&#40;youngkids_dm, youngkidsmeta&#91;:formulafed&#93;&#41;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;young kids formulafed&quot;
-perm &#61; vcat&#40;perm, p&#41;
+<pre class='hljl'>
+<span class='hljl-n'>young</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>a</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>a</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-n'>a</span><span class='hljl-t'> </span><span class='hljl-oB'>&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>365</span><span class='hljl-oB'>*</span><span class='hljl-ni'>2</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>])</span><span class='hljl-t'>
+</span><span class='hljl-n'>youngkids</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>kids</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-n'>young</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>youngkids_dm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>pairwise</span><span class='hljl-p'>(</span><span class='hljl-nf'>BrayCurtis</span><span class='hljl-p'>(),</span><span class='hljl-t'> </span><span class='hljl-n'>youngkids</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dims</span><span class='hljl-oB'>=</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>youngkidsmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>young</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span><span class='hljl-t'>
 
-filter&#33;&#40;r-&gt; &#33;ismissing&#40;r&#91;Symbol&#40;&quot;Pr&#40;&gt;F&#41;&quot;&#41;&#93;&#41;, perm&#41;
-pretty_table&#40;perm, formatter&#61;formatter&#41;</code></pre>
+</span><span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>youngkids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>youngkidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:breastfed</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;young kids breastfed&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>permanova</span><span class='hljl-p'>(</span><span class='hljl-n'>youngkids_dm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>youngkidsmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:formulafed</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: permanova not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;young kids formulafed&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>filter!</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Pr(&gt;F)&quot;</span><span class='hljl-p'>)]),</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>formatter</span><span class='hljl-oB'>=</span><span class='hljl-n'>formatter</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
 <p>Still not significant. It could be that we don&#39;t have enough young kids to see the effect, or that for some reason this cohort doesn&#39;t have major differences based on these factors.</p>
 <h3>Brain Data</h3>
 <p>All of the brain data is really affected by the age of the kids, so we need to subtract out that variation. BiobakeryUtils can&#39;t handle this yet, so we need to do this directly using RCall.</p>
-<pre><code class="language-@example omnibus">using RCall
 
-filt &#61; map&#40;row-&gt; &#33;ismissing&#40;row&#91;:correctedAgeDays&#93;&#41; &amp;&amp; &#33;ismissing&#40;row&#91;:white_matter_volume&#93;&#41;, eachrow&#40;kidsmeta&#41;&#41;
-r_meta &#61; kidsmeta&#91;filt, &#91;:correctedAgeDays, :white_matter_volume&#93;&#93;
-r_dm &#61; kids_dm&#91;filt,filt&#93;
-@rput r_meta
-@rput r_dm
 
-R&quot;&quot;&quot;
-p &lt;- adonis&#40;r_dm ~ white_matter_volume &#43; correctedAgeDays,
-            method &#61; &quot;bray&quot;, data&#61;r_meta, permutations &#61; 10000&#41;
-&quot;&quot;&quot;
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>RCall</span>
+</pre>
 
-@rget p
-p &#61; p&#91;:aov_tab&#93;</code></pre>
+
+<pre class="julia-error">
+ERROR: Failed to precompile RCall &#91;6f49c342-dc21-5d91-9882-a32aef131414&#93; to /home/kevin/.julia/compiled/v1.1/RCall/8GFyb.ji.
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>filt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:white_matter_volume</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>r_meta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>filt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:white_matter_volume</span><span class='hljl-p'>]]</span><span class='hljl-t'>
+</span><span class='hljl-n'>r_dm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>[</span><span class='hljl-n'>filt</span><span class='hljl-p'>,</span><span class='hljl-n'>filt</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@rput</span><span class='hljl-t'> </span><span class='hljl-n'>r_meta</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rput not defined
+in expression starting at none:1
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@rput</span><span class='hljl-t'> </span><span class='hljl-n'>r_dm</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rput not defined
+in expression starting at none:1
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-so'>R&quot;&quot;&quot;
+p &lt;- adonis(r_dm ~ white_matter_volume + correctedAgeDays,
+            method = &quot;bray&quot;, data=r_meta, permutations = 10000)
+&quot;&quot;&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @R_str not defined
+in expression starting at none:2
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@rget</span><span class='hljl-t'> </span><span class='hljl-n'>p</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rget not defined
+in expression starting at none:2
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:aov_tab</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
 <p>The second row is the white<em>matter</em>volume.</p>
-<pre><code class="language-@example omnibus">p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;white_matter_volume&quot;
-perm &#61; vcat&#40;perm, p&#91;&#91;2&#93;,:&#93;&#41;</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;white_matter_volume&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[[</span><span class='hljl-ni'>2</span><span class='hljl-p'>],</span><span class='hljl-oB'>:</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
 <p>Let&#39;s look at some other brain measures.</p>
-<pre><code class="language-@example">## grey matter
-filt &#61; map&#40;row-&gt; &#33;ismissing&#40;row&#91;:correctedAgeDays&#93;&#41; &amp;&amp; &#33;ismissing&#40;row&#91;:grey_matter_volume&#93;&#41;, eachrow&#40;kidsmeta&#41;&#41;
-r_meta &#61; kidsmeta&#91;filt, &#91;:correctedAgeDays, :grey_matter_volume&#93;&#93;
-r_dm &#61; kids_dm&#91;filt,filt&#93;
-@rput r_meta
-@rput r_dm
 
-R&quot;&quot;&quot;
-p &lt;- adonis&#40;r_dm ~ grey_matter_volume &#43; correctedAgeDays,
-            method &#61; &quot;bray&quot;, data&#61;r_meta, permutations &#61; 10000&#41;
-&quot;&quot;&quot;
 
-@rget p
-p &#61; p&#91;:aov_tab&#93;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;grey_matter_volume&quot;
-perm &#61; vcat&#40;perm, p&#91;&#91;2&#93;,:&#93;&#41;
+<pre class='hljl'>
+<span class='hljl-cs'>## grey matter</span><span class='hljl-t'>
+</span><span class='hljl-n'>filt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:grey_matter_volume</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>r_meta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>filt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:grey_matter_volume</span><span class='hljl-p'>]]</span><span class='hljl-t'>
+</span><span class='hljl-n'>r_dm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>[</span><span class='hljl-n'>filt</span><span class='hljl-p'>,</span><span class='hljl-n'>filt</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@rput</span><span class='hljl-t'> </span><span class='hljl-n'>r_meta</span>
+</pre>
 
-## CSF
-filt &#61; map&#40;row-&gt; &#33;ismissing&#40;row&#91;:correctedAgeDays&#93;&#41; &amp;&amp; &#33;ismissing&#40;row&#91;:csf_volume&#93;&#41;, eachrow&#40;kidsmeta&#41;&#41;
-r_meta &#61; kidsmeta&#91;filt, &#91;:correctedAgeDays, :csf_volume&#93;&#93;
-r_dm &#61; kids_dm&#91;filt,filt&#93;
-@rput r_meta
-@rput r_dm
 
-R&quot;&quot;&quot;
-p &lt;- adonis&#40;r_dm ~ csf_volume &#43; correctedAgeDays,
-            method &#61; &quot;bray&quot;, data&#61;r_meta, permutations &#61; 10000&#41;
-&quot;&quot;&quot;
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rput not defined
+in expression starting at none:1
+</pre>
 
-@rget p
-p &#61; p&#91;:aov_tab&#93;
-p&#91;:feature&#93; &#61; &quot;species&quot;
-p&#91;:variable&#93; &#61; &quot;csf_volume&quot;
-perm &#61; vcat&#40;perm, p&#91;&#91;2&#93;,:&#93;&#41;</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@rput</span><span class='hljl-t'> </span><span class='hljl-n'>r_dm</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rput not defined
+in expression starting at none:1
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-so'>R&quot;&quot;&quot;
+p &lt;- adonis(r_dm ~ grey_matter_volume + correctedAgeDays,
+            method = &quot;bray&quot;, data=r_meta, permutations = 10000)
+&quot;&quot;&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @R_str not defined
+in expression starting at none:2
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@rget</span><span class='hljl-t'> </span><span class='hljl-n'>p</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rget not defined
+in expression starting at none:2
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:aov_tab</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;grey_matter_volume&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[[</span><span class='hljl-ni'>2</span><span class='hljl-p'>],</span><span class='hljl-oB'>:</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'>## CSF</span><span class='hljl-t'>
+</span><span class='hljl-n'>filt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-oB'>!</span><span class='hljl-nf'>ismissing</span><span class='hljl-p'>(</span><span class='hljl-n'>row</span><span class='hljl-p'>[</span><span class='hljl-sc'>:csf_volume</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>r_meta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>kidsmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>filt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:csf_volume</span><span class='hljl-p'>]]</span><span class='hljl-t'>
+</span><span class='hljl-n'>r_dm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>kids_dm</span><span class='hljl-p'>[</span><span class='hljl-n'>filt</span><span class='hljl-p'>,</span><span class='hljl-n'>filt</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-nd'>@rput</span><span class='hljl-t'> </span><span class='hljl-n'>r_meta</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rput not defined
+in expression starting at none:1
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@rput</span><span class='hljl-t'> </span><span class='hljl-n'>r_dm</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rput not defined
+in expression starting at none:1
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-so'>R&quot;&quot;&quot;
+p &lt;- adonis(r_dm ~ csf_volume + correctedAgeDays,
+            method = &quot;bray&quot;, data=r_meta, permutations = 10000)
+&quot;&quot;&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @R_str not defined
+in expression starting at none:2
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nd'>@rget</span><span class='hljl-t'> </span><span class='hljl-n'>p</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: LoadError: UndefVarError: @rget not defined
+in expression starting at none:2
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:aov_tab</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;species&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>p</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;csf_volume&quot;</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>p</span><span class='hljl-p'>[[</span><span class='hljl-ni'>2</span><span class='hljl-p'>],</span><span class='hljl-oB'>:</span><span class='hljl-p'>])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: p not defined
+</pre>
+
+
 <p>Let&#39;s save the output after correcting for multiple testing.</p>
-<pre><code class="language-@example omnibus">using MultipleTesting
 
-perm&#91;:p_value&#93; &#61; Float64.&#40;perm&#91;Symbol&#40;&quot;Pr&#40;&gt;F&#41;&quot;&#41;&#93;&#41;
-perm&#91;:q_value&#93; &#61; adjust&#40;perm&#91;:p_value&#93;, BenjaminiHochberg&#40;&#41;&#41;
-sort&#33;&#40;perm, :q_value&#41;
 
-# reorder columns
-perm &#61; perm&#91;&#91;:feature, :variable, :R2, :p_value, :q_value&#93;&#93;
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>MultipleTesting</span><span class='hljl-t'>
 
-outpath, figures &#61; notebookpaths&#33;&#40;@__FILE__&#41;
-CSV.write&#40;joinpath&#40;outpath, &quot;permanovas.csv&quot;&#41;, perm&#41;</code></pre>
+</span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-sc'>:p_value</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>Float64</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Pr(&gt;F)&quot;</span><span class='hljl-p'>)])</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-sc'>:q_value</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>adjust</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-sc'>:p_value</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-nf'>BenjaminiHochberg</span><span class='hljl-p'>())</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>sort!</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:q_value</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># reorder columns</span><span class='hljl-t'>
+</span><span class='hljl-n'>perm</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>[[</span><span class='hljl-sc'>:feature</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:variable</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:R2</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:p_value</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:q_value</span><span class='hljl-p'>]]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>outpath</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>figures</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>notebookpaths!</span><span class='hljl-p'>(</span><span class='hljl-nd'>@__FILE__</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: type Nothing has no field captures
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>write</span><span class='hljl-p'>(</span><span class='hljl-nf'>joinpath</span><span class='hljl-p'>(</span><span class='hljl-n'>outpath</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;permanovas.csv&quot;</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: outpath not defined
+</pre>
+
+
 <p>Let&#39;s see what that looks like in graphical form using StatsPlots</p>
-<pre><code class="language-@example omnibus">sort&#33;&#40;perm, &#91;:R2&#93;&#41;
 
-# &#91;1:end-1&#93; removes the ~80&#37; from subject ID
-bar&#40;perm&#91;1:end-1, :R2&#93; .* 100,
-    xticks&#61;&#40;1:&#40;size&#40;perm,1&#41;-1&#41;, perm&#91;1:end-1, :variable&#93;&#41;,
-    xrotation&#61;45, color&#61;:grey&#41;
 
-for i in eachindex&#40;perm&#91;:R2&#93;&#41;
-    r2 &#61; perm&#91;i, :R2&#93; * 100
-    q &#61; perm&#91;i, :q_value&#93;
-    kind &#61; perm&#91;:variable&#93;
-    if q &gt; 0.05
-        continue
-    elseif q &gt; 0.01
-        stars &#61; &quot;*&quot;
-    elseif q &gt; .001
-        stars &#61; &quot;**&quot;
-    else
-        stars &#61; &quot;***&quot;
-    end
-    annotate&#33;&#40;i, r2&#43;.2, text&#40;stars, :center&#41;&#41;
-end
+<pre class='hljl'>
+<span class='hljl-nf'>sort!</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:R2</span><span class='hljl-p'>])</span>
+</pre>
 
-plot&#33;&#40;legend&#61;false, title&#61;&quot;Taxonomic Profiles PERMANOVA&quot;,
-    ylabel&#61;&quot;&#37; Variance explainable&quot;&#41;
-savefig&#40;joinpath&#40;figures, &quot;permanovas.svg&quot;&#41;&#41;</code></pre>
-<p><img src="../../data/figures/06/permanovas.svg" alt="" /></p>
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># [1:end-1] removes the ~80% from subject ID</span><span class='hljl-t'>
+</span><span class='hljl-nf'>bar</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-k'>end</span><span class='hljl-oB'>-</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:R2</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>.*</span><span class='hljl-t'> </span><span class='hljl-ni'>100</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-n'>xticks</span><span class='hljl-oB'>=</span><span class='hljl-p'>(</span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-p'>(</span><span class='hljl-nf'>size</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>,</span><span class='hljl-ni'>1</span><span class='hljl-p'>)</span><span class='hljl-oB'>-</span><span class='hljl-ni'>1</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-oB'>:</span><span class='hljl-k'>end</span><span class='hljl-oB'>-</span><span class='hljl-ni'>1</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]),</span><span class='hljl-t'>
+    </span><span class='hljl-n'>xrotation</span><span class='hljl-oB'>=</span><span class='hljl-ni'>45</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>color</span><span class='hljl-oB'>=:</span><span class='hljl-n'>grey</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>i</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-nf'>eachindex</span><span class='hljl-p'>(</span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-sc'>:R2</span><span class='hljl-p'>])</span><span class='hljl-t'>
+    </span><span class='hljl-n'>r2</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:R2</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-ni'>100</span><span class='hljl-t'>
+    </span><span class='hljl-n'>q</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-n'>i</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:q_value</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-n'>kind</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>perm</span><span class='hljl-p'>[</span><span class='hljl-sc'>:variable</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-k'>if</span><span class='hljl-t'> </span><span class='hljl-n'>q</span><span class='hljl-t'> </span><span class='hljl-oB'>&gt;</span><span class='hljl-t'> </span><span class='hljl-nfB'>0.05</span><span class='hljl-t'>
+        </span><span class='hljl-k'>continue</span><span class='hljl-t'>
+    </span><span class='hljl-k'>elseif</span><span class='hljl-t'> </span><span class='hljl-n'>q</span><span class='hljl-t'> </span><span class='hljl-oB'>&gt;</span><span class='hljl-t'> </span><span class='hljl-nfB'>0.01</span><span class='hljl-t'>
+        </span><span class='hljl-n'>stars</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;*&quot;</span><span class='hljl-t'>
+    </span><span class='hljl-k'>elseif</span><span class='hljl-t'> </span><span class='hljl-n'>q</span><span class='hljl-t'> </span><span class='hljl-oB'>&gt;</span><span class='hljl-t'> </span><span class='hljl-nfB'>.001</span><span class='hljl-t'>
+        </span><span class='hljl-n'>stars</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;**&quot;</span><span class='hljl-t'>
+    </span><span class='hljl-k'>else</span><span class='hljl-t'>
+        </span><span class='hljl-n'>stars</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;***&quot;</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>annotate!</span><span class='hljl-p'>(</span><span class='hljl-n'>i</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>r2</span><span class='hljl-oB'>+</span><span class='hljl-nfB'>.2</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-nf'>text</span><span class='hljl-p'>(</span><span class='hljl-n'>stars</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:center</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: perm not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>plot!</span><span class='hljl-p'>(</span><span class='hljl-n'>legend</span><span class='hljl-oB'>=</span><span class='hljl-kc'>false</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>title</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;Taxonomic Profiles PERMANOVA&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-n'>ylabel</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;% Variance explainable&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>savefig</span><span class='hljl-p'>(</span><span class='hljl-nf'>joinpath</span><span class='hljl-p'>(</span><span class='hljl-n'>figures</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;permanovas.svg&quot;</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: figures not defined
+</pre>
+
+
+<p><img src="data/figures/06/permanovas.svg" alt="" /></p>
 
 
 

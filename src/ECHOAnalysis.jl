@@ -26,7 +26,10 @@ export
     load_taxonomic_profiles,
     first_kids_tax_profiles,
     load_metadata,
-    notebookpaths!
+    notebookpaths!,
+
+    # Notebook handling
+    randrows
 
 using DataFrames
 using CSV
@@ -38,6 +41,7 @@ using Pkg.TOML: parsefile
 using Microbiome
 
 include("metadata_handling.jl")
+include("notebook_handling.jl")
 include("file_handling.jl")
 include("startup.jl")
 

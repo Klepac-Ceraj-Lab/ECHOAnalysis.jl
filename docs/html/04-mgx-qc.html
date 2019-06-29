@@ -663,88 +663,389 @@ div.title {text-align: center;}
 
           <h1>Quality control of metagenomes</h1>
 <p>All of the metagenomes were processed using tools from the <a href="https://bitbucket.org/biobakery/biobakery/wiki/Home">bioBakery</a>.</p>
-<pre><code class="language-@example qc"># cd&#40;dirname&#40;@__FILE__&#41;&#41; # hide
-ENV&#91;&quot;GKSwstype&quot;&#93; &#61; &quot;100&quot; # hide</code></pre>
-<pre><code class="language-@example qc">using ECHOAnalysis
-using CSV, DataFrames
-using DataFramesMeta
-using PrettyTables</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>ENV</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;GKSwstype&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;100&quot;</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span>
+</pre>
+
+
+<pre class="output">
+&quot;100&quot;
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ECHOAnalysis</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrames</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DataFramesMeta</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>PrettyTables</span><span class='hljl-p'>;</span>
+</pre>
+
+
+
 <h2>Quality control</h2>
 <p>First, I&#39;ll look at the QC results from <code>kneaddata</code>.</p>
-<pre><code class="language-@example qc">qc_files &#61; let qcfiles&#61;&#91;&#93;
-    for &#40;root, dirs, files&#41; in walkdir&#40;datatoml&#91;&quot;tables&quot;&#93;&#91;&quot;biobakery&quot;&#93;&#91;&quot;path&quot;&#93;&#41;
-        occursin&#40;&quot;kneaddata&quot;, root&#41; || continue
-        filter&#33;&#40;files&#41; do f
-            occursin&#40;&quot;read_counts&quot;, f&#41;
-        end
-        append&#33;&#40;qcfiles, joinpath.&#40;root, files&#41;&#41;
-    end
-    qcfiles
-end
 
-# make a DataFrame of the first one
-qc &#61; CSV.read&#40;qc_files&#91;1&#93;&#41;
-qc&#91;:batch&#93; &#61; &quot;batch001&quot;
 
-# loop through the rest and concatenate to the first one
-for f in qc_files&#91;2:end&#93;
-    df &#61; CSV.read&#40;f&#41;
-    # get batch name from file
-    df&#91;:batch&#93; &#61; match&#40;r&quot;&#40;batch\d&#43;&#41;&quot;, f&#41;.captures&#91;1&#93;
-    global qc &#61; vcat&#40;qc, df&#41;
-end
+<pre class='hljl'>
+<span class='hljl-n'>qc_files</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-k'>let</span><span class='hljl-t'> </span><span class='hljl-n'>qcfiles</span><span class='hljl-oB'>=</span><span class='hljl-p'>[]</span><span class='hljl-t'>
+    </span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-p'>(</span><span class='hljl-n'>root</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>dirs</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>files</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-nf'>walkdir</span><span class='hljl-p'>(</span><span class='hljl-n'>datatoml</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;biobakery&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;kneaddata&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>root</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>||</span><span class='hljl-t'> </span><span class='hljl-k'>continue</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>filter!</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-k'>do</span><span class='hljl-t'> </span><span class='hljl-n'>f</span><span class='hljl-t'>
+            </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;read_counts&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>f</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-k'>end</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>append!</span><span class='hljl-p'>(</span><span class='hljl-n'>qcfiles</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>joinpath</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>root</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>files</span><span class='hljl-p'>))</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+    </span><span class='hljl-n'>qcfiles</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'>
 
-pretty_table&#40;first&#40;qc, 15&#41;&#41;</code></pre>
-<p>To keep the formatting of sample IDs consistant across data types, I&#39;ll use the <a href="@ref"><code>resolve_sampleID</code></a> function.</p>
-<pre><code class="language-@example qc">qc&#91;:Sample&#93; &#61; map&#40;qc&#91;:Sample&#93;&#41; do s
-    s &#61; replace&#40;s, &quot;_kneaddata&quot;&#61;&gt; &quot;&quot;&#41;
-    resolve_sampleID&#40;s&#41;&#91;:sample&#93;
-end
+</span><span class='hljl-cs'># make a DataFrame of the first one</span><span class='hljl-t'>
+</span><span class='hljl-n'>qc</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>read</span><span class='hljl-p'>(</span><span class='hljl-n'>qc_files</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>])</span><span class='hljl-t'>
+</span><span class='hljl-n'>qc</span><span class='hljl-p'>[</span><span class='hljl-sc'>:batch</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;batch001&quot;</span><span class='hljl-t'>
 
-pretty_table&#40;first&#40;qc,5&#41;&#41;</code></pre>
-<pre><code class="language-@example qc"># cleaning up the column names a bit
-names&#33;&#40;qc,
-    map&#40;n-&gt; Symbol&#40;replace&#40;String&#40;n&#41;, &quot; &quot;&#61;&gt;&quot;_&quot;&#41;&#41;,
-    names&#40;qc&#41;&#41;&#41;
-pretty_table&#40;first&#40;qc,5&#41;&#41;</code></pre>
+</span><span class='hljl-cs'># loop through the rest and concatenate to the first one</span><span class='hljl-t'>
+</span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>f</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>qc_files</span><span class='hljl-p'>[</span><span class='hljl-ni'>2</span><span class='hljl-oB'>:</span><span class='hljl-k'>end</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-n'>df</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>read</span><span class='hljl-p'>(</span><span class='hljl-n'>f</span><span class='hljl-p'>)</span><span class='hljl-t'>
+    </span><span class='hljl-cs'># get batch name from file</span><span class='hljl-t'>
+    </span><span class='hljl-n'>df</span><span class='hljl-p'>[</span><span class='hljl-sc'>:batch</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>match</span><span class='hljl-p'>(</span><span class='hljl-so'>r&quot;(batch\d+)&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>f</span><span class='hljl-p'>)</span><span class='hljl-oB'>.</span><span class='hljl-n'>captures</span><span class='hljl-p'>[</span><span class='hljl-ni'>1</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-kd'>global</span><span class='hljl-t'> </span><span class='hljl-n'>qc</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>vcat</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>df</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-nf'>first</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>15</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+┌───────────────────────────┬───────────┬───────────┬───────────────┬──────
+─────────┬─────────────────┬─────────────────┬─────────────────────────────
+──────┬───────────────────────────────────┬────────────────────────────────
+─────┬─────────────────────────────────────┬─────────────┬─────────────┬───
+────────────┬───────────────┬────────────────┐
+│                    Sample │ raw pair1 │ raw pair2 │ trimmed pair1 │ trimm
+ed pair2 │ trimmed orphan1 │ trimmed orphan2 │ decontaminated Homo_sapiens 
+pair1 │ decontaminated Homo_sapiens pair2 │ decontaminated Homo_sapiens orp
+han1 │ decontaminated Homo_sapiens orphan2 │ final pair1 │ final pair2 │ fi
+nal orphan1 │ final orphan2 │          batch │
+│                    String │     Int64 │     Int64 │         Int64 │      
+   Int64 │           Int64 │           Int64 │                             
+Int64 │                             Int64 │                               I
+nt64 │                               Int64 │       Int64 │       Int64 │   
+      Int64 │         Int64 │ AbstractString │
+├───────────────────────────┼───────────┼───────────┼───────────────┼──────
+─────────┼─────────────────┼─────────────────┼─────────────────────────────
+──────┼───────────────────────────────────┼────────────────────────────────
+─────┼─────────────────────────────────────┼─────────────┼─────────────┼───
+────────────┼───────────────┼────────────────┤
+│ C0043_7F_1A_S14_kneaddata │   2251199 │   2251199 │       1750080 │      
+ 1750080 │          113547 │           44939 │                           17
+49443 │                           1749443 │                              11
+3773 │                               44897 │     1749443 │     1749443 │   
+     113773 │         44897 │       batch001 │
+│ C0052_5F_1A_S49_kneaddata │   4828079 │   4828079 │       3792074 │      
+ 3792074 │          267291 │           98178 │                           37
+91003 │                           3791003 │                              26
+7730 │                               98093 │     3791003 │     3791003 │   
+     267730 │         98093 │       batch001 │
+│ C0053_6F_1A_S61_kneaddata │   4539474 │   4539474 │       3555835 │      
+ 3555835 │          275061 │           93310 │                           35
+50776 │                           3550776 │                              27
+5226 │                               93137 │     3550776 │     3550776 │   
+     275226 │         93137 │       batch001 │
+│ C0061_6F_1A_S62_kneaddata │   1752823 │   1752823 │       1670721 │      
+ 1670721 │           49342 │           13557 │                           16
+69041 │                           1669041 │                               5
+0088 │                               13660 │     1669041 │     1669041 │   
+      50088 │         13660 │       batch001 │
+│ C0061_6F_2A_S74_kneaddata │   2319045 │   2319045 │       1726625 │      
+ 1726625 │          119493 │           44717 │                           17
+26027 │                           1726027 │                              11
+9729 │                               44648 │     1726027 │     1726027 │   
+     119729 │         44648 │       batch001 │
+│ C0062_6F_1A_S86_kneaddata │   3936671 │   3936671 │       3068092 │      
+ 3068092 │          194870 │           88145 │                           30
+66636 │                           3066636 │                              19
+5299 │                               88046 │     3066636 │     3066636 │   
+     195299 │         88046 │       batch001 │
+│  C0062_6F_2A_S3_kneaddata │   4056273 │   4056273 │       2979029 │      
+ 2979029 │          256112 │           86312 │                           29
+76408 │                           2976408 │                              25
+6154 │                               86202 │     2976408 │     2976408 │   
+     256154 │         86202 │       batch001 │
+│ C0066_6F_1A_S64_kneaddata │   3163480 │   3163480 │       2387355 │      
+ 2387355 │          163317 │           64701 │                           23
+84255 │                           2384255 │                              16
+3368 │                               64581 │     2384255 │     2384255 │   
+     163368 │         64581 │       batch001 │
+│ C0066_6F_1B_S82_kneaddata │   6031978 │   6031978 │       4546039 │      
+ 4546039 │          334178 │          121555 │                           45
+39390 │                           4539390 │                              33
+4456 │                              121305 │     4539390 │     4539390 │   
+     334456 │        121305 │       batch001 │
+│ C0066_6F_2A_S76_kneaddata │   2430331 │   2430331 │       1836097 │      
+ 1836097 │          197611 │           88164 │                           18
+32424 │                           1832424 │                              19
+7529 │                               88002 │     1832424 │     1832424 │   
+     197529 │         88002 │       batch001 │
+│ C0067_6F_1A_S15_kneaddata │   3396692 │   3396692 │       2609294 │      
+ 2609294 │          191065 │           74987 │                           26
+07800 │                           2607800 │                              19
+1181 │                               74930 │     2607800 │     2607800 │   
+     191181 │         74930 │       batch001 │
+│ C0082_4F_1A_S27_kneaddata │   3276692 │   3276692 │       2477538 │      
+ 2477538 │          171861 │           71523 │                           24
+76678 │                           2476678 │                              17
+2004 │                               71470 │     2476678 │     2476678 │   
+     172004 │         71470 │       batch001 │
+│ C0108_4F_1A_S73_kneaddata │   2476475 │   2476475 │       1862568 │      
+ 1862568 │          132883 │           50072 │                           18
+61434 │                           1861434 │                              13
+2980 │                               49988 │     1861434 │     1861434 │   
+     132980 │         49988 │       batch001 │
+│ C0117_4F_1A_S26_kneaddata │   2230156 │   2230156 │       1924947 │      
+ 1924947 │          101917 │           37693 │                           19
+19258 │                           1919258 │                              10
+1952 │                               37566 │     1919258 │     1919258 │   
+     101952 │         37566 │       batch001 │
+│ C0117_4F_1B_S46_kneaddata │   5665591 │   5665591 │       5155993 │      
+ 5155993 │          291126 │           80654 │                           51
+45188 │                           5145188 │                              29
+1719 │                               80525 │     5145188 │     5145188 │   
+     291719 │         80525 │       batch001 │
+└───────────────────────────┴───────────┴───────────┴───────────────┴──────
+─────────┴─────────────────┴─────────────────┴─────────────────────────────
+──────┴───────────────────────────────────┴────────────────────────────────
+─────┴─────────────────────────────────────┴─────────────┴─────────────┴───
+────────────┴───────────────┴────────────────┘
+</pre>
+
+
+<p>To keep the formatting of sample IDs consistant across data types, I&#39;ll use the <code>resolve_sampleID</code> function.</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>qc</span><span class='hljl-p'>[</span><span class='hljl-sc'>:Sample</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>[</span><span class='hljl-sc'>:Sample</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-k'>do</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-t'>
+    </span><span class='hljl-n'>s</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>replace</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;_kneaddata&quot;</span><span class='hljl-oB'>=&gt;</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>resolve_sampleID</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-p'>)[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-nf'>first</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-ni'>5</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+┌─────────────┬───────────┬───────────┬───────────────┬───────────────┬────
+─────────────┬─────────────────┬───────────────────────────────────┬───────
+────────────────────────────┬─────────────────────────────────────┬────────
+─────────────────────────────┬─────────────┬─────────────┬───────────────┬─
+──────────────┬────────────────┐
+│      Sample │ raw pair1 │ raw pair2 │ trimmed pair1 │ trimmed pair2 │ tri
+mmed orphan1 │ trimmed orphan2 │ decontaminated Homo_sapiens pair1 │ decont
+aminated Homo_sapiens pair2 │ decontaminated Homo_sapiens orphan1 │ deconta
+minated Homo_sapiens orphan2 │ final pair1 │ final pair2 │ final orphan1 │ 
+final orphan2 │          batch │
+│      String │     Int64 │     Int64 │         Int64 │         Int64 │    
+       Int64 │           Int64 │                             Int64 │       
+                      Int64 │                               Int64 │        
+                       Int64 │       Int64 │       Int64 │         Int64 │ 
+        Int64 │ AbstractString │
+├─────────────┼───────────┼───────────┼───────────────┼───────────────┼────
+─────────────┼─────────────────┼───────────────────────────────────┼───────
+────────────────────────────┼─────────────────────────────────────┼────────
+─────────────────────────────┼─────────────┼─────────────┼───────────────┼─
+──────────────┼────────────────┤
+│ C0043_7F_1A │   2251199 │   2251199 │       1750080 │       1750080 │    
+      113547 │           44939 │                           1749443 │       
+                    1749443 │                              113773 │        
+                       44897 │     1749443 │     1749443 │        113773 │ 
+        44897 │       batch001 │
+│ C0052_5F_1A │   4828079 │   4828079 │       3792074 │       3792074 │    
+      267291 │           98178 │                           3791003 │       
+                    3791003 │                              267730 │        
+                       98093 │     3791003 │     3791003 │        267730 │ 
+        98093 │       batch001 │
+│ C0053_6F_1A │   4539474 │   4539474 │       3555835 │       3555835 │    
+      275061 │           93310 │                           3550776 │       
+                    3550776 │                              275226 │        
+                       93137 │     3550776 │     3550776 │        275226 │ 
+        93137 │       batch001 │
+│ C0061_6F_1A │   1752823 │   1752823 │       1670721 │       1670721 │    
+       49342 │           13557 │                           1669041 │       
+                    1669041 │                               50088 │        
+                       13660 │     1669041 │     1669041 │         50088 │ 
+        13660 │       batch001 │
+│ C0061_6F_2A │   2319045 │   2319045 │       1726625 │       1726625 │    
+      119493 │           44717 │                           1726027 │       
+                    1726027 │                              119729 │        
+                       44648 │     1726027 │     1726027 │        119729 │ 
+        44648 │       batch001 │
+└─────────────┴───────────┴───────────┴───────────────┴───────────────┴────
+─────────────┴─────────────────┴───────────────────────────────────┴───────
+────────────────────────────┴─────────────────────────────────────┴────────
+─────────────────────────────┴─────────────┴─────────────┴───────────────┴─
+──────────────┴────────────────┘
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-cs'># cleaning up the column names a bit</span><span class='hljl-t'>
+</span><span class='hljl-nf'>names!</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>n</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-nf'>replace</span><span class='hljl-p'>(</span><span class='hljl-nf'>String</span><span class='hljl-p'>(</span><span class='hljl-n'>n</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-s'>&quot; &quot;</span><span class='hljl-oB'>=&gt;</span><span class='hljl-s'>&quot;_&quot;</span><span class='hljl-p'>)),</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>)))</span><span class='hljl-t'>
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-nf'>first</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-ni'>5</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="output">
+┌─────────────┬───────────┬───────────┬───────────────┬───────────────┬────
+─────────────┬─────────────────┬───────────────────────────────────┬───────
+────────────────────────────┬─────────────────────────────────────┬────────
+─────────────────────────────┬─────────────┬─────────────┬───────────────┬─
+──────────────┬────────────────┐
+│      Sample │ raw_pair1 │ raw_pair2 │ trimmed_pair1 │ trimmed_pair2 │ tri
+mmed_orphan1 │ trimmed_orphan2 │ decontaminated_Homo_sapiens_pair1 │ decont
+aminated_Homo_sapiens_pair2 │ decontaminated_Homo_sapiens_orphan1 │ deconta
+minated_Homo_sapiens_orphan2 │ final_pair1 │ final_pair2 │ final_orphan1 │ 
+final_orphan2 │          batch │
+│      String │     Int64 │     Int64 │         Int64 │         Int64 │    
+       Int64 │           Int64 │                             Int64 │       
+                      Int64 │                               Int64 │        
+                       Int64 │       Int64 │       Int64 │         Int64 │ 
+        Int64 │ AbstractString │
+├─────────────┼───────────┼───────────┼───────────────┼───────────────┼────
+─────────────┼─────────────────┼───────────────────────────────────┼───────
+────────────────────────────┼─────────────────────────────────────┼────────
+─────────────────────────────┼─────────────┼─────────────┼───────────────┼─
+──────────────┼────────────────┤
+│ C0043_7F_1A │   2251199 │   2251199 │       1750080 │       1750080 │    
+      113547 │           44939 │                           1749443 │       
+                    1749443 │                              113773 │        
+                       44897 │     1749443 │     1749443 │        113773 │ 
+        44897 │       batch001 │
+│ C0052_5F_1A │   4828079 │   4828079 │       3792074 │       3792074 │    
+      267291 │           98178 │                           3791003 │       
+                    3791003 │                              267730 │        
+                       98093 │     3791003 │     3791003 │        267730 │ 
+        98093 │       batch001 │
+│ C0053_6F_1A │   4539474 │   4539474 │       3555835 │       3555835 │    
+      275061 │           93310 │                           3550776 │       
+                    3550776 │                              275226 │        
+                       93137 │     3550776 │     3550776 │        275226 │ 
+        93137 │       batch001 │
+│ C0061_6F_1A │   1752823 │   1752823 │       1670721 │       1670721 │    
+       49342 │           13557 │                           1669041 │       
+                    1669041 │                               50088 │        
+                       13660 │     1669041 │     1669041 │         50088 │ 
+        13660 │       batch001 │
+│ C0061_6F_2A │   2319045 │   2319045 │       1726625 │       1726625 │    
+      119493 │           44717 │                           1726027 │       
+                    1726027 │                              119729 │        
+                       44648 │     1726027 │     1726027 │        119729 │ 
+        44648 │       batch001 │
+└─────────────┴───────────┴───────────┴───────────────┴───────────────┴────
+─────────────┴─────────────────┴───────────────────────────────────┴───────
+────────────────────────────┴─────────────────────────────────────┴────────
+─────────────────────────────┴─────────────┴─────────────┴───────────────┴─
+──────────────┴────────────────┘
+</pre>
+
+
 <p>I don&#39;t really care about each mate pair individually, so I&#39;ll sum them up</p>
-<pre><code class="language-@example qc">qc &#61; @linq qc |&gt;
-  transform&#40;raw &#61; :raw_pair1 .&#43; :raw_pair2,
-            trimmed &#61; :trimmed_pair1 .&#43; :trimmed_pair2,
-            orphan &#61; :final_orphan1 .&#43; :final_orphan2,
-            final &#61; :final_pair1 .&#43; :final_pair2,
-            &#41;
-pretty_table&#40;first&#40;qc,5&#41;&#91;&#91;:Sample, :batch, :raw, :trimmed, :orphan, :final&#93;&#93;&#41;</code></pre>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>qc</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nd'>@linq</span><span class='hljl-t'> </span><span class='hljl-n'>qc</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'>
+  </span><span class='hljl-nf'>transform</span><span class='hljl-p'>(</span><span class='hljl-n'>raw</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-sc'>:raw_pair1</span><span class='hljl-t'> </span><span class='hljl-oB'>.+</span><span class='hljl-t'> </span><span class='hljl-sc'>:raw_pair2</span><span class='hljl-p'>,</span><span class='hljl-t'>
+            </span><span class='hljl-n'>trimmed</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-sc'>:trimmed_pair1</span><span class='hljl-t'> </span><span class='hljl-oB'>.+</span><span class='hljl-t'> </span><span class='hljl-sc'>:trimmed_pair2</span><span class='hljl-p'>,</span><span class='hljl-t'>
+            </span><span class='hljl-n'>orphan</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-sc'>:final_orphan1</span><span class='hljl-t'> </span><span class='hljl-oB'>.+</span><span class='hljl-t'> </span><span class='hljl-sc'>:final_orphan2</span><span class='hljl-p'>,</span><span class='hljl-t'>
+            </span><span class='hljl-n'>final</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-sc'>:final_pair1</span><span class='hljl-t'> </span><span class='hljl-oB'>.+</span><span class='hljl-t'> </span><span class='hljl-sc'>:final_pair2</span><span class='hljl-p'>,</span><span class='hljl-t'>
+            </span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-nf'>first</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-ni'>5</span><span class='hljl-p'>)[[</span><span class='hljl-sc'>:Sample</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:batch</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:raw</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:trimmed</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:orphan</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:final</span><span class='hljl-p'>]])</span>
+</pre>
+
+
+<pre class="output">
+┌─────────────┬────────────────┬─────────┬─────────┬────────┬─────────┐
+│      Sample │          batch │     raw │ trimmed │ orphan │   final │
+│      String │ AbstractString │   Int64 │   Int64 │  Int64 │   Int64 │
+├─────────────┼────────────────┼─────────┼─────────┼────────┼─────────┤
+│ C0043_7F_1A │       batch001 │ 4502398 │ 3500160 │ 158670 │ 3498886 │
+│ C0052_5F_1A │       batch001 │ 9656158 │ 7584148 │ 365823 │ 7582006 │
+│ C0053_6F_1A │       batch001 │ 9078948 │ 7111670 │ 368363 │ 7101552 │
+│ C0061_6F_1A │       batch001 │ 3505646 │ 3341442 │  63748 │ 3338082 │
+│ C0061_6F_2A │       batch001 │ 4638090 │ 3453250 │ 164377 │ 3452054 │
+└─────────────┴────────────────┴─────────┴─────────┴────────┴─────────┘
+</pre>
+
+
 <p>Now let&#39;s take a look at them with some plots.</p>
-<pre><code class="language-@example qc">using StatsPlots
 
-sort&#33;&#40;qc, &#91;:batch, :raw&#93;&#41;
 
-bar&#40;x&#61;qc&#91;:Sample&#93;, hcat&#40;qc&#91;:raw&#93;, qc&#91;:final&#93;&#41;,
-    xaxis&#61;&quot;Samples&quot;, yaxis&#61; &quot;Count&quot;, legend&#61;:topleft,
-    title &#61; &quot;QC from Kneaddata&quot;, label&#61;&#91;&quot;Raw&quot; &quot;Final&quot;&#93;,
-    line&#61;0&#41;
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>StatsPlots</span><span class='hljl-t'>
 
-savefig&#40;&quot;../../data/figures/04-knead-qc.svg&quot;&#41;; nothing# hide
-savefig&#40;&quot;../../data/figures/04-knead-qc.png&quot;&#41;; nothing# hide</code></pre>
-<p><img src="../../data/figures/04-knead-qc.png" alt="" /></p>
+</span><span class='hljl-nf'>sort!</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:batch</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:raw</span><span class='hljl-p'>])</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>bar</span><span class='hljl-p'>(</span><span class='hljl-n'>x</span><span class='hljl-oB'>=</span><span class='hljl-n'>qc</span><span class='hljl-p'>[</span><span class='hljl-sc'>:Sample</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-nf'>hcat</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>[</span><span class='hljl-sc'>:raw</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>qc</span><span class='hljl-p'>[</span><span class='hljl-sc'>:final</span><span class='hljl-p'>]),</span><span class='hljl-t'>
+    </span><span class='hljl-n'>xaxis</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;Samples&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>yaxis</span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;Count&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>legend</span><span class='hljl-oB'>=:</span><span class='hljl-n'>topleft</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-n'>title</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;QC from Kneaddata&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>label</span><span class='hljl-oB'>=</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;Raw&quot;</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;Final&quot;</span><span class='hljl-p'>],</span><span class='hljl-t'>
+    </span><span class='hljl-n'>line</span><span class='hljl-oB'>=</span><span class='hljl-ni'>0</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>savefig</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/figures/04-knead-qc.svg&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>savefig</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/figures/04-knead-qc.png&quot;</span><span class='hljl-p'>);</span>
+</pre>
+
+
+
+<p><img src="data/figures/04-knead-qc.png" alt="" /></p>
 <p>These are a little more variable than I&#39;d like. Let&#39;s take a look at their properties:</p>
-<pre><code class="language-@example qc">using Statistics
 
-qc_stats &#61; by&#40;qc, :batch&#41; do df
-                DataFrame&#40;
-                  mean &#61; round&#40;mean&#40;df&#91;:final&#93;&#41; / 1e6, digits&#61;2&#41;,
-                  med  &#61; round&#40;median&#40;df&#91;:final&#93;&#41; / 1e6, digits&#61;2&#41;,
-                  max  &#61; round&#40;maximum&#40;df&#91;:final&#93;&#41; / 1e6, digits&#61;2&#41;,
-                  min  &#61; round&#40;minimum&#40;df&#91;:final&#93;&#41; / 1e6, digits&#61;2&#41;,
-                  &#41;
-end
-CSV.write&#40;&quot;../../data/biobakery/kneaddata/qc_stats.csv&quot;, qc_stats&#41; # hide
-pretty_table&#40;qc_stats&#41;</code></pre>
-<h2>Functions</h2>
-<pre><code class="language-@docs">resolve_sampleID
-merge_tables
-getmetadata</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Statistics</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>qc_stats</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>by</span><span class='hljl-p'>(</span><span class='hljl-n'>qc</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:batch</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-k'>do</span><span class='hljl-t'> </span><span class='hljl-n'>df</span><span class='hljl-t'>
+                </span><span class='hljl-nf'>DataFrame</span><span class='hljl-p'>(</span><span class='hljl-t'>
+                  </span><span class='hljl-n'>mean</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>round</span><span class='hljl-p'>(</span><span class='hljl-nf'>mean</span><span class='hljl-p'>(</span><span class='hljl-n'>df</span><span class='hljl-p'>[</span><span class='hljl-sc'>:final</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nfB'>1e6</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>digits</span><span class='hljl-oB'>=</span><span class='hljl-ni'>2</span><span class='hljl-p'>),</span><span class='hljl-t'>
+                  </span><span class='hljl-n'>med</span><span class='hljl-t'>  </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>round</span><span class='hljl-p'>(</span><span class='hljl-nf'>median</span><span class='hljl-p'>(</span><span class='hljl-n'>df</span><span class='hljl-p'>[</span><span class='hljl-sc'>:final</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nfB'>1e6</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>digits</span><span class='hljl-oB'>=</span><span class='hljl-ni'>2</span><span class='hljl-p'>),</span><span class='hljl-t'>
+                  </span><span class='hljl-n'>max</span><span class='hljl-t'>  </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>round</span><span class='hljl-p'>(</span><span class='hljl-nf'>maximum</span><span class='hljl-p'>(</span><span class='hljl-n'>df</span><span class='hljl-p'>[</span><span class='hljl-sc'>:final</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nfB'>1e6</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>digits</span><span class='hljl-oB'>=</span><span class='hljl-ni'>2</span><span class='hljl-p'>),</span><span class='hljl-t'>
+                  </span><span class='hljl-n'>min</span><span class='hljl-t'>  </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>round</span><span class='hljl-p'>(</span><span class='hljl-nf'>minimum</span><span class='hljl-p'>(</span><span class='hljl-n'>df</span><span class='hljl-p'>[</span><span class='hljl-sc'>:final</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nfB'>1e6</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>digits</span><span class='hljl-oB'>=</span><span class='hljl-ni'>2</span><span class='hljl-p'>),</span><span class='hljl-t'>
+                  </span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>write</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/biobakery/kneaddata/qc_stats.csv&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>qc_stats</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: SystemError: opening file &quot;data/biobakery/kneaddata/qc_stats.csv&quot;: No such file or directory
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-n'>qc_stats</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+┌────────────────┬─────────┬─────────┬─────────┬─────────┐
+│          batch │    mean │     med │     max │     min │
+│ AbstractString │ Float64 │ Float64 │ Float64 │ Float64 │
+├────────────────┼─────────┼─────────┼─────────┼─────────┤
+│       batch001 │    7.11 │    7.42 │   12.72 │    2.75 │
+│       batch002 │    7.48 │    7.07 │   16.35 │    3.77 │
+│       batch003 │     6.0 │    6.12 │    9.39 │    1.94 │
+│       batch004 │    5.96 │    5.44 │    15.9 │    1.01 │
+│       batch005 │    7.23 │    7.18 │   20.99 │    0.51 │
+│       batch006 │    8.84 │    8.88 │   14.38 │    0.88 │
+│       batch007 │    9.32 │    9.19 │   13.69 │    3.51 │
+│       batch008 │    8.01 │    7.82 │    21.6 │    1.57 │
+│       batch009 │     8.3 │    8.62 │   13.32 │    0.09 │
+└────────────────┴─────────┴─────────┴─────────┴─────────┘
+</pre>
+
 
 
 

@@ -677,44 +677,33 @@ div.title {text-align: center;}
 <pre class='hljl'>
 <span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Pkg</span><span class='hljl-oB'>.</span><span class='hljl-n'>TOML</span><span class='hljl-oB'>:</span><span class='hljl-t'> </span><span class='hljl-n'>parsefile</span><span class='hljl-t'>
 </span><span class='hljl-n'>files</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>parsefile</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/data.toml&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
-</span><span class='hljl-n'>println</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>keys</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>))</span>
+</span><span class='hljl-nf'>keys</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>)</span>
 </pre>
 
 
 <pre class="output">
-tables
-filemaker
-figures
-title
-authors
-description
-notebooks
-7-element Array&#123;Nothing,1&#125;:
- nothing
- nothing
- nothing
- nothing
- nothing
- nothing
- nothing
+Base.KeySet for a Dict&#123;String,Any&#125; with 7 entries. Keys:
+  &quot;tables&quot;
+  &quot;filemaker&quot;
+  &quot;figures&quot;
+  &quot;title&quot;
+  &quot;authors&quot;
+  &quot;description&quot;
+  &quot;notebooks&quot;
 </pre>
 
 
 
 <pre class='hljl'>
-<span class='hljl-nd'>@show</span><span class='hljl-t'> </span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;description&quot;</span><span class='hljl-p'>]</span>
+<span class='hljl-nf'>print</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;description&quot;</span><span class='hljl-p'>])</span>
 </pre>
 
 
 <pre class="output">
-files&#91;&quot;description&quot;&#93; &#61; &quot;This file contains machine-readable information abo
-ut data files and repositories &#40;eg DataDeps&#41; used in these notebooks. Where
-ver possible, these data are in publically accessible locations, though som
-e data are sensitive and are therefore restricted.\n              &quot;
-&quot;This file contains machine-readable information about data files and repos
-itories &#40;eg DataDeps&#41; used in these notebooks. Wherever possible, these dat
-a are in publically accessible locations, though some data are sensitive an
-d are therefore restricted.\n              &quot;
+This file contains machine-readable information about data files and reposi
+tories &#40;eg DataDeps&#41; used in these notebooks. Wherever possible, these data
+ are in publically accessible locations, though some data are sensitive and
+ are therefore restricted.
 </pre>
 
 
@@ -731,43 +720,20 @@ d are therefore restricted.\n              &quot;
 </span><span class='hljl-n'>allmeta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>File</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;filemakerdb&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrame</span><span class='hljl-t'>
 
 </span><span class='hljl-cs'># show ~10 random rows</span><span class='hljl-t'>
-</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>.&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>pretty_table</span>
+</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>.&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span>
 </pre>
 
 
-<pre class="output">
-┌───────────────────────┬───────────┬──────────────────────────────┬───────
-─────────────────┬──────────────────────┐
-│               studyID │ timepoint │                    metadatum │       
-           value │         parent_table │
-│ Union&#123;Missing, Int64&#125; │     Int64 │                       String │ Union&#123;
-Missing, String&#125; │               String │
-├───────────────────────┼───────────┼──────────────────────────────┼───────
-─────────────────┼──────────────────────┤
-│                   254 │         6 │                       height │       
-            50.5 │ ChildBodyComposition │
-│                    90 │         2 │ mullen_ExpressiveLanguageRaw │       
-              37 │               Mullen │
-│                   179 │         1 │ mullen_ExpressiveLanguageRaw │       
-              50 │               Mullen │
-│                   171 │         4 │          ConversionKilograms │       
-         missing │        TimepointInfo │
-│                   119 │         2 │      fatherHeadCircumference │       
-         missing │        TimepointInfo │
-│                   790 │         2 │                raterInitials │       
-         missing │        TimepointInfo │
-│                   624 │         2 │             uniqueValidation │       
-           62402 │        TimepointInfo │
-└───────────────────────┴───────────┴──────────────────────────────┴───────
-─────────────────┴──────────────────────┘
-</pre>
 
+<table class="data-frame"><thead><tr><th></th><th>studyID</th><th>timepoint</th><th>metadatum</th><th>value</th><th>parent_table</th></tr><tr><th></th><th>Int64⍰</th><th>Int64</th><th>String</th><th>String⍰</th><th>String</th></tr></thead><tbody><p>10 rows × 5 columns</p><tr><th>1</th><td>141</td><td>0</td><td>ChildDemQ3</td><td>missing</td><td>BasicFamilyAndChild</td></tr><tr><th>2</th><td>55</td><td>0</td><td>DemographicsWhichForm</td><td>missing</td><td>BasicFamilyAndChild</td></tr><tr><th>3</th><td>28</td><td>0</td><td>HCDateReported</td><td>missing</td><td>BasicFamilyAndChild</td></tr><tr><th>4</th><td>1008</td><td>0</td><td>HCDateReported</td><td>missing</td><td>BasicFamilyAndChild</td></tr><tr><th>5</th><td>200</td><td>0</td><td>solidFoodTimes</td><td>missing</td><td>BreastfeedingDone</td></tr><tr><th>6</th><td>732</td><td>1</td><td>CM</td><td>3.09</td><td>TimepointInfo</td></tr><tr><th>7</th><td>442</td><td>3</td><td>fatherHeadCircumference</td><td>missing</td><td>TimepointInfo</td></tr><tr><th>8</th><td>465</td><td>3</td><td>GA_days</td><td>missing</td><td>TimepointInfo</td></tr><tr><th>9</th><td>833</td><td>1</td><td>scanAgeMonths</td><td>missing</td><td>TimepointInfo</td></tr><tr><th>10</th><td>593</td><td>1</td><td>vocabulary_Raw</td><td>9</td><td>Wisc_V</td></tr></tbody></table>
 
-<p>Alternatively, we can use the <a href="@ref"><code>load_metadata</code></a> function.</p>
+<p>Alternatively, we can use the <code>load_metadata</code> function.</p>
 
 
 <pre class='hljl'>
 <span class='hljl-n'>allmeta_startup</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_metadata</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;filemakerdb&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># these would throw errors if false</span><span class='hljl-t'>
 </span><span class='hljl-nd'>@assert</span><span class='hljl-t'> </span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>==</span><span class='hljl-t'> </span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta_startup</span><span class='hljl-p'>)</span><span class='hljl-t'>
 </span><span class='hljl-nd'>@assert</span><span class='hljl-t'> </span><span class='hljl-nf'>size</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>==</span><span class='hljl-t'> </span><span class='hljl-nf'>size</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta_startup</span><span class='hljl-p'>)</span>
 </pre>
@@ -778,14 +744,11 @@ Missing, String&#125; │               String │
 
 
 <pre class='hljl'>
-<span class='hljl-nd'>@show</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>.==</span><span class='hljl-t'> </span><span class='hljl-ni'>0</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>unique</span>
+<span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>.==</span><span class='hljl-t'> </span><span class='hljl-ni'>0</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>unique</span>
 </pre>
 
 
 <pre class="output">
-allmeta&#91;allmeta&#91;:timepoint&#93; .&#61;&#61; 0, :parent_table&#93; |&gt; unique &#61; &#91;&quot;BasicFamily
-AndChild&quot;, &quot;BreastfeedingDone&quot;, &quot;Delivery&quot;, &quot;Parent_Demographics&quot;, &quot;WeightH
-eight&quot;&#93;
 5-element Array&#123;String,1&#125;:
  &quot;BasicFamilyAndChild&quot;
  &quot;BreastfeedingDone&quot;  
@@ -840,7 +803,7 @@ lumns with &#96;missing&#96;
 
 </span><span class='hljl-cs'># Convert to longform</span><span class='hljl-t'>
 </span><span class='hljl-n'>brainvol</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>stack</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:white_matter_volume</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:grey_matter_volume</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:csf_volume</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>variable_name</span><span class='hljl-oB'>=:</span><span class='hljl-n'>metadatum</span><span class='hljl-p'>)</span><span class='hljl-t'>
-</span><span class='hljl-nf'>pretty_table</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>)</span>
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>)</span>
 </pre>
 
 
@@ -3785,7 +3748,7 @@ lumns with &#96;missing&#96;
 </span><span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>getfield</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>brainsid</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:sample</span><span class='hljl-p'>)</span><span class='hljl-t'>
 </span><span class='hljl-n'>brainvol</span><span class='hljl-p'>[</span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;brainVolume&quot;</span><span class='hljl-t'>
 
-</span><span class='hljl-nf'>pretty_table</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>)</span>
+</span><span class='hljl-nf'>randrows</span><span class='hljl-p'>(</span><span class='hljl-n'>brainvol</span><span class='hljl-p'>)</span>
 </pre>
 
 
@@ -9641,13 +9604,9 @@ inVolume │
 
 </span><span class='hljl-cs'># convert to longform</span><span class='hljl-t'>
 </span><span class='hljl-n'>subcortical</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>melt</span><span class='hljl-p'>(</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>variable_name</span><span class='hljl-oB'>=:</span><span class='hljl-n'>metadatum</span><span class='hljl-p'>)</span><span class='hljl-t'>
-</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;subcorticalVolumes&quot;</span>
+</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:parent_table</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;subcorticalVolumes&quot;</span><span class='hljl-p'>;</span>
 </pre>
 
-
-<pre class="output">
-&quot;subcorticalVolumes&quot;
-</pre>
 
 
 <p>We can only concatenate tables if they all have the same columns, so I&#39;ll add a <code>sampleID</code> to all of the other observations to match what&#39;s in <code>samples</code>. The fecal sample <code>sampleID</code>s are build from the subjectID and timepoint, so I&#39;ll do the same for other observations</p>
@@ -9668,33 +9627,9 @@ inVolume │
 
 </span><span class='hljl-n'>subcortical</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sampleID</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'>
         </span><span class='hljl-s'>&quot;C&quot;</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-nf'>lpad</span><span class='hljl-p'>(</span><span class='hljl-nf'>string</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:studyID</span><span class='hljl-p'>]),</span><span class='hljl-t'> </span><span class='hljl-ni'>4</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;0&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>*</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;_</span><span class='hljl-si'>$</span><span class='hljl-p'>(</span><span class='hljl-nf'>Int</span><span class='hljl-p'>(</span><span class='hljl-nf'>floor</span><span class='hljl-p'>(</span><span class='hljl-n'>r</span><span class='hljl-p'>[</span><span class='hljl-sc'>:timepoint</span><span class='hljl-p'>])))</span><span class='hljl-s'>M&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
-        </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>))</span>
+        </span><span class='hljl-nf'>eachrow</span><span class='hljl-p'>(</span><span class='hljl-n'>subcortical</span><span class='hljl-p'>));</span>
 </pre>
 
-
-<pre class="output">
-739-element Array&#123;String,1&#125;:
- &quot;C0001_2M&quot;
- &quot;C0003_2M&quot;
- &quot;C0004_3M&quot;
- &quot;C0004_4M&quot;
- &quot;C0005_3M&quot;
- &quot;C0011_2M&quot;
- &quot;C0016_2M&quot;
- &quot;C0016_3M&quot;
- &quot;C0017_2M&quot;
- &quot;C0018_2M&quot;
- ⋮         
- &quot;C0730_1M&quot;
- &quot;C0743_1M&quot;
- &quot;C0763_1M&quot;
- &quot;C0785_1M&quot;
- &quot;C0810_1M&quot;
- &quot;C0811_1M&quot;
- &quot;C0814_1M&quot;
- &quot;C0873_1M&quot;
- &quot;C0897_1M&quot;
-</pre>
 
 
 <p>And then concatenate all the tables together</p>
@@ -9709,35 +9644,43 @@ inVolume │
 </span><span class='hljl-nf'>disallowmissing!</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>)</span><span class='hljl-t'>
 
 </span><span class='hljl-cs'># show a random assortment of ~ 10 rows</span><span class='hljl-t'>
-</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>.&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>pretty_table</span>
+</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>[</span><span class='hljl-nf'>rand</span><span class='hljl-p'>(</span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>))</span><span class='hljl-t'> </span><span class='hljl-oB'>.&lt;</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-t'> </span><span class='hljl-oB'>/</span><span class='hljl-t'> </span><span class='hljl-nf'>nrow</span><span class='hljl-p'>(</span><span class='hljl-n'>allmeta</span><span class='hljl-p'>),</span><span class='hljl-t'> </span><span class='hljl-oB'>:</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>|&gt;</span><span class='hljl-t'> </span><span class='hljl-n'>randrows</span>
 </pre>
 
 
 <pre class="output">
-┌──────────┬─────────┬───────────┬───────────────────────────┬─────────┬───
-──────────────────┐
-│ sampleID │ studyID │ timepoint │                 metadatum │   value │   
-     parent_table │
-│   String │   Int64 │     Int64 │                       Any │     Any │   
-           String │
-├──────────┼─────────┼───────────┼───────────────────────────┼─────────┼───
-──────────────────┤
-│ C0559_0M │     559 │         0 │     childCorrectedAgeDays │      14 │ Ba
-sicFamilyAndChild │
-│ C0323_0M │     323 │         0 │             timestampAcct │   Admin │   
-BreastfeedingDone │
-│ C0150_0M │     150 │         0 │ postDeliveryComplications │      No │   
-         Delivery │
-│ C0590_1M │     590 │         1 │          correctedScanAge │    1402 │   
-    TimepointInfo │
-│ C0758_3M │     758 │         3 │          correctedScanAge │ missing │   
-    TimepointInfo │
-│ C0914_1M │     914 │         1 │                  scanTime │ missing │   
-    TimepointInfo │
-│ C0017_0M │      17 │         0 │                    height │      39 │   
-     WeightHeight │
-└──────────┴─────────┴───────────┴───────────────────────────┴─────────┴───
-──────────────────┘
+┌──────────┬─────────┬───────────┬────────────────────────┬─────────┬──────
+───────────────┐
+│ sampleID │ studyID │ timepoint │              metadatum │   value │      
+  parent_table │
+│   String │   Int64 │     Int64 │                    Any │     Any │      
+        String │
+├──────────┼─────────┼───────────┼────────────────────────┼─────────┼──────
+───────────────┤
+│ C0907_0M │     907 │         0 │   DemographicsA5bCheck │ missing │ Basic
+FamilyAndChild │
+│ C0540_0M │     540 │         0 │        DemographicsAQ1 │ missing │ Basic
+FamilyAndChild │
+│ C2028_0M │    2028 │         0 │        DemographicsAQ6 │ missing │ Basic
+FamilyAndChild │
+│ C0104_0M │     104 │         0 │  DemographicsCQ4aOther │ missing │ Basic
+FamilyAndChild │
+│ C0684_0M │     684 │         0 │    HCFirstOrSecondHome │ missing │ Basic
+FamilyAndChild │
+│ C0484_0M │     484 │         0 │         solidFoodTimes │ missing │   Bre
+astfeedingDone │
+│ C0255_0M │     255 │         0 │        howLaborInduced │ missing │      
+      Delivery │
+│ C0192_3M │     192 │         3 │ childHeadCircumference │ missing │      
+ TimepointInfo │
+│ C0377_1M │     377 │         1 │                 gender │ missing │      
+ TimepointInfo │
+│ C1083_3M │    1083 │         3 │             letterSent │ missing │      
+ TimepointInfo │
+│ C0341_3M │     341 │         3 │                FRI_SEM │    3.67 │      
+        Wisc_V │
+└──────────┴─────────┴───────────┴────────────────────────┴─────────┴──────
+───────────────┘
 </pre>
 
 
@@ -9759,7 +9702,7 @@ BreastfeedingDone │
 
 
 </span><span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>write</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;all&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>allmeta</span><span class='hljl-p'>);</span><span class='hljl-t'>
-</span><span class='hljl-nd'>@assert</span><span class='hljl-t'> </span><span class='hljl-nf'>isfile</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;all&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>]);</span><span class='hljl-t'> </span><span class='hljl-n'>nothing</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span>
+</span><span class='hljl-nd'>@assert</span><span class='hljl-t'> </span><span class='hljl-nf'>isfile</span><span class='hljl-p'>(</span><span class='hljl-n'>files</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;all&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>])</span>
 </pre>
 
 

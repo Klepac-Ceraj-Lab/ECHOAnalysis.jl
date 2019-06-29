@@ -663,116 +663,330 @@ div.title {text-align: center;}
 
           <h1>Significant bugs</h1>
 <p>Looking at the literature and at the results from previous notebooks.</p>
-<pre><code class="language-@example sigbugs">cd&#40;dirname&#40;@__FILE__&#41;&#41; # hide
-ENV&#91;&quot;GKSwstype&quot;&#93; &#61; &quot;100&quot; # hide
-
-using ECHOAnalysis
-using Pkg.TOML: parsefile
-using DataFrames
-using PrettyTables
-using CSV
-using Microbiome
-using MultivariateStats
-using StatsPlots
-using MicrobiomePlots
-using BiobakeryUtils
-using ColorBrewer
-using Clustering
 
 
-# Setup
+<pre class='hljl'>
+<span class='hljl-n'>ENV</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;GKSwstype&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-s'>&quot;100&quot;</span><span class='hljl-t'> </span><span class='hljl-cs'># hide</span><span class='hljl-t'>
 
-tables &#61; parsefile&#40;&quot;../../data/data.toml&quot;&#41;&#91;&quot;tables&quot;&#93;
-figsdir &#61; parsefile&#40;&quot;../../data/data.toml&quot;&#41;&#91;&quot;figures&quot;&#93;&#91;&quot;path&quot;&#93;
-datafolder &#61; tables&#91;&quot;biobakery&quot;&#93;&#91;&quot;path&quot;&#93;
-metaphlan &#61; tables&#91;&quot;biobakery&quot;&#93;&#91;&quot;metaphlan2&quot;&#93;
-outdir &#61; metaphlan&#91;&quot;analysis_output&quot;&#93;
-isdir&#40;outdir&#41; || mkdir&#40;outdir&#41;
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ECHOAnalysis</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Pkg</span><span class='hljl-oB'>.</span><span class='hljl-n'>TOML</span><span class='hljl-oB'>:</span><span class='hljl-t'> </span><span class='hljl-n'>parsefile</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>DataFrames</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>PrettyTables</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>CSV</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Microbiome</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>MultivariateStats</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>StatsPlots</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>MicrobiomePlots</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>BiobakeryUtils</span>
+</pre>
 
-tax &#61; merge_tables&#40;datafolder, metaphlan&#91;&quot;root&quot;&#93;, metaphlan&#91;&quot;filter&quot;&#93;,
-    suffix&#61;&quot;_profile.tsv&quot;&#41;
 
-# clean up sample names
-names&#33;&#40;tax,
-    map&#40;n-&gt; Symbol&#40;
-        resolve_sampleID&#40;String&#40;n&#41;&#41;&#91;:sample&#93;&#41;,
-        names&#40;tax&#41;
-        &#41;
-    &#41;
+<pre class="julia-error">
+ERROR: Failed to precompile BiobakeryUtils &#91;fa5322f5-bd84-5069-834a-abf3230fb8f8&#93; to /home/kevin/.julia/compiled/v1.1/BiobakeryUtils/N1SNr.ji.
+</pre>
 
-abt &#61; abundancetable&#40;taxfilter&#40;tax&#41;&#41;
-abtg &#61; abundancetable&#40;taxfilter&#40;tax, :genus&#41;&#41;
 
-relativeabundance&#33;&#40;abt&#41;
-relativeabundance&#33;&#40;abtg&#41;
 
-kids_fecal &#61; findall&#40;s-&gt; occursin&#40;r&quot;^C&quot;, s&#91;:sample&#93;&#41; &amp;&amp; occursin&#40;&quot;F&quot;, s&#91;:sample&#93;&#41;,
-                    resolve_sampleID.&#40;samplenames&#40;abt&#41;&#41;&#41;
+<pre class='hljl'>
+<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ColorBrewer</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Clustering</span><span class='hljl-t'>
 
-kidsp &#61; view&#40;abt, sites&#61;kids_fecal&#41;
-kidgn &#61; view&#40;abtg, sites&#61;kids_fecal&#41;
 
-println.&#40;sort&#40;sitenames&#40;kidsp&#41;&#41;&#41;</code></pre>
+</span><span class='hljl-cs'># Setup</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>tables</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>parsefile</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/data.toml&quot;</span><span class='hljl-p'>)[</span><span class='hljl-s'>&quot;tables&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>figsdir</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>parsefile</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/data.toml&quot;</span><span class='hljl-p'>)[</span><span class='hljl-s'>&quot;figures&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>datafolder</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>tables</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;biobakery&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>metaphlan</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>tables</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;biobakery&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;metaphlan2&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-n'>outdir</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>metaphlan</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;analysis_output&quot;</span><span class='hljl-p'>]</span><span class='hljl-t'>
+</span><span class='hljl-nf'>isdir</span><span class='hljl-p'>(</span><span class='hljl-n'>outdir</span><span class='hljl-p'>)</span><span class='hljl-t'> </span><span class='hljl-oB'>||</span><span class='hljl-t'> </span><span class='hljl-nf'>mkdir</span><span class='hljl-p'>(</span><span class='hljl-n'>outdir</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: SystemError &#40;with data/biobakery/metaphlan2&#41;: mkdir: No such file or directory
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>tax</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>merge_tables</span><span class='hljl-p'>(</span><span class='hljl-n'>datafolder</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>metaphlan</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;root&quot;</span><span class='hljl-p'>],</span><span class='hljl-t'> </span><span class='hljl-n'>metaphlan</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;filter&quot;</span><span class='hljl-p'>],</span><span class='hljl-t'>
+    </span><span class='hljl-n'>suffix</span><span class='hljl-oB'>=</span><span class='hljl-s'>&quot;_profile.tsv&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-cs'># clean up sample names</span><span class='hljl-t'>
+</span><span class='hljl-nf'>names!</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-n'>n</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>resolve_sampleID</span><span class='hljl-p'>(</span><span class='hljl-nf'>String</span><span class='hljl-p'>(</span><span class='hljl-n'>n</span><span class='hljl-p'>))[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>]),</span><span class='hljl-t'>
+        </span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-p'>)</span><span class='hljl-t'>
+    </span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>abt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>abundancetable</span><span class='hljl-p'>(</span><span class='hljl-nf'>taxfilter</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: taxfilter not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>abtg</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>abundancetable</span><span class='hljl-p'>(</span><span class='hljl-nf'>taxfilter</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:genus</span><span class='hljl-p'>))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: taxfilter not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>relativeabundance!</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: abt not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>relativeabundance!</span><span class='hljl-p'>(</span><span class='hljl-n'>abtg</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: abtg not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>kids_fecal</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>findall</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-so'>r&quot;^C&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;F&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>]),</span><span class='hljl-t'>
+                    </span><span class='hljl-n'>resolve_sampleID</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: abt not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>kidsp</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-n'>kids_fecal</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: kids_fecal not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>kidgn</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>abtg</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-n'>kids_fecal</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: kids_fecal not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>println</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>sort</span><span class='hljl-p'>(</span><span class='hljl-nf'>sitenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>)))</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: kidsp not defined
+</pre>
+
+
 <h2>Define bugs</h2>
-<pre><code class="language-@example sigbugs">genera &#61; &#91;
-    &quot;Bacillus&quot;,
-    &quot;Bacteroides&quot;,
-    &quot;Bifidobacterium&quot;,
-    &quot;Clostridiaceae&quot;,
-    &quot;Clostridiales&quot;,
-    &quot;Clostridium&quot;,
-    &quot;Enterrococcus&quot;,
-    &quot;Escherichia&quot;,
-    &quot;Lachnospiraceae&quot;,
-    &quot;Streptococcus&quot;,
-    &#93;
 
-species &#61; &#91;
-    &quot;Bacillus_subtilis&quot;,
-    &quot;Escherichia_coli&quot;,
-    &quot;Bifidobacterium_breve&quot;,
-    &quot;Bifidobacterium_longum&quot;,
-    &quot;Bifidobacterium_dentium&quot;,
-    &quot;Bifidobacterium_infantis&quot;,
-    &quot;Bifidobacterium_pseudocatenulatum&quot;
-    &#93;</code></pre>
+
+<pre class='hljl'>
+<span class='hljl-n'>genera</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bacillus&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bacteroides&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bifidobacterium&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Clostridiaceae&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Clostridiales&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Clostridium&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Enterrococcus&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Escherichia&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Lachnospiraceae&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Streptococcus&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-p'>]</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>species</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bacillus_subtilis&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Escherichia_coli&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bifidobacterium_breve&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bifidobacterium_longum&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bifidobacterium_dentium&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bifidobacterium_infantis&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'>
+    </span><span class='hljl-s'>&quot;Bifidobacterium_pseudocatenulatum&quot;</span><span class='hljl-t'>
+    </span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="output">
+7-element Array&#123;String,1&#125;:
+ &quot;Bacillus_subtilis&quot;                
+ &quot;Escherichia_coli&quot;                 
+ &quot;Bifidobacterium_breve&quot;            
+ &quot;Bifidobacterium_longum&quot;           
+ &quot;Bifidobacterium_dentium&quot;          
+ &quot;Bifidobacterium_infantis&quot;         
+ &quot;Bifidobacterium_pseudocatenulatum&quot;
+</pre>
+
+
 <h2>Sample metadata</h2>
-<pre><code class="language-@example sigbugs">meta &#61; getfocusmetadata&#40;tables&#91;&quot;metadata&quot;&#93;&#91;&quot;merged_brain&quot;&#93;&#91;&quot;path&quot;&#93;,
-    collect&#40;samplenames&#40;kidsp&#41;&#41;&#41;
-
-meta&#91;:sample&#93; &#61; &#91;s.sample for s in resolve_sampleID.&#40;samplenames&#40;kidsp&#41;&#41;&#93;
-meta &#61; meta&#91;&#91;:subject,:timepoint,:sample, :correctedAgeDays&#93;&#93;
-
-&#91;collect&#40;occurrences&#40;view&#40;kidgn, species&#61;map&#40;isequal&#40;&quot;Bacteroides&quot;&#41;,
-    featurenames&#40;kidgn&#41;&#41;&#41;&#41;&#41;...&#93;
-
-for g in genera
-    if g in featurenames&#40;kidgn&#41;
-        @info g
-        meta&#91;Symbol&#40;g&#41;&#93; &#61; &#91;collect&#40;occurrences&#40;view&#40;kidgn, species&#61;map&#40;isequal&#40;&quot;Bacteroides&quot;&#41;,
-            featurenames&#40;kidgn&#41;&#41;&#41;&#41;&#41;...&#93;
-    end
-end
-
-for s in species
-    if s in featurenames&#40;kidsp&#41;
-        @info s
-        meta&#91;Symbol&#40;s&#41;&#93; &#61; &#91;collect&#40;occurrences&#40;view&#40;kidsp, species&#61;map&#40;isequal&#40;s&#41;,
-            featurenames&#40;kidsp&#41;&#41;&#41;&#41;&#41;...&#93;
-    end
-end
 
 
-CSV.write&#40;&quot;../../data/sigbugs.csv&quot;, meta&#41;
+<pre class='hljl'>
+<span class='hljl-n'>meta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>getfocusmetadata</span><span class='hljl-p'>(</span><span class='hljl-n'>tables</span><span class='hljl-p'>[</span><span class='hljl-s'>&quot;metadata&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;merged_brain&quot;</span><span class='hljl-p'>][</span><span class='hljl-s'>&quot;path&quot;</span><span class='hljl-p'>],</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>collect</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>)))</span>
+</pre>
 
-metapa &#61; deepcopy&#40;meta&#41;
-for n in names&#40;metapa&#91;5:end&#93;&#41;
-    metapa&#91;n&#93; &#61; Int.&#40;present.&#40;metapa&#91;n&#93;&#41;&#41;
-end
 
-metapa
-CSV.write&#40;&quot;../../data/sigbugs_pa.csv&quot;, meta&#41;
-</code></pre>
+<pre class="julia-error">
+ERROR: KeyError: key &quot;merged_brain&quot; not found
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>meta</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-n'>s</span><span class='hljl-oB'>.</span><span class='hljl-n'>sample</span><span class='hljl-t'> </span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>resolve_sampleID</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>))]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: kidsp not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>meta</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>meta</span><span class='hljl-p'>[[</span><span class='hljl-sc'>:subject</span><span class='hljl-p'>,</span><span class='hljl-oB'>:</span><span class='hljl-n'>timepoint</span><span class='hljl-p'>,</span><span class='hljl-oB'>:</span><span class='hljl-n'>sample</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:correctedAgeDays</span><span class='hljl-p'>]]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: meta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-p'>[</span><span class='hljl-nf'>collect</span><span class='hljl-p'>(</span><span class='hljl-nf'>occurrences</span><span class='hljl-p'>(</span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>species</span><span class='hljl-oB'>=</span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-nf'>isequal</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Bacteroides&quot;</span><span class='hljl-p'>),</span><span class='hljl-t'>
+    </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>)))))</span><span class='hljl-oB'>...</span><span class='hljl-p'>]</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: kidgn not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>g</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>genera</span><span class='hljl-t'>
+    </span><span class='hljl-k'>if</span><span class='hljl-t'> </span><span class='hljl-n'>g</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-nd'>@info</span><span class='hljl-t'> </span><span class='hljl-n'>g</span><span class='hljl-t'>
+        </span><span class='hljl-n'>meta</span><span class='hljl-p'>[</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-n'>g</span><span class='hljl-p'>)]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>collect</span><span class='hljl-p'>(</span><span class='hljl-nf'>occurrences</span><span class='hljl-p'>(</span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>species</span><span class='hljl-oB'>=</span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-nf'>isequal</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Bacteroides&quot;</span><span class='hljl-p'>),</span><span class='hljl-t'>
+            </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>)))))</span><span class='hljl-oB'>...</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: kidgn not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>species</span><span class='hljl-t'>
+    </span><span class='hljl-k'>if</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>)</span><span class='hljl-t'>
+        </span><span class='hljl-nd'>@info</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-t'>
+        </span><span class='hljl-n'>meta</span><span class='hljl-p'>[</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-p'>)]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>collect</span><span class='hljl-p'>(</span><span class='hljl-nf'>occurrences</span><span class='hljl-p'>(</span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>species</span><span class='hljl-oB'>=</span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-nf'>isequal</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-p'>),</span><span class='hljl-t'>
+            </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>)))))</span><span class='hljl-oB'>...</span><span class='hljl-p'>]</span><span class='hljl-t'>
+    </span><span class='hljl-k'>end</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: kidsp not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>write</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/sigbugs.csv&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>meta</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: meta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>metapa</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>deepcopy</span><span class='hljl-p'>(</span><span class='hljl-n'>meta</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: meta not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>n</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-nf'>names</span><span class='hljl-p'>(</span><span class='hljl-n'>metapa</span><span class='hljl-p'>[</span><span class='hljl-ni'>5</span><span class='hljl-oB'>:</span><span class='hljl-k'>end</span><span class='hljl-p'>])</span><span class='hljl-t'>
+    </span><span class='hljl-n'>metapa</span><span class='hljl-p'>[</span><span class='hljl-n'>n</span><span class='hljl-p'>]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>Int</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>present</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>metapa</span><span class='hljl-p'>[</span><span class='hljl-n'>n</span><span class='hljl-p'>]))</span><span class='hljl-t'>
+</span><span class='hljl-k'>end</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: metapa not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>metapa</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: metapa not defined
+</pre>
+
+
+
+<pre class='hljl'>
+<span class='hljl-n'>CSV</span><span class='hljl-oB'>.</span><span class='hljl-nf'>write</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;data/sigbugs_pa.csv&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>meta</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="julia-error">
+ERROR: UndefVarError: meta not defined
+</pre>
+
 
 
 
