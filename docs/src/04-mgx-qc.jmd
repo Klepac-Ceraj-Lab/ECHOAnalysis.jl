@@ -76,7 +76,7 @@ qc = @linq qc |>
             orphan = :final_orphan1 .+ :final_orphan2,
             final = :final_pair1 .+ :final_pair2,
             )
-randrows(qc,[[:Sample, :batch, :raw, :trimmed, :orphan, :final]])
+randrows(qc[[:Sample, :batch, :raw, :trimmed, :orphan, :final]])
 ```
 
 Now let's take a look at them with some plots.
