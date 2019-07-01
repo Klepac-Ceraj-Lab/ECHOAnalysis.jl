@@ -13,7 +13,6 @@ ENV["GKSwstype"] = "100" # hide
 
 using ECHOAnalysis
 using DataFrames
-using PrettyTables
 using Microbiome
 using Distances
 using MultivariateStats
@@ -114,9 +113,7 @@ perm = vcat(perm, p);
 
 filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
 
-# round values in the table output (see https://ronisbr.github.io/PrettyTables.jl/stable/man/formatter/)
-formatter = Dict(0 => (v,i) -> round(v,digits=3));
-randrows(perm, formatter=formatter)
+randrows(perm)
 ```
 
 ### Young kids
@@ -142,7 +139,7 @@ p[:variable] = "young kids formulafed"
 perm = vcat(perm, p)
 
 filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
-randrows(perm, formatter=formatter)
+randrows(perm)
 ```
 
 Still not significant.
@@ -264,7 +261,8 @@ end
 
 plot!(legend=false, title="Taxonomic Profiles PERMANOVA",
     ylabel="% Variance explainable")
-savefig(joinpath(figures, "permanovas.svg"))
 ```
 
-![](data/figures/06/permanovas.svg)
+```julia
+savefig(joinpath(figures, "permanovas.svg"))
+```

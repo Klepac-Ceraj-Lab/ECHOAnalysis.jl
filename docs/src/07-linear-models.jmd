@@ -28,7 +28,7 @@ abt = abundancetable(tax)
 relativeabundance!(abt)
 kids_abt = view(abt, sites=firstkids(samplenames(abt)))
 
-focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)))
+focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)));
 ```
 
 First, we'll use Maaslin2 from the huttenhower lab.
@@ -78,19 +78,19 @@ let version = R"packageVersion('Maaslin2')"
 end
 ```
 
-```julia
+```julia; results="hidden"
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
             $(joinpath(outpath, "kids_white_matter.tsv")),
             $(joinpath(outpath, "species__wm_age_ses_bf_birth")))
-"""
+""";
 ```
 
 We can do this with some other brain data as well:
 
 
-```julia
+```julia; results="hidden"
 greymatterdf = view(focusmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
@@ -109,7 +109,7 @@ fit_data <- Maaslin2(
              $(joinpath(outpath, "kids_species_abundance.tsv")),
              $(joinpath(outpath, "kids_csf.tsv")),
              $(joinpath(outpath, "species__csf_age_ses_bf_birth")))
-"""
+""";
 ```
 
 ## Cognitive Assessments
@@ -177,13 +177,13 @@ describe(focusmeta[:cogAssessment])
 title!("Cognitive Assessment Composite Scores")
 xlabel!("Age (years)")
 ylabel!("Composite Score")
+```
 
+```julia
 savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
 ```
 
-![](data/figures/07/cognitive-scores.svg)
-
-```julia
+```julia; results="hidden"
 cogdf = view(focusmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
@@ -192,6 +192,6 @@ Maaslin2(
      $(joinpath(outpath, "kids_species_abundance.tsv")),
      $(joinpath(outpath, "kids_cog.tsv")),
      $(joinpath(outpath, "species__cog_age_ses_bf_birth")))
-"""
+""";
 
 ```
