@@ -18,12 +18,6 @@ git-tree-sha1 = "07a2c077bdd4b6d23a40342a8a108e2ee5e58ab6"
 uuid = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
 version = "0.3.1"
 
-[[ArrayInterface]]
-deps = ["Requires", "Test"]
-git-tree-sha1 = "6a1a371393e56f5e8d5657fe4da4b11aea0bfbae"
-uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "0.1.1"
-
 [[AssetRegistry]]
 deps = ["Distributed", "JSON", "Pidfile", "SHA", "Test"]
 git-tree-sha1 = "b25e88db7944f98789130d7b503276bc34bc098e"
@@ -623,7 +617,9 @@ version = "2.1.0"
 
 [[RCall]]
 deps = ["CategoricalArrays", "Conda", "DataFrames", "DataStructures", "Dates", "Libdl", "Missings", "REPL", "Random", "Requires", "StatsModels", "WinReg"]
-git-tree-sha1 = "828332205a09377da6a8ebd1e615b11a22f8def6"
+git-tree-sha1 = "b0a0f4044d1ef4f2025ba5593984c99903accbbd"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaInterop/RCall.jl.git"
 uuid = "6f49c342-dc21-5d91-9882-a32aef131414"
 version = "0.13.3"
 
@@ -658,12 +654,6 @@ git-tree-sha1 = "7bdce29bc9b2f5660a6e5e64d64d91ec941f6aa2"
 uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 version = "0.7.0"
 
-[[RecursiveArrayTools]]
-deps = ["ArrayInterface", "RecipesBase", "Requires", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "187ea7dd541955102c7035a6668613bdf52022ca"
-uuid = "731186ca-8d62-57ce-b412-fbd966d074cd"
-version = "0.20.0"
-
 [[Reexport]]
 deps = ["Pkg"]
 git-tree-sha1 = "7b1d07f411bc8ddb7977ec7f377b97b158514fe0"
@@ -697,12 +687,6 @@ uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 [[SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
-
-[[ShiftedArrays]]
-deps = ["OffsetArrays", "RecursiveArrayTools", "Test"]
-git-tree-sha1 = "b1aa84666a23a31cebcdcb848e62428968789287"
-uuid = "1277b4bf-5013-50f5-be3d-901d8477a67a"
-version = "0.5.0"
 
 [[Showoff]]
 deps = ["Dates"]
@@ -760,10 +744,12 @@ uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 version = "0.8.0"
 
 [[StatsModels]]
-deps = ["CategoricalArrays", "DataStructures", "LinearAlgebra", "Missings", "ShiftedArrays", "SparseArrays", "StatsBase", "Tables"]
-git-tree-sha1 = "f08d856086b3639f9948bf2c78f5a1574ba70854"
+deps = ["Compat", "DataFrames", "StatsBase", "Test"]
+git-tree-sha1 = "b5a735dcd2be05f0af86709750d4d5f62ca4a25d"
+repo-rev = "c7250158cf14a5de26bebd9b9d7dec4dbf34e3b7"
+repo-url = "https://github.com/JuliaStats/StatsModels.jl.git"
 uuid = "3eaba693-59b7-5ba5-a881-562e759f1c8d"
-version = "0.6.0"
+version = "0.5.0"
 
 [[StatsPlots]]
 deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "KernelDensity", "Observables", "Plots", "RecipesBase", "Reexport", "StatsBase", "Tables", "Widgets"]
