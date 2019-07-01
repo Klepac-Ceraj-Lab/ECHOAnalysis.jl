@@ -677,20 +677,11 @@ div.title {text-align: center;}
 </span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>MultivariateStats</span><span class='hljl-t'>
 </span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>StatsPlots</span><span class='hljl-t'>
 </span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>MicrobiomePlots</span><span class='hljl-t'>
-</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>BiobakeryUtils</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: Failed to precompile BiobakeryUtils &#91;fa5322f5-bd84-5069-834a-abf3230fb8f8&#93; to /home/kevin/.julia/compiled/v1.1/BiobakeryUtils/N1SNr.ji.
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ColorBrewer</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>BiobakeryUtils</span><span class='hljl-t'>
+</span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>ColorBrewer</span><span class='hljl-t'>
 </span><span class='hljl-k'>using</span><span class='hljl-t'> </span><span class='hljl-n'>Clustering</span><span class='hljl-t'>
 
+</span><span class='hljl-n'>outpath</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>figures</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>notebookpaths!</span><span class='hljl-p'>(</span><span class='hljl-ni'>8</span><span class='hljl-p'>)</span><span class='hljl-t'>
 
 </span><span class='hljl-cs'># Setup</span><span class='hljl-t'>
 
@@ -721,90 +712,434 @@ ERROR: SystemError &#40;with data/biobakery/metaphlan2&#41;: mkdir: No such file
         </span><span class='hljl-p'>)</span><span class='hljl-t'>
     </span><span class='hljl-p'>)</span><span class='hljl-t'>
 
-</span><span class='hljl-n'>abt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>abundancetable</span><span class='hljl-p'>(</span><span class='hljl-nf'>taxfilter</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>))</span>
+</span><span class='hljl-n'>abt</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>abundancetable</span><span class='hljl-p'>(</span><span class='hljl-nf'>taxfilter</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>))</span><span class='hljl-t'>
+</span><span class='hljl-n'>abtg</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>abundancetable</span><span class='hljl-p'>(</span><span class='hljl-nf'>taxfilter</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:genus</span><span class='hljl-p'>))</span><span class='hljl-t'>
+
+</span><span class='hljl-nf'>relativeabundance!</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-nf'>relativeabundance!</span><span class='hljl-p'>(</span><span class='hljl-n'>abtg</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>kids_fecal</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>findall</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-so'>r&quot;^C&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;F&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>]),</span><span class='hljl-t'>
+                    </span><span class='hljl-n'>resolve_sampleID</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)))</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>kidsp</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-n'>kids_fecal</span><span class='hljl-p'>)</span><span class='hljl-t'>
+</span><span class='hljl-n'>kidgn</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>abtg</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-n'>kids_fecal</span><span class='hljl-p'>)</span><span class='hljl-t'>
+
+</span><span class='hljl-n'>println</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>sort</span><span class='hljl-p'>(</span><span class='hljl-nf'>sitenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>)))</span>
 </pre>
 
 
-<pre class="julia-error">
-ERROR: UndefVarError: taxfilter not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-n'>abtg</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>abundancetable</span><span class='hljl-p'>(</span><span class='hljl-nf'>taxfilter</span><span class='hljl-p'>(</span><span class='hljl-n'>tax</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-sc'>:genus</span><span class='hljl-p'>))</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: taxfilter not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-nf'>relativeabundance!</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: abt not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-nf'>relativeabundance!</span><span class='hljl-p'>(</span><span class='hljl-n'>abtg</span><span class='hljl-p'>)</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: abtg not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-n'>kids_fecal</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>findall</span><span class='hljl-p'>(</span><span class='hljl-n'>s</span><span class='hljl-oB'>-&gt;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-so'>r&quot;^C&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>])</span><span class='hljl-t'> </span><span class='hljl-oB'>&amp;&amp;</span><span class='hljl-t'> </span><span class='hljl-nf'>occursin</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;F&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>s</span><span class='hljl-p'>[</span><span class='hljl-sc'>:sample</span><span class='hljl-p'>]),</span><span class='hljl-t'>
-                    </span><span class='hljl-n'>resolve_sampleID</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>samplenames</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>)))</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: abt not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-n'>kidsp</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>abt</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-n'>kids_fecal</span><span class='hljl-p'>)</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: kids_fecal not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-n'>kidgn</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>abtg</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>sites</span><span class='hljl-oB'>=</span><span class='hljl-n'>kids_fecal</span><span class='hljl-p'>)</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: kids_fecal not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-n'>println</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-nf'>sort</span><span class='hljl-p'>(</span><span class='hljl-nf'>sitenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidsp</span><span class='hljl-p'>)))</span>
-</pre>
-
-
-<pre class="julia-error">
-ERROR: UndefVarError: kidsp not defined
+<pre class="output">
+C0005_3F_1A
+C0016_3F_1A
+C0016_3F_2A
+C0017_2F_1A
+C0017_2F_2A
+C0032_9F_1A
+C0043_7F_1A
+C0043_8F_1A
+C0047_7F_1A
+C0052_5F_1A
+C0052_7F_1A
+C0053_6F_1A
+C0053_8F_1A
+C0058_4F_1A
+C0061_6F_1A
+C0061_6F_2A
+C0062_6F_1A
+C0062_6F_2A
+C0062_7F_1A
+C0066_6F_1A
+C0066_6F_1B
+C0066_6F_2A
+C0066_7F_1A
+C0067_6F_1A
+C0067_7F_1A
+C0076_8F_1A
+C0078_3F_1A
+C0082_4F_1A
+C0082_5F_1A
+C0089_3F_1A
+C0093_3F_1A
+C0093_3F_2A
+C0106_6F_1A
+C0107_4F_1A
+C0107_4F_2A
+C0108_4F_1A
+C0110_7F_1A
+C0111_6F_1A
+C0117_4F_1A
+C0117_4F_1B
+C0117_4F_2A
+C0117_5F_1A
+C0119_3F_1A
+C0119_3F_2A
+C0123_3F_1A
+C0124_3F_1A
+C0126_8F_1A
+C0126_8F_1B
+C0126_9F_1A
+C0127_6F_1B
+C0127_7F_1A
+C0132_4F_1A
+C0132_4F_2A
+C0142_6F_1A
+C0142_6F_2A
+C0159_5F_1A
+C0159_5F_2A
+C0175_2F_1A
+C0179_4F_1A
+C0179_4F_2A
+C0188_5F_1A
+C0188_5F_2A
+C0189_5F_1A
+C0189_5F_2A
+C0192_4F_1A
+C0193_3F_1A
+C0193_3F_2A
+C0194_4F_1A
+C0194_4F_2A
+C0196_5F_1A
+C0196_5F_2A
+C0200_2F_1A
+C0201_5F_1A
+C0201_5F_2A
+C0202_4F_1A
+C0202_4F_2A
+C0202_6F_1A
+C0202_6F_2A
+C0229_4F_1A
+C0229_4F_2A
+C0229_5F_1A
+C0237_4F_1A
+C0240_3F_1A
+C0240_3F_2A
+C0240_4F_1A
+C0249_4F_1A
+C0252_7F_1A
+C0253_7F_1A
+C0254_5F_1A
+C0254_5F_2A
+C0258_3F_1A
+C0258_3F_2A
+C0277_2F_1A
+C0286_5F_1A
+C0286_6F_1A
+C0296_5F_1A
+C0296_6F_1A
+C0307_4F_1A
+C0308_5F_1A
+C0308_5F_2A
+C0312_7F_1A
+C0325_5F_1A
+C0332_4F_1A
+C0337_3F_1A
+C0337_3F_2A
+C0348_3F_1A
+C0364_2F_1A
+C0364_2F_2A
+C0385_4F_1A
+C0388_7F_1A
+C0402_3F_1A
+C0403_3F_1A
+C0403_3F_2A
+C0404_3F_1A
+C0404_3F_2A
+C0405_6F_1A
+C0420_4F_1A
+C0420_4F_2A
+C0421_6F_1A
+C0426_5F_1A
+C0429_4F_1A
+C0450_2F_1A
+C0450_2F_2A
+C0451_2F_1A
+C0460_4F_1A
+C0461_4F_1A
+C0469_2F_1A
+C0470_2F_1A
+C0476_3F_1A
+C0476_3F_2A
+C0477_3F_1A
+C0479_3F_1A
+C0479_3F_2A
+C0479_4F_1A
+C0482_3F_1A
+C0493_2F_1A
+C0494_2F_1A
+C0495_2F_1A
+C0498_1F_1A
+C0498_1F_2A
+C0499_1F_1A
+C0499_1F_1B
+C0499_1F_2A
+C0499_2F_1A
+C0505_1F_1A
+C0505_2F_1A
+C0506_1F_1A
+C0506_1F_2A
+C0506_2F_1A
+C0507_1F_1A
+C0507_1F_2A
+C0507_2F_1A
+C0509_1F_1B
+C0509_1F_2A
+C0511_1F_1A
+C0511_1F_2A
+C0511_1F_2B
+C0511_2F_1A
+C0512_2F_1A
+C0514_1F_1A
+C0514_1F_2A
+C0516_1F_1A
+C0516_1F_2A
+C0516_1F_2B
+C0516_2F_1A
+C0517_1F_1A
+C0517_1F_2A
+C0518_2F_1A
+C0520_1F_1A
+C0520_1F_2A
+C0521_1F_1A
+C0521_1F_2A
+C0524_3F_1A
+C0526_2F_1A
+C0530_1F_1A
+C0530_1F_2A
+C0530_2F_1A
+C0537_1F_1A
+C0537_1F_2A
+C0537_2F_1A
+C0539_1F_1A
+C0541_1F_1A
+C0541_1F_2A
+C0541_2F_1A
+C0544_1F_1A
+C0544_1F_2A
+C0547_1F_1A
+C0547_1F_2A
+C0547_2F_1A
+C0550_1F_1A
+C0550_1F_2A
+C0550_3F_1A
+C0551_1F_1A
+C0551_1F_2A
+C0552_1F_1A
+C0552_1F_2A
+C0554_1F_1A
+C0554_1F_2A
+C0556_2F_1A
+C0557_1F_1A
+C0567_2F_1A
+C0568_1F_1A
+C0569_1F_1A
+C0569_1F_2A
+C0570_1F_1A
+C0570_1F_2A
+C0575_2F_1A
+C0576_2F_1A
+C0577_1F_1A
+C0577_1F_2A
+C0578_1F_1A
+C0578_1F_2A
+C0579_1F_1A
+C0579_1F_2A
+C0583_1F_1A
+C0583_2F_1A
+C0586_1F_1A
+C0589_1F_1A
+C0589_1F_2A
+C0590_1F_1A
+C0590_1F_2A
+C0591_1F_1A
+C0591_1F_2A
+C0592_1F_1A
+C0593_1F_1A
+C0594_1F_1A
+C0594_1F_2A
+C0595_1F_1A
+C0595_1F_2A
+C0595_2F_1A
+C0596_1F_1A
+C0596_1F_2A
+C0597_1F_1A
+C0597_1F_2A
+C0600_1F_1A
+C0601_1F_1A
+C0601_1F_2A
+C0603_1F_1A
+C0603_1F_2A
+C0603_4F_1A
+C0607_1F_1A
+C0608_1F_1A
+C0610_1F_1A
+C0611_1F_1A
+C0615_1F_1A
+C0615_1F_2A
+C0620_1F_1A
+C0620_1F_2A
+C0621_1F_1A
+C0621_1F_2A
+C0623_1F_1A
+C0624_1F_1A
+C0624_1F_2A
+C0627_1F_1A
+C0627_1F_2A
+C0631_1F_1A
+C0631_1F_2A
+C0633_1F_1A
+C0633_1F_2A
+C0633_2F_1A
+C0634_1F_1A
+C0634_1F_2A
+C0634_1F_3A
+C0635_1F_1A
+C0635_1F_2A
+C0636_1F_1A
+C0636_1F_2A
+C0637_1F_1A
+C0638_1F_1A
+C0638_1F_2A
+C0639_1F_1A
+C0639_1F_2A
+C0641_1F_1A
+C0641_1F_2A
+C0642_1F_1A
+C0643_1F_1A
+C0643_1F_2A
+C0643_2F_1A
+C0647_4F_1A
+C0648_1F_1A
+C0648_1F_2A
+C0649_2F_1A
+C0654_2F_1A
+C0655_1F_1A
+C0655_1F_2A
+C0656_4F_1A
+C0656_5F_1A
+C0660_1F_1A
+C0660_1F_2A
+C0660_2F_1A
+C0661_1F_1A
+C0661_1F_2A
+C0661_2F_1A
+C0665_1F_1A
+C0665_1F_2A
+C0672_2F_1A
+C0673_1F_1A
+C0673_1F_2A
+C0674_3F_1A
+C0679_1F_1A
+C0682_3F_1A
+C0683_1F_1A
+C0683_1F_2A
+C0684_4F_1A
+C0686_1F_1A
+C0686_1F_2A
+C0688_1F_1A
+C0690_1F_1A
+C0692_3F_1A
+C0692_4F_1A
+C0693_1F_1A
+C0694_1F_1A
+C0698_1F_1A
+C0698_2F_1A
+C0699_4F_1A
+C0703_4F_1A
+C0704_1F_1A
+C0704_1F_2A
+C0711_4F_1A
+C0711_5F_1A
+C0713_4F_1A
+C0720_1F_1A
+C0723_3F_1A
+C0724_1F_1A
+C0725_1F_1A
+C0730_1F_1A
+C0735_1F_1A
+C0739_2F_1A
+C0742_3F_1A
+C0743_1F_1A
+C0744_4F_1A
+C0747_1F_1A
+C0752_4F_1A
+C0754_2F_1A
+C0754_3F_1A
+C0767_1F_1A
+C0768_1F_1A
+C0784_1F_1A
+C0785_1F_1A
+C0788_1F_1A
+C0788_2F_1A
+C0789_1F_1A
+C0789_2F_1A
+C0798_1F_1A
+C0799_1F_1A
+C0802_1F_1A
+C0811_1F_1A
+C0812_1F_1A
+C0814_1F_1A
+C0825_1F_1A
+C0826_1F_1A
+C0827_1F_1A
+C0828_4F_1A
+C0830_1F_1A
+C0834_4F_1A
+C0835_1F_1A
+C0837_1F_1A
+C0839_4F_1A
+C0840_1F_1A
+C0841_1F_1A
+C0851_4F_1A
+C0852_1F_1A
+C0853_1F_1A
+C0856_1F_1A
+C0859_1F_1A
+C0860_1F_1A
+C0861_1F_1A
+C0871_1F_1A
+C0879_1F_1A
+C0887_1F_1A
+C0902_1F_1A
+C0920_1F_1A
+C0921_1F_1A
+C0925_1F_1A
+C0930_1F_1A
+C0936_1F_1A
+C1009_1F_1A
+C1026_1F_1A
+C1034_1F_1A
+C1062_3F_1A
+C1075_1F_1A
+C1089_1F_1A
+C1090_1F_1A
+C1102_1F_1A
+C2014_2F_1A
+C2014_3F_1A
+C2018_1F_1A
+C2018_1F_2A
+C2018_3F_1A
+C2018_4F_1A
+390-element Array&#123;Nothing,1&#125;:
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ ⋮      
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
+ nothing
 </pre>
 
 
@@ -870,7 +1205,7 @@ ERROR: KeyError: key &quot;merged_brain&quot; not found
 
 
 <pre class="julia-error">
-ERROR: UndefVarError: kidsp not defined
+ERROR: UndefVarError: meta not defined
 </pre>
 
 
@@ -888,18 +1223,9 @@ ERROR: UndefVarError: meta not defined
 
 <pre class='hljl'>
 <span class='hljl-p'>[</span><span class='hljl-nf'>collect</span><span class='hljl-p'>(</span><span class='hljl-nf'>occurrences</span><span class='hljl-p'>(</span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>species</span><span class='hljl-oB'>=</span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-nf'>isequal</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Bacteroides&quot;</span><span class='hljl-p'>),</span><span class='hljl-t'>
-    </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>)))))</span><span class='hljl-oB'>...</span><span class='hljl-p'>]</span>
-</pre>
+    </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>)))))</span><span class='hljl-oB'>...</span><span class='hljl-p'>]</span><span class='hljl-t'>
 
-
-<pre class="julia-error">
-ERROR: UndefVarError: kidgn not defined
-</pre>
-
-
-
-<pre class='hljl'>
-<span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>g</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>genera</span><span class='hljl-t'>
+</span><span class='hljl-k'>for</span><span class='hljl-t'> </span><span class='hljl-n'>g</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-n'>genera</span><span class='hljl-t'>
     </span><span class='hljl-k'>if</span><span class='hljl-t'> </span><span class='hljl-n'>g</span><span class='hljl-t'> </span><span class='hljl-kp'>in</span><span class='hljl-t'> </span><span class='hljl-nf'>featurenames</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>)</span><span class='hljl-t'>
         </span><span class='hljl-nd'>@info</span><span class='hljl-t'> </span><span class='hljl-n'>g</span><span class='hljl-t'>
         </span><span class='hljl-n'>meta</span><span class='hljl-p'>[</span><span class='hljl-nf'>Symbol</span><span class='hljl-p'>(</span><span class='hljl-n'>g</span><span class='hljl-p'>)]</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-nf'>collect</span><span class='hljl-p'>(</span><span class='hljl-nf'>occurrences</span><span class='hljl-p'>(</span><span class='hljl-nf'>view</span><span class='hljl-p'>(</span><span class='hljl-n'>kidgn</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>species</span><span class='hljl-oB'>=</span><span class='hljl-nf'>map</span><span class='hljl-p'>(</span><span class='hljl-nf'>isequal</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Bacteroides&quot;</span><span class='hljl-p'>),</span><span class='hljl-t'>
@@ -910,7 +1236,7 @@ ERROR: UndefVarError: kidgn not defined
 
 
 <pre class="julia-error">
-ERROR: UndefVarError: kidgn not defined
+ERROR: UndefVarError: meta not defined
 </pre>
 
 
@@ -927,7 +1253,7 @@ ERROR: UndefVarError: kidgn not defined
 
 
 <pre class="julia-error">
-ERROR: UndefVarError: kidsp not defined
+ERROR: UndefVarError: meta not defined
 </pre>
 
 
@@ -994,7 +1320,7 @@ ERROR: UndefVarError: meta not defined
           <div class="footer"><p>
           Published from <a href="08-significant-bugs.jmd">08-significant-bugs.jmd</a> using
           <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
-           on 2019-06-28.
+           on 2019-07-01.
           <p></div>
 
 

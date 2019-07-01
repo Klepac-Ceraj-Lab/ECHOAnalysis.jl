@@ -98,29 +98,38 @@ path = "data/figures"
 [notebooks]
 
     [notebooks.01]
+    filepath = "docs/src/01-data-sources.jmd"
     output = "data/notebooks/01"
     figures = "data/figures/01"
     [notebooks.02]
+    filepath = "docs/src/02-metadata-merging.jmd"
     output = "data/notebooks/02"
     figures = "data/figures/02"
     [notebooks.03]
+    filepath = "docs/src/03-metadata-analysis.jmd"
     output = "data/notebooks/03"
     figures = "data/figures/03"
     [notebooks.04]
+    filepath = "docs/src/04-mgx-qc.jmd"
     output = "data/notebooks/04"
     figures = "data/figures/04"
     [notebooks.05]
+    filepath = "docs/src/05-mgx-taxonomic-profiles.jmd"
     output = "data/notebooks/05"
     figures = "data/figures/05"
     [notebooks.06]
+    filepath = "docs/src/06-omnibus-tests.jmd"
     output = "data/notebooks/06"
     figures = "data/figures/06"
     [notebooks.07]
+    filepath = "docs/src/07-linear-models.jmd"
     output = "data/notebooks/07"
     figures = "data/figures/07"
     [notebooks.08]
+    filepath = "docs/src/08-significant-bugs.jmd"
     output = "data/notebooks/08"
     figures = "data/figures/08"
     [notebooks.09]
+    filepath = "docs/src/09-"
     output = "data/notebooks/09"
     figures = "data/figures/09"

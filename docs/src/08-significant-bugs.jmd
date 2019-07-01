@@ -19,6 +19,7 @@ using BiobakeryUtils
 using ColorBrewer
 using Clustering
 
+outpath, figures = notebookpaths!(8)
 
 # Setup
 

@@ -21,6 +21,8 @@ using StatsPlots
 using CSV
 using BiobakeryUtils
 
+outpath, figures = notebookpaths!(6)
+
 tax = load_taxonomic_profiles()
 abt = abundancetable(tax)
 relativeabundance!(abt)
@@ -231,7 +233,6 @@ sort!(perm, :q_value)
 # reorder columns
 perm = perm[[:feature, :variable, :R2, :p_value, :q_value]]
 
-outpath, figures = notebookpaths!(@__FILE__)
 CSV.write(joinpath(outpath, "permanovas.csv"), perm)
 ```
 

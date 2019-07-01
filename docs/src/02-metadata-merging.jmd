@@ -102,7 +102,7 @@ randrows(brainvol)
 ```
 
 We need to fix the studyIDs - the letters represent timepoints -
-using the [`resolve_letter_timepoint`](@ref) function.
+using the `resolve_letter_timepoint` function.
 
 ```julia
 # convert letter timepoint into number
@@ -116,7 +116,7 @@ brainvol[:timepoint] = getfield.(brainsid, :timepoint)
 brainvol[:sampleID] = getfield.(brainsid, :sample)
 brainvol[:parent_table] = "brainVolume"
 
-brainvol
+randrows(brainvol)
 ```
 
 And now the same thing for the cortical and subcortical volume tables:

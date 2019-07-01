@@ -40,11 +40,10 @@ function load_metadata(datatoml, metadatakey="all"; samples::Union{Nothing,Vecto
     end
 end
 
-function notebookpaths!(file)
-    num, name = string.(match(r"^(\d+)-(.+)\.j?md$", basename(file)).captures)
+function notebookpaths!(notebook)
+    num = lpad(string(notebook), 2, "0")
     outpath = datatoml["notebooks"][num]["output"]
     figurepath = datatoml["notebooks"][num]["figures"]
-
     isdir(outpath) || mkdir(outpath)
     isdir(figurepath) || mkdir(figurepath)
     return outpath, figurepath

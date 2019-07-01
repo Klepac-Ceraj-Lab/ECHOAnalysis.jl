@@ -20,7 +20,7 @@ using BiobakeryUtils
 using Clustering
 using CSV
 
-outpath, figures = notebookpaths!(@__FILE__)
+outpath, figures = notebookpaths!(7)
 
 tax = load_taxonomic_profiles()
 taxfilter!(tax, :species)

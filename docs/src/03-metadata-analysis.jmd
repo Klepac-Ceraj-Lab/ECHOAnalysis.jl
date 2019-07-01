@@ -6,22 +6,19 @@ Now that we have the metadata in long form,
 it's a bit easier to query it for the stuff we want.
 I'm using the macros available from the [DataFramesMeta](https://github.com/JuliaData/DataFramesMeta.jl) package.
 
+```julia
+ENV["GKSwstype"] = "100"
+using ECHOAnalysis
+using DataFrames
+using DataFramesMeta
+using StatsPlots
+
+allmeta = load_metadata(datatoml);
+```
+
 As an example, how many unique subjects do we have at least one sample for?
 
 ```julia
-
-ENV["GKSwstype"] = "100" # hide
-using ECHOAnalysis # hide
-```
-
-```julia
-using DataFrames
-using DataFramesMeta
-using PrettyTables
-using StatsPlots
-
-allmeta = load_metadata(datatoml)
-
 @linq allmeta |>
     select(:studyID) |>
     unique |> nrow

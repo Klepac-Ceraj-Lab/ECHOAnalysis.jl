@@ -21,7 +21,7 @@ using BiobakeryUtils
 using Distances
 using Clustering
 
-outpath, figures = notebookpaths!(@__FILE__)
+outpath, figures = notebookpaths!(5)
 
 tax = load_taxonomic_profiles()
 randrows(first(tax, 10))
@@ -83,7 +83,7 @@ as principle coordinates analysis).
 dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
 
-include("pcoa_recipe.jl") # this won't be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
+include("src/pcoa_recipe.jl") # this won't be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
 
 plot(mds, primary=false)
 ```

@@ -68,4 +68,4 @@ function merge_tables(folder, dataroot, fltr; suffix=fltr)
 end
 
 
-const toml = parsefile("data/data.toml")
+const datatoml = parsefile("data/data.toml")
