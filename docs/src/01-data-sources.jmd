@@ -12,6 +12,8 @@ Raw data for this paper can be found here **link to OSF repo**
 In order to perform the analyses outlined in the notebooks in this project,
 **description of DataDeps**
 
+**_Don't forget to update this section_**
+
 ## Metadata
 
 Patient metadata is kept in a FileMaker Pro database,
@@ -25,6 +27,8 @@ First, make sure all records are being displayed
 by clicking the `Show All` button (if it is not greyed out).
 
 ![Show all button](img/01.showall.png)
+
+**None of the png images in this section appear on the html**
 
 Next, export desired sections as an excel file.
 The following demonstrates the steps
@@ -54,10 +58,13 @@ to get the metadata associated with timepoints,
 
 ### Metadata Scrub
 
-Once you have a this file,
+Once you have this file,
 run the `metascrub.jl` script contained in the `bin/` folder.
-This script does a few things. First, it separates each parent table
+This script does a few things.
+
+First, it separates each parent table
 (that is, the stuff before the `::`, eg `TimepointInfo`).
+
 Second, it removes empty columns and rows
 (that is, columns and rows that have only missing values).
 
@@ -75,6 +82,8 @@ Finally, the data is converted to long form.
 | studyID  | timepoint | metadatum | value    | parent_table |
 |----------|-----------|-----------|----------|--------------|
 | Int      | Int       | String    | Any      | String       |
+
+**This table does not show up correctly on the html**
 
 NOTE: Metadata from tables that don't have timepoints
 (ie things that are the same at all timepoints)
@@ -117,6 +126,8 @@ For example, to run this script on our example above:
 $ julia --project=@. bin/metascrub.jl data/metadata/filemakerall.xlsx -vl data/metadata/filemakerdb.log -o data/metadata/filemakerdb.csv
 ```
 
+**This is a very long text box. Ok to keep as is if best format for copy/paste into terminal**
+
 Additional transformations of the metadata to get it into a usable form
 can be found in the next notebook.
 
@@ -128,10 +139,16 @@ and run through the bioBakery metagenome workflow.
 Each sample was sequenced on 4 lanes of Illumina {{TODO: add info about Illumina}}
 generating paired-end reads.
 
+**Feel free to steal from what I've written in the Methods section thus far**
+
 ### Concatenating raw sequencing files
 
 !!! note
     This is no longer necessary when using the snakemake workflow.
+
+    **Is this `!!!` supposed to put this in another format? If so, it's not.**
+
+    **Also, should we note what batches used this analysis?**
 
 Each set of 4 forward and reverse reads
 were concatenated using the `catfastq.jl` script.
@@ -169,6 +186,10 @@ $ julia --project=@. bin/catfastq.jl -i rawfastq/ -o catfastq/ -vl batch001_conc
 !!! note
     This has been deprecated in favor of the snakemake workflow
 
+    **See above about no difference in format with `!!!`**
+
+**If this has been deprecated, have we still been running it on "all samples"?**
+
 The bioBakery `wmgx` workflow was used on all samples
 with the following software versions:
 
@@ -191,6 +212,8 @@ $ biobakery_workflows wmgx --input catfastq/ --output analysis/ \
 
 [See here](https://github.com/Klepac-Ceraj-Lab/snakemake_workflows)
 
+**Maybe a more specific link title? Like "See gitrepo here"?**
+
 A custom snakemake workflow was used on all samples
 with the following software versions:
 
@@ -208,6 +231,10 @@ $ snakemake -s /home/vklepacc/software/repos/snakemake_workflows/biobakery_all.s
     --latency-wait 15
 ```
 
+**`--cluster` line is very long. If you're fine with that, no need to change**
+
 ## 16S data
 
 <!-- TODO: Add info about 16S analysis -->
+
+**Feel free to take whatever is relevant from methods section**
