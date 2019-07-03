@@ -63,6 +63,8 @@ allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
 
 Those all look reasonable!
 
+**`WeightHeight` is one of the variables that shows up, which is unfortunately not time independent**
+
 ## Sample Metadata
 
 In addition to the FilemakerPro database,
@@ -72,6 +74,9 @@ since we can have multiple samples per timepoint.
 `sampleID`s should be unique though.
 
 ```julia
+#**Error message here**
+# warning: only found 38 / 39 columns on data row: 1194. Filling remaining co
+lumns with `missing`
 samples = load_metadata(files, "samples")
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
@@ -186,10 +191,13 @@ filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID], r[:timepoint], r[:metada
 disallowmissing!(allmeta)
 
 # show a random assortment of ~ 10 rows
+# **shows random assortment of 4 rows x 6 columns**
+# **What does it mean when `sampleID`s end in `M`. Not clear what that's meant to mean.**
+# **May also be worthwhile to explain naming convention of fecal `sampleID`s**
 randrows(allmeta)
 ```
 
-A some of the `:value` fields have quotes or newlines in the field,
+Some of the `:value` fields have quotes or newlines in the field,
 which screws up parsing later. For now I will just replace them.
 
 ```julia
