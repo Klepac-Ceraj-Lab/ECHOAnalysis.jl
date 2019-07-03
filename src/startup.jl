@@ -31,6 +31,24 @@ function first_kids_tax_profiles(taxlevel=:species)
     return kids
 end
 
+function load_functional_profiles(kind="genefamilies")
+    bakery = datatoml["tables"]["biobakery"]
+
+    tax = merge_tables(
+            bakery["path"],
+            bakery["humann2"]["root"],
+            bakery["humann2"]["filter"],
+            suffix="_genefamilies.tsv")
+
+    # clean up sample names
+    names!(tax,
+        map(n->
+            Symbol(resolve_sampleID(String(n))[:sample]),
+            names(tax)))
+
+    return tax
+end
+
 function load_metadata(datatoml, metadatakey="all"; samples::Union{Nothing,Vector{<:NamedTuple}}=nothing)
     long = CSV.read(datatoml["tables"]["metadata"][metadatakey]["path"])
     if !isnothing(samples)
