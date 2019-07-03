@@ -139,6 +139,7 @@ p[:variable] = "young kids formulafed"
 perm = vcat(perm, p)
 
 filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
+
 randrows(perm)
 ```
 
@@ -215,6 +216,64 @@ p <- adonis(r_dm ~ csf_volume + correctedAgeDays,
 p = p[:aov_tab]
 p[:feature] = "species"
 p[:variable] = "csf_volume"
+perm = vcat(perm, p[[2],:])
+```
+
+```julia
+## Cognitive Assessment
+
+using Statistics
+# Bayleys doesn't have a compositve score calculated, but we can get it:
+kidsmeta[:bayleysComposite] = map(row->
+    mean([row[:languageComposite], row[:motorComposite]]),
+    eachrow(kidsmeta))
+
+kidsmeta[:cogScore] = Vector{Union{Float64,Missing}}(missing, size(kidsmeta,1))
+kidsmeta[:cogAssessment] = Vector{Union{String,Missing}}(missing, size(kidsmeta,1))
+
+map(enumerate(eachrow(kidsmeta))) do (i, row)
+    # get just the cognitive assessment columns
+    cogs = row[[
+                :mullen_EarlyLearningComposite,
+                :fullScaleComposite, # this is from WSSPI
+                :FSIQ_Composite, # this is from WISC
+                :bayleysComposite
+            ]]
+    # if there's no score, skip row
+    all(ismissing, cogs) && return
+    # otherwise, get the first non-missing value (no timepoints have multiple scores)
+    col = findall(!ismissing, cogs)
+    let assessment = col[1]
+        if assessment == :mullen_EarlyLearningComposite
+            assessment = "Mullen"
+        elseif assessment == :fullScaleComposite
+            assessment = "WSSPI"
+        elseif assessment == :FSIQ_Composite
+            assessment = "WISC"
+        else assessment == :bayleysComposite
+            assessment = "Bayleys"
+        end
+
+        kidsmeta[i, :cogAssessment] = assessment
+        kidsmeta[i, :cogScore] = cogs[col[1]]
+    end
+end
+
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:cogScore]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :cogScore]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+
+R"""
+p <- adonis(r_dm ~ cogScore + correctedAgeDays,
+            method = "bray", data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+p[:feature] = "species"
+p[:variable] = "cogScore"
 perm = vcat(perm, p[[2],:])
 ```
 
