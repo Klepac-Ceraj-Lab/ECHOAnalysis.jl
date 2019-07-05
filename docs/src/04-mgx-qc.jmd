@@ -3,11 +3,11 @@
 All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
-```julia; echo=false, results="hidden"
+```julia; echo=false; results="hidden"
 ENV["GKSwstype"] = "100" # hide
 ```
 
-```julia; echo=false, results="hidden"
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 using CSV, DataFrames
 using DataFramesMeta;
@@ -94,7 +94,7 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
 
 ```
 
-```julia; echo=false, results="hidden"
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "knead-qc.svg"))
 ```
 
