@@ -23,8 +23,6 @@ do we have any metadata for?
 @linq allmeta |>
     select(:studyID) |>
     unique |> nrow
-
-allmeta[:studyID] |> unique
 ```
 
 (**Note**: most of these subjects have not provided fecal samples)
