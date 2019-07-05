@@ -16,16 +16,18 @@ using StatsPlots
 allmeta = load_metadata(datatoml);
 ```
 
-As an example, how many unique subjects do we have at least one sample for?
+As an example, how many unique subjects
+do we have any metadata for?
 
 ```julia
 @linq allmeta |>
     select(:studyID) |>
     unique |> nrow
+
+allmeta[:studyID] |> unique
 ```
 
-**The generated answer here is 1276 but according to Airtable it should be
-462 (with all current samples) or 396 (for mgx batch001-009)**
+(**Note**: most of these subjects have not provided fecal samples)
 
 Or, how many subjects have two or more fecal samples?
 
@@ -33,17 +35,15 @@ Or, how many subjects have two or more fecal samples?
 sampleinfo = @linq allmeta |>
     where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
+```
 
-
+```julia
 histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 ```
 
-**This graph includes fecal and ethanol samples, yes? Do we want to distinguish
-these? Because it's misleading how many _timepoints_ we have for each subject**
-
-```julia
+```julia; echo=false
 # make directory if it doesn't exist
 isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"])
 savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png"))
@@ -63,9 +63,6 @@ highsamplers = @linq allmeta |>
 randrows(highsamplers)
 ```
 
-**If we change the definition of fecal samples to exclude ethanol fecal samples
-above, we should do the same here**
-
 ## Metagenomes
 
 At this stage, what I care about are samples with metagenomes,
@@ -76,12 +73,11 @@ To find all of the studyID/timepoint combos that have sequenced metagenomes:
 # filter on metagenomes (DOM = "Date of Metagenome")
 highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) |>
     where(:metadatum .== "DOM") |>
+    where(:value .!== missing) |>
     orderby(:studyID, :timepoint)
 
 first(highsamplers, 15) |> randrows
 ```
-**Shows `missing` values `DOM` too. Though many of those are same timepoints
-(CollectionRep or EtOH) with only one sample mgx sequenced**
 
 So a bunch of these are where
 multiple samples were given for the same timepoint (eg `C0202_4F_1A` and `_2A`)
