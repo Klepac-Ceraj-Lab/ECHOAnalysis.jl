@@ -1,0 +1,37 @@
+# Figure edits
+
+Miscellaneous figure plotting
+
+```julia
+using ECHOAnalysis
+using Microbiome
+using StatsPlots
+using CSV
+using DataFrames
+using ColorBrewer
+
+(outpath, figures) = notebookpaths!(9)
+
+sp_perm = CSV.read("data/notebooks/06/permanovas.csv")
+gf_perm = CSV.read("data/notebooks/08/genefamilies_permanovas.csv")
+ec_perm = CSV.read("data/notebooks/08/ecs_permanovas.csv")
+
+allperm = vcat(sp_perm, gf_perm, ec_perm)
+filter!(row-> row[:variable] != "Subject ID", allperm)
+sort!(allperm, :R2)
+allperm[:perc] = allperm[:R2] .* 100
+allperm[:variable] = map(v-> replace(v, " lafed"=>"formulafed"), allperm[:variable])
+
+xs = filter(row-> row[:feature] == "species", allperm)[:variable]
+
+@df allperm groupedbar(:perc, group=:feature, yticks=0:10, legend=:topleft,
+  color=ColorBrewer.palette("Set2", 3)',
+  xticks=(1:13, xs), xrotation=45)
+
+plot!(title="PERMANOVAs",
+  ylabel="% Variance explainable")
+```
+```julia; echo=false
+savefig(joinpath(figures, "all_permanovas.svg"))
+CSV.write(joinpath(outpath, "all_permanovas.csv"), allperm)
+```
