@@ -62,8 +62,10 @@ allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
 ```
 
 Those all look reasonable!
-
-**`WeightHeight` is one of the variables that shows up, which is unfortunately not time independent**
+Well, except for `WeightHeight`,
+which is for some reason part of a table that is not timepoint associated.
+But `childHeight` and `childWeight`
+are found in a different table, so we'll just ignore this one.
 
 ## Sample Metadata
 
@@ -74,9 +76,6 @@ since we can have multiple samples per timepoint.
 `sampleID`s should be unique though.
 
 ```julia
-#**Error message here**
-# warning: only found 38 / 39 columns on data row: 1194. Filling remaining co
-lumns with `missing`
 samples = load_metadata(files, "samples")
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
@@ -191,9 +190,6 @@ filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID], r[:timepoint], r[:metada
 disallowmissing!(allmeta)
 
 # show a random assortment of ~ 10 rows
-# **shows random assortment of 4 rows x 6 columns**
-# **What does it mean when `sampleID`s end in `M`. Not clear what that's meant to mean.**
-# **May also be worthwhile to explain naming convention of fecal `sampleID`s**
 randrows(allmeta)
 ```
 
