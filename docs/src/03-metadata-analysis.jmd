@@ -76,7 +76,7 @@ highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) 
     where(:value .!== missing) |>
     orderby(:studyID, :timepoint)
 
-first(highsamplers, 15) |> randrows
+first(highsamplers, 15)
 ```
 
 So a bunch of these are where
@@ -90,7 +90,7 @@ mgxsamples = @linq allmeta |>
     unique
 
 sort!(mgxsamples, :studyID);
-first(mgxsamples, 5) |> randrows
+first(mgxsamples, 5)
 ```
 
 **Is it worth noting that after a certain batch (will have to check exact #) we
@@ -108,5 +108,5 @@ that subject.
 samples = map(row-> (subject=row[:studyID], timepoint=row[:timepoint]), eachrow(mgxsamples))
 focus = getfocusmetadata(allmeta, samples)
 sort!(focus, [:subject, :timepoint])
-focus[rand(nrow(focus)) .< 10 / nrow(focus), :]
+randrows(focus)
 ```
