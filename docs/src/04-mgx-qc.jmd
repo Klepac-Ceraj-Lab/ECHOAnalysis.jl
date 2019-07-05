@@ -56,7 +56,7 @@ qc[:Sample] = map(qc[:Sample]) do s
     resolve_sampleID(s)[:sample]
 end
 
-randrows(first(qc,5))
+randrows(qc,5)
 ```
 
 ```julia
