@@ -2,11 +2,9 @@
 
 Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/src).
 Each sample is run separately, and needs to be joined in a single table.
-I'll use the function [`load_taxonomic_profiles`]@ref
+I'll use the function `load_taxonomic_profiles`
 
-**What does `@ref` mean?**
-
-```julia
+```julia; echo=false; results="hidden"
 
 ENV["GKSwstype"] = "100" # hide
 
@@ -25,11 +23,8 @@ using Clustering
 outpath, figures = notebookpaths!(5)
 
 tax = load_taxonomic_profiles()
-randrows(first(tax, 10))
+first(tax[1:10], 10)
 ```
-
-**This currently shows all 765 samples so you have a table that's
-10 rows x 765 columns so would probably be good to limit the columns too**
 
 Some analysis of the fungi:
 
@@ -49,9 +44,8 @@ CSV.write(joinpath(outpath, "euk_sp.csv"), euk)
 euk
 ```
 
-**FYI not only are abundances low, but only appear in 9 samples**
-
-Those numbers are out of 100...
+Those numbers are out of 100
+and there are only results in 9 samples,
 so really not much fungi at all,
 at least according to metaphlan.
 There are some other methods to look more specifically at fungi,
@@ -67,10 +61,8 @@ let's look at the PCoA plots using BrayCurtis dissimilarity.
 ```julia
 spec = taxfilter(tax)
 phyla = taxfilter(tax, :phylum)
-first(spec, 10) |> randrows
+first(spec[1:10], 10)
 ```
-
-**Again, produces a table that is 10 rows X 765 columns**
 
 Now I'll convert these to the `AbundanceTable` type from `Microbiome.jl`
 for easier maniplation, and do Total Sum Scaling (convert to relative abundance).
@@ -85,7 +77,7 @@ relativeabundance!(pabt);
 
 Using `pairwise` from `Distances.jl` and `MDS` from `MultivariateStats.jl`,
 we perform classical multidimensional scaling (which is the same thing
-as principle coordinates analysis).
+as principal coordinates analysis).
 
 **Principle coordinate or coordinates?**
 
@@ -93,12 +85,14 @@ as principle coordinates analysis).
 dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
 
-include("src/pcoa_recipe.jl") # this won't be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
-# not clear what this comment means...
+# This file has some code for a plot recipe,
+# but will not be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
+# gets merged
+include("src/pcoa_recipe.jl")
 plot(mds, primary=false)
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "basic_pcoa.svg"));
 ```
 
@@ -109,7 +103,8 @@ to explain the bulk of the variance.
 function scree(mds)
     ev = eigvals(mds)
     var_explained = [v / sum(ev) for v in ev]
-    bar(var_explained, primary=false, line=0)
+    bar(var_explained, primary=false, linecolor=:match,
+        yticks=0:0.025:0.1)
 end
 
 scree(mds)
@@ -117,13 +112,9 @@ ylabel!("Variance explained")
 xlabel!("Principal coordinate axis")
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "scree.svg"));
 ```
-
-**Is this plot meant to be colored? If so, the lines are once again too thick
-and everything shows up as black. Also, the units on the y-axis are so many more
-decimal places than necessary.**
 
 It looks like there are a couple of "elbows" in the plot,
 but nice to see that the first few axes explain the bulk of the variance.
@@ -142,15 +133,13 @@ at the beginning of the sample ID.
 c = [startswith(x, "C") ? color2[1] : color2[2] for x in samplenames(abt)]
 
 p1 = plot(mds, marker=3, line=1, framestyle=1,
-    color=c, primary=false)
+    color=c, primary=false, ticks=false)
 scatter!([],[], color=color2[1], label="kids", legend=:topright)
 scatter!([],[], color=color2[2], label="moms", legend=:topright)
 title!("All samples taxonomic profiles")
 ```
 
-**The x-axis units are so many decimal places that they overlap.**
-
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg"));
 ```
 
@@ -159,12 +148,11 @@ savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg"));
 The `shannon` function can calculate Shannon diversity for the entire `AbundanceTable`.
 
 ```julia
-p2 = plot(mds, marker=3, line=1,
+p2 = plot(mds, marker=3, line=1, ticks=false,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
 ```
-**Again, x-axis unit labels overlap**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-shannon.svg"));
 ```
 
@@ -182,26 +170,24 @@ axes of variation in adult microbiomes.
 bacteroidetes = vec(Matrix(phyla[phyla[1] .== "Bacteroidetes", 2:end]))
 firmicutes = vec(Matrix(phyla[phyla[1] .== "Firmicutes", 2:end]))
 
-p3 = plot(mds, marker=3, line=1,
+p3 = plot(mds, marker=3, line=1, ticks=false,
     zcolor=bacteroidetes, primary = false, color=:plasma,
     title="All samples, Bacteroidetes")
 ```
-**X-axis unit labels overlap**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg"));
 ```
 
 ```julia
-p4 = plot(mds, marker=3, line=1,
+p4 = plot(mds, marker=3, line=1, ticks=false,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
 ```
-**X-axis unit labels overlap**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg"));
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
 savefig(joinpath(figures, "taxonomic-profiles-grid.svg"));
 ```
@@ -245,21 +231,21 @@ umoms_dm = pairwise(BrayCurtis(), umoms, dims=2)
 umoms_hcl = hclust(umoms_dm, linkage=:average, branchorder=:optimal)
 
 abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
-    xticks=false, color=color4')
+    xticks=false, color=color4', linecolor=:match, linestyle=:dot)
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "moms-abundanceplot.svg"));
 ```
 
 ```julia
 abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 species",
-    xticks=false, color=color4', legend=false)
+    xticks=false, color=color4', legend=false, linecolor=:match, linestyle=:dot)
 ```
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "moms-abundanceplot-nolegend.svg"));
 ```
-**Outlines on both graphs are thick but don't completely obscure the colors**
+
 Those look like normal adult microbiomes.
 
 #### Kids
@@ -272,13 +258,12 @@ The `firstkids` function identifies the first sample
 for each kid.
 
 ```julia
-
 kids = view(abt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
 
 kids_dm = pairwise(BrayCurtis(), kids)
 kids_mds = fit(MDS, kids_dm, distances=true)
 
-p5 = plot(kids_mds, marker=3, line=1,
+p5 = plot(kids_mds, marker=3, line=1, ticks=false,
     zcolor=shannon(kids), primary = false, color=:plasma,
     title="Kids, shannon diversity")
 ```
@@ -290,32 +275,40 @@ savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg"));
 Let's look at the phyla too:
 
 ```julia
-
 pkids = view(pabt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
 
 kids_bact = vec(collect(occurrences(view(pkids, species=occursin.("Bact", speciesnames(pkids))))))
 kids_firm = vec(collect(occurrences(view(pkids, species=occursin.("Firm", speciesnames(pkids))))))
 kids_act = vec(collect(occurrences(view(pkids, species=occursin.("Actino", speciesnames(pkids))))))
 kids_proteo = vec(collect(occurrences(view(pkids, species=occursin.("Proteo", speciesnames(pkids))))))
-
-plot(
-    plot(kids_mds, marker=2, line=1,
-        zcolor=kids_bact, primary = false, color=:plasma,
-        title="Kids, Bacteroidetes"),
-    plot(kids_mds, marker=2, line=1,
-        zcolor=kids_firm, primary = false, color=:plasma,
-        title="Kids, Firmicutes"),
-    plot(kids_mds, marker=2, line=1,
-        zcolor=kids_act, primary = false, color=:plasma,
-        title="Kids, Actinobacteria"),
-    plot(kids_mds, marker=2, line=1,
-        zcolor=kids_proteo, primary = false, color=:plasma,
-        title="Kids, Proteobacteria"),
-    )
 ```
-**x-axis unit labels overlap and plots are so small that it obscures the color
-distribution decorating the points with phyla abundance**
 ```julia
+p6 = plot(kids_mds, marker=4, line=1, ticks=false,
+        zcolor=kids_bact, primary = false, color=:plasma,
+        title="Kids, Bacteroidetes")
+```
+
+```julia
+p7 = plot(kids_mds, marker=4, line=1, ticks=false,
+        zcolor=kids_firm, primary = false, color=:plasma,
+        title="Kids, Firmicutes")
+```
+
+```julia
+p8 = plot(kids_mds, marker=4, line=1, ticks=false,
+        zcolor=kids_act, primary = false, color=:plasma,
+        title="Kids, Actinobacteria")
+```
+
+```julia
+p9 = plot(kids_mds, marker=4, line=1, ticks=false,
+        zcolor=kids_proteo, primary = false, color=:plasma,
+        title="Kids, Proteobacteria")
+```
+
+```julia; echo=false; results="hidden"
+plot(p6,p7,p8,p9)
+
 savefig(joinpath(figures, "taxonomic-profiles-kids-phyla.svg"))
 ```
 
@@ -329,15 +322,14 @@ focusmeta = getfocusmetadata(datatoml["tables"]["metadata"]["all"]["path"], samp
 focusmeta[:shannon] = shannon(kids)
 focusmeta[:ginisimpson] = ginisimpson(kids)
 
-var_explained, eigenvalues, pco_axes = mds_axis_values(kids_mds)
+eigenvalues, var_explained, pco_axes = mds_axis_values(kids_mds)
 
-scatter(pco_axes[:, 1], focusmeta[:correctedAgeDays] ./365,
+scatter(pco_axes[:, 1], focusmeta[:correctedAgeDays] ./365, xticks=false,
     primary=false, zcolor = focusmeta[:shannon], color=:viridis)
 ylabel!("Age (years)")
-xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
+xlabel!("MDS1 ($(round(var_explained[1] * 100, digits = 2))%)")
 title!("All kids age / PCoA 1 / Alpha diversity")
 ```
-**x-axis unit labels overlap**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg"));
 ```
@@ -348,11 +340,12 @@ Another way to look at it is to plot the alpha diversity at each age:
 ```julia
 focusmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in focusmeta[:correctedAgeDays]]
 
-boxplot(collect(skipmissing(focusmeta[:floorAge])), focusmeta[:ginisimpson][.!ismissing.(focusmeta[:floorAge])],
-    color=:lightgrey, legend=false, xlabel="Age in Years", ylabel="Alpha diversity (GiniSimpson)")
+boxplot(collect(skipmissing(focusmeta[:floorAge])),
+    focusmeta[:ginisimpson][.!ismissing.(focusmeta[:floorAge])],
+    color=:lightgrey, legend=false, xlabel="Age in Years",
+    yaxis=(0:0.1:1.1, "Alpha diversity (GiniSimpson)"))
 ```
-**y-axis unit labels are unnecessarily long**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-alpha-diversity-box.svg"));
 ```
 
@@ -362,22 +355,20 @@ kids_hcl = hclust(kids_dm, linkage=:average, branchorder=:optimal)
 
 abundanceplot(kids, srt = kids_hcl.order,
     title="Unique kids, top 10 species",
-    xticks=false, color=color4')
+    xticks=false, color=color4', linecolor=:match, linestyle=:dot)
 ```
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-abundanceplot.svg"))
 ```
 ```julia
-
 abundanceplot(kids, srt = kids_hcl.order,
     title="Unique kids, top 10 species",
-    xticks=false, color=color4', legend=false)
+    xticks=false, color=color4', linecolor=:match, linestyle=:dot,
+    legend=false)
 ```
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-abundanceplot-nolegend.svg"));
 ```
-
-**Outlines are very thick and almost obscure the colors**
 
 These also look like adult microbiomes, with a smattering of young-kids
 microbes thrown in for good measure (eg _Bifidobacterium longum_).
@@ -387,29 +378,26 @@ We can also annotate this plot with the age of the kids
 ```julia
 plot(
     abundanceplot(kids, srt = kids_hcl.order, title="Kids, top 10 species",
-        xticks=false, color=color4', legend=false),
+        xticks=false, color=color4', legend=false, linecolor=:match, linestyle=:dot),
     heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta[:correctedAgeDays][kids_hcl.order]]'),
         xticks=false, yticks=false, color=:PuBu, colorbar=false),
     layout = grid(2,1,heights=[0.9, 0.1])
     )
 ```
-**Same as above, outlines are rather thick**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-abundanceplot-age.svg"));
 ```
-
 
 ```julia
 x = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 1]
 y = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 2]
 
 scatter(x, y, zcolor=focusmeta[.!ismissing.(focusmeta[:correctedAgeDays]), :correctedAgeDays] ./365,
-    primary=false, color=:PuBu, title = "Unique Kids Taxonomic Profiles, Age")
-xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
-ylabel!("MDS2 ($(round(var_explained[2], digits = 2))%)")
+    primary=false, color=:PuBu, title = "Unique Kids Taxonomic Profiles, Age", ticks=false)
+xlabel!("MDS1 ($(round(var_explained[1]*100, digits = 2))%)")
+ylabel!("MDS2 ($(round(var_explained[2]*100, digits = 2))%)")
 ```
-**x-axis unit labels overlap**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-mds-kids-age.svg"));
 ```
 
@@ -428,13 +416,21 @@ ykids_mds = fit(MDS, ykids_dm, distances=true)
 
 ykids_hcl = hclust(ykids_dm, linkage=:average, branchorder=:optimal)
 abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 10 species",
-    xticks=false, color=color4')
+    xticks=false, color=color4', linecolor=:match, linestyle=:dot)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "young-kids-abundanceplot.svg"));
 ```
 
 ```julia
-savefig(joinpath(figures, "young-kids-abundanceplot.svg"));
+abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 10 species",
+    xticks=false, color=color4', linecolor=:match, linestyle=:dot,
+    legend=false)
 ```
-**Do you want to include this plot without the legend as you did above?**
+
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "young-kids-abundanceplot-nolegend.svg"));
+```
 
 ### Other Metadata Overviews
 
@@ -460,17 +456,16 @@ end
 
 scatter(pco_axes[:, 1], focusmeta[:correctedAgeDays] ./ 365,
     color=colorquartile(focusmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
-    markersize=5, primary=false)
+    markersize=5, primary=false, xticks=false)
 scatter!([],[], color=color2[1], label="25th percentile")
 scatter!([],[], color=color2[2], label="50th percentile")
 scatter!([],[], color=color2[3], label="75th percentile")
 scatter!([],[], color=color2[4], label="99th percentile")
 scatter!([],[], color=color2[end], label="missing", legend=:topleft)
-xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
+xlabel!("MDS1 ($(round(var_explained[1]*100, digits = 2))%)")
 ylabel!("Age (years)")
 ```
-**x-axis labels don't overlap but are very long**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-brain-quartiles.svg"));
 ```
 
@@ -481,15 +476,14 @@ Birth type (vaginal or cesarean) is known to have a substantial affect on kids'
 microbiomes. Let's see where that falls in our data:
 
 ```julia
-plot(kids_mds, marker=3, line=1,
+plot(kids_mds, line=1,
     color=metacolor(focusmeta[:birthType], color2[4:5], missing_color=color2[end]),
-    title="Kids, BirthType", primary=false)
+    title="Kids, BirthType", primary=false, ticks=false)
 scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomleft)
 ```
-**These dots are smaller than the other plots. Still readable but not as easily**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg"));
 ```
 
@@ -531,7 +525,7 @@ bfcolor = let bf = []
     bf
 end
 
-plot(kids_mds, marker=3, line=1,
+plot(kids_mds, line=1,
     color=bfcolor,
     title="Kids, Breastfeeding", primary=false)
 scatter!([],[], color=color1[2], label="breastfed")
@@ -539,11 +533,9 @@ scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
 scatter!([],[], color=color1[end], label="missing", legend=:bottomleft)
 ```
-**similar to last plot, dots are rather small and thus difficult to read**
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg"));
 ```
 
 Nothing obvious from this level, but that's not necessarily surprising.
 We need stats!
-**Haha nice teaser for the next notebook**
