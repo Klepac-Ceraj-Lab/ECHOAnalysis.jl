@@ -24,6 +24,9 @@ As an example, how many unique subjects do we have at least one sample for?
     unique |> nrow
 ```
 
+**The generated answer here is 1276 but according to Airtable it should be
+462 (with all current samples) or 396 (for mgx batch001-009)**
+
 Or, how many subjects have two or more fecal samples?
 
 ```julia
@@ -36,6 +39,9 @@ histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 ```
+
+**This graph includes fecal and ethanol samples, yes? Do we want to distinguish
+these? Because it's misleading how many _timepoints_ we have for each subject**
 
 ```julia
 # make directory if it doesn't exist
@@ -57,11 +63,14 @@ highsamplers = @linq allmeta |>
 randrows(highsamplers)
 ```
 
+**If we change the definition of fecal samples to exclude ethanol fecal samples
+above, we should do the same here**
+
 ## Metagenomes
 
 At this stage, what I care about are samples with metagenomes,
 which are inidcated by the `DOM` metadatum.
-To find all of the studyID/timepoint combos that have that have metagenomes:
+To find all of the studyID/timepoint combos that have sequenced metagenomes:
 
 ```julia
 # filter on metagenomes (DOM = "Date of Metagenome")
@@ -71,10 +80,12 @@ highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) 
 
 first(highsamplers, 15) |> randrows
 ```
+**Shows `missing` values `DOM` too. Though many of those are same timepoints
+(CollectionRep or EtOH) with only one sample mgx sequenced**
 
 So a bunch of these are where
 multiple samples were given for the same timepoint (eg `C0202_4F_1A` and `_2A`)
-and/or both genotech and enthanol samples.
+and/or both genotek and enthanol samples.
 
 ```julia
 mgxsamples = @linq allmeta |>
@@ -85,6 +96,12 @@ mgxsamples = @linq allmeta |>
 sort!(mgxsamples, :studyID);
 first(mgxsamples, 5) |> randrows
 ```
+
+**Is it worth noting that after a certain batch (will have to check exact #) we
+only sent the first CollectionRep of the genotek fecal samples?**
+
+**We should add a full breakdown of the `sampleID` naming conventions somewhere.
+Maybe in `notebook 2`?**
 
 And we can get metadata for these samples using the [`getfocusmetadata`](@ref) function,
 which converts the longform data into a wide table with one row per subject/timepoint pair.
