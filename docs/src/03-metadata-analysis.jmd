@@ -33,6 +33,8 @@ Or, how many subjects have two or more fecal samples?
 sampleinfo = @linq allmeta |>
     where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
+
+randrows(sampleinfo)
 ```
 
 ```julia
