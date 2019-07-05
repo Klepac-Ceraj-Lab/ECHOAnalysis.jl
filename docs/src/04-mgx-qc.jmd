@@ -3,11 +3,11 @@
 All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
-```julia; echo=false
+```julia; echo=false, results="hidden"
 ENV["GKSwstype"] = "100" # hide
 ```
 
-```julia; echo=false
+```julia; echo=false, results="hidden"
 using ECHOAnalysis
 using CSV, DataFrames
 using DataFramesMeta;
@@ -90,11 +90,11 @@ sort!(qc, [:batch, :raw])
 bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     xaxis="Samples", yaxis= "Count", legend=:topleft,
     title = "QC from Kneaddata", label=["Raw" "Final"],
-    linewidth=0)
+    linecolor=:match)
 
 ```
 
-```julia; echo=false
+```julia; echo=false, results="hidden"
 savefig(joinpath(figures, "knead-qc.svg"))
 ```
 
