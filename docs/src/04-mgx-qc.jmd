@@ -7,6 +7,8 @@ using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/
 ENV["GKSwstype"] = "100" # hide
 ```
 
+**This just prints `"100"`. Is that what this is supposed to do?**
+
 ```julia
 using ECHOAnalysis
 using CSV, DataFrames
@@ -14,6 +16,9 @@ using DataFramesMeta;
 
 outpath, figures = notebookpaths!(4)
 ```
+
+**Prints `("data/notebooks/04", "data/figures/04")`. Just making sure that's
+correct (It seems like it should be)**
 
 ## Quality control
 
@@ -32,6 +37,7 @@ qc_files = let qcfiles=[]
 end
 
 # make a DataFrame of the first one
+# **first one what? sample? sequencing file?**
 qc = CSV.read(qc_files[1])
 qc[:batch] = "batch001"
 
@@ -93,6 +99,7 @@ bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     line=0)
 
 ```
+**Outlines are too thick so all you can see is black, rather than blue and orange**
 
 ```julia
 savefig(joinpath(figures, "knead-qc.svg"))
@@ -100,6 +107,8 @@ savefig(joinpath(figures, "knead-qc.svg"))
 
 These are a little more variable than I'd like.
 Let's take a look at their properties:
+
+**Should we add Andre's explanation for the variation here?**
 
 ```julia
 using Statistics
