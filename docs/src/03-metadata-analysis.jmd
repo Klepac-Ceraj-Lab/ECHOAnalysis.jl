@@ -93,12 +93,6 @@ sort!(mgxsamples, :studyID);
 first(mgxsamples, 5)
 ```
 
-**Is it worth noting that after a certain batch (will have to check exact #) we
-only sent the first CollectionRep of the genotek fecal samples?**
-
-**We should add a full breakdown of the `sampleID` naming conventions somewhere.
-Maybe in `notebook 2`?**
-
 And we can get metadata for these samples using the [`getfocusmetadata`](@ref) function,
 which converts the longform data into a wide table with one row per subject/timepoint pair.
 Metadata from "timpoint 0" (that is, non time-dependent data) is added to every row for
