@@ -4,6 +4,7 @@ Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaph
 Each sample is run separately, and needs to be joined in a single table.
 I'll use the function [`load_taxonomic_profiles`]@ref
 
+**What does `@ref` mean?**
 
 ```julia
 
@@ -27,6 +28,9 @@ tax = load_taxonomic_profiles()
 randrows(first(tax, 10))
 ```
 
+**This currently shows all 765 samples so you have a table that's
+10 rows x 765 columns so would probably be good to limit the columns too**
+
 Some analysis of the fungi:
 
 ```julia
@@ -44,6 +48,8 @@ taxfilter!(euk)
 CSV.write(joinpath(outpath, "euk_sp.csv"), euk)
 euk
 ```
+
+**FYI not only are abundances low, but only appear in 9 samples**
 
 Those numbers are out of 100...
 so really not much fungi at all,
@@ -64,6 +70,8 @@ phyla = taxfilter(tax, :phylum)
 first(spec, 10) |> randrows
 ```
 
+**Again, produces a table that is 10 rows X 765 columns**
+
 Now I'll convert these to the `AbundanceTable` type from `Microbiome.jl`
 for easier maniplation, and do Total Sum Scaling (convert to relative abundance).
 
@@ -79,12 +87,14 @@ Using `pairwise` from `Distances.jl` and `MDS` from `MultivariateStats.jl`,
 we perform classical multidimensional scaling (which is the same thing
 as principle coordinates analysis).
 
+**Principle coordinate or coordinates?**
+
 ```julia
 dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
 
 include("src/pcoa_recipe.jl") # this won't be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
-
+# not clear what this comment means...
 plot(mds, primary=false)
 ```
 
@@ -111,6 +121,10 @@ xlabel!("Principal coordinate axis")
 savefig(joinpath(figures, "scree.svg"));
 ```
 
+**Is this plot meant to be colored? If so, the lines are once again too thick
+and everything shows up as black. Also, the units on the y-axis are so many more
+decimal places than necessary.**
+
 It looks like there are a couple of "elbows" in the plot,
 but nice to see that the first few axes explain the bulk of the variance.
 Later on, we'll try to determine what's driving those axes.
@@ -134,6 +148,8 @@ scatter!([],[], color=color2[2], label="moms", legend=:topright)
 title!("All samples taxonomic profiles")
 ```
 
+**The x-axis units are so many decimal places that they overlap.**
+
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg"));
 ```
@@ -147,7 +163,7 @@ p2 = plot(mds, marker=3, line=1,
     zcolor=shannon(abt), primary = false, color=:plasma,
     title="All samples, shannon diversity")
 ```
-
+**Again, x-axis unit labels overlap**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-shannon.svg"));
 ```
@@ -158,8 +174,8 @@ to low vs high diversity.
 ##### Major Phyla
 
 Because we were able to filter the original taxonomic profile by phyla,
-we can also plot the relative abundace of the major phyla.
-The ration of Bacteroidetes and Firmicutes are often visible in the first
+we can also plot the relative abundance of the major phyla.
+The ratio of Bacteroidetes and Firmicutes are often visible in the first
 axes of variation in adult microbiomes.
 
 ```julia
@@ -170,7 +186,7 @@ p3 = plot(mds, marker=3, line=1,
     zcolor=bacteroidetes, primary = false, color=:plasma,
     title="All samples, Bacteroidetes")
 ```
-
+**X-axis unit labels overlap**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg"));
 ```
@@ -180,7 +196,7 @@ p4 = plot(mds, marker=3, line=1,
     zcolor=firmicutes, primary = false, color=:plasma,
     title="All samples, Firmicutes")
 ```
-
+**X-axis unit labels overlap**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg"));
 ```
@@ -243,17 +259,17 @@ abundanceplot(umoms, srt=umoms_hcl.order, topabund=11, title="Moms, top 11 speci
 ```julia
 savefig(joinpath(figures, "moms-abundanceplot-nolegend.svg"));
 ```
-
+**Outlines on both graphs are thick but don't completely obscure the colors**
 Those look like normal adult microbiomes.
 
 #### Kids
 
 Now, I'll focus on the kids in the group,
-the samples that were stored in Genotek
+the samples that were stored in Genotek OMNIgeneGUT tubes
 and also remove duplicates
 (since many of the kids are sampled more than once).
 The `firstkids` function identifies the first sample
-for each kid
+for each kid.
 
 ```julia
 
@@ -297,7 +313,8 @@ plot(
         title="Kids, Proteobacteria"),
     )
 ```
-
+**x-axis unit labels overlap and plots are so small that it obscures the color
+distribution decorating the points with phyla abundance**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-kids-phyla.svg"))
 ```
@@ -320,7 +337,7 @@ ylabel!("Age (years)")
 xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 title!("All kids age / PCoA 1 / Alpha diversity")
 ```
-
+**x-axis unit labels overlap**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg"));
 ```
@@ -334,7 +351,7 @@ focusmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in fo
 boxplot(collect(skipmissing(focusmeta[:floorAge])), focusmeta[:ginisimpson][.!ismissing.(focusmeta[:floorAge])],
     color=:lightgrey, legend=false, xlabel="Age in Years", ylabel="Alpha diversity (GiniSimpson)")
 ```
-
+**y-axis unit labels are unnecessarily long**
 ```julia
 savefig(joinpath(figures, "kids-alpha-diversity-box.svg"));
 ```
@@ -360,6 +377,8 @@ abundanceplot(kids, srt = kids_hcl.order,
 savefig(joinpath(figures, "kids-abundanceplot-nolegend.svg"));
 ```
 
+**Outlines are very thick and almost obscure the colors**
+
 These also look like adult microbiomes, with a smattering of young-kids
 microbes thrown in for good measure (eg _Bifidobacterium longum_).
 
@@ -374,7 +393,7 @@ plot(
     layout = grid(2,1,heights=[0.9, 0.1])
     )
 ```
-
+**Same as above, outlines are rather thick**
 ```julia
 savefig(joinpath(figures, "kids-abundanceplot-age.svg"));
 ```
@@ -389,12 +408,12 @@ scatter(x, y, zcolor=focusmeta[.!ismissing.(focusmeta[:correctedAgeDays]), :corr
 xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 ylabel!("MDS2 ($(round(var_explained[2], digits = 2))%)")
 ```
-
+**x-axis unit labels overlap**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-mds-kids-age.svg"));
 ```
 
-Here' it looks like the outlying tail is the youngest kids.
+Here it looks like the outlying tail is the youngest kids.
 Again, this makes sense. We know that infants microbiomes change quite a bit
 over the first years of life.
 
@@ -415,6 +434,7 @@ abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, to
 ```julia
 savefig(joinpath(figures, "young-kids-abundanceplot.svg"));
 ```
+**Do you want to include this plot without the legend as you did above?**
 
 ### Other Metadata Overviews
 
@@ -449,7 +469,7 @@ scatter!([],[], color=color2[end], label="missing", legend=:topleft)
 xlabel!("MDS1 ($(round(var_explained[1], digits = 2))%)")
 ylabel!("Age (years)")
 ```
-
+**x-axis labels don't overlap but are very long**
 ```julia
 savefig(joinpath(figures, "kids-brain-quartiles.svg"));
 ```
@@ -468,7 +488,7 @@ scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
 scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomleft)
 ```
-
+**These dots are smaller than the other plots. Still readable but not as easily**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg"));
 ```
@@ -519,10 +539,11 @@ scatter!([],[], color=color1[3], label="formula fed")
 scatter!([],[], color=color1[1], label="both")
 scatter!([],[], color=color1[end], label="missing", legend=:bottomleft)
 ```
-
+**similar to last plot, dots are rather small and thus difficult to read**
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg"));
 ```
 
 Nothing obvious from this level, but that's not necessarily surprising.
 We need stats!
+**Haha nice teaser for the next notebook**
