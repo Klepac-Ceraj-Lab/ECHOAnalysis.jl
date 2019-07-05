@@ -6,3 +6,5 @@
 scratch*
 build/
 docs/html
+data/figures
+data/notebooks
