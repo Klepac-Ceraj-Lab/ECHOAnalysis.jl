@@ -6,7 +6,7 @@ I'll use the function `load_taxonomic_profiles`
 
 ```julia; echo=false; results="hidden"
 
-ENV["GKSwstype"] = "100" # hide
+ENV["GKSwstype"] = "100"
 
 using ECHOAnalysis
 using DataFrames
@@ -79,8 +79,6 @@ Using `pairwise` from `Distances.jl` and `MDS` from `MultivariateStats.jl`,
 we perform classical multidimensional scaling (which is the same thing
 as principal coordinates analysis).
 
-**Principle coordinate or coordinates?**
-
 ```julia
 dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
@@ -149,7 +147,7 @@ The `shannon` function can calculate Shannon diversity for the entire `Abundance
 
 ```julia
 p2 = plot(mds, marker=3, line=1, ticks=false,
-    zcolor=shannon(abt), primary = false, color=:plasma,
+    zcolor=shannon(abt), primary = false, color=:viridis,
     title="All samples, shannon diversity")
 ```
 ```julia; echo=false; results="hidden"
