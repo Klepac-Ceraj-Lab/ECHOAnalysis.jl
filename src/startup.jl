@@ -62,7 +62,7 @@ function notebookpaths!(notebook)
     num = lpad(string(notebook), 2, "0")
     outpath = datatoml["notebooks"][num]["output"]
     figurepath = datatoml["notebooks"][num]["figures"]
-    isdir(outpath) || mkdir(outpath)
-    isdir(figurepath) || mkdir(figurepath)
+    isdir(outpath) || mkpath(outpath)
+    isdir(figurepath) || mkpath(figurepath)
     return outpath, figurepath
 end
