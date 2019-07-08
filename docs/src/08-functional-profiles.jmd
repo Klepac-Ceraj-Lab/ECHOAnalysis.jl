@@ -233,19 +233,7 @@ map(enumerate(eachrow(kidsmeta))) do (i, row)
     end
 end
 
-filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:cogScore]), eachrow(kidsmeta))
-r_meta = kidsmeta[filt, [:correctedAgeDays, :cogScore]]
-r_dm = kids_dm[filt,filt]
-@rput r_meta
-@rput r_dm
-
-R"""
-p <- adonis(r_dm ~ cogScore + correctedAgeDays,
-            method = "bray", data=r_meta, permutations = 10000)
-"""
-
-@rget p
-p = p[:aov_tab]
+p = permanova(kids_dm, kidsmeta[:cogScore], filter=.!ismissing.(kidsmeta[:cogScore]))
 p[:feature] = "genefamilies"
 p[:variable] = "cogScore"
 perm = vcat(perm, p[[2],:])
@@ -655,22 +643,10 @@ map(enumerate(eachrow(kidsmeta))) do (i, row)
     end
 end
 
-filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:cogScore]), eachrow(kidsmeta))
-r_meta = kidsmeta[filt, [:correctedAgeDays, :cogScore]]
-r_dm = kids_dm[filt,filt]
-@rput r_meta
-@rput r_dm
-
-R"""
-p <- adonis(r_dm ~ cogScore + correctedAgeDays,
-            method = "bray", data=r_meta, permutations = 10000)
-"""
-
-@rget p
-p = p[:aov_tab]
+p = permanova(kids_dm, kidsmeta[:cogScore], filter=.!ismissing.(kidsmeta[:cogScore]))
 p[:feature] = "ECs"
 p[:variable] = "cogScore"
-perm = vcat(perm, p[[2],:])
+perm = vcat(perm, p);
 ```
 
 ```julia
@@ -732,7 +708,7 @@ prevfilt = let occ = occurrences(kids)
     [prevalence(occ[i, :], 1e-6) > 0.05 for i in 1:size(occ, 1)]
 end
 
-prev = view(kids, species=prevfilt)
+species=prevfilt)
 
 ecdf = DataFrame(EC=featurenames(prev))
 
