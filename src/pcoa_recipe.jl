@@ -13,7 +13,7 @@ end
     var_explained = [v / sum(ev) for v in ev]
     tfm = collect(transform(mds)')
 
-     xlabel --> "MDS$xax ($(round(var_explained[xax] * 100, digits = 2))%)"
+    xlabel --> "MDS$xax ($(round(var_explained[xax] * 100, digits = 2))%)"
     ylabel --> "MDS$yax ($(round(var_explained[yax] * 100, digits = 2))%)"
     seriestype := :scatter
     aspect_ratio --> 1

@@ -3,11 +3,11 @@
 All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
 
-```julia
+```julia; echo=false; results="hidden"
 ENV["GKSwstype"] = "100" # hide
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 using CSV, DataFrames
 using DataFramesMeta;
@@ -31,7 +31,7 @@ qc_files = let qcfiles=[]
     qcfiles
 end
 
-# make a DataFrame of the first one
+# make a DataFrame of the qc table from the first batch
 qc = CSV.read(qc_files[1])
 qc[:batch] = "batch001"
 
@@ -56,7 +56,7 @@ qc[:Sample] = map(qc[:Sample]) do s
     resolve_sampleID(s)[:sample]
 end
 
-randrows(first(qc,5))
+randrows(qc,5)
 ```
 
 ```julia
@@ -90,11 +90,11 @@ sort!(qc, [:batch, :raw])
 bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
     xaxis="Samples", yaxis= "Count", legend=:topleft,
     title = "QC from Kneaddata", label=["Raw" "Final"],
-    line=0)
+    linecolor=:match)
 
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "knead-qc.svg"))
 ```
 
@@ -115,3 +115,10 @@ end
 CSV.write(joinpath(outpath, "qc_stats.csv"), qc_stats)
 randrows(qc_stats)
 ```
+
+According to Andre Comeau of [Integrated Microbiome Research](http://www.imr.bio)
+(where our sequencing is done):
+
+> However, even with sample normalization, the best value that kits/protocols can obtain is about a 2-fold difference from the mean...which then means if your average # of reads is, for example, 8 M, then you'll see samples up to 2-fold higher and 2-fold lower at max = about 4-16 M range.
+>
+> Now added on top of that is that each NextSeq run is independent and the loading (cluster density, which is a bit of an art) tends to vary a little bit, so overall output per sample also varies there too, but usually within a tighter "true" 2-fold range. Hence this explains a bunch of the variation.
