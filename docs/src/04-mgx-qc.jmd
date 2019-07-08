@@ -43,7 +43,7 @@ for f in qc_files[2:end]
     global qc = vcat(qc, df)
 end
 
-randrows(first(qc, 15))
+randrows(qc, 15)
 ```
 
 To keep the formatting of sample IDs consistant across data types,
@@ -56,7 +56,7 @@ qc[:Sample] = map(qc[:Sample]) do s
     resolve_sampleID(s)[:sample]
 end
 
-randrows(qc,5)
+randrows(qc)
 ```
 
 ```julia
@@ -64,7 +64,7 @@ randrows(qc,5)
 names!(qc,
     map(n-> Symbol(replace(String(n), " "=>"_")),
     names(qc)))
-randrows(first(qc,5))
+first(qc,5)
 ```
 
 I don't really care about each mate pair individually,
@@ -113,7 +113,7 @@ qc_stats = by(qc, :batch) do df
                   )
 end
 CSV.write(joinpath(outpath, "qc_stats.csv"), qc_stats)
-randrows(qc_stats)
+qc_stats
 ```
 
 According to Andre Comeau of [Integrated Microbiome Research](http://www.imr.bio)
