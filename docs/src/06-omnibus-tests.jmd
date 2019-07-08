@@ -173,7 +173,7 @@ p <- adonis(r_dm ~ white_matter_volume + correctedAgeDays,
 p = p[:aov_tab]
 ```
 
-The second row is the white_matter_volume.
+The second row is the `white_matter_volume`.
 
 ```julia
 p[:feature] = "species"
@@ -221,9 +221,9 @@ p[:variable] = "csf_volume"
 perm = vcat(perm, p[[2],:])
 ```
 
-```julia
 ## Cognitive Assessment
 
+```julia
 using Statistics
 # Bayleys doesn't have a compositve score calculated, but we can get it:
 kidsmeta[:bayleysComposite] = map(row->
