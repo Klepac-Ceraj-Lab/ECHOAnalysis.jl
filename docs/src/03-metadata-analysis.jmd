@@ -16,13 +16,16 @@ using StatsPlots
 allmeta = load_metadata(datatoml);
 ```
 
-As an example, how many unique subjects do we have at least one sample for?
+As an example, how many unique subjects
+do we have any metadata for?
 
 ```julia
 @linq allmeta |>
     select(:studyID) |>
     unique |> nrow
 ```
+
+(**Note**: most of these subjects have not provided fecal samples)
 
 Or, how many subjects have two or more fecal samples?
 
@@ -31,13 +34,16 @@ sampleinfo = @linq allmeta |>
     where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
 
+randrows(sampleinfo)
+```
 
+```julia
 histogram(sampleinfo[:nsamples], legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 ```
 
-```julia
+```julia; echo=false
 # make directory if it doesn't exist
 isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"])
 savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png"))
@@ -61,20 +67,25 @@ randrows(highsamplers)
 
 At this stage, what I care about are samples with metagenomes,
 which are inidcated by the `DOM` metadatum.
-To find all of the studyID/timepoint combos that have that have metagenomes:
+To find all of the studyID/timepoint combos that have sequenced metagenomes:
 
 ```julia
 # filter on metagenomes (DOM = "Date of Metagenome")
 highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) |>
     where(:metadatum .== "DOM") |>
+    where(:value .!== missing) |>
     orderby(:studyID, :timepoint)
 
-first(highsamplers, 15) |> randrows
+first(highsamplers, 15)
 ```
 
 So a bunch of these are where
 multiple samples were given for the same timepoint (eg `C0202_4F_1A` and `_2A`)
-and/or both genotech and enthanol samples.
+and/or both genotek and enthanol samples.
+
+_Note_: after `batch006`, SOP is to send 1 `ALiquotRep` of 1 `CollectionRep` for
+each `timepoint` (i.e. only send `C0202_4F_1A` for mgx sequencing, not `C0202_4F_2A`
+or `C0202_4F_1B` or `C0202_4E_1A`) unless otherwise noted.
 
 ```julia
 mgxsamples = @linq allmeta |>
@@ -83,7 +94,7 @@ mgxsamples = @linq allmeta |>
     unique
 
 sort!(mgxsamples, :studyID);
-first(mgxsamples, 5) |> randrows
+first(mgxsamples, 5)
 ```
 
 And we can get metadata for these samples using the [`getfocusmetadata`](@ref) function,
@@ -95,5 +106,5 @@ that subject.
 samples = map(row-> (subject=row[:studyID], timepoint=row[:timepoint]), eachrow(mgxsamples))
 focus = getfocusmetadata(allmeta, samples)
 sort!(focus, [:subject, :timepoint])
-focus[rand(nrow(focus)) .< 10 / nrow(focus), :]
+randrows(focus)
 ```

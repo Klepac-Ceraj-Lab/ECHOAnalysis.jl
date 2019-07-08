@@ -102,6 +102,7 @@ to explain the bulk of the variance.
 function scree(mds)
     ev = eigvals(mds)
     var_explained = [v / sum(ev) for v in ev]
+
     bar(var_explained, primary=false, linecolor=:match,
         yticks=0:0.025:0.1)
 end
