@@ -7,7 +7,7 @@ using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/
 ENV["GKSwstype"] = "100" # hide
 ```
 
-```julia; echo=false; results="hidden"
+```julia
 using ECHOAnalysis
 using CSV, DataFrames
 using DataFramesMeta;
