@@ -75,7 +75,7 @@ description = """\
 [tables.brain]
 
     [tables.brain.gross_volumes]
-    path="data/metadata/brain_volumes.csv"
+    path="data/brain/brain_volumes.csv"
     name="High res structural data"
     description="Table provided by Giang-Chau through Samepage (originally New_VolumeBrain_HighRes_050319.csv)"
     date="2019-06-03"
