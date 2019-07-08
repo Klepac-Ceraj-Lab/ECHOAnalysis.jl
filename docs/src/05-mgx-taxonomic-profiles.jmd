@@ -21,7 +21,8 @@ using Distances
 using Clustering
 
 outpath, figures = notebookpaths!(5)
-
+```
+```julia
 tax = load_taxonomic_profiles()
 first(tax[1:10], 10)
 ```
@@ -278,7 +279,7 @@ pkids = view(pabt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
 kids_bact = vec(collect(occurrences(view(pkids, species=occursin.("Bact", speciesnames(pkids))))))
 kids_firm = vec(collect(occurrences(view(pkids, species=occursin.("Firm", speciesnames(pkids))))))
 kids_act = vec(collect(occurrences(view(pkids, species=occursin.("Actino", speciesnames(pkids))))))
-kids_proteo = vec(collect(occurrences(view(pkids, species=occursin.("Proteo", speciesnames(pkids))))))
+kids_proteo = vec(collect(occurrences(view(pkids, species=occursin.("Proteo", speciesnames(pkids))))));
 ```
 ```julia
 p6 = plot(kids_mds, marker=4, line=1, ticks=false,
@@ -384,6 +385,18 @@ plot(
 ```
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-abundanceplot-age.svg"));
+```
+
+There's not a great way to show the legend in the main figure,
+but here it is:
+
+```julia
+heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta[:correctedAgeDays][kids_hcl.order]]'),
+    xticks=false, yticks=false, color=:PuBu)
+```
+
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "kids-abundanceplot-age-legend.svg"));
 ```
 
 ```julia
