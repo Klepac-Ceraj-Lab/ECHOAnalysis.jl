@@ -1,11 +1,11 @@
 # Omnibus Tests
 
-Here, we use permutational analysis of varianve
+Here, we use permutational analysis of variance
 (or [PERMANOVA](https://en.wikipedia.org/wiki/Permutational_analysis_of_variance))
 to identify how much of the variation in the microbiome
 is explainable by different bits of metadata.
-BiobakeryUtils.jl uses RCall to call the R package [vegan](https://cran.r-project.org/web/packages/vegan/index.html)
-for their implimentation.
+`BiobakeryUtils.jl` uses RCall to call the R package [vegan](https://cran.r-project.org/web/packages/vegan/index.html)
+for their implementation.
 
 ```julia; echo=false; results="hidden"
 ENV["GKSwstype"] = "100" # hide
@@ -39,12 +39,18 @@ randrows(perm)
 ```
 
 This tells us that, when comparing all the samples, whether the sample
-comes from a mom or a kid can explain ~3% of the variation,
+comes from a mom or a kid (aka `Subject Type`) can explain ~3% of the variation,
 and the result is significant (p < 0.001).
+
+**Can you highlight this p-value in the table somehow?**
+
 Technically, this p value is a bit anti-conservative,
 since we have multiple samples per individual.
 But that would take a bit of tweaking,
 and we don't *really* need that number.
+
+**I don't understand what you mean here. Do you mean we don't really need the exact
+p-value? Why not?**
 
 One way to demonstrate why this is a problem
 is to look at how much of the variation is attributable to the subject ID.
@@ -58,10 +64,16 @@ p = permanova(dm, string.(metadata[:subject]))
 
 Here, we can see that over 80% of variability is attributable to who the person is.
 Which is to say that people are really different!
+
+**Same here, can you highlight where that 80% number is coming from. It's not
+intuitive based on the table headers.**
+
 Because of this, the numbers from PERMANOVA tend to be small (1-5%),
 but even small differences are interesting.
 
 Now we'll concatenate this new PERMANOVA into the previous dataframe to keep stuff together.
+
+**Can you be more specific about "stuff"?**
 
 ```julia
 p[:feature] = "species"
@@ -117,9 +129,11 @@ filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
 perm
 ```
 
+**Should we add a quick overview here as has been done with previous example analysis?**
+
 ### Young kids
 
-It's a bit surprising that breastfeeding and birth type are not significant,
+It's a bit surprising that breastfeeding and birth type are not significant (p > 0.05),
 though it may be because we're including older kids.
 What happens if we only look at the kids under 2 years old?
 
@@ -150,10 +164,12 @@ or that for some reason,
 this cohort doesn't have major differences based on these factors.
 
 ### Brain Data
+_All brain volume data calculated from fMRI scans taken within one month of
+fecal sample collection._
 
 All of the brain volume data is really affected by the age of the kids,
 so we need to subtract out that variation.
-BiobakeryUtils can't handle this yet, so we need to do this directly using RCall.
+`BiobakeryUtils` can't handle this yet, so we need to do this directly using `RCall`.
 
 ```julia
 using RCall
@@ -164,6 +180,8 @@ r_dm = kids_dm[filt,filt]
 @rput r_meta
 @rput r_dm
 
+# Is the section below supposed to be formatted in R? If so, it is not.
+# The entirety of the code is being printed as is.
 R"""
 p <- adonis(r_dm ~ white_matter_volume + correctedAgeDays,
             method = "bray", data=r_meta, permutations = 10000)
@@ -173,13 +191,14 @@ p <- adonis(r_dm ~ white_matter_volume + correctedAgeDays,
 p = p[:aov_tab]
 ```
 
-The second row is the `white_matter_volume`.
+The second row is `white_matter_volume`.
 
 ```julia
 p[:feature] = "species"
 p[:variable] = "white_matter_volume"
 perm = vcat(perm, p[[2],:])
 ```
+**The effect of which is not significant**
 
 Let's look at some other brain measures.
 
@@ -202,7 +221,7 @@ p[:feature] = "species"
 p[:variable] = "grey_matter_volume"
 perm = vcat(perm, p[[2],:])
 
-## CSF
+## CSF (cerebrospinal fluid volume)
 filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:csf_volume]), eachrow(kidsmeta))
 r_meta = kidsmeta[filt, [:correctedAgeDays, :csf_volume]]
 r_dm = kids_dm[filt,filt]
@@ -220,7 +239,14 @@ p[:feature] = "species"
 p[:variable] = "csf_volume"
 perm = vcat(perm, p[[2],:])
 ```
+**`csf_volume` is possibly significant (p~0.05)**
 
+###Cognitive Assessments
+
+Cognitive development is measured using standard tests for certain age groups.
+First, we have to convert these test scores so they are comparable across age groups.
+
+```julia
 ## Cognitive Assessment
 
 ```julia
@@ -270,6 +296,8 @@ perm = vcat(perm, p[[1],:])
 
 Let's save the output after correcting for multiple testing.
 
+**How are you correcting for multiple testing?**
+
 ```julia
 using MultipleTesting
 
@@ -283,12 +311,12 @@ perm = perm[[:feature, :variable, :R2, :p_value, :q_value]]
 CSV.write(joinpath(outpath, "permanovas.csv"), perm)
 ```
 
-Let's see what that looks like in graphical form using StatsPlots
+Let's see what that looks like in graphical form using `StatsPlots`.
 
 ```julia
 sort!(perm, [:R2])
 
-# [1:end-1] removes the ~80% from subject ID
+# [1:end-1] removes the ~80% variation explained by subject ID
 bar(perm[1:end-1, :R2] .* 100,
     xticks=(1:(size(perm,1)-1), perm[1:end-1, :variable]),
     xrotation=45, color=:grey)
