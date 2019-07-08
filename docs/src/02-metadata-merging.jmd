@@ -159,7 +159,19 @@ We can only concatenate tables if they all have the same columns,
 so I'll add a `sampleID` to all of the other observations
 to match what's in `samples`.
 The fecal sample `sampleID`s are build from the subjectID and timepoint,
-so I'll do the same for other observations
+so I'll do the same for other observations.
+
+_Note_: Fecal sample `sampleID`s are built as follows...
+```
+C0596_1F_1A
+C = Child (or M = Mother)
+0596 = SubjectID
+1 = TimePoint (converted from A=1, B=2, etc.)
+F = Fecal i.e. Genotek sample (or E = ethanol sample)
+1 = CollectionRep (if multiple samples for same TimePoint)
+A = AliquotRep (each fecal Genotek sample is aliquoted into 2 or 4 smaller cryovials)
+    A,B or A,B,C,D ; SOP is to process AliquotRep A for DNA extractions
+```
 
 ```julia
 allmeta[:sampleID] = map(r->
