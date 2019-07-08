@@ -1,6 +1,6 @@
-# Figure edits
+# Miscellaneous work to prep for paper
 
-Miscellaneous figure plotting
+## Miscellaneous figure plotting
 
 ```julia
 using ECHOAnalysis
@@ -31,7 +31,19 @@ xs = filter(row-> row[:feature] == "species", allperm)[:variable]
 plot!(title="PERMANOVAs",
   ylabel="% Variance explainable")
 ```
-```julia; echo=false
+```julia
 savefig(joinpath(figures, "all_permanovas.svg"))
 CSV.write(joinpath(outpath, "all_permanovas.csv"), allperm)
+```
+
+## Relabel Functional Profiles
+
+```julia
+using BiobakeryUtils
+
+gf_ecs = CSV.read(
+          "data/notebooks/08/ec__cog_age_ses_bf_birth/all_results.tsv",
+          delim='\t')
+
+humann2_rename(gf_ecs[2:end])
 ```

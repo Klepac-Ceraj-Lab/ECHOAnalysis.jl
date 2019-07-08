@@ -98,7 +98,7 @@ perm = vcat(perm, p)
 kidsmeta[:formulafed] = formulafeeding.(eachrow(kidsmeta))
 p = permanova(kids_dm, kidsmeta[:formulafed])
 p[:feature] = "species"
-p[:variable] = " lafed"
+p[:variable] = "formulafed"
 perm = vcat(perm, p)
 
 kidsmeta[:childGender] = Vector{Union{Missing,String}}(kidsmeta[:childGender])
