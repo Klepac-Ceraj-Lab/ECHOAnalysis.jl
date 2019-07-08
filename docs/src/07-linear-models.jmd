@@ -7,6 +7,8 @@ it's time to look at per-feature tests with multivariate linear models.
 
 ENV["GKSwstype"] = "100" # hide
 
+# This isn't hidden, fyi
+
 using ECHOAnalysis
 using DataFrames
 using PrettyTables
@@ -31,11 +33,14 @@ kids_abt = view(abt, sites=firstkids(samplenames(abt)))
 focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)));
 ```
 
-First, we'll use Maaslin2 from the huttenhower lab.
+First, we'll use `Maaslin2` from the Huttenhower lab.
 To do this, we need to first save the abundance table as a feature/sample table,
 and the metadata we want to include in the model as a sample/feature table.
 
-Maaslin2 doesn't play nice with missing categorical data,
+**Could you put this in terms of the long form terminology you used before?
+Or is it not the same thing?**
+
+`Maaslin2` doesn't play nice with missing categorical data,
 so I'll manually remove samples that don't have `birthType` information
 
 ```julia
@@ -50,7 +55,7 @@ let occ = occurrences(kids_abt)
 end
 ```
 
-Now we'll subset the metadata DataFrame to include a subset of the metadata.
+Now we'll subset the metadata `DataFrame` to include a subset of the metadata.
 
 ```julia
 # add a sample id column
@@ -66,8 +71,9 @@ CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
 CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
 ```
 
-Now, we'll run Maaslin2. from the commandline.
-You need to have Maaslin2 installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
+Now, we'll run `Maaslin2`. from the commandline.
+**commandline or command line?**
+You need to have `Maaslin2` installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
 
 ```julia
 using RCall
@@ -79,15 +85,18 @@ end
 ```
 
 ```julia; results="hidden"
+# If results are what version of RCall you have, they are not hidden
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
             $(joinpath(outpath, "kids_white_matter.tsv")),
             $(joinpath(outpath, "species__wm_age_ses_bf_birth")))
 """;
+# Is the semicolon intentional?
 ```
 
 We can do this with some other brain data as well:
+**Not clear what "do this" means. Run on Maaslin2? What is Maaslin2 doing?**
 
 
 ```julia; results="hidden"
@@ -100,7 +109,7 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_grey_matter.tsv")),
             $(joinpath(outpath, "species__gm_age_ses_bf_birth")))
 """
-
+# There's a separation here between the code blocks. Is this where the hidden results would be?
 csfdf = view(focusmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
@@ -111,6 +120,7 @@ fit_data <- Maaslin2(
              $(joinpath(outpath, "species__csf_age_ses_bf_birth")))
 """;
 ```
+**It is not clear to me what the code is doing in the above section**
 
 ## Cognitive Assessments
 
@@ -119,7 +129,8 @@ that our collaborators are collecting for the kids.
 All of these have been normalized in a similar way to IQ,
 that is, they are scaled to the mean (100) and standard deviation (10)
 of the population of kids that age.
-
+**Did you not normalize these values for the PERMANOVAS? I added a little blurb
+about normalizing the scores to notebook 6 because I had assumed you has normalized the scores**
 - Mullen is for kids < 4 years old
 - Bayley's is used for some kids under 2 years old
 - WSSPI is for 4yo <= kids < 6yo
@@ -129,7 +140,7 @@ So we'll create a new column that contains the composite score
 for each kids, regardless of which version of the test they took.
 
 ```julia
-# Bayleys doesn't have a compositve score calculated, but we can get it:
+# Bayleys doesn't have a composite score calculated, but we can get it:
 focusmeta[:bayleysComposite] = map(row->
     mean([row[:languageComposite], row[:motorComposite]]),
     eachrow(focusmeta))
@@ -181,6 +192,7 @@ ylabel!("Composite Score")
 
 ```julia
 savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
+# Not hidden
 ```
 
 ```julia; results="hidden"
@@ -193,5 +205,5 @@ Maaslin2(
      $(joinpath(outpath, "kids_cog.tsv")),
      $(joinpath(outpath, "species__cog_age_ses_bf_birth")))
 """;
-
+# What is this chunk of code doing?
 ```
