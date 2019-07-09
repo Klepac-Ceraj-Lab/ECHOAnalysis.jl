@@ -3,11 +3,8 @@
 Now that we've done omnibus tests,
 it's time to look at per-feature tests with multivariate linear models.
 
-```julia
-
-ENV["GKSwstype"] = "100" # hide
-
-# This isn't hidden, fyi
+```julia; echo=false; results="hidden"
+ENV["GKSwstype"] = "100"
 
 using ECHOAnalysis
 using DataFrames
@@ -23,7 +20,9 @@ using Clustering
 using CSV
 
 outpath, figures = notebookpaths!(7)
+```
 
+```julia
 tax = load_taxonomic_profiles()
 taxfilter!(tax, :species)
 abt = abundancetable(tax)
@@ -34,11 +33,18 @@ focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_a
 ```
 
 First, we'll use `Maaslin2` from the Huttenhower lab.
-To do this, we need to first save the abundance table as a feature/sample table,
-and the metadata we want to include in the model as a sample/feature table.
+To do this, we need to first save the abundance table
+and the metadata we want to include in the model.
+The abundance table will have features (species) as rows and samples as columns,
+while the metadata will have features (metadata) as columns and samples as rows.
 
-**Could you put this in terms of the long form terminology you used before?
-Or is it not the same thing?**
+All of our models will take the form
+
+```
+species abundance ~ {Brain data} + age + motherSES + breastfed + birthType
+```
+
+Where `{Brain data}` is a brain volume measure or cognitive score.
 
 `Maaslin2` doesn't play nice with missing categorical data,
 so I'll manually remove samples that don't have `birthType` information
@@ -71,8 +77,7 @@ CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
 CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
 ```
 
-Now, we'll run `Maaslin2`. from the commandline.
-**commandline or command line?**
+Now, we'll run `Maaslin2` using `RCall.jl`.
 You need to have `Maaslin2` installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
 
 ```julia
@@ -81,27 +86,29 @@ using RCall
 R"library(Maaslin2)"
 let version = R"packageVersion('Maaslin2')"
     @show version
-end
+end;
 ```
 
 ```julia; results="hidden"
-# If results are what version of RCall you have, they are not hidden
+# Model: species abundance ~ white_matter_volume + age + motherSES + breastfed + birthType
+
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
             $(joinpath(outpath, "kids_white_matter.tsv")),
             $(joinpath(outpath, "species__wm_age_ses_bf_birth")))
-""";
-# Is the semicolon intentional?
+"""
 ```
 
-We can do this with some other brain data as well:
-**Not clear what "do this" means. Run on Maaslin2? What is Maaslin2 doing?**
+The results from this run can be found in `data/notebooks/07/species__wm_age_ses_bf_birth/`
 
+We can do this with some other brain data as well:
 
 ```julia; results="hidden"
 greymatterdf = view(focusmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
+
+# Model: species abundance ~ grey_matter_volume + age + motherSES + breastfed + birthType
 
 R"""
 fit_data <- Maaslin2(
@@ -109,9 +116,11 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_grey_matter.tsv")),
             $(joinpath(outpath, "species__gm_age_ses_bf_birth")))
 """
-# There's a separation here between the code blocks. Is this where the hidden results would be?
+
 csfdf = view(focusmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
+
+# Model: species abundance ~ csf_volume + age + motherSES + breastfed + birthType
 
 R"""
 fit_data <- Maaslin2(
@@ -120,24 +129,13 @@ fit_data <- Maaslin2(
              $(joinpath(outpath, "species__csf_age_ses_bf_birth")))
 """;
 ```
-**It is not clear to me what the code is doing in the above section**
+
+Again, the results from these Maaslin2 runs can be found in `data/notebooks/07/`.
 
 ## Cognitive Assessments
 
-There are a number of age-appropriate cognitive assessments
-that our collaborators are collecting for the kids.
-All of these have been normalized in a similar way to IQ,
-that is, they are scaled to the mean (100) and standard deviation (10)
-of the population of kids that age.
-**Did you not normalize these values for the PERMANOVAS? I added a little blurb
-about normalizing the scores to notebook 6 because I had assumed you has normalized the scores**
-- Mullen is for kids < 4 years old
-- Bayley's is used for some kids under 2 years old
-- WSSPI is for 4yo <= kids < 6yo
-- WISC is for kids older than 6
-
-So we'll create a new column that contains the composite score
-for each kids, regardless of which version of the test they took.
+As we did in notebook 6, we'll create a new column
+that contains the age-appropriate  composite cognitive score for each kid.
 
 ```julia
 # Bayleys doesn't have a composite score calculated, but we can get it:
@@ -180,7 +178,6 @@ describe(focusmeta[:cogScore])
 describe(focusmeta[:cogAssessment])
 ```
 
-
 ```julia
 @df focusmeta scatter(:correctedAgeDays ./ 365, :cogScore,
         group = map(a-> ismissing(a) ? "Missing" : a, :cogAssessment),
@@ -190,7 +187,7 @@ xlabel!("Age (years)")
 ylabel!("Composite Score")
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
 # Not hidden
 ```
@@ -205,5 +202,4 @@ Maaslin2(
      $(joinpath(outpath, "kids_cog.tsv")),
      $(joinpath(outpath, "species__cog_age_ses_bf_birth")))
 """;
-# What is this chunk of code doing?
 ```
