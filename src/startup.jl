@@ -49,7 +49,7 @@ function load_functional_profiles(kind="genefamilies")
     return tax
 end
 
-function load_metadata(datatoml, metadatakey="all"; samples::Union{Nothing,Vector{<:NamedTuple}}=nothing)
+function load_metadata(datatoml=datatoml, metadatakey="all"; samples::Union{Nothing,Vector{<:NamedTuple}}=nothing)
     long = CSV.read(datatoml["tables"]["metadata"][metadatakey]["path"])
     if !isnothing(samples)
         return getfocusmetadata(long, samples, focus=metadata_focus_headers)

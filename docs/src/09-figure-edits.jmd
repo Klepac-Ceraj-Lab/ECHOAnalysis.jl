@@ -36,6 +36,55 @@ savefig(joinpath(figures, "all_permanovas.svg"))
 CSV.write(joinpath(outpath, "all_permanovas.csv"), allperm)
 ```
 
+
+## Top tax heatmap
+
+```julia; echo=false; results="hidden"
+using ECHOAnalysis
+using Microbiome
+using StatsPlots
+using CSV
+using DataFrames
+using ColorBrewer
+using BiobakeryUtils
+using Clustering
+using Distances
+
+(outpath, figures) = notebookpaths!(9)
+```
+```julia
+tax = load_taxonomic_profiles()
+taxfilter!(tax)
+
+abt = abundancetable(tax)
+relativeabundance!(abt)
+meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(abt)));
+```
+```julia
+kids = view(abt, sites=firstkids(samplenames(abt)))
+meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)));
+
+kidsocc = kidsoccurrences(kids)
+kidsprev = [prevalence(kidsocc[x,:]) for x in 1:size(kidsocc, 1)]
+kidsavgabund = [sum(kidsocc[x,:][kidsocc[x,:] .> 0]) / size(kidsocc,1) for x in 1:size(kidsocc, 1)]
+kidsmaxabund = [maximum(kidsocc[x,:]) for x in 1:size(kidsocc, 1)]
+
+ykids = view(kids, sites=map(a-> !ismissing(a) && a / 365 < 2, meta[:correctedAgeDays]))
+
+ykidsocc = ykidsoccurrences(ykids)
+ykidsprev = [prevalence(ykidsocc[x,:]) for x in 1:size(ykidsocc, 1)]
+ykidsavgabund = [sum(ykidsocc[x,:][ykidsocc[x,:] .> 0]) / size(ykidsocc,1) for x in 1:size(ykidsocc, 1)]
+ykidsmaxabund = [maximum(ykidsocc[x,:]) for x in 1:size(ykidsocc, 1)]
+```
+
+```julia
+
+kidstop = featurenames(kids)[]
+
+```
+
+
+
 ## Relabel Functional Profiles
 
 ```julia
