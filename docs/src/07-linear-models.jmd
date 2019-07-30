@@ -72,6 +72,7 @@ focusmeta[:grey_matter_volume] = focusmeta[:grey_matter_volume] ./ focusmeta[:br
 ```
 
 Now we'll subset the metadata `DataFrame` to include a subset of the metadata.
+First, we'll fit a linear model with no brain measurements.
 
 ```julia
 # add a sample id column
@@ -80,11 +81,11 @@ focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
 filter!(row-> !ismissing(row[:birthType]), focusmeta)
 
 # view() does not create a new dataframe, but allows us to subset it.
-whitematterdf = view(focusmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+covariatedf = view(focusmeta, [:sample, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
-CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
+CSV.write(joinpath(outpath, "kids_covariates.tsv"), delim='\t', covariatedf)
 ```
 
 Now, we'll run `Maaslin2` using `RCall.jl`.
@@ -100,8 +101,25 @@ end;
 ```
 
 ```julia; results="hidden"
-# Model: species abundance ~ white_matter_volume + age + motherSES + breastfed + birthType
+# Model: species abundance ~ age + motherSES + breastfed + birthType
 
+R"""
+fit_data <- Maaslin2(
+            $(joinpath(outpath, "kids_species_abundance.tsv")),
+            $(joinpath(outpath, "kids_covariates.tsv")),
+            $(joinpath(outpath, "species__age_ses_bf_birth")))
+"""
+```
+
+The results from this run can be found in `data/notebooks/07/species__wm_age_ses_bf_birth/`
+
+We can do this with brain data as well:
+
+```julia; results="hidden"
+whitematterdf = view(focusmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
+
+# Model: species abundance ~ white_matter_volume + age + motherSES + breastfed + birthType
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
@@ -109,10 +127,6 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "species__wmNorm_age_ses_bf_birth")))
 """
 ```
-
-The results from this run can be found in `data/notebooks/07/species__wm_age_ses_bf_birth/`
-
-We can do this with some other brain data as well:
 
 ```julia; results="hidden"
 greymatterdf = view(focusmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])

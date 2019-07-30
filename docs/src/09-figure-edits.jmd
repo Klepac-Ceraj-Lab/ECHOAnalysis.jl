@@ -233,3 +233,60 @@ meta = load_metadata(datatoml, samples=samples);
 meta[:sampleID] = getfield.(samples, :sample)
 
 CSV.write("/Users/ksb/Desktop/batch010_metadata.csv", meta)
+```
+
+## Better LM heatmap
+
+```julia
+using ECHOAnalysis
+using StatsPlots
+using DataFrames
+using CSV
+using PrettyTables
+df = let dfs = []
+    for (root, dirs, files) in walkdir("data")
+        filter!(f-> occursin("all_results", f), files)
+        if length(files) > 0
+            df = CSV.read(joinpath(root, files[1]))
+            rename!(df, Symbol("N.not.0") => :not0)
+
+            name = basename(root)
+            df[:microbe_feature] = split(name, "__")[1]
+            df[:parent_model] = split(name, "__")[2]
+            push!(dfs, df)
+        end
+    end
+    vcat(dfs...)
+end
+names(df)
+df[:qval] = [x == "NA" ? missing : parse(Float64, x) for x in df[:qval]]
+df[:pval] = [x == "NA" ? missing : parse(Float64, x) for x in df[:pval]]
+
+filter!(row-> !ismissing(row[:qval]) && row[:qval] < 0.1, df)
+
+plotter = let features = unique(df[:feature])
+    by(df, :metadata) do md
+        coefs = Float64[]
+        qvs = Float64[]
+        parents = String[]
+        feats = String[]
+        for feat in features
+            filt = filter(row-> row[:feature] == feat, md)
+            if size(filt, 1) == 0
+                push!(coefs, 0.)
+                push!(qvs, 1.)
+                push!(parents, "")
+                push!(feats, "")
+            else size(filt, 1) == 1
+                append!(coefs, filt[:coef])
+                append!(qvs, filt[:qval])
+                append!(parents, filt[:parent_model])
+                append!(feats, [feat for _ in 1:size(filt, 1)])
+            end
+        end
+        DataFrame(coef=coefs, qval=qvs, feature=feats, parent_model=parents)
+    end
+end
+
+
+@df plotter heatmap(:)
