@@ -36,6 +36,172 @@ savefig(joinpath(figures, "all_permanovas.svg"))
 CSV.write(joinpath(outpath, "all_permanovas.csv"), allperm)
 ```
 
+
+## Top tax heatmap
+
+```julia; echo=false; results="hidden"
+using ECHOAnalysis
+using Microbiome
+using StatsPlots
+using CSV
+using DataFrames
+using ColorBrewer
+using BiobakeryUtils
+using Clustering
+using Distances
+
+(outpath, figures) = notebookpaths!(9)
+```
+```julia
+tax = load_taxonomic_profiles()
+taxfilter!(tax)
+
+abt = abundancetable(tax)
+relativeabundance!(abt)
+meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(abt)));
+```
+```julia
+kids = view(abt, sites=firstkids(samplenames(abt)))
+meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)));
+
+kidsocc = occurrences(kids)
+kidsprev = [prevalence(kidsocc[x,:]) for x in 1:size(kidsocc, 1)]
+kidsavgabund = [sum(kidsocc[x,:][kidsocc[x,:] .> 0]) / size(kidsocc,1) for x in 1:size(kidsocc, 1)]
+kidsmaxabund = [maximum(kidsocc[x,:]) for x in 1:size(kidsocc, 1)]
+
+ykids = view(kids, sites=map(a-> !ismissing(a) && a / 365 < 2, meta[:correctedAgeDays]))
+
+ykidsocc = occurrences(ykids)
+ykidsprev = [prevalence(ykidsocc[x,:]) for x in 1:size(ykidsocc, 1)]
+ykidsavgabund = [sum(ykidsocc[x,:][ykidsocc[x,:] .> 0]) / size(ykidsocc,1) for x in 1:size(ykidsocc, 1)]
+ykidsmaxabund = [maximum(ykidsocc[x,:]) for x in 1:size(ykidsocc, 1)]
+```
+
+```julia
+
+scatter(ykidsavgabund, ykidsmaxabund, xticks=0:0.001:0.02)
+
+filt = [kidsavgabund[i] > 0.005 ||
+        kidsmaxabund[i] > 0.15 ||
+        ykidsavgabund[i] > 0.001 for i in eachindex(kidsavgabund)]
+
+sum(filt)
+
+filtkids = view(kids, species=filt)
+
+coldm = pairwise(BrayCurtis(), filtkids, dims=2)
+rowdm = pairwise(Jaccard(), filtkids, dims=1)
+
+colhcl = hclust(coldm, branchorder=:optimal)
+rowhcl = hclust(rowdm, branchorder=:optimal)
+
+
+h1 = heatmap(asin.(sqrt.(occurrences(filtkids)))[rowhcl.order, colhcl.order],
+        yticks=(1:nfeatures(filtkids), featurenames(filtkids)[rowhcl.order]),
+        ytickfont=font(6), color=:plasma)
+
+h2 = heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in meta[:correctedAgeDays][colhcl.order]]'),
+    xticks=false, yticks=false, color=:PuBu)
+
+ plot(h1, h2, layout = grid(2,1,heights=[0.9, 0.1]))
+```
+
+
+```julia
+# separate over 2 and under 2
+missingage = ismissing.(meta[:correctedAgeDays])
+over2 = map(a-> !ismissing(a) && a / 365 >= 2, meta[:correctedAgeDays])
+under2 = map(a-> !ismissing(a) && a / 365 < 2, meta[:correctedAgeDays])
+
+ykids = view(kids, sites=under2, species=filt)
+okids = view(kids, sites=over2, species=filt)
+mkids = view(kids, sites=missingage, species=filt)
+
+ykids_dm = pairwise(BrayCurtis(), ykids, dims=2)
+okids_dm = pairwise(BrayCurtis(), okids, dims=2)
+mkids_dm = pairwise(BrayCurtis(), mkids, dims=2)
+
+ykids_hcl = hclust(ykids_dm, branchorder=:optimal)
+okids_hcl = hclust(okids_dm, branchorder=:optimal)
+mkids_hcl = hclust(mkids_dm, branchorder=:optimal)
+
+idx = 1:nsamples(kids)
+
+ykidsidx = idx[under2][ykids_hcl.order]
+okidsidx = idx[over2][okids_hcl.order]
+mkidsidx = idx[missingage][mkids_hcl.order]
+
+ord = vcat(ykidsidx, okidsidx, mkidsidx)
+
+function agegroup(age)
+    ismissing(age) && return "missing"
+    age / 365 >=2 ? "over 2" : "under 2"
+end
+
+meta[:ageGroup] = map(agegroup, meta[:correctedAgeDays])
+meta[:breastfed] = breastfeeding.(eachrow(meta))
+
+
+
+plot(
+    heatmap(asin.(sqrt.(occurrences(filtkids)))[rowhcl.order, ord],
+        yticks=(1:nfeatures(filtkids), featurenames(filtkids)[rowhcl.order]),
+        ytickfont=font(6), color=:BuPu, xticks=false),
+    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in meta[:correctedAgeDays][ord]]'),
+        xticks=false, yticks=false, color=:PuBu),
+    layout = grid(2,1,heights=[0.9, 0.1]))
+savefig(joinpath(figures, "species_heatmap.svg"))
+
+using Plots.PlotMeasures
+
+
+l = @layout [[a{0.3w} b{0.65w} c{0.05w}]
+             grid(4, 1)]
+
+plot(
+    plot(ykids_hcl, xticks=false, yticks=false),
+    plot(okids_hcl, xticks=false, yticks=false),
+    plot(mkids_hcl, xticks=false, yticks=false),
+    plot(annotationbar(meta[:ageGroup][ord], color3)),
+    plot(annotationbar(string.(meta[:breastfed][ord]), color3[4:end])),
+    plot(annotationbar(string.(meta[:birthType][ord]), color3[6:end])),
+    plot(annotationbar(string.(meta[:childGender][ord]), color3[9:end])),
+    layout=l, top_margin=1mm, bottom_margin=1mm
+    )
+
+count(ismissing, meta[:childGender][ord])
+
+savefig(joinpath(figures, "species_heatmap_annotations.svg"))
+```
+
+```julia
+infantis = CSV.read("data/infantis_presence.csv")
+infantis = filter(row-> !ismissing(row[:sampleID]), infantis)
+infantis = filter(row-> startswith(row[:sampleID], "C"), infantis)
+samples = resolve_sampleID.(infantis[:sampleID])
+infantis[:subject] = getfield.(samples, :subject)
+infantis[:timepoint] = getfield.(samples, :timepoint)
+
+meta = load_metadata(datatoml, samples=samples)
+infantis[:correctedAgeDays] = meta[:correctedAgeDays]
+infantis[:motherSES] = meta[:motherSES]
+infantis[:birthType] = meta[:birthType]
+
+st = []
+rows = Int[]
+for (i,row) in enumerate(eachrow(infantis))
+    tup = (row[:subject], row[:timepoint])
+    if !in(tup, st)
+        push!(rows, i)
+        push!(st, tup)
+    end
+end
+
+CSV.write("data/infantis_presence.csv", infantis[rows, :])
+```
+
+
+
 ## Relabel Functional Profiles
 
 ```julia
@@ -47,3 +213,23 @@ gf_ecs = CSV.read(
 
 humann2_rename(gf_ecs[2:end])
 ```
+
+
+## Get new sample data
+
+```julia
+using ECHOAnalysis
+using Microbiome
+using StatsPlots
+using CSV
+using DataFrames
+using ColorBrewer
+
+(outpath, figures) = notebookpaths!(9)
+
+samples = CSV.read("/Users/ksb/Downloads/mgx_batch010.csv")
+samples = resolve_sampleID.(samples[:SampleID])
+meta = load_metadata(datatoml, samples=samples);
+meta[:sampleID] = getfield.(samples, :sample)
+
+CSV.write("/Users/ksb/Desktop/batch010_metadata.csv", meta)
