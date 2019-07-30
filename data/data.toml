@@ -45,7 +45,7 @@ description = """\
     path="data/metadata/fecal_samples.csv"
     name="Fecal Samples DNA processing"
     description="Downloaded \"Everything\" view from AirTable database"
-    date="2019-06-24"
+    date="2019-07-30"
 
     [tables.metadata.all]
     path="data/metadata/merged.csv"
@@ -77,8 +77,8 @@ description = """\
     [tables.brain.gross_volumes]
     path="data/brain/brain_volumes.csv"
     name="High res structural data"
-    description="Table provided by Giang-Chau through Samepage (originally New_VolumeBrain_HighRes_050319.csv)"
-    date="2019-06-03"
+    description="Table provided by Giang-Chow through Samepage"
+    date="2019-05-03"
 
     [tables.brain.cortical]
     path="data/brain/Cortical_June3rd2019.csv"

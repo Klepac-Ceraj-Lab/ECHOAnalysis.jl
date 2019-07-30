@@ -50,7 +50,17 @@ let occ = occurrences(kids_abt)
 end
 ```
 
-Now we'll subset the metadata DataFrame to include a subset of the metadata.
+In addition, we want the brain volumes to be normalized
+by the total brain volume.
+
+```julia
+focusmeta[:brain_volume] = map(row-> sum(row[[:csf_volume, :white_matter_volume, :grey_matter_volume]]), eachrow(focusmeta))
+focusmeta[:csf_volume] = focusmeta[:csf_volume] ./ focusmeta[:brain_volume]
+focusmeta[:white_matter_volume] = focusmeta[:white_matter_volume] ./ focusmeta[:brain_volume]
+focusmeta[:grey_matter_volume] = focusmeta[:grey_matter_volume] ./ focusmeta[:brain_volume];
+```
+
+Now we'll subset the metadata `DataFrame` to include a subset of the metadata.
 
 ```julia
 # add a sample id column
@@ -83,8 +93,8 @@ R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
             $(joinpath(outpath, "kids_white_matter.tsv")),
-            $(joinpath(outpath, "species__wm_age_ses_bf_birth")))
-""";
+            $(joinpath(outpath, "species__wmNorm_age_ses_bf_birth")))
+"""
 ```
 
 We can do this with some other brain data as well:
@@ -98,7 +108,7 @@ R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
             $(joinpath(outpath, "kids_grey_matter.tsv")),
-            $(joinpath(outpath, "species__gm_age_ses_bf_birth")))
+            $(joinpath(outpath, "species__gmNorm_age_ses_bf_birth")))
 """
 
 csfdf = view(focusmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
@@ -108,7 +118,7 @@ R"""
 fit_data <- Maaslin2(
              $(joinpath(outpath, "kids_species_abundance.tsv")),
              $(joinpath(outpath, "kids_csf.tsv")),
-             $(joinpath(outpath, "species__csf_age_ses_bf_birth")))
+             $(joinpath(outpath, "species__csfNorm_age_ses_bf_birth")))
 """;
 ```
 
