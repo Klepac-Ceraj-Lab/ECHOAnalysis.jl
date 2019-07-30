@@ -106,11 +106,7 @@ R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
             $(joinpath(outpath, "kids_white_matter.tsv")),
-<<<<<<< HEAD
             $(joinpath(outpath, "species__wmNorm_age_ses_bf_birth")))
-=======
-            $(joinpath(outpath, "species__wm_age_ses_bf_birth")))
->>>>>>> b186d0f465627fb7dc9b456f0128d8ae728fd42f
 """
 ```
 
