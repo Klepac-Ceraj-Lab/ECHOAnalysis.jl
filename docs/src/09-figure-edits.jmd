@@ -58,18 +58,22 @@ taxfilter!(tax)
 
 abt = abundancetable(tax)
 relativeabundance!(abt)
+
 meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(abt)));
 ```
 ```julia
 kids = view(abt, sites=firstkids(samplenames(abt)))
-meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)));
+kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)));
+
+sum(!ismissing, kidsmeta[:white_matter_volume])
+sum(!ismissing, kidsmeta[:ICV])
 
 kidsocc = occurrences(kids)
 kidsprev = [prevalence(kidsocc[x,:]) for x in 1:size(kidsocc, 1)]
 kidsavgabund = [sum(kidsocc[x,:][kidsocc[x,:] .> 0]) / size(kidsocc,1) for x in 1:size(kidsocc, 1)]
 kidsmaxabund = [maximum(kidsocc[x,:]) for x in 1:size(kidsocc, 1)]
 
-ykids = view(kids, sites=map(a-> !ismissing(a) && a / 365 < 2, meta[:correctedAgeDays]))
+ykids = view(kids, sites=map(a-> !ismissing(a) && a / 365 < 2, kidsmeta[:correctedAgeDays]))
 
 ykidsocc = occurrences(ykids)
 ykidsprev = [prevalence(ykidsocc[x,:]) for x in 1:size(ykidsocc, 1)]
@@ -100,7 +104,7 @@ h1 = heatmap(asin.(sqrt.(occurrences(filtkids)))[rowhcl.order, colhcl.order],
         yticks=(1:nfeatures(filtkids), featurenames(filtkids)[rowhcl.order]),
         ytickfont=font(6), color=:plasma)
 
-h2 = heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in meta[:correctedAgeDays][colhcl.order]]'),
+h2 = heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in kidsmeta[:correctedAgeDays][colhcl.order]]'),
     xticks=false, yticks=false, color=:PuBu)
 
  plot(h1, h2, layout = grid(2,1,heights=[0.9, 0.1]))
@@ -109,9 +113,9 @@ h2 = heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in meta[:corrected
 
 ```julia
 # separate over 2 and under 2
-missingage = ismissing.(meta[:correctedAgeDays])
-over2 = map(a-> !ismissing(a) && a / 365 >= 2, meta[:correctedAgeDays])
-under2 = map(a-> !ismissing(a) && a / 365 < 2, meta[:correctedAgeDays])
+missingage = ismissing.(kidsmeta[:correctedAgeDays])
+over2 = map(a-> !ismissing(a) && a / 365 >= 2, kidsmeta[:correctedAgeDays])
+under2 = map(a-> !ismissing(a) && a / 365 < 2, kidsmeta[:correctedAgeDays])
 
 ykids = view(kids, sites=under2, species=filt)
 okids = view(kids, sites=over2, species=filt)
@@ -138,8 +142,8 @@ function agegroup(age)
     age / 365 >=2 ? "over 2" : "under 2"
 end
 
-meta[:ageGroup] = map(agegroup, meta[:correctedAgeDays])
-meta[:breastfed] = breastfeeding.(eachrow(meta))
+kidsmeta[:ageGroup] = map(agegroup, kidsmeta[:correctedAgeDays])
+kidsmeta[:breastfed] = breastfeeding.(eachrow(kidsmeta))
 
 
 
@@ -147,7 +151,7 @@ plot(
     heatmap(asin.(sqrt.(occurrences(filtkids)))[rowhcl.order, ord],
         yticks=(1:nfeatures(filtkids), featurenames(filtkids)[rowhcl.order]),
         ytickfont=font(6), color=:BuPu, xticks=false),
-    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in meta[:correctedAgeDays][ord]]'),
+    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in kidsmeta[:correctedAgeDays][ord]]'),
         xticks=false, yticks=false, color=:PuBu),
     layout = grid(2,1,heights=[0.9, 0.1]))
 savefig(joinpath(figures, "species_heatmap.svg"))
@@ -162,14 +166,14 @@ plot(
     plot(ykids_hcl, xticks=false, yticks=false),
     plot(okids_hcl, xticks=false, yticks=false),
     plot(mkids_hcl, xticks=false, yticks=false),
-    plot(annotationbar(meta[:ageGroup][ord], color3)),
-    plot(annotationbar(string.(meta[:breastfed][ord]), color3[4:end])),
-    plot(annotationbar(string.(meta[:birthType][ord]), color3[6:end])),
-    plot(annotationbar(string.(meta[:childGender][ord]), color3[9:end])),
+    plot(annotationbar(kidsmeta[:ageGroup][ord], color3)),
+    plot(annotationbar(string.(kidsmeta[:breastfed][ord]), color3[4:end])),
+    plot(annotationbar(string.(kidsmeta[:birthType][ord]), color3[6:end])),
+    plot(annotationbar(string.(kidsmeta[:childGender][ord]), color3[9:end])),
     layout=l, top_margin=1mm, bottom_margin=1mm
     )
 
-count(ismissing, meta[:childGender][ord])
+count(ismissing, kidsmeta[:childGender][ord])
 
 savefig(joinpath(figures, "species_heatmap_annotations.svg"))
 ```
@@ -182,10 +186,10 @@ samples = resolve_sampleID.(infantis[:sampleID])
 infantis[:subject] = getfield.(samples, :subject)
 infantis[:timepoint] = getfield.(samples, :timepoint)
 
-meta = load_metadata(datatoml, samples=samples)
-infantis[:correctedAgeDays] = meta[:correctedAgeDays]
-infantis[:motherSES] = meta[:motherSES]
-infantis[:birthType] = meta[:birthType]
+infantismeta = load_metadata(datatoml, samples=samples)
+infantis[:correctedAgeDays] = infantismeta[:correctedAgeDays]
+infantis[:motherSES] = infantismeta[:motherSES]
+infantis[:birthType] = infantismeta[:birthType]
 
 st = []
 rows = Int[]

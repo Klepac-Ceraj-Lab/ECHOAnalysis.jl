@@ -383,8 +383,8 @@ end
 Get a wide-form metadata table with a subset of headers for a subset of subject/sample IDs
 """
 function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
-    subjects = [s.subject for s in samples]
-    timepoints = [s.timepoint for s in samples]
+    subjects = getfield.(samples, :subject)
+    timepoints = getfield.(samples, :timepoint)
 
     # # This code can be used if samples don't conform to normal pattern,
     # # but we don't actually want to deal with that at this stage.
@@ -402,7 +402,8 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
         df[n] = customprocess(df[n], MDColumn(n))
     end
 
-    return df
+    df[:sample] = getfield.(samples, :sample)
+    return df[[:sample, names(df[1:end-1])...]]
 end
 
 
