@@ -1,5 +1,138 @@
 # Miscellaneous work to prep for paper
 
+## Cohort descriptions
+
+```julia
+using ECHOAnalysis
+using Microbiome
+using BiobakeryUtils
+using DataFrames
+using Distances
+using Clustering
+using Statistics
+using StatsBase
+using Random
+
+(outpath, figures) = notebookpaths!(9)
+```
+```julia
+tax = load_taxonomic_profiles()
+taxfilter!(tax)
+
+abt = abundancetable(tax)
+relativeabundance!(abt)
+
+meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(abt)));
+kids = view(abt, sites=firstkids(samplenames(abt)))
+kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)));
+```
+```julia
+sum(!ismissing, meta[:subject] |> unique)
+unique(eachrow(filter(row-> startswith(row[:sample], "C"),
+    meta)[[:subject, :timepoint]])) |> length
+sum(!ismissing, filter(row-> startswith(row[:sample], "M"),
+    meta)[:subject] |> unique)
+unique(eachrow(filter(row-> startswith(row[:sample], "M"),
+    meta)[[:subject, :timepoint]])) |> length
+
+sum(!ismissing, kidsmeta[:white_matter_volume])
+sum(!ismissing, kidsmeta[:ICV])
+
+sum(x-> !ismissing(x) && x / 365 < 2, kidsmeta[:correctedAgeDays])
+sum(x-> x > 1, by(filter(row-> match(r"^C\d+_\dF_1A", row[:sample]) != nothing,
+    meta), :subject) do df
+        size(df, 1)
+    end[:x1])
+
+sum(x-> x > 1, by(filter(row-> match(r"^M\d+_\dF_1A", row[:sample]) != nothing,
+    meta), :subject) do df
+        size(df, 1)
+    end[:x1])
+```
+
+Cluster/permutation analysis
+
+```julia
+kidsandmoms = view(abt, sites=map(x-> occursin(r"^(M|C)\d+_\dF_1A", x), samplenames(abt)))
+kmmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kidsandmoms)))
+
+labels = map(eachrow(kmmeta)) do row
+    age = row[:correctedAgeDays] / 365
+    if startswith(row[:sample], "C")
+        if !ismissing(age)
+            if age <= 1
+                return "young kid"
+            else
+                return "old kid"
+            end
+        else
+            return missing
+        end
+    elseif startswith(row[:sample], "M")
+        return "mom"
+    else
+        return missing
+    end
+end
+
+
+dm = pairwise(BrayCurtis(), kidsandmoms, dims=2)
+
+let notmissing = map(!ismissing, labels)
+    global dm = dm[notmissing, notmissing]
+    global labels = collect(skipmissing(labels))
+end
+
+function meandistances(labels, dm, check=unique(labels))
+    indicies = Dict(l => findall(labels .== l) for l in check)
+    n = length(check)
+    dists = ones(Float64, n, n)
+    for i in 1:n, j in 1:n
+        if i == j
+            m = mean(dm[k, l] for k in indicies[check[i]], l in indicies[check[j]] if k != l)
+            dists[i, j] = m
+        elseif i < j
+            m = mean(dm[k, l] for k in indicies[check[i]], l in indicies[check[j]])
+            dists[i, j] = m
+            dists[j, i] = m
+        end
+    end
+    return dists
+end
+
+function permutation_test(labels, dm; nperms=1000)
+    return cat(map(1:nperms) do _
+        newlabels = shuffle(labels)
+        meandistances(newlabels, dm)
+        end..., dims=3)
+end
+
+d = meandistances(labels, dm)
+pt = permutation_test(labels, dm, nperms=5000)
+ls = unique(labels)
+sum(x-> x < d[3,1], pt[3,1,:])
+
+using StatsPlots
+
+plot(let myplots = []
+    for i in 1:3, j in 1:3
+        h = histogram(pt[i,j,:], label = "distribution")
+        vline!([d[i,j]], label = "true value")
+        title!("$(ls[i]) vs $(ls[j])")
+        xaxis!(0.:0.05:1)
+
+        push!(myplots, h)
+    end
+    myplots
+end..., size=(1200,1200))
+
+savefig("data/figures/09/distances.png")
+
+
+```
+
+
+
 ## Miscellaneous figure plotting
 
 ```julia
@@ -64,9 +197,6 @@ meta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(abt)));
 ```julia
 kids = view(abt, sites=firstkids(samplenames(abt)))
 kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)));
-
-sum(!ismissing, kidsmeta[:white_matter_volume])
-sum(!ismissing, kidsmeta[:ICV])
 
 kidsocc = occurrences(kids)
 kidsprev = [prevalence(kidsocc[x,:]) for x in 1:size(kidsocc, 1)]

@@ -52,8 +52,7 @@ end
 function load_metadata(datatoml=datatoml, metadatakey="all"; samples::Union{Nothing,Vector{<:NamedTuple}}=nothing)
     long = CSV.read(datatoml["tables"]["metadata"][metadatakey]["path"])
     if !isnothing(samples)
-        wide = getfocusmetadata(long, samples, focus=metadata_focus_headers)
-        return
+        return getfocusmetadata(long, samples, focus=metadata_focus_headers)
     else
         return long
     end
