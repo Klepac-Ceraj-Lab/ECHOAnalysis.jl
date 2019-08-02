@@ -403,7 +403,7 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
     end
 
     df[:sample] = getfield.(samples, :sample)
-    return df[[:sample, names(df[1:end-1])...]]
+    return df[:, [:sample, names(df[1:end-1])...]]
 end
 
 
