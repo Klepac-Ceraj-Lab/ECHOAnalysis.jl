@@ -128,7 +128,10 @@ end..., size=(1200,1200))
 
 savefig("data/figures/09/distances.png")
 
-
+function foldersize(dir=".")
+    s = run(`du -s $dir`)
+    return parse(Int, s)
+end
 ```
 
 
