@@ -402,8 +402,12 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
         df[!, n] = customprocess(df[n], MDColumn(n))
     end
 
-    df[!, :sample] = getfield.(samples, :sample)
-    return df[:, [:sample, names(df[1:end-1])...]]
+    if haskey(samples, :sample)
+        df[!, :sample] = getfield.(samples, :sample)
+        return df[:, [:sample, names(df[1:end-1])...]]
+    else
+        return df
+    end
 end
 
 
