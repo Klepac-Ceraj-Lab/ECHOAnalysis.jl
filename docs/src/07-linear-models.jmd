@@ -56,7 +56,7 @@ let occ = occurrences(kids_abt)
     for (i, sample) in enumerate(samplenames(kids_abt))
         ismissing(focusmeta[i, :birthType]) && continue
         # Make a column for each sample
-        species[Symbol(sample)] = occ[:, i]
+        species[!,Symbol(sample)] = occ[:, i]
     end
 end
 ```
@@ -65,10 +65,10 @@ In addition, we want the brain volumes to be normalized
 by the total brain volume.
 
 ```julia
-focusmeta[:brain_volume] = map(row-> sum(row[[:csf_volume, :white_matter_volume, :grey_matter_volume]]), eachrow(focusmeta))
-focusmeta[:csf_volume] = focusmeta[:csf_volume] ./ focusmeta[:brain_volume]
-focusmeta[:white_matter_volume] = focusmeta[:white_matter_volume] ./ focusmeta[:brain_volume]
-focusmeta[:grey_matter_volume] = focusmeta[:grey_matter_volume] ./ focusmeta[:brain_volume];
+focusmeta.brain_volume = map(row-> sum(row[[:csf_volume, :white_matter_volume, :grey_matter_volume]]), eachrow(focusmeta))
+focusmeta.csf_volume = focusmeta.csf_volume ./ focusmeta.brain_volume
+focusmeta.white_matter_volume = focusmeta.white_matter_volume ./ focusmeta.brain_volume
+focusmeta.grey_matter_volume = focusmeta.grey_matter_volume ./ focusmeta.brain_volume;
 ```
 
 Now we'll subset the metadata `DataFrame` to include a subset of the metadata.
@@ -76,9 +76,9 @@ First, we'll fit a linear model with no brain measurements.
 
 ```julia
 # add a sample id column
-focusmeta[:sample] = collect(samplenames(kids_abt))
-focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
-filter!(row-> !ismissing(row[:birthType]), focusmeta)
+focusmeta.sample = collect(samplenames(kids_abt))
+focusmeta.breastfed = map(breastfeeding, eachrow(focusmeta))
+dropmissing!(focusmeta, :birthType)
 
 # view() does not create a new dataframe, but allows us to subset it.
 covariatedf = view(focusmeta, [:sample, :correctedAgeDays, :motherSES, :breastfed, :birthType])
@@ -163,12 +163,12 @@ that contains the age-appropriate  composite cognitive score for each kid.
 
 ```julia
 # Bayleys doesn't have a composite score calculated, but we can get it:
-focusmeta[:bayleysComposite] = map(row->
+focusmeta.bayleysComposite = map(row->
     mean([row[:languageComposite], row[:motorComposite]]),
     eachrow(focusmeta))
 
-focusmeta[:cogScore] = Vector{Union{Float64,Missing}}(missing, size(focusmeta,1))
-focusmeta[:cogAssessment] = Vector{Union{String,Missing}}(missing, size(focusmeta,1))
+focusmeta.cogScore = Vector{Union{Float64,Missing}}(missing, size(focusmeta,1))
+focusmeta.cogAssessment = Vector{Union{String,Missing}}(missing, size(focusmeta,1))
 
 map(enumerate(eachrow(focusmeta))) do (i, row)
     # get just the cognitive assessment columns
@@ -198,8 +198,8 @@ map(enumerate(eachrow(focusmeta))) do (i, row)
     end
 end
 
-describe(focusmeta[:cogScore])
-describe(focusmeta[:cogAssessment])
+describe(focusmeta.cogScore)
+describe(focusmeta.cogAssessment)
 ```
 
 ```julia
