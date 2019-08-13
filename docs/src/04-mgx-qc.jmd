@@ -10,7 +10,6 @@ ENV["GKSwstype"] = "100" # hide
 ```julia
 using ECHOAnalysis
 using CSV, DataFrames
-using DataFramesMeta;
 
 outpath, figures = notebookpaths!(4)
 ```
@@ -33,13 +32,30 @@ end
 
 # make a DataFrame of the qc table from the first batch
 qc = CSV.read(qc_files[1])
-qc[:batch] = "batch001"
+# sum paired end reads
+qc[!,:raw] = qc[!,Symbol("raw pair1")] .+ qc[!,Symbol("raw pair2")]
+qc[!,:trimmed] = qc[!,Symbol("trimmed pair1")] .+ qc[!,Symbol("trimmed pair2")]
+qc[!,:final] = qc[!,Symbol("final pair1")] .+ qc[!,Symbol("final pair2")]
+qc[!, :batch] .= "batch001"
+qc = qc[!, [:Sample, :raw, :trimmed, :final, :batch]]
 
 # loop through the rest and concatenate to the first one
 for f in qc_files[2:end]
     df = CSV.read(f)
     # get batch name from file
-    df[:batch] = match(r"(batch\d+)", f).captures[1]
+    df[!, :batch] .= match(r"(batch\d+)", f).captures[1]
+    # column names are different depending on whether reads were concatenated or paired
+    if any(x-> occursin("pair", x), String.(names(df)))
+        df[!,:raw] = df[!,Symbol("raw pair1")] .+ df[!,Symbol("raw pair2")]
+        df[!,:trimmed] = df[!,Symbol("trimmed pair1")] .+ df[!,Symbol("trimmed pair2")]
+        df[!,:final] = df[!,Symbol("final pair1")] .+ df[!,Symbol("final pair2")]
+        df = df[!, [:Sample, :raw, :trimmed, :final, :batch]]
+    else
+        rename!(df, [Symbol("raw single")=>:raw,
+                    Symbol("trimmed single")=>:trimmed,
+                    Symbol("final single")=>:final])
+        df = df[!, [:Sample, :raw, :trimmed, :final, :batch]]
+    end
     global qc = vcat(qc, df)
 end
 
@@ -51,33 +67,14 @@ I'll use the `resolve_sampleID` function.
 
 
 ```julia
-qc[:Sample] = map(qc[:Sample]) do s
-    s = replace(s, "_kneaddata"=> "")
-    resolve_sampleID(s)[:sample]
+let samples = qc[!, :Sample]
+    for i in eachindex(samples)
+        s = replace(samples[i], "_kneaddata"=> "")
+        samples[i] = resolve_sampleID(s)[:sample]
+    end
 end
 
 randrows(qc)
-```
-
-```julia
-# cleaning up the column names a bit
-names!(qc,
-    map(n-> Symbol(replace(String(n), " "=>"_")),
-    names(qc)))
-first(qc,5)
-```
-
-I don't really care about each mate pair individually,
-so I'll sum them up
-
-```julia
-qc = @linq qc |>
-  transform(raw = :raw_pair1 .+ :raw_pair2,
-            trimmed = :trimmed_pair1 .+ :trimmed_pair2,
-            orphan = :final_orphan1 .+ :final_orphan2,
-            final = :final_pair1 .+ :final_pair2,
-            )
-randrows(qc[[:Sample, :batch, :raw, :trimmed, :orphan, :final]])
 ```
 
 Now let's take a look at them with some plots.
@@ -85,9 +82,10 @@ Now let's take a look at them with some plots.
 ```julia
 using StatsPlots
 
+# sort by batch, then by raw read count
 sort!(qc, [:batch, :raw])
 
-bar(x=qc[:Sample], hcat(qc[:raw], qc[:final]),
+bar(x=qc.Sample, hcat(qc.raw, qc.final),
     xaxis="Samples", yaxis= "Count", legend=:topleft,
     title = "QC from Kneaddata", label=["Raw" "Final"],
     linecolor=:match)
