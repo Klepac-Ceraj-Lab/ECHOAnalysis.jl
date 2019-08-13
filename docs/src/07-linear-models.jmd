@@ -25,6 +25,9 @@ using BiobakeryUtils
 using Clustering
 using CSV
 
+rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+@ptconf formatter = rounder nosubheader=true screen_size=(20,120)
+
 outpath, figures = notebookpaths!(7)
 ```
 
@@ -35,7 +38,8 @@ abt = abundancetable(tax)
 relativeabundance!(abt)
 kids_abt = view(abt, sites=firstkids(samplenames(abt)))
 
-focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)));
+focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)))
+@pt focusmeta
 ```
 
 First, we'll use `Maaslin2` from the Huttenhower lab.
@@ -70,11 +74,11 @@ end
 In addition, we want the brain volumes to be normalized
 by the total brain volume.
 
-```julia
+```julia; results="hidden"
 focusmeta.brain_volume = map(row-> sum(row[[:csf_volume, :white_matter_volume, :grey_matter_volume]]), eachrow(focusmeta))
 focusmeta.csf_volume = focusmeta.csf_volume ./ focusmeta.brain_volume
 focusmeta.white_matter_volume = focusmeta.white_matter_volume ./ focusmeta.brain_volume
-focusmeta.grey_matter_volume = focusmeta.grey_matter_volume ./ focusmeta.brain_volume;
+focusmeta.grey_matter_volume = focusmeta.grey_matter_volume ./ focusmeta.brain_volume
 ```
 
 Now we'll subset the metadata `DataFrame` to include a subset of the metadata.
@@ -92,18 +96,19 @@ covariatedf = view(focusmeta, [:sample, :correctedAgeDays, :motherSES, :breastfe
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
 CSV.write(joinpath(outpath, "kids_covariates.tsv"), delim='\t', covariatedf)
+@pt covariatedf
 ```
 
 Now, we'll run `Maaslin2` using `RCall.jl`.
 You need to have `Maaslin2` installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
 
-```julia
+```julia; results="hidden"
 using RCall
 
 R"library(Maaslin2)"
 let version = R"packageVersion('Maaslin2')"
     @show version
-end;
+end
 ```
 
 ```julia; results="hidden"
@@ -157,7 +162,7 @@ fit_data <- Maaslin2(
              $(joinpath(outpath, "kids_species_abundance.tsv")),
              $(joinpath(outpath, "kids_csf.tsv")),
              $(joinpath(outpath, "species__csfNorm_age_ses_bf_birth")))
-""";
+"""
 ```
 
 Again, the results from these Maaslin2 runs can be found in `data/notebooks/07/`.
@@ -231,5 +236,5 @@ Maaslin2(
      $(joinpath(outpath, "kids_species_abundance.tsv")),
      $(joinpath(outpath, "kids_cog.tsv")),
      $(joinpath(outpath, "species__cog_age_ses_bf_birth")))
-""";
+"""
 ```

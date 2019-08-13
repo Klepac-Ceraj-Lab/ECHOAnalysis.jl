@@ -43,7 +43,7 @@ using DataFrames
 using PrettyTables
 
 # make a formatter for PrettyTables to round long numbers
-rounder = Dict(0 => (v,i) -> typeof(v) <: Number ? round(v,digits=3) : v)
+rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
 # set configuration for printing tables
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 

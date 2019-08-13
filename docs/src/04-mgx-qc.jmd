@@ -18,7 +18,7 @@ using ECHOAnalysis
 using CSV, DataFrames
 using PrettyTables
 
-rounder = Dict(0 => (v,i) -> typeof(v) <: Number ? round(v,digits=3) : v)
+rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 outpath, figures = notebookpaths!(4)
