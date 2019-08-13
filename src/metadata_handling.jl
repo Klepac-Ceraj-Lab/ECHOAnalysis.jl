@@ -232,7 +232,7 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
 
     df = DataFrame(:subject=>subjects, :timepoint=>timepoints)
     for m in Symbol.(metadata)
-        df[m] = Array{Any}(missing, length(subjects))
+        df[!,m] = Array{Any}(missing, length(subjects))
     end
 
     for row in eachrow(metadf)
@@ -246,7 +246,7 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
             else
                 rows = collect(intersect(submap[sub], tpmap[tp]))
             end
-            df[rows, Symbol(md)] = val
+            df[rows, Symbol(md)] .= val
         end
     end
     return df
@@ -399,13 +399,13 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
     df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
 
     for n in names(df)
-        df[!, n] = customprocess(df[n], MDColumn(n))
+        df[!, n] = customprocess(df[!,n], MDColumn(n))
     end
 
-    if haskey(samples, :sample)
+    if haskey(samples[1], :sample)
         df[!, :sample] = getfield.(samples, :sample)
         # reorder columns so :sample comes first
-        return df[:, [:sample, names(df[1:end-1])...]]
+        return df[:, [:sample, names(df)[1:end-1]...]]
     else
         return df
     end
