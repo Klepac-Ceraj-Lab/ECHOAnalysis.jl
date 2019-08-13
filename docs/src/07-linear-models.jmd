@@ -91,7 +91,7 @@ focusmeta.breastfed = map(breastfeeding, eachrow(focusmeta))
 dropmissing!(focusmeta, :birthType)
 
 # view() does not create a new dataframe, but allows us to subset it.
-covariatedf = view(focusmeta, [:sample, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+covariatedf = view(focusmeta, :, [:sample, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
@@ -127,7 +127,7 @@ The results from this run can be found in `data/notebooks/07/species__wm_age_ses
 We can do this with brain data as well:
 
 ```julia; results="hidden"
-whitematterdf = view(focusmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+whitematterdf = view(focusmeta, :, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
 
 # Model: species abundance ~ white_matter_volume + age + motherSES + breastfed + birthType
@@ -140,7 +140,7 @@ fit_data <- Maaslin2(
 ```
 
 ```julia; results="hidden"
-greymatterdf = view(focusmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+greymatterdf = view(focusmeta, :, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
 # Model: species abundance ~ grey_matter_volume + age + motherSES + breastfed + birthType
@@ -152,7 +152,7 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "species__gmNorm_age_ses_bf_birth")))
 """
 
-csfdf = view(focusmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+csfdf = view(focusmeta, :, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
 # Model: species abundance ~ csf_volume + age + motherSES + breastfed + birthType
@@ -228,7 +228,7 @@ savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
 ```
 
 ```julia; results="hidden"
-cogdf = view(focusmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
+cogdf = view(focusmeta, :, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
 R"""
