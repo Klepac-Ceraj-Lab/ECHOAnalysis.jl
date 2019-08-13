@@ -56,8 +56,8 @@ subject_type = [startswith(s, "M") ? "Mother" : "Child" for s in samples];
 ```
 ```julia
 perm = permanova(dm, subject_type)
-perm[:feature] = "species"
-perm[:variable] = "Subject Type";
+perm[!,:feature] .= "species"
+perm[!,:variable] .= "Subject Type";
 ```
 ```julia; echo=false
 pretty_table(perm, formatter = rounder, nosubheader=true)
@@ -86,7 +86,7 @@ is to look at how much of the variation is attributable to the subject ID.
 metadata = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(abt)))
 
 # need to convert subject IDs to `String` so it's not treated as continuous variable
-p = permanova(dm, string.(metadata[:subject]))
+p = permanova(dm, string.(metadata.subject))
 ```
 
 Here, we can see that over 80% of variability (`R2`) is attributable to who the person is.
@@ -100,8 +100,8 @@ Now we'll concatenate this new PERMANOVA into the previous dataframe
 to keep the results from multiple metadata together.
 
 ```julia
-p[:feature] = "species"
-p[:variable] = "Subject ID"
+p[!, :feature] .= "species"
+p[!, :variable] .= "Subject ID"
 perm = vcat(perm, p)
 ```
 ## Kids metadata PERMANOVAs
@@ -114,38 +114,38 @@ kids_dm = pairwise(BrayCurtis(), kids, dims=2)
 
 kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)))
 
-p = permanova(kids_dm, kidsmeta[:correctedAgeDays], filter=.!ismissing.(kidsmeta[:correctedAgeDays]))
-p[:feature] = "species"
-p[:variable] = "Age"
+p = permanova(kids_dm, kidsmeta.correctedAgeDays, filter=.!ismissing.(kidsmeta.correctedAgeDays))
+p[!, :feature] .= "species"
+p[!, :variable] .= "Age"
 perm = vcat(perm, p)
 
-kidsmeta[:birthType] = Vector{Union{Missing,String}}(kidsmeta[:birthType])
-p = permanova(kids_dm, kidsmeta[:birthType], filter=.!ismissing.(kidsmeta[:birthType]))
-p[:feature] = "species"
-p[:variable] = "birthType"
+kidsmeta.birthType = Vector{Union{Missing,String}}(kidsmeta.birthType)
+p = permanova(kids_dm, kidsmeta.birthType, filter=.!ismissing.(kidsmeta.birthType))
+p[!, :feature] .= "species"
+p[!, :variable] .= "birthType"
 perm = vcat(perm, p)
 
-kidsmeta[:breastfed] = breastfeeding.(eachrow(kidsmeta))
-p = permanova(kids_dm, kidsmeta[:breastfed])
-p[:feature] = "species"
-p[:variable] = "breastfed"
+kidsmeta.breastfed = breastfeeding.(eachrow(kidsmeta))
+p = permanova(kids_dm, kidsmeta.breastfed)
+p[!, :feature] .= "species"
+p[!, :variable] .= "breastfed"
 perm = vcat(perm, p)
 
-kidsmeta[:formulafed] = formulafeeding.(eachrow(kidsmeta))
-p = permanova(kids_dm, kidsmeta[:formulafed])
-p[:feature] = "species"
-p[:variable] = "formulafed"
+kidsmeta.formulafed = formulafeeding.(eachrow(kidsmeta))
+p = permanova(kids_dm, kidsmeta.formulafed)
+p[!, :feature] .= "species"
+p[!, :variable] .= "formulafed"
 perm = vcat(perm, p)
 
-kidsmeta[:childGender] = Vector{Union{Missing,String}}(kidsmeta[:childGender])
-p = permanova(kids_dm, kidsmeta[:childGender], filter=.!ismissing.(kidsmeta[:childGender]))
-p[:feature] = "species"
-p[:variable] = "childGender"
+kidsmeta.childGender = Vector{Union{Missing,String}}(kidsmeta.childGender)
+p = permanova(kids_dm, kidsmeta.childGender, filter=.!ismissing.(kidsmeta.childGender))
+p[!, :feature] .= "species"
+p[!, :variable] .= "childGender"
 perm = vcat(perm, p)
 
-p = permanova(kids_dm, kidsmeta[:motherSES], filter=.!ismissing.(kidsmeta[:motherSES]))
-p[:feature] = "species"
-p[:variable] = "motherSES"
+p = permanova(kids_dm, kidsmeta.motherSES, filter=.!ismissing.(kidsmeta.motherSES))
+p[!, :feature] .= "species"
+p[!, :variable] .= "motherSES"
 perm = vcat(perm, p);
 
 # remove the rows that don't have p values
@@ -165,7 +165,7 @@ What happens if we only look at the kids under 2 years old?
 
 ```julia
 # get kids that are less than 2 years old
-young = map(a-> !ismissing(a) && a < 365*2, kidsmeta[:correctedAgeDays])
+young = map(a-> !ismissing(a) && a < 365*2, kidsmeta.correctedAgeDays)
 youngkids = view(kids, sites=young)
 
 # make new distance matrix
@@ -173,14 +173,14 @@ youngkids_dm = pairwise(BrayCurtis(), youngkids, dims=2)
 youngkidsmeta = kidsmeta[young, :]
 
 # Test breasfeeding and formula feeding
-p = permanova(youngkids_dm, youngkidsmeta[:breastfed])
-p[:feature] = "species"
-p[:variable] = "young kids breastfed"
+p = permanova(youngkids_dm, youngkidsmeta.breastfed)
+p[!, :feature] .= "species"
+p[!, :variable] .= "young kids breastfed"
 perm = vcat(perm, p)
 
-p = permanova(youngkids_dm, youngkidsmeta[:formulafed])
-p[:feature] = "species"
-p[:variable] = "young kids formulafed"
+p = permanova(youngkids_dm, youngkidsmeta.formulafed)
+p[!, :feature] .= "species"
+p[!, :variable] .= "young kids formulafed"
 perm = vcat(perm, p)
 
 filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm);
@@ -228,8 +228,8 @@ p = p[:aov_tab]
 The second row is `white_matter_volume`.
 
 ```julia
-p[:feature] = "species"
-p[:variable] = "white_matter_volume"
+p[!, :feature] .= "species"
+p[!, :variable] .= "white_matter_volume"
 perm = vcat(perm, p[[2],:])
 ```
 **The effect of which is not significant**
@@ -251,8 +251,8 @@ p <- adonis(r_dm ~ grey_matter_volume + correctedAgeDays,
 
 @rget p
 p = p[:aov_tab]
-p[:feature] = "species"
-p[:variable] = "grey_matter_volume"
+p[!, :feature] .= "species"
+p[!, :variable] .= "grey_matter_volume"
 perm = vcat(perm, p[[2],:])
 
 ## CSF (cerebrospinal fluid volume)
@@ -269,8 +269,8 @@ p <- adonis(r_dm ~ csf_volume + correctedAgeDays,
 
 @rget p
 p = p[:aov_tab]
-p[:feature] = "species"
-p[:variable] = "csf_volume"
+p[!, :feature] .= "species"
+p[!, :variable] .= "csf_volume"
 perm = vcat(perm, p[[2],:])
 ```
 ```julia; echo=false
@@ -289,13 +289,13 @@ First, we have to convert these test scores so they are comparable across age gr
 
 using Statistics
 # Bayleys doesn't have a compositve score calculated, but we can get it:
-kidsmeta[:bayleysComposite] = map(row->
+kidsmeta.bayleysComposite = map(row->
     mean([row[:languageComposite], row[:motorComposite]]),
     eachrow(kidsmeta))
 
 # pre-fill columns for numerical score and name of the measurement test
-kidsmeta[:cogScore] = Vector{Union{Float64,Missing}}(missing, size(kidsmeta,1))
-kidsmeta[:cogAssessment] = Vector{Union{String,Missing}}(missing, size(kidsmeta,1))
+kidsmeta.cogScore = Vector{Union{Float64,Missing}}(missing, size(kidsmeta,1))
+kidsmeta.cogAssessment = Vector{Union{String,Missing}}(missing, size(kidsmeta,1))
 
 map(enumerate(eachrow(kidsmeta))) do (i, row)
     # get just the cognitive assessment columns
@@ -325,9 +325,9 @@ map(enumerate(eachrow(kidsmeta))) do (i, row)
     end
 end
 
-p = permanova(kids_dm, kidsmeta[:cogScore], filter=.!ismissing.(kidsmeta[:cogScore]))
-p[:feature] = "species"
-p[:variable] = "cogScore"
+p = permanova(kids_dm, kidsmeta.cogScore, filter=.!ismissing.(kidsmeta.cogScore))
+p[!, :feature] .= "species"
+p[!, :variable] .= "cogScore"
 perm = vcat(perm, p[[1],:])
 ```
 
@@ -338,12 +338,12 @@ for FDR control.
 ```julia
 using MultipleTesting
 
-perm[:p_value] = Float64.(perm[Symbol("Pr(>F)")])
-perm[:q_value] = adjust(perm[:p_value], BenjaminiHochberg())
+perm.p_value = Float64.(perm[!,Symbol("Pr(>F)")])
+perm.q_value = adjust(perm.p_value, BenjaminiHochberg())
 sort!(perm, :q_value)
 
 # reorder columns
-perm = perm[[:feature, :variable, :R2, :p_value, :q_value]]
+perm = perm[!,[:feature, :variable, :R2, :p_value, :q_value]]
 ```
 
 ```julia; echo=false; results="hidden"
