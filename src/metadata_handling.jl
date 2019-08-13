@@ -74,7 +74,7 @@ Returns `true` if any of the following are `true`:
 
 Otherwise returns `false`.
 """
-function breastfeeding(row)
+function breastfeeding(row::DataFrameRow)
     bf = any([
         occursin(r"[Bb]reast", row[:milkFeedingMethods]),
         occursin(r"[Yy]es", row[:exclusivelyNursed]),
@@ -100,7 +100,7 @@ Returns `true` if any of the following are `true`:
 
 Otherwise returns `false`.
 """
-function formulafeeding(row)
+function formulafeeding(row::DataFrameRow)
     ff = any([
         occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
         occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
@@ -203,7 +203,7 @@ function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type
     nrow(m) == 0 && return default
     nrow(m) > 1 && throw(ErrorException("More than one value found"))
 
-    v = first(m[:value])
+    v = first(m[!,:value])
     if type === nothing
         return v
     elseif ismissing(v)
@@ -399,10 +399,10 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
     df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
 
     for n in names(df)
-        df[n] = customprocess(df[n], MDColumn(n))
+        df[!, n] = customprocess(df[n], MDColumn(n))
     end
 
-    df[:sample] = getfield.(samples, :sample)
+    df[!, :sample] = getfield.(samples, :sample)
     return df[:, [:sample, names(df[1:end-1])...]]
 end
 

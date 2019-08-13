@@ -44,6 +44,7 @@ using Microbiome
 include("metadata_handling.jl")
 include("notebook_handling.jl")
 include("file_handling.jl")
+include("pcoa_recipe.jl")
 include("startup.jl")
 
 end  # module ECHOAnalysis
