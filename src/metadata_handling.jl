@@ -78,7 +78,7 @@ function breastfeeding(row::DataFrameRow)
     bf = any([
         occursin(r"[Bb]reast", row[:milkFeedingMethods]),
         occursin(r"[Yy]es", row[:exclusivelyNursed]),
-        all(occursin.(r"[Nn]o", row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        all(map(x->occursin(r"[Nn]o", x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
         row[:typicalNumberOfFeedsFromBreast] > 0,
         row[:typicalNumberOfEpressedMilkFeeds] > 0,
         row[:lengthExclusivelyNursedMonths] > 0,
@@ -104,7 +104,7 @@ function formulafeeding(row::DataFrameRow)
     ff = any([
         occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
         occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
-        all(occursin.(r"[Nn]o", row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        all(map(x->occursin(r"[Nn]o",x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
         !ismissing(row[:amountFormulaPerFeed]),
         !ismissing(row[:formulaTypicalType]),
         row[:amountFormulaPerFeed] > 0

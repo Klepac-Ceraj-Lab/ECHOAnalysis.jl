@@ -24,7 +24,7 @@ outpath, figures = notebookpaths!(5)
 ```
 ```julia
 tax = load_taxonomic_profiles()
-first(tax[1:10], 10)
+first(tax, 10)
 ```
 
 Some analysis of the fungi:
@@ -35,8 +35,8 @@ euk = filter(tax) do row
 end
 
 # remove columns that don't have any fungi
-euk = euk[map(c->
-    !(eltype(euk[c]) <: Number) || sum(euk[c]) > 0, names(euk))]
+euk = euk[!, map(c->
+    !(eltype(euk[!,c]) <: Number) || sum(euk[!,c]) > 0, names(euk))]
 
 CSV.write(joinpath(outpath, "euk.csv"), euk)
 # get a df with only species
@@ -62,7 +62,7 @@ let's look at the PCoA plots using BrayCurtis dissimilarity.
 ```julia
 spec = taxfilter(tax)
 phyla = taxfilter(tax, :phylum)
-first(spec[1:10], 10)
+first(spec, 10)
 ```
 
 Now I'll convert these to the `AbundanceTable` type from `Microbiome.jl`
@@ -84,10 +84,9 @@ as principal coordinates analysis).
 dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
 mds = fit(MDS, dm, distances=true)
 
-# This file has some code for a plot recipe,
+# The `src/pcoa_recipe.jl` file has some code for a plot recipe,
 # but will not be necessary after https://github.com/JuliaPlots/StatsPlots.jl/pull/230/
 # gets merged
-include("src/pcoa_recipe.jl")
 plot(mds, primary=false)
 ```
 
@@ -188,7 +187,7 @@ savefig(joinpath(figures, "taxonomic-profiles-firmicutes.svg"));
 ```
 
 ```julia; echo=false; results="hidden"
-plot(p1, p2, p3, p4, marker = 2, markerstroke=0)
+plot(p1, p2, p3, p4, marker = 2, markerstroke=0, size=(800, 800))
 savefig(joinpath(figures, "taxonomic-profiles-grid.svg"));
 ```
 
@@ -319,13 +318,13 @@ I'll use the [`getfocusmetadata`]@ref function.
 ```julia
 samples = resolve_sampleID.(samplenames(kids))
 focusmeta = getfocusmetadata(datatoml["tables"]["metadata"]["all"]["path"], samples)
-focusmeta[:shannon] = shannon(kids)
-focusmeta[:ginisimpson] = ginisimpson(kids)
+focusmeta[!,:shannon] = shannon(kids)
+focusmeta[!,:ginisimpson] = ginisimpson(kids)
 
-eigenvalues, var_explained, pco_axes = mds_axis_values(kids_mds)
+eigenvalues, var_explained, pco_axes = ECHOAnalysis.mds_axis_values(kids_mds)
 
-scatter(pco_axes[:, 1], focusmeta[:correctedAgeDays] ./365, xticks=false,
-    primary=false, zcolor = focusmeta[:shannon], color=:viridis)
+scatter(pco_axes[:, 1], focusmeta[!, :correctedAgeDays] ./365, xticks=false,
+    primary=false, zcolor = focusmeta[!,:shannon], color=:viridis)
 ylabel!("Age (years)")
 xlabel!("MDS1 ($(round(var_explained[1] * 100, digits = 2))%)")
 title!("All kids age / PCoA 1 / Alpha diversity")
@@ -338,10 +337,10 @@ Here we can see that alpha diversity increases with age (not too surprising).
 Another way to look at it is to plot the alpha diversity at each age:
 
 ```julia
-focusmeta[:floorAge] = [ismissing(x) ? missing : Int(floor(x / 365)) for x in focusmeta[:correctedAgeDays]]
+focusmeta.floorAge = [ismissing(x) ? missing : Int(floor(x / 365)) for x in focusmeta.correctedAgeDays]
 
-boxplot(collect(skipmissing(focusmeta[:floorAge])),
-    focusmeta[:ginisimpson][.!ismissing.(focusmeta[:floorAge])],
+boxplot(collect(skipmissing(focusmeta.floorAge)),
+    focusmeta.ginisimpson[.!ismissing.(focusmeta.floorAge)],
     color=:lightgrey, legend=false, xlabel="Age in Years",
     yaxis=(0:0.1:1.1, "Alpha diversity (GiniSimpson)"))
 ```
@@ -361,8 +360,8 @@ abundanceplot(kids, srt = kids_hcl.order,
 savefig(joinpath(figures, "kids-abundanceplot.svg"))
 ```
 ```julia
-abundanceplot(kids, srt = kids_hcl.order,
-    title="Unique kids, top 10 species",
+abundanceplot(kids, srt = kids_hcl.order, topabund=11,
+    title="Unique kids, top 11 species",
     xticks=false, color=color4', linecolor=:match, linestyle=:dot,
     legend=false)
 ```
@@ -377,9 +376,9 @@ We can also annotate this plot with the age of the kids
 
 ```julia
 plot(
-    abundanceplot(kids, srt = kids_hcl.order, title="Kids, top 10 species",
+    abundanceplot(kids, srt = kids_hcl.order, topabund=11, title="Kids, top 11 species",
         xticks=false, color=color4', legend=false, linecolor=:match, linestyle=:dot),
-    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta[:correctedAgeDays][kids_hcl.order]]'),
+    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta.correctedAgeDays[kids_hcl.order]]'),
         xticks=false, yticks=false, color=:PuBu, colorbar=false),
     layout = grid(2,1,heights=[0.9, 0.1])
     )
@@ -392,7 +391,7 @@ There's not a great way to show the legend in the main figure,
 but here it is:
 
 ```julia
-heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta[:correctedAgeDays][kids_hcl.order]]'),
+heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta.correctedAgeDays[kids_hcl.order]]'),
     xticks=false, yticks=false, color=:PuBu)
 ```
 
@@ -401,10 +400,10 @@ savefig(joinpath(figures, "kids-abundanceplot-age-legend.svg"));
 ```
 
 ```julia
-x = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 1]
-y = pco_axes[.!ismissing.(focusmeta[:correctedAgeDays]), 2]
+x = pco_axes[.!ismissing.(focusmeta.correctedAgeDays), 1]
+y = pco_axes[.!ismissing.(focusmeta.correctedAgeDays), 2]
 
-scatter(x, y, zcolor=focusmeta[.!ismissing.(focusmeta[:correctedAgeDays]), :correctedAgeDays] ./365,
+scatter(x, y, zcolor=focusmeta[.!ismissing.(focusmeta.correctedAgeDays), :correctedAgeDays] ./365,
     primary=false, color=:PuBu, title = "Unique Kids Taxonomic Profiles, Age", ticks=false)
 xlabel!("MDS1 ($(round(var_explained[1]*100, digits = 2))%)")
 ylabel!("MDS2 ($(round(var_explained[2]*100, digits = 2))%)")
@@ -420,7 +419,7 @@ over the first years of life.
 Let's focus on just the youngest kids:
 
 ```julia
-youngkids = map(x-> ismissing(x) ? false : x/365 < 2, focusmeta[:correctedAgeDays])
+youngkids = map(x-> ismissing(x) ? false : x/365 < 2, focusmeta.correctedAgeDays)
 
 ykids = view(kids, sites = youngkids)
 ykids_dm = pairwise(BrayCurtis(), ykids)
@@ -466,8 +465,8 @@ function colorquartile(arr, clrs)
     end
 end
 
-scatter(pco_axes[:, 1], focusmeta[:correctedAgeDays] ./ 365,
-    color=colorquartile(focusmeta[:grey_matter_volume], color2[[1,2,3,4,end]]),
+scatter(pco_axes[:, 1], focusmeta.correctedAgeDays ./ 365,
+    color=colorquartile(focusmeta.grey_matter_volume, color2[[1,2,3,4,end]]),
     markersize=5, primary=false, xticks=false)
 scatter!([],[], color=color2[1], label="25th percentile")
 scatter!([],[], color=color2[2], label="50th percentile")
@@ -489,10 +488,10 @@ microbiomes. Let's see where that falls in our data:
 
 ```julia
 plot(kids_mds, line=1,
-    color=metacolor(focusmeta[:birthType], color2[4:5], missing_color=color2[end]),
+    color=metacolor(focusmeta.birthType, color2[4:5], missing_color=color2[end]),
     title="Kids, BirthType", primary=false, ticks=false)
-scatter!([],[], color=color2[4], label=unique(focusmeta[:birthType])[1])
-scatter!([],[], color=color2[5], label=unique(focusmeta[:birthType])[2])
+scatter!([],[], color=color2[4], label=unique(focusmeta.birthType)[1])
+scatter!([],[], color=color2[5], label=unique(focusmeta.birthType)[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomleft)
 ```
 ```julia; echo=false; results="hidden"
@@ -519,8 +518,8 @@ I defined `breastfeeding` and `formulafeeding`
 to calculate these values.
 
 ```julia
-focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
-focusmeta[:formulafed] = formulafeeding.(eachrow(focusmeta))
+focusmeta.breastfed = map(breastfeeding, eachrow(focusmeta))
+focusmeta.formulafed = map(formulafeeding, eachrow(focusmeta))
 
 bfcolor = let bf = []
     for row in eachrow(focusmeta)
