@@ -115,10 +115,10 @@ brainsid[1:5]
 ```
 
 ```julia
-brainvol[:studyID] = getfield.(brainsid, :subject)
-brainvol[:timepoint] = getfield.(brainsid, :timepoint)
-brainvol[:sampleID] = getfield.(brainsid, :sample)
-brainvol[:parent_table] = "brainVolume"
+brainvol[!, :studyID] = getfield.(brainsid, :subject)
+brainvol[!, :timepoint] = getfield.(brainsid, :timepoint)
+brainvol[!, :sampleID] = getfield.(brainsid, :sample)
+brainvol[!, :parent_table] .= "brainVolume"
 
 randrows(brainvol)
 ```
@@ -129,30 +129,30 @@ And now the same thing for the cortical and subcortical volume tables:
 cortical = CSV.read(brainfiles["cortical"]["path"])
 subcortical = CSV.read(brainfiles["subcortical"]["path"])
 
-corticalids = resolve_letter_timepoint.(cortical[:SubjID])
-cortical[:studyID] = getfield.(corticalids, :subject)
-cortical[:timepoint] = getfield.(corticalids, :timepoint)
+corticalids = resolve_letter_timepoint.(cortical[!, :SubjID])
+cortical[!, :studyID] = getfield.(corticalids, :subject)
+cortical[!, :timepoint] = getfield.(corticalids, :timepoint)
 
 # we only care about a subset of values for now
-cortical = cortical[[:studyID, :timepoint, :LThickness, :RThickness,
+cortical = cortical[:, [:studyID, :timepoint, :LThickness, :RThickness,
                                            :LSurfArea,  :RSurfArea,
                                            :ICV]]
 
 # convert to longform
 cortical = melt(cortical, [:studyID, :timepoint], variable_name=:metadatum)
-cortical[:parent_table] = "corticalVolumes"
+cortical[!, :parent_table] .= "corticalVolumes"
 
 # for the subcortex we mostly care about the total volume rather than individual values
-subcortical[:subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
+subcortical[!, :subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
 
-subcorticalids = resolve_letter_timepoint.(subcortical[:SubjID])
-subcortical[:studyID] = getfield.(subcorticalids, :subject)
-subcortical[:timepoint] = getfield.(subcorticalids, :timepoint)
-subcortical = subcortical[[:studyID, :timepoint, :subcortical_volume]]
+subcorticalids = resolve_letter_timepoint.(subcortical[!,:SubjID])
+subcortical[!,:studyID] = getfield.(subcorticalids, :subject)
+subcortical[!,:timepoint] = getfield.(subcorticalids, :timepoint)
+subcortical = subcortical[!,[:studyID, :timepoint, :subcortical_volume]]
 
 # convert to longform
 subcortical = melt(subcortical, [:studyID, :timepoint], variable_name=:metadatum)
-subcortical[:parent_table] = "subcorticalVolumes";
+subcortical[!,:parent_table] .= "subcorticalVolumes";
 ```
 
 We can only concatenate tables if they all have the same columns,
@@ -162,6 +162,7 @@ The fecal sample `sampleID`s are build from the subjectID and timepoint,
 so I'll do the same for other observations.
 
 _Note_: Fecal sample `sampleID`s are built as follows...
+
 ```
 C0596_1F_1A
 C = Child (or M = Mother)
@@ -174,19 +175,19 @@ A = AliquotRep (each fecal Genotek sample is aliquoted into 2 or 4 smaller cryov
 ```
 
 ```julia
-allmeta[:sampleID] = map(r->
+allmeta[!,:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(allmeta))
 
-brainvol[:sampleID] = map(r->
+brainvol[!,:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(brainvol))
 
-cortical[:sampleID] = map(r->
+cortical[!,:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(cortical))
 
-subcortical[:sampleID] = map(r->
+subcortical[!,:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(subcortical));
 ```
@@ -196,10 +197,9 @@ And then concatenate all the tables together
 ```julia
 allmeta = vcat(allmeta, brainvol, cortical, subcortical, samples)
 # reorder columns
-allmeta = allmeta[[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
+allmeta = allmeta[!,[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
 # remove rows with missing values
-filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID], r[:timepoint], r[:metadatum]]), allmeta)
-disallowmissing!(allmeta)
+dropmissing!(allmeta)
 
 # show a random assortment of ~ 10 rows
 randrows(allmeta)
@@ -209,15 +209,16 @@ Some of the `:value` fields have quotes or newlines in the field,
 which screws up parsing later. For now I will just replace them.
 
 ```julia
-for i in eachindex(allmeta[:value])
-    v = allmeta[i, :value]
-    ismissing(v) && continue
-    if isa(v, AbstractString) && occursin(r"\n", v)
-        v = replace(v, r"\n"=>"___")
-        allmeta[i, :value] = v
-    elseif isa(v, AbstractString) && occursin(r"\"", v)
-        v = replace(v, r"\""=>"'")
-        allmeta[i, :value] = v
+let vals = allmeta[!, :value]
+    for i in eachindex(vals)
+        if isa(vals[i], AbstractString)
+            if occursin(r"\n", vals[i])
+                vals[i] = replace(vals[i], r"\n"=>"___")
+            end
+            if occursin(r"\"", vals[i])
+                vals[i] = replace(vals[i], r"\""=>"'")
+            end
+        end
     end
 end
 

@@ -66,6 +66,3 @@ function merge_tables(folder, dataroot, fltr; suffix=fltr)
     disallowmissing!(df)
     return df
 end
-
-
-const datatoml = parsefile("data/data.toml")
