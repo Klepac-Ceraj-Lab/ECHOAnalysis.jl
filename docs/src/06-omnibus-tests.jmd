@@ -40,7 +40,7 @@ end
 
 sigp_hl = Highlighter(sigp, Crayon(bold = true, background = :dark_gray))
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
-@ptconf formatter = rounder highlighters=sigp_hl nosubheader=true screen_size=(-1,120)
+@ptconf formatter = rounder nosubheader=true screen_size=(-1,120) # highlighters=sigp_hl
 ```
 
 ```julia; results="hidden"
