@@ -33,6 +33,8 @@ export
     randrows
 
 using DataFrames
+using RecipesBase
+using MultivariateStats
 using CSV
 using Colors
 using ColorBrewer
