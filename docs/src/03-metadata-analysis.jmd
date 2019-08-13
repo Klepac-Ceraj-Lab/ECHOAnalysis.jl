@@ -97,10 +97,11 @@ sort!(mgxsamples, :studyID);
 first(mgxsamples, 5)
 ```
 
-And we can get metadata for these samples using the [`getfocusmetadata`](@ref) function,
-which converts the longform data into a wide table with one row per subject/timepoint pair.
-Metadata from "timpoint 0" (that is, non time-dependent data) is added to every row for
-that subject.
+And we can get metadata for these samples using the `getfocusmetadata` function,
+which converts the longform data into a wide table
+with one row per subject/timepoint pair.
+Metadata from "timpoint 0" (that is, non time-dependent data)
+is added to every row for that subject.
 
 ```julia
 samples = map(row-> (subject=row[:studyID], timepoint=row[:timepoint]), eachrow(mgxsamples))
