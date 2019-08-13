@@ -1,4 +1,10 @@
-# Working with Metadata
+---
+title: "Notebook 2: Working with Metadata"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 In the previous notebook, we generated separate metadata files
 for different tables in the FilemakerPro database.

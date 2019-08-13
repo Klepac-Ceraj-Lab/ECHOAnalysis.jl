@@ -1,9 +1,10 @@
-# Data for Analysis
-
-```@contents
-Pages=["01-data-sources.md"]
-Depth=2
-```
+---
+title: "Notebook 1: Data Sources"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 ## Description
 

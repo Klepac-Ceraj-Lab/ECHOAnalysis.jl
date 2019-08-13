@@ -1,4 +1,10 @@
-# Taxonomic Profiles
+---
+title: "Notebook 5: Taxonomic Profiles"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 Taxonomic profiles come from [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/src).
 Each sample is run separately, and needs to be joined in a single table.

@@ -6,8 +6,6 @@ options:
     wrap : false
 ---
 
-# Omnibus Tests
-
 Here, we use permutational analysis of variance
 (or [PERMANOVA](https://en.wikipedia.org/wiki/Permutational_analysis_of_variance))
 to identify how much of the variation in the microbiome

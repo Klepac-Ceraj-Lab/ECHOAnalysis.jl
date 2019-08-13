@@ -1,4 +1,10 @@
-# Linear Models
+---
+title: "Notebook 7: Linear Models"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 Now that we've done omnibus tests,
 it's time to look at per-feature tests with multivariate linear models.

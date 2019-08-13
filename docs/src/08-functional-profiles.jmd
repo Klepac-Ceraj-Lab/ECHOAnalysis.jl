@@ -1,4 +1,10 @@
-# Functional Profiles
+---
+title: "Notebook 8: Functional Profiles"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 Now we've been through some analyses of the taxonomic profiles,
 but metagenomes *also* allow the generation of functional profiles;
@@ -6,7 +12,7 @@ that is, what genes are present in a given community.
 
 These profiles were generated with [HUMANn2](http://huttenhower.sph.harvard.edu/humann2).
 
-```julia
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 using Microbiome
 using BiobakeryUtils

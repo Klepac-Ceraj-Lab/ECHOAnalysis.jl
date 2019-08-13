@@ -1,4 +1,10 @@
-# Quality control of metagenomes
+---
+title: "Notebook 4: Quality control of metagenomes"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 All of the metagenomes were processed
 using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/Home).
