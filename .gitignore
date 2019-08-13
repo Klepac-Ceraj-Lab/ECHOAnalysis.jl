@@ -3,6 +3,7 @@
 *.tsv
 *.fmp12
 *.xlsx
+Rplots.pdf
 scratch*
 build/
 docs/html
