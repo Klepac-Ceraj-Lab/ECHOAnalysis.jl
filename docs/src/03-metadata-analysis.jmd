@@ -12,14 +12,19 @@ Now that we have the metadata in long form,
 it's a bit easier to query it for the stuff we want.
 I'm using the macros available from the [DataFramesMeta](https://github.com/JuliaData/DataFramesMeta.jl) package.
 
-```julia
+```julia; echo=false; results="hidden"
 ENV["GKSwstype"] = "100"
 using ECHOAnalysis
 using DataFrames
 using DataFramesMeta
 using StatsPlots
+using PrettyTables
 
-allmeta = load_metadata(datatoml);
+rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+@ptconf formatter = rounder nosubheader=true screen_size=(20,120)
+
+outpath, figures = notebookpaths!(3)
+allmeta = load_metadata(datatoml)
 ```
 
 As an example, how many unique subjects
@@ -33,26 +38,24 @@ do we have any metadata for?
 
 (**Note**: most of these subjects have not provided fecal samples)
 
-Or, how many subjects have two or more fecal samples?
+Or, how many subjects have at least one fecal sample?
 
 ```julia
 sampleinfo = @linq allmeta |>
     where(:metadatum .== "CollectionRep") |>
     by(:studyID, nsamples = length(:studyID))
 
-randrows(sampleinfo)
+@pt randrows(sampleinfo)
 ```
 
 ```julia
-histogram(sampleinfo[:nsamples], legend=false,
+histogram(sampleinfo.nsamples, legend=false,
     title="Samples per Subject ID",
     xlabel="# of fecal samples", ylabel="# of subjects")
 ```
 
-```julia; echo=false
-# make directory if it doesn't exist
-isdir(datatoml["figures"]["path"]) || mkdir(datatoml["figures"]["path"])
-savefig(joinpath(datatoml["figures"]["path"], "03-samples-per-subject.png"))
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "03-samples-per-subject.png"))
 ```
 
 Wow - there are a couple of subjects that have a lot of samples.
@@ -66,7 +69,7 @@ highsamplers = @linq allmeta |>
     where(:nsamples .>= 5) |>
     select(:studyID, :nsamples)
 
-randrows(highsamplers)
+@pt randrows(highsamplers)
 ```
 
 ## Metagenomes
@@ -77,12 +80,12 @@ To find all of the studyID/timepoint combos that have sequenced metagenomes:
 
 ```julia
 # filter on metagenomes (DOM = "Date of Metagenome")
-highsamplers = @linq filter(r-> r[:studyID] in highsamplers[:studyID], allmeta) |>
+highsamplers = @linq filter(r-> r[:studyID] in highsamplers.:studyID, allmeta) |>
     where(:metadatum .== "DOM") |>
     where(:value .!== missing) |>
     orderby(:studyID, :timepoint)
 
-first(highsamplers, 15)
+@pt highsamplers
 ```
 
 So a bunch of these are where
@@ -100,7 +103,7 @@ mgxsamples = @linq allmeta |>
     unique
 
 sort!(mgxsamples, :studyID);
-first(mgxsamples, 5)
+@pt mgxsamples
 ```
 
 And we can get metadata for these samples using the `getfocusmetadata` function,
@@ -113,5 +116,5 @@ is added to every row for that subject.
 samples = map(row-> (subject=row[:studyID], timepoint=row[:timepoint]), eachrow(mgxsamples))
 focus = getfocusmetadata(allmeta, samples)
 sort!(focus, [:subject, :timepoint])
-randrows(focus)
+@pt randrows(focus)
 ```

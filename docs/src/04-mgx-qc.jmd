@@ -13,9 +13,13 @@ using tools from the [bioBakery](https://bitbucket.org/biobakery/biobakery/wiki/
 ENV["GKSwstype"] = "100" # hide
 ```
 
-```julia
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 using CSV, DataFrames
+using PrettyTables
+
+rounder = Dict(0 => (v,i) -> typeof(v) <: Number ? round(v,digits=3) : v)
+@ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 outpath, figures = notebookpaths!(4)
 ```
@@ -65,7 +69,7 @@ for f in qc_files[2:end]
     global qc = vcat(qc, df)
 end
 
-randrows(qc, 15)
+@pt randrows(qc, 15)
 ```
 
 To keep the formatting of sample IDs consistant across data types,
@@ -80,7 +84,7 @@ let samples = qc[!, :Sample]
     end
 end
 
-randrows(qc)
+@pt randrows(qc)
 ```
 
 Now let's take a look at them with some plots.
@@ -117,7 +121,7 @@ qc_stats = by(qc, :batch) do df
                   )
 end
 CSV.write(joinpath(outpath, "qc_stats.csv"), qc_stats)
-qc_stats
+@pt qc_stats
 ```
 
 According to Andre Comeau of [Integrated Microbiome Research](http://www.imr.bio)

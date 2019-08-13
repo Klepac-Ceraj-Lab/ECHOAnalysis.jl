@@ -15,7 +15,7 @@ Now, we'll get these into a more usable format for analysis.
 Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
-```julia
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 ```
 
@@ -42,10 +42,15 @@ using CSV
 using DataFrames
 using PrettyTables
 
+# make a formatter for PrettyTables to round long numbers
+rounder = Dict(0 => (v,i) -> typeof(v) <: Number ? round(v,digits=3) : v)
+# set configuration for printing tables
+@ptconf formatter = rounder nosubheader=true screen_size=(20,120)
+
 allmeta = CSV.File(files["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
 
-# show ~10 random rows
-allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :]
+# pretty print table
+@pt allmeta
 ```
 
 Alternatively, we can use the `load_metadata` function.
@@ -64,7 +69,7 @@ These are marked with `timepoint = 0`.
 Let's look at which variables that applies to:
 
 ```julia
-allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
+allmeta[allmeta.timepoint .== 0, :parent_table] |> unique
 ```
 
 Those all look reasonable!
@@ -81,15 +86,14 @@ In this case, `timepoint` and `studyID` do not uniquely identify samples,
 since we can have multiple samples per timepoint.
 `sampleID`s should be unique though.
 
-```julia
+```julia; results="hidden"
 samples = load_metadata(files, "samples")
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
 
 # convert to longform
 samples = melt(samples, [:studyID, :timepoint, :sampleID], variable_name=:metadatum)
-samples = filter(r-> !any(ismissing, [r[:studyID], r[:sampleID]]), samples)
-disallowmissing!(samples)
-samples[:parent_table] = "FecalProcessing";
+dropmissing!(samples, [:studyID, :sampleID])
+samples[!, :parent_table] .= "FecalProcessing"
 ```
 
 ## Brain Data
@@ -108,7 +112,7 @@ rename!(brainvol, :study_id => :studyID)
 
 # Convert to longform
 brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :studyID, variable_name=:metadatum)
-randrows(brainvol)
+@pt brainvol
 ```
 
 We need to fix the studyIDs - the letters represent timepoints -
@@ -116,7 +120,7 @@ using the `resolve_letter_timepoint` function.
 
 ```julia
 # convert letter timepoint into number
-brainsid = resolve_letter_timepoint.(brainvol[:studyID])
+brainsid = resolve_letter_timepoint.(brainvol.studyID)
 brainsid[1:5]
 ```
 
@@ -126,12 +130,12 @@ brainvol[!, :timepoint] = getfield.(brainsid, :timepoint)
 brainvol[!, :sampleID] = getfield.(brainsid, :sample)
 brainvol[!, :parent_table] .= "brainVolume"
 
-randrows(brainvol)
+@pt brainvol
 ```
 
 And now the same thing for the cortical and subcortical volume tables:
 
-```julia
+```julia; results="hidden"
 cortical = CSV.read(brainfiles["cortical"]["path"])
 subcortical = CSV.read(brainfiles["subcortical"]["path"])
 
@@ -158,7 +162,7 @@ subcortical = subcortical[!,[:studyID, :timepoint, :subcortical_volume]]
 
 # convert to longform
 subcortical = melt(subcortical, [:studyID, :timepoint], variable_name=:metadatum)
-subcortical[!,:parent_table] .= "subcorticalVolumes";
+subcortical[!,:parent_table] .= "subcorticalVolumes"
 ```
 
 We can only concatenate tables if they all have the same columns,
@@ -180,7 +184,7 @@ A = AliquotRep (each fecal Genotek sample is aliquoted into 2 or 4 smaller cryov
     A,B or A,B,C,D ; SOP is to process AliquotRep A for DNA extractions
 ```
 
-```julia
+```julia; results="hidden"
 allmeta[!,:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(allmeta))
@@ -195,7 +199,7 @@ cortical[!,:sampleID] = map(r->
 
 subcortical[!,:sampleID] = map(r->
         "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
-        eachrow(subcortical));
+        eachrow(subcortical))
 ```
 
 And then concatenate all the tables together
@@ -208,7 +212,7 @@ allmeta = allmeta[!,[:sampleID, :studyID, :timepoint, :metadatum, :value, :paren
 dropmissing!(allmeta)
 
 # show a random assortment of ~ 10 rows
-randrows(allmeta)
+@pt randrows(allmeta)
 ```
 
 Some of the `:value` fields have quotes or newlines in the field,

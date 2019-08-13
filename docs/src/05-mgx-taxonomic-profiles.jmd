@@ -16,7 +16,6 @@ ENV["GKSwstype"] = "100"
 
 using ECHOAnalysis
 using DataFrames
-using PrettyTables
 using CSV
 using Microbiome
 using MultivariateStats
@@ -25,12 +24,16 @@ using MicrobiomePlots
 using BiobakeryUtils
 using Distances
 using Clustering
+using PrettyTables
+
+rounder = Dict(0 => (v,i) -> typeof(v) <: Number ? round(v,digits=3) : v)
+@ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 outpath, figures = notebookpaths!(5)
 ```
 ```julia
 tax = load_taxonomic_profiles()
-first(tax, 10)
+@pt tax, 10
 ```
 
 Some analysis of the fungi:
@@ -48,7 +51,7 @@ CSV.write(joinpath(outpath, "euk.csv"), euk)
 # get a df with only species
 taxfilter!(euk)
 CSV.write(joinpath(outpath, "euk_sp.csv"), euk)
-euk
+@pt euk
 ```
 
 Those numbers are out of 100
@@ -68,18 +71,18 @@ let's look at the PCoA plots using BrayCurtis dissimilarity.
 ```julia
 spec = taxfilter(tax)
 phyla = taxfilter(tax, :phylum)
-first(spec, 10)
+@pt spec
 ```
 
 Now I'll convert these to the `AbundanceTable` type from `Microbiome.jl`
 for easier maniplation, and do Total Sum Scaling (convert to relative abundance).
 
 
-```julia
+```julia; results="hidden"
 abt = abundancetable(spec)
 pabt = abundancetable(phyla)
 relativeabundance!(abt)
-relativeabundance!(pabt);
+relativeabundance!(pabt)
 ```
 
 Using `pairwise` from `Distances.jl` and `MDS` from `MultivariateStats.jl`,
