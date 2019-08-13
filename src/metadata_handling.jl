@@ -404,6 +404,7 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
 
     if haskey(samples, :sample)
         df[!, :sample] = getfield.(samples, :sample)
+        # reorder columns so :sample comes first
         return df[:, [:sample, names(df[1:end-1])...]]
     else
         return df
