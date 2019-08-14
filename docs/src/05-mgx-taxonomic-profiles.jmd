@@ -33,7 +33,7 @@ outpath, figures = notebookpaths!(5)
 ```
 ```julia
 tax = load_taxonomic_profiles()
-@pt tax, 10
+@pt tax
 ```
 
 Some analysis of the fungi:
