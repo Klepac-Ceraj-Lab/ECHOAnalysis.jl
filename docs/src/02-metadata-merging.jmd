@@ -215,24 +215,7 @@ dropmissing!(allmeta)
 @pt randrows(allmeta)
 ```
 
-Some of the `:value` fields have quotes or newlines in the field,
-which screws up parsing later. For now I will just replace them.
-
 ```julia
-let vals = allmeta[!, :value]
-    for i in eachindex(vals)
-        if isa(vals[i], AbstractString)
-            if occursin(r"\n", vals[i])
-                vals[i] = replace(vals[i], r"\n"=>"___")
-            end
-            if occursin(r"\"", vals[i])
-                vals[i] = replace(vals[i], r"\""=>"'")
-            end
-        end
-    end
-end
-
-
 CSV.write(files["tables"]["metadata"]["all"]["path"], allmeta);
 @assert isfile(files["tables"]["metadata"]["all"]["path"])
 ```
