@@ -38,7 +38,9 @@ abt = abundancetable(tax)
 relativeabundance!(abt)
 kids_abt = view(abt, sites=firstkids(samplenames(abt)))
 
-focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)))
+focusmeta = load_metadata(datatoml,
+                samples=resolve_sampleID.(samplenames(kids_abt))
+                )
 @pt focusmeta
 ```
 
@@ -96,6 +98,8 @@ covariatedf = view(focusmeta, :, [:sample, :correctedAgeDays, :mother_HHS, :brea
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
 CSV.write(joinpath(outpath, "kids_covariates.tsv"), delim='\t', covariatedf)
+
+any(!ismissing, covariatedf.motherSES)
 @pt covariatedf
 ```
 
@@ -107,7 +111,7 @@ using RCall
 
 R"library(Maaslin2)"
 let version = R"packageVersion('Maaslin2')"
-    @show version
+    println(version)
 end
 ```
 

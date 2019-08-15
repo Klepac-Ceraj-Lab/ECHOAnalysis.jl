@@ -40,7 +40,7 @@ end
 
 sigp_hl = Highlighter(sigp, Crayon(bold = true, background = :dark_gray))
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
-@ptconf formatter = rounder nosubheader=true screen_size=(-1,120) # highlighters=sigp_hl
+@ptconf formatter = rounder nosubheader=true screen_size=(-1,120) # highlighters=sigp_hl # highlighters don't work in Weave
 ```
 
 ```julia; results="hidden"

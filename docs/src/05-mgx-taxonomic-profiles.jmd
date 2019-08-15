@@ -175,8 +175,8 @@ The ratio of Bacteroidetes and Firmicutes are often visible in the first
 axes of variation in adult microbiomes.
 
 ```julia
-bacteroidetes = vec(Matrix(phyla[phyla[1] .== "Bacteroidetes", 2:end]))
-firmicutes = vec(Matrix(phyla[phyla[1] .== "Firmicutes", 2:end]))
+bacteroidetes = vec(Matrix(phyla[phyla[!,1] .== "Bacteroidetes", 2:end]))
+firmicutes = vec(Matrix(phyla[phyla[!,1] .== "Firmicutes", 2:end]))
 
 p3 = plot(mds, marker=3, line=1, ticks=false,
     zcolor=bacteroidetes, primary = false, color=:plasma,
