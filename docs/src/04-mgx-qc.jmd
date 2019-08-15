@@ -114,10 +114,10 @@ using Statistics
 
 qc_stats = by(qc, :batch) do df
                 DataFrame(
-                  mean = round(mean(df[:final]) / 1e6, digits=2),
-                  med  = round(median(df[:final]) / 1e6, digits=2),
-                  max  = round(maximum(df[:final]) / 1e6, digits=2),
-                  min  = round(minimum(df[:final]) / 1e6, digits=2),
+                  mean = round(mean(df.final) / 1e6, digits=2),
+                  med  = round(median(df.final) / 1e6, digits=2),
+                  max  = round(maximum(df.final) / 1e6, digits=2),
+                  min  = round(minimum(df.final) / 1e6, digits=2),
                   )
 end
 CSV.write(joinpath(outpath, "qc_stats.csv"), qc_stats)

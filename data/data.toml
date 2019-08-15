@@ -6,7 +6,7 @@ description = """\
               possible, these data are in publically accessible locations, \
               though some data are sensitive and are therefore restricted.
               """
-
+test = "test"
 [filemaker]
     path="data/metadata/20190613_deidentified.fmp12"
     name="Deidentified FilemakerPro database"

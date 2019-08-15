@@ -194,9 +194,9 @@ Get the metadata value for a given subject and timepoint
 """
 function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type=nothing)
     m = filter(df) do row
-        !any(ismissing, [row[:metadatum], row[:studyID], row[:timepoint]]) &&
+        !any(ismissing, [row[:metadatum], row[:subject], row[:timepoint]]) &&
             row[:metadatum] == metadatum &&
-            row[:studyID] == subject &&
+            row[:subject] == subject &&
             row[:timepoint] == timepoint
     end
 
@@ -236,7 +236,7 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
     end
 
     for row in eachrow(metadf)
-        sub = row[:studyID]
+        sub = row[:subject]
         tp = row[:timepoint]
         md = String(row[:metadatum])
         val = row[:value]

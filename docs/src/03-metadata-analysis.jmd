@@ -31,7 +31,7 @@ do we have any metadata for?
 ```julia
 # the |> is pipe syntax, the following is the same as
 # `length(unique(allmeta[:subject]))`
-unique(allmeta.subject]) |> length
+unique(allmeta.subject) |> length
 ```
 
 (**Note**: most of these subjects have not provided fecal samples)
@@ -81,7 +81,7 @@ mgxsamples = filter(allmeta) do row
         row.metadatum == "DOM"
     end
 
-sort!(mgxsamples, [sample]);
+sort!(mgxsamples, [:sample]);
 @pt mgxsamples
 ```
 
@@ -95,7 +95,7 @@ highsamplers_df = filter(mgxsamples) do row
 
 sort!(highsamplers_df, [:subject, :timepoint])
 
-@pt highsamplers_df[!, [sample, :subject, :timepoint]]
+@pt highsamplers_df[!, [:sample, :subject, :timepoint]]
 ```
 
 So a bunch of these are where
@@ -117,7 +117,7 @@ Using the `resolve_sampleID` function,
 I can get just the relevant info for filtering on the first sample.
 
 ```julia
-samples = resolve_sampleID.(mgxsamplessample)
+samples = resolve_sampleID.(mgxsamples.sample)
 samples[1:4]
 ```
 ```julia
@@ -146,6 +146,8 @@ I'll write this to a `csv` file.
 
 ```julia
 using CSV
+using Pkg.TOML: parsefile
+
 CSV.write(
     joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"),
     uniquesamples
@@ -161,7 +163,7 @@ is added to every row for that subject.
 
 ```julia
 # we don't actually need to do this here, but for future reference
-uniquesamples = CSV.read(joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"), uniquesamples)
+uniquesamples = CSV.read(joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"))
 
 focus = getfocusmetadata(allmeta, resolve_sampleID.(uniquesamples.sample))
 @pt randrows(focus)
