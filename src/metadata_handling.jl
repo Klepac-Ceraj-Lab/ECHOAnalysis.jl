@@ -261,6 +261,8 @@ const metadata_focus_headers = String[
     "exclusiveFormulaFed",
     "formulaTypicalType",
     "mother_HHS",
+    "motherHHS_Occu",
+    "motherHHS_Edu",
     "assessmentDate",
     # numeric
     "correctedAgeDays",
@@ -366,15 +368,19 @@ customprocess(col, ::MDColumn{:socialEmotionalComposite})           = numberify(
 customprocess(col, ::MDColumn{:motorComposite})                     = numberify(col)
 
 # other custom processing
-function customprocess(col, ::MDColumn{:mother_HSS})
+function customprocess(col, ::MDColumn{:mother_HHS})
     col = numberify(col)
     # some missing entries are encoded as 9999
     for i in eachindex(col)
-        if !ismissing(col[i]) && col[i] == 9999
+        if !ismissing(col[i]) && col[i] >= 9999
             col[i] = missing
         end
     end
     return col
+end
+
+function customprocess(col, ::Union{MDColumn{:motherHHS_Occu},MDColumn{:motherHHS_Edu}})
+    return customprocess(col, MDColumn(:mother_HHS))
 end
 
 """
