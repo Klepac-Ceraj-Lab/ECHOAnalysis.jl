@@ -80,7 +80,7 @@ Finally, the data is converted to long form.
 <!-- https://github.com/Klepac-Ceraj-Lab/echo_analysis/issues/3 -->
 
 ```
-| studyID  | timepoint | metadatum | value    | parent_table |
+| subject  | timepoint | metadatum | value    | parent_table |
 |----------|-----------|-----------|----------|--------------|
 | Int      | Int       | String    | Any      | String       |
 ```

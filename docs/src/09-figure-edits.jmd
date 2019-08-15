@@ -319,9 +319,9 @@ savefig(joinpath(figures, "species_heatmap_annotations.svg"))
 
 ```julia
 infantis = CSV.read("data/infantis_presence.csv")
-infantis = filter(row-> !ismissing(row[:sampleID]), infantis)
-infantis = filter(row-> startswith(row[:sampleID], "C"), infantis)
-samples = resolve_sampleID.(infantis[:sampleID])
+infantis = filter(row-> !ismissing(row[sample]), infantis)
+infantis = filter(row-> startswith(row[sample], "C"), infantis)
+samples = resolve_sampleID.(infantis[sample])
 infantis[:subject] = getfield.(samples, :subject)
 infantis[:timepoint] = getfield.(samples, :timepoint)
 
@@ -373,7 +373,7 @@ using ColorBrewer
 samples = CSV.read("/Users/ksb/Downloads/mgx_batch010.csv")
 samples = resolve_sampleID.(samples[:SampleID])
 meta = load_metadata(datatoml, samples=samples);
-meta[:sampleID] = getfield.(samples, :sample)
+meta[sample] = getfield.(samples, :sample)
 
 CSV.write("/Users/ksb/Desktop/batch010_metadata.csv", meta)
 ```

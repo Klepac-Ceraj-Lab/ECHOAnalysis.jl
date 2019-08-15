@@ -93,7 +93,7 @@ function getsubtable(df, parent)
 end
 
 
-function elongate(df; idcol=:studyID, tpcol=:timepoint)
+function elongate(df; idcol=:subject, tpcol=:timepoint)
     table = copy(df)
     if tpcol != :timepoint
         rename!(table, tpcol=>:timepoint)
@@ -122,11 +122,14 @@ end
 
 ParentTable(s::String) = ParentTable{Symbol(s)}()
 
-customprocess!(table, ::ParentTable) = table
+# Default processing
+function customprocess!(table, ::ParentTable)
+    rename!(table, [:studyID=>:subject])
+end
 
 function customprocess!(table, ::ParentTable{:AAB})
-    @warn "renaing subjectID"!
-    rename!(table, [:subjectID=>:studyID, :timePoint=>:timepoint])
+    @warn "renaming subjectID"!
+    rename!(table, [:subjectID=>:subject, :timePoint=>:timepoint])
 end
 
 function customprocess!(table, ::ParentTable{:Fecal_with_Ethanol})
@@ -239,7 +242,7 @@ function main(args)
 
     @info "Processing parent tables" parents
 
-    tables = DataFrame(studyID=String[],
+    tables = DataFrame(subject=String[],
                         timepoint=Union{Int,Missing}[],
                         metadatum=String[],
                         value=Any[],
@@ -277,7 +280,7 @@ function main(args)
         end
         nrow(subtable) < 2 && continue
 
-        subtable = elongate(subtable, idcol=:studyID, tpcol=:timepoint)
+        subtable = elongate(subtable, idcol=:subject, tpcol=:timepoint)
         subtable[:parent_table] = p
 
         if any(x-> x==2.5, subtable[:timepoint])

@@ -30,8 +30,8 @@ do we have any metadata for?
 
 ```julia
 # the |> is pipe syntax, the following is the same as
-# `length(unique(allmeta[:studyID]))`
-unique(allmeta.studyID]) |> length
+# `length(unique(allmeta[:subject]))`
+unique(allmeta.subject]) |> length
 ```
 
 (**Note**: most of these subjects have not provided fecal samples)
@@ -39,7 +39,7 @@ unique(allmeta.studyID]) |> length
 Or, how many subjects have at least one fecal sample?
 
 ```julia
-sampleinfo = by(allmeta, :studyID) do df
+sampleinfo = by(allmeta, :subject) do df
     df = filter(row-> row.metadatum == "CollectionRep", df)
     DataFrame(nsamples = size(df,1))
 end
@@ -47,7 +47,7 @@ end
 # remove subjects with no fecal samples
 filter!(row-> row.nsamples > 0, sampleinfo)
 # sort by the subject identifier
-sort!(sampleinfo, :studyID)
+sort!(sampleinfo, :subject)
 
 @pt randrows(sampleinfo)
 ```
@@ -66,7 +66,7 @@ Wow - there are a couple of subjects that have a lot of samples.
 
 ```julia; results="hidden"
 # Which subjects are those?
-highsamplers = filter(row-> row.nsamples > 4, sampleinfo).studyID
+highsamplers = filter(row-> row.nsamples > 4, sampleinfo).subject
 ```
 
 ## Metagenomes
@@ -81,7 +81,7 @@ mgxsamples = filter(allmeta) do row
         row.metadatum == "DOM"
     end
 
-sort!(mgxsamples, [:sampleID]);
+sort!(mgxsamples, [sample]);
 @pt mgxsamples
 ```
 
@@ -90,12 +90,12 @@ To see what samples are from those folks that gave a bunch:
 ```julia
 highsamplers_df = filter(mgxsamples) do row
         # find rows from subjects in the highly sampled pool
-        in(row.studyID, highsamplers)
+        in(row.subject, highsamplers)
     end
 
-sort!(highsamplers_df, [:studyID, :timepoint])
+sort!(highsamplers_df, [:subject, :timepoint])
 
-@pt highsamplers_df[!, [:sampleID, :studyID, :timepoint]]
+@pt highsamplers_df[!, [sample, :subject, :timepoint]]
 ```
 
 So a bunch of these are where
@@ -117,7 +117,7 @@ Using the `resolve_sampleID` function,
 I can get just the relevant info for filtering on the first sample.
 
 ```julia
-samples = resolve_sampleID.(mgxsamples.sampleID)
+samples = resolve_sampleID.(mgxsamplessample)
 samples[1:4]
 ```
 ```julia

@@ -82,17 +82,17 @@ are found in a different table, so we'll just ignore this one.
 
 In addition to the FilemakerPro database,
 we also have metdata info stored for each of the samples that are processed.
-In this case, `timepoint` and `studyID` do not uniquely identify samples,
+In this case, `timepoint` and `subject` do not uniquely identify samples,
 since we can have multiple samples per timepoint.
-`sampleID`s should be unique though.
+`sample` IDs should be unique though.
 
 ```julia; results="hidden"
 samples = load_metadata(files, "samples")
-rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
+rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:subject, :SampleID=>:sample])
 
 # convert to longform
-samples = melt(samples, [:studyID, :timepoint, :sampleID], variable_name=:metadatum)
-dropmissing!(samples, [:studyID, :sampleID])
+samples = melt(samples, [:subject, :timepoint, :sample], variable_name=:metadatum)
+dropmissing!(samples, [:subject, :sample])
 samples[!, :parent_table] .= "FecalProcessing"
 ```
 
@@ -108,26 +108,26 @@ brainvol = CSV.read(brainfiles["gross_volumes"]["path"])
 names!(brainvol, map(names(brainvol)) do n
                         replace(String(n), " "=>"_") |> lowercase |> Symbol
                     end)
-rename!(brainvol, :study_id => :studyID)
+rename!(brainvol, :study_id => :subject)
 
 # Convert to longform
-brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :studyID, variable_name=:metadatum)
+brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :subject, variable_name=:metadatum)
 @pt brainvol
 ```
 
-We need to fix the studyIDs - the letters represent timepoints -
+We need to fix the subjects - the letters represent timepoints -
 using the `resolve_letter_timepoint` function.
 
 ```julia
 # convert letter timepoint into number
-brainsid = resolve_letter_timepoint.(brainvol.studyID)
+brainsid = resolve_letter_timepoint.(brainvol.subject)
 brainsid[1:5]
 ```
 
 ```julia
-brainvol[!, :studyID] = getfield.(brainsid, :subject)
+brainvol[!, :subject] = getfield.(brainsid, :subject)
 brainvol[!, :timepoint] = getfield.(brainsid, :timepoint)
-brainvol[!, :sampleID] = getfield.(brainsid, :sample)
+brainvol[!, :sample] = getfield.(brainsid, :sample)
 brainvol[!, :parent_table] .= "brainVolume"
 
 @pt brainvol
@@ -140,38 +140,38 @@ cortical = CSV.read(brainfiles["cortical"]["path"])
 subcortical = CSV.read(brainfiles["subcortical"]["path"])
 
 corticalids = resolve_letter_timepoint.(cortical[!, :SubjID])
-cortical[!, :studyID] = getfield.(corticalids, :subject)
+cortical[!, :subject] = getfield.(corticalids, :subject)
 cortical[!, :timepoint] = getfield.(corticalids, :timepoint)
 
 # we only care about a subset of values for now
-cortical = cortical[:, [:studyID, :timepoint, :LThickness, :RThickness,
+cortical = cortical[:, [:subject, :timepoint, :LThickness, :RThickness,
                                            :LSurfArea,  :RSurfArea,
                                            :ICV]]
 
 # convert to longform
-cortical = melt(cortical, [:studyID, :timepoint], variable_name=:metadatum)
+cortical = melt(cortical, [:subject, :timepoint], variable_name=:metadatum)
 cortical[!, :parent_table] .= "corticalVolumes"
 
 # for the subcortex we mostly care about the total volume rather than individual values
 subcortical[!, :subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
 
 subcorticalids = resolve_letter_timepoint.(subcortical[!,:SubjID])
-subcortical[!,:studyID] = getfield.(subcorticalids, :subject)
+subcortical[!,:subject] = getfield.(subcorticalids, :subject)
 subcortical[!,:timepoint] = getfield.(subcorticalids, :timepoint)
-subcortical = subcortical[!,[:studyID, :timepoint, :subcortical_volume]]
+subcortical = subcortical[!,[:subject, :timepoint, :subcortical_volume]]
 
 # convert to longform
-subcortical = melt(subcortical, [:studyID, :timepoint], variable_name=:metadatum)
+subcortical = melt(subcortical, [:subject, :timepoint], variable_name=:metadatum)
 subcortical[!,:parent_table] .= "subcorticalVolumes"
 ```
 
 We can only concatenate tables if they all have the same columns,
-so I'll add a `sampleID` to all of the other observations
+so I'll add a `sample` ID to all of the other observations
 to match what's in `samples`.
-The fecal sample `sampleID`s are build from the subjectID and timepoint,
+The fecal sample `sample` IDs are build from the `subject` ID and `timepoint`,
 so I'll do the same for other observations.
 
-_Note_: Fecal sample `sampleID`s are built as follows...
+_Note_: Fecal sample `sample` IDs are built as follows...
 
 ```
 C0596_1F_1A
@@ -185,20 +185,20 @@ A = AliquotRep (each fecal Genotek sample is aliquoted into 2 or 4 smaller cryov
 ```
 
 ```julia; results="hidden"
-allmeta[!,:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+allmeta[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(allmeta))
 
-brainvol[!,:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+brainvol[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(brainvol))
 
-cortical[!,:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+cortical[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(cortical))
 
-subcortical[!,:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+subcortical[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(subcortical))
 ```
 
@@ -207,7 +207,7 @@ And then concatenate all the tables together
 ```julia
 allmeta = vcat(allmeta, brainvol, cortical, subcortical, samples)
 # reorder columns
-allmeta = allmeta[!,[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
+allmeta = allmeta[!,[:sample, :subject, :timepoint, :metadatum, :value, :parent_table]]
 # remove rows with missing values
 dropmissing!(allmeta)
 
