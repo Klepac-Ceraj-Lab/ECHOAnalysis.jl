@@ -99,7 +99,7 @@ covariatedf = view(focusmeta, :, [:sample, :correctedAgeDays, :mother_HHS, :brea
 CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
 CSV.write(joinpath(outpath, "kids_covariates.tsv"), delim='\t', covariatedf)
 
-any(!ismissing, covariatedf.motherSES)
+any(!ismissing, covariatedf.mother_HHS)
 @pt covariatedf
 ```
 

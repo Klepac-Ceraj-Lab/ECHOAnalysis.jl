@@ -6,7 +6,7 @@ options:
     wrap : false
 ---
 
-In the previous notebook, we generated separate metadata files
+In the previous notebook, we generated separate metadata datatoml
 for different tables in the FilemakerPro database.
 Now, we'll get these into a more usable format for analysis.
 
@@ -21,12 +21,20 @@ using ECHOAnalysis
 
 ```julia
 using Pkg.TOML: parsefile
-files = parsefile("data/data.toml")
-keys(files)
+mytoml = parsefile("data/data.toml")
+keys(mytoml)
+```
+
+This is actually already done automatically
+when you load the `ECHOAnalysis` module, saved in a variable called `datatoml`.
+
+```julia
+# this would throw an error if false
+@assert datatoml == mytoml
 ```
 
 ```julia
-print(files["description"])
+print(datatoml["description"])
 ```
 
 The metadata tables are found under `["tables"]["metadata"]`
@@ -47,7 +55,7 @@ rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
 # set configuration for printing tables
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
-allmeta = CSV.File(files["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
+allmeta = CSV.File(datatoml["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
 
 # pretty print table
 @pt allmeta
@@ -56,7 +64,7 @@ allmeta = CSV.File(files["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFr
 Alternatively, we can use the `load_metadata` function.
 
 ```julia
-allmeta_startup = load_metadata(files, "filemakerdb")
+allmeta_startup = load_metadata(datatoml, "filemakerdb")
 
 # these would throw errors if false
 @assert names(allmeta) == names(allmeta_startup)
@@ -87,7 +95,7 @@ since we can have multiple samples per timepoint.
 `sample` IDs should be unique though.
 
 ```julia; results="hidden"
-samples = load_metadata(files, "samples")
+samples = load_metadata(datatoml, "samples")
 rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:subject, :SampleID=>:sample])
 
 # convert to longform
@@ -101,7 +109,7 @@ samples[!, :parent_table] .= "FecalProcessing"
 Finally, we also have tables of brain volumes for many of our subjects.
 
 ```julia
-brainfiles = files["tables"]["brain"]
+brainfiles = datatoml["tables"]["brain"]
 brainvol = CSV.read(brainfiles["gross_volumes"]["path"])
 
 # remove spaces from columns names
@@ -216,6 +224,6 @@ dropmissing!(allmeta)
 ```
 
 ```julia
-CSV.write(files["tables"]["metadata"]["all"]["path"], allmeta);
-@assert isfile(files["tables"]["metadata"]["all"]["path"])
+CSV.write(datatoml["tables"]["metadata"]["all"]["path"], allmeta);
+@assert isfile(datatoml["tables"]["metadata"]["all"]["path"])
 ```
