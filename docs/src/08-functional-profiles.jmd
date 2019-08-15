@@ -131,9 +131,9 @@ p[:feature] = "genefamilies"
 p[:variable] = "childGender"
 perm = vcat(perm, p)
 
-p = permanova(kids_dm, kidsmeta[:motherSES], filter=.!ismissing.(kidsmeta[:motherSES]))
+p = permanova(kids_dm, kidsmeta[:mother_HHS], filter=.!ismissing.(kidsmeta[:mother_HHS]))
 p[:feature] = "genefamilies"
-p[:variable] = "motherSES"
+p[:variable] = "mother_HHS"
 perm = vcat(perm, p);
 ```
 
@@ -340,7 +340,7 @@ kidsmeta[:sample] = collect(samplenames(prev))
 filter!(row-> !ismissing(row[:birthType]), kidsmeta)
 
 # view() does not create a new dataframe, but allows us to subset it.
-whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_gf_abundance.tsv"), delim='\t', gfdf)
@@ -372,7 +372,7 @@ We can do this with some other brain data as well:
 
 
 ```julia; results="hidden"
-greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
 R"""
@@ -382,7 +382,7 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "gf__gm_age_ses_bf_birth")))
 """
 
-csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
 R"""
@@ -438,7 +438,7 @@ describe(kidsmeta[:cogAssessment])
 ```
 
 ```julia; results="hidden"
-cogdf = view(kidsmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
+cogdf = view(kidsmeta, [:sample, :cogScore, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
 R"""
@@ -542,9 +542,9 @@ p[:feature] = "ECs"
 p[:variable] = "childGender"
 perm = vcat(perm, p)
 
-p = permanova(kids_dm, kidsmeta[:motherSES], filter=.!ismissing.(kidsmeta[:motherSES]))
+p = permanova(kids_dm, kidsmeta[:mother_HHS], filter=.!ismissing.(kidsmeta[:mother_HHS]))
 p[:feature] = "ECs"
-p[:variable] = "motherSES"
+p[:variable] = "mother_HHS"
 perm = vcat(perm, p);
 ```
 
@@ -750,7 +750,7 @@ kidsmeta[:sample] = collect(samplenames(prev))
 filter!(row-> !ismissing(row[:birthType]), kidsmeta)
 
 # view() does not create a new dataframe, but allows us to subset it.
-whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_ec_abundance.tsv"), delim='\t', gfdf)
@@ -782,7 +782,7 @@ We can do this with some other brain data as well:
 
 
 ```julia; results="hidden"
-greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
 R"""
@@ -792,7 +792,7 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "ec__gm_age_ses_bf_birth")))
 """
 
-csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
 R"""
@@ -848,7 +848,7 @@ describe(kidsmeta[:cogAssessment])
 ```
 
 ```julia; results="hidden"
-cogdf = view(kidsmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
+cogdf = view(kidsmeta, [:sample, :cogScore, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
 R"""

@@ -1,12 +1,12 @@
 ┌ Warning: No timpoint column detected for BasicFamilyAndChild, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:280
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
 ┌ Warning: No timpoint column detected for BreastfeedingDone, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:280
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
 ┌ Warning: No timpoint column detected for Delivery, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:280
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
 ┌ Warning: No timpoint column detected for Parent_Demographics, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:280
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275
 ┌ Warning: Removing timepoint 2.5
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:290
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:285
 ┌ Warning: No timpoint column detected for WeightHeight, treating as all-timepoint variable
-└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:280
+└ @ Main /Users/ksb/repos/lab_repos/echo_analysis/bin/metascrub.jl:275

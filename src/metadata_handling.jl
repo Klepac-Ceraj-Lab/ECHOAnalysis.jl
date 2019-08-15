@@ -260,7 +260,7 @@ const metadata_focus_headers = String[
     "exclusivelyNursed",
     "exclusiveFormulaFed",
     "formulaTypicalType",
-    "motherSES",
+    "mother_HHS",
     "assessmentDate",
     # numeric
     "correctedAgeDays",
@@ -366,7 +366,7 @@ customprocess(col, ::MDColumn{:socialEmotionalComposite})           = numberify(
 customprocess(col, ::MDColumn{:motorComposite})                     = numberify(col)
 
 # other custom processing
-function customprocess(col, ::MDColumn{:motherSES})
+function customprocess(col, ::MDColumn{:mother_HSS})
     col = numberify(col)
     # some missing entries are encoded as 9999
     for i in eachindex(col)

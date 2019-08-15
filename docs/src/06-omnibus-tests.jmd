@@ -150,9 +150,9 @@ p[!, :feature] .= "species"
 p[!, :variable] .= "childGender"
 perm = vcat(perm, p)
 
-p = permanova(kids_dm, kidsmeta.motherSES, filter=.!ismissing.(kidsmeta.motherSES))
+p = permanova(kids_dm, kidsmeta.mother_HHS, filter=.!ismissing.(kidsmeta.mother_HHS))
 p[!, :feature] .= "species"
-p[!, :variable] .= "motherSES"
+p[!, :variable] .= "mother_HHS"
 perm = vcat(perm, p)
 
 # remove the rows that don't have p values

@@ -327,7 +327,7 @@ infantis[:timepoint] = getfield.(samples, :timepoint)
 
 infantismeta = load_metadata(datatoml, samples=samples)
 infantis[:correctedAgeDays] = infantismeta[:correctedAgeDays]
-infantis[:motherSES] = infantismeta[:motherSES]
+infantis[:mother_HHS] = infantismeta[:mother_HHS]
 infantis[:birthType] = infantismeta[:birthType]
 
 st = []
