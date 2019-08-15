@@ -1,6 +1,12 @@
-# Working with Metadata
+---
+title: "Notebook 2: Working with Metadata"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
-In the previous notebook, we generated separate metadata files
+In the previous notebook, we generated separate metadata datatoml
 for different tables in the FilemakerPro database.
 Now, we'll get these into a more usable format for analysis.
 
@@ -9,18 +15,26 @@ Now, we'll get these into a more usable format for analysis.
 Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
-```julia
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 ```
 
 ```julia
 using Pkg.TOML: parsefile
-files = parsefile("data/data.toml")
-keys(files)
+mytoml = parsefile("data/data.toml")
+keys(mytoml)
+```
+
+This is actually already done automatically
+when you load the `ECHOAnalysis` module, saved in a variable called `datatoml`.
+
+```julia
+# this would throw an error if false
+@assert datatoml == mytoml
 ```
 
 ```julia
-print(files["description"])
+print(datatoml["description"])
 ```
 
 The metadata tables are found under `["tables"]["metadata"]`
@@ -36,16 +50,21 @@ using CSV
 using DataFrames
 using PrettyTables
 
-allmeta = CSV.File(files["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
+# make a formatter for PrettyTables to round long numbers
+rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+# set configuration for printing tables
+@ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
-# show ~10 random rows
-allmeta[rand(nrow(allmeta)) .< 10 / nrow(allmeta), :]
+allmeta = CSV.File(datatoml["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
+
+# pretty print table
+@pt allmeta
 ```
 
 Alternatively, we can use the `load_metadata` function.
 
 ```julia
-allmeta_startup = load_metadata(files, "filemakerdb")
+allmeta_startup = load_metadata(datatoml, "filemakerdb")
 
 # these would throw errors if false
 @assert names(allmeta) == names(allmeta_startup)
@@ -58,7 +77,7 @@ These are marked with `timepoint = 0`.
 Let's look at which variables that applies to:
 
 ```julia
-allmeta[allmeta[:timepoint] .== 0, :parent_table] |> unique
+allmeta[allmeta.timepoint .== 0, :parent_table] |> unique
 ```
 
 Those all look reasonable!
@@ -71,19 +90,18 @@ are found in a different table, so we'll just ignore this one.
 
 In addition to the FilemakerPro database,
 we also have metdata info stored for each of the samples that are processed.
-In this case, `timepoint` and `studyID` do not uniquely identify samples,
+In this case, `timepoint` and `subject` do not uniquely identify samples,
 since we can have multiple samples per timepoint.
-`sampleID`s should be unique though.
+`sample` IDs should be unique though.
 
-```julia
-samples = load_metadata(files, "samples")
-rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:studyID, :SampleID=>:sampleID])
+```julia; results="hidden"
+samples = load_metadata(datatoml, "samples")
+rename!(samples, [:TimePoint=>:timepoint, :DOC=>:date, :SubjectID=>:subject, :SampleID=>:sample])
 
 # convert to longform
-samples = melt(samples, [:studyID, :timepoint, :sampleID], variable_name=:metadatum)
-samples = filter(r-> !any(ismissing, [r[:studyID], r[:sampleID]]), samples)
-disallowmissing!(samples)
-samples[:parent_table] = "FecalProcessing";
+samples = melt(samples, [:subject, :timepoint, :sample], variable_name=:metadatum)
+dropmissing!(samples, [:subject, :sample])
+samples[!, :parent_table] .= "FecalProcessing"
 ```
 
 ## Brain Data
@@ -91,77 +109,78 @@ samples[:parent_table] = "FecalProcessing";
 Finally, we also have tables of brain volumes for many of our subjects.
 
 ```julia
-brainfiles = files["tables"]["brain"]
+brainfiles = datatoml["tables"]["brain"]
 brainvol = CSV.read(brainfiles["gross_volumes"]["path"])
 
 # remove spaces from columns names
 names!(brainvol, map(names(brainvol)) do n
                         replace(String(n), " "=>"_") |> lowercase |> Symbol
                     end)
-rename!(brainvol, :study_id => :studyID)
+rename!(brainvol, :study_id => :subject)
 
 # Convert to longform
-brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :studyID, variable_name=:metadatum)
-randrows(brainvol)
+brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volume], :subject, variable_name=:metadatum)
+@pt brainvol
 ```
 
-We need to fix the studyIDs - the letters represent timepoints -
+We need to fix the subjects - the letters represent timepoints -
 using the `resolve_letter_timepoint` function.
 
 ```julia
 # convert letter timepoint into number
-brainsid = resolve_letter_timepoint.(brainvol[:studyID])
+brainsid = resolve_letter_timepoint.(brainvol.subject)
 brainsid[1:5]
 ```
 
 ```julia
-brainvol[:studyID] = getfield.(brainsid, :subject)
-brainvol[:timepoint] = getfield.(brainsid, :timepoint)
-brainvol[:sampleID] = getfield.(brainsid, :sample)
-brainvol[:parent_table] = "brainVolume"
+brainvol[!, :subject] = getfield.(brainsid, :subject)
+brainvol[!, :timepoint] = getfield.(brainsid, :timepoint)
+brainvol[!, :sample] = getfield.(brainsid, :sample)
+brainvol[!, :parent_table] .= "brainVolume"
 
-randrows(brainvol)
+@pt brainvol
 ```
 
 And now the same thing for the cortical and subcortical volume tables:
 
-```julia
+```julia; results="hidden"
 cortical = CSV.read(brainfiles["cortical"]["path"])
 subcortical = CSV.read(brainfiles["subcortical"]["path"])
 
-corticalids = resolve_letter_timepoint.(cortical[:SubjID])
-cortical[:studyID] = getfield.(corticalids, :subject)
-cortical[:timepoint] = getfield.(corticalids, :timepoint)
+corticalids = resolve_letter_timepoint.(cortical[!, :SubjID])
+cortical[!, :subject] = getfield.(corticalids, :subject)
+cortical[!, :timepoint] = getfield.(corticalids, :timepoint)
 
 # we only care about a subset of values for now
-cortical = cortical[[:studyID, :timepoint, :LThickness, :RThickness,
+cortical = cortical[:, [:subject, :timepoint, :LThickness, :RThickness,
                                            :LSurfArea,  :RSurfArea,
                                            :ICV]]
 
 # convert to longform
-cortical = melt(cortical, [:studyID, :timepoint], variable_name=:metadatum)
-cortical[:parent_table] = "corticalVolumes"
+cortical = melt(cortical, [:subject, :timepoint], variable_name=:metadatum)
+cortical[!, :parent_table] .= "corticalVolumes"
 
 # for the subcortex we mostly care about the total volume rather than individual values
-subcortical[:subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
+subcortical[!, :subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
 
-subcorticalids = resolve_letter_timepoint.(subcortical[:SubjID])
-subcortical[:studyID] = getfield.(subcorticalids, :subject)
-subcortical[:timepoint] = getfield.(subcorticalids, :timepoint)
-subcortical = subcortical[[:studyID, :timepoint, :subcortical_volume]]
+subcorticalids = resolve_letter_timepoint.(subcortical[!,:SubjID])
+subcortical[!,:subject] = getfield.(subcorticalids, :subject)
+subcortical[!,:timepoint] = getfield.(subcorticalids, :timepoint)
+subcortical = subcortical[!,[:subject, :timepoint, :subcortical_volume]]
 
 # convert to longform
-subcortical = melt(subcortical, [:studyID, :timepoint], variable_name=:metadatum)
-subcortical[:parent_table] = "subcorticalVolumes";
+subcortical = melt(subcortical, [:subject, :timepoint], variable_name=:metadatum)
+subcortical[!,:parent_table] .= "subcorticalVolumes"
 ```
 
 We can only concatenate tables if they all have the same columns,
-so I'll add a `sampleID` to all of the other observations
+so I'll add a `sample` ID to all of the other observations
 to match what's in `samples`.
-The fecal sample `sampleID`s are build from the subjectID and timepoint,
+The fecal sample `sample` IDs are build from the `subject` ID and `timepoint`,
 so I'll do the same for other observations.
 
-_Note_: Fecal sample `sampleID`s are built as follows...
+_Note_: Fecal sample `sample` IDs are built as follows...
+
 ```
 C0596_1F_1A
 C = Child (or M = Mother)
@@ -173,22 +192,22 @@ A = AliquotRep (each fecal Genotek sample is aliquoted into 2 or 4 smaller cryov
     A,B or A,B,C,D ; SOP is to process AliquotRep A for DNA extractions
 ```
 
-```julia
-allmeta[:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+```julia; results="hidden"
+allmeta[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(allmeta))
 
-brainvol[:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+brainvol[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(brainvol))
 
-cortical[:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+cortical[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(cortical))
 
-subcortical[:sampleID] = map(r->
-        "C" * lpad(string(r[:studyID]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
-        eachrow(subcortical));
+subcortical[!,:sample] = map(r->
+        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
+        eachrow(subcortical))
 ```
 
 And then concatenate all the tables together
@@ -196,32 +215,15 @@ And then concatenate all the tables together
 ```julia
 allmeta = vcat(allmeta, brainvol, cortical, subcortical, samples)
 # reorder columns
-allmeta = allmeta[[:sampleID, :studyID, :timepoint, :metadatum, :value, :parent_table]]
+allmeta = allmeta[!,[:sample, :subject, :timepoint, :metadatum, :value, :parent_table]]
 # remove rows with missing values
-filter!(r-> !any(ismissing, [r[:studyID], r[:sampleID], r[:timepoint], r[:metadatum]]), allmeta)
-disallowmissing!(allmeta)
+dropmissing!(allmeta)
 
 # show a random assortment of ~ 10 rows
-randrows(allmeta)
+@pt randrows(allmeta)
 ```
 
-Some of the `:value` fields have quotes or newlines in the field,
-which screws up parsing later. For now I will just replace them.
-
 ```julia
-for i in eachindex(allmeta[:value])
-    v = allmeta[i, :value]
-    ismissing(v) && continue
-    if isa(v, AbstractString) && occursin(r"\n", v)
-        v = replace(v, r"\n"=>"___")
-        allmeta[i, :value] = v
-    elseif isa(v, AbstractString) && occursin(r"\"", v)
-        v = replace(v, r"\""=>"'")
-        allmeta[i, :value] = v
-    end
-end
-
-
-CSV.write(files["tables"]["metadata"]["all"]["path"], allmeta);
-@assert isfile(files["tables"]["metadata"]["all"]["path"])
+CSV.write(datatoml["tables"]["metadata"]["all"]["path"], allmeta);
+@assert isfile(datatoml["tables"]["metadata"]["all"]["path"])
 ```

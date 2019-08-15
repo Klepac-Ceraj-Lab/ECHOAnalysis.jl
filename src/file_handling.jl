@@ -61,11 +61,8 @@ function merge_tables(folder, dataroot, fltr; suffix=fltr)
         end
     end
     for n in names(df[2:end])
-        df[n] = coalesce.(df[n], 0.)
+        replace!(df[!, n], missing => 0.)
     end
     disallowmissing!(df)
     return df
 end
-
-
-const datatoml = parsefile("data/data.toml")

@@ -1,4 +1,10 @@
-# Linear Models
+---
+title: "Notebook 7: Linear Models"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 Now that we've done omnibus tests,
 it's time to look at per-feature tests with multivariate linear models.
@@ -19,6 +25,9 @@ using BiobakeryUtils
 using Clustering
 using CSV
 
+rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+@ptconf formatter = rounder nosubheader=true screen_size=(20,120)
+
 outpath, figures = notebookpaths!(7)
 ```
 
@@ -29,7 +38,10 @@ abt = abundancetable(tax)
 relativeabundance!(abt)
 kids_abt = view(abt, sites=firstkids(samplenames(abt)))
 
-focusmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids_abt)));
+focusmeta = load_metadata(datatoml,
+                samples=resolve_sampleID.(samplenames(kids_abt))
+                )
+@pt focusmeta
 ```
 
 First, we'll use `Maaslin2` from the Huttenhower lab.
@@ -41,7 +53,7 @@ while the metadata will have features (metadata) as columns and samples as rows.
 All of our models will take the form
 
 ```
-species abundance ~ {Brain data} + age + motherSES + breastfed + birthType
+species abundance ~ {Brain data} + age + mother_HHS + breastfed + birthType
 ```
 
 Where `{Brain data}` is a brain volume measure or cognitive score.
@@ -56,78 +68,105 @@ let occ = occurrences(kids_abt)
     for (i, sample) in enumerate(samplenames(kids_abt))
         ismissing(focusmeta[i, :birthType]) && continue
         # Make a column for each sample
-        species[Symbol(sample)] = occ[:, i]
+        species[!,Symbol(sample)] = occ[:, i]
     end
 end
 ```
 
+In addition, we want the brain volumes to be normalized
+by the total brain volume.
+
+```julia; results="hidden"
+focusmeta.brain_volume = map(row-> sum(row[[:csf_volume, :white_matter_volume, :grey_matter_volume]]), eachrow(focusmeta))
+focusmeta.csf_volume = focusmeta.csf_volume ./ focusmeta.brain_volume
+focusmeta.white_matter_volume = focusmeta.white_matter_volume ./ focusmeta.brain_volume
+focusmeta.grey_matter_volume = focusmeta.grey_matter_volume ./ focusmeta.brain_volume
+```
+
 Now we'll subset the metadata `DataFrame` to include a subset of the metadata.
+First, we'll fit a linear model with no brain measurements.
 
 ```julia
 # add a sample id column
-focusmeta[:sample] = collect(samplenames(kids_abt))
-focusmeta[:breastfed] = breastfeeding.(eachrow(focusmeta))
-filter!(row-> !ismissing(row[:birthType]), focusmeta)
+focusmeta.sample = collect(samplenames(kids_abt))
+focusmeta.breastfed = map(breastfeeding, eachrow(focusmeta))
+dropmissing!(focusmeta, :birthType)
 
 # view() does not create a new dataframe, but allows us to subset it.
-whitematterdf = view(focusmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+covariatedf = view(focusmeta, :, [:sample, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
-CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
+CSV.write(joinpath(outpath, "kids_covariates.tsv"), delim='\t', covariatedf)
+
+any(!ismissing, covariatedf.mother_HHS)
+@pt covariatedf
 ```
 
 Now, we'll run `Maaslin2` using `RCall.jl`.
 You need to have `Maaslin2` installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
 
-```julia
+```julia; results="hidden"
 using RCall
 
 R"library(Maaslin2)"
 let version = R"packageVersion('Maaslin2')"
-    @show version
-end;
+    println(version)
+end
 ```
 
 ```julia; results="hidden"
-# Model: species abundance ~ white_matter_volume + age + motherSES + breastfed + birthType
+# Model: species abundance ~ age + mother_HHS + breastfed + birthType
 
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
-            $(joinpath(outpath, "kids_white_matter.tsv")),
-            $(joinpath(outpath, "species__wm_age_ses_bf_birth")))
+            $(joinpath(outpath, "kids_covariates.tsv")),
+            $(joinpath(outpath, "species__age_ses_bf_birth")))
 """
 ```
 
 The results from this run can be found in `data/notebooks/07/species__wm_age_ses_bf_birth/`
 
-We can do this with some other brain data as well:
+We can do this with brain data as well:
 
 ```julia; results="hidden"
-greymatterdf = view(focusmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+whitematterdf = view(focusmeta, :, [:sample, :white_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
+
+# Model: species abundance ~ white_matter_volume + age + mother_HHS + breastfed + birthType
+R"""
+fit_data <- Maaslin2(
+            $(joinpath(outpath, "kids_species_abundance.tsv")),
+            $(joinpath(outpath, "kids_white_matter.tsv")),
+            $(joinpath(outpath, "species__wmNorm_age_ses_bf_birth")))
+"""
+```
+
+```julia; results="hidden"
+greymatterdf = view(focusmeta, :, [:sample, :grey_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
-# Model: species abundance ~ grey_matter_volume + age + motherSES + breastfed + birthType
+# Model: species abundance ~ grey_matter_volume + age + mother_HHS + breastfed + birthType
 
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
             $(joinpath(outpath, "kids_grey_matter.tsv")),
-            $(joinpath(outpath, "species__gm_age_ses_bf_birth")))
+            $(joinpath(outpath, "species__gmNorm_age_ses_bf_birth")))
 """
 
-csfdf = view(focusmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+csfdf = view(focusmeta, :, [:sample, :csf_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
-# Model: species abundance ~ csf_volume + age + motherSES + breastfed + birthType
+# Model: species abundance ~ csf_volume + age + mother_HHS + breastfed + birthType
 
 R"""
 fit_data <- Maaslin2(
              $(joinpath(outpath, "kids_species_abundance.tsv")),
              $(joinpath(outpath, "kids_csf.tsv")),
-             $(joinpath(outpath, "species__csf_age_ses_bf_birth")))
-""";
+             $(joinpath(outpath, "species__csfNorm_age_ses_bf_birth")))
+"""
 ```
 
 Again, the results from these Maaslin2 runs can be found in `data/notebooks/07/`.
@@ -139,12 +178,12 @@ that contains the age-appropriate  composite cognitive score for each kid.
 
 ```julia
 # Bayleys doesn't have a composite score calculated, but we can get it:
-focusmeta[:bayleysComposite] = map(row->
+focusmeta.bayleysComposite = map(row->
     mean([row[:languageComposite], row[:motorComposite]]),
     eachrow(focusmeta))
 
-focusmeta[:cogScore] = Vector{Union{Float64,Missing}}(missing, size(focusmeta,1))
-focusmeta[:cogAssessment] = Vector{Union{String,Missing}}(missing, size(focusmeta,1))
+focusmeta.cogScore = Vector{Union{Float64,Missing}}(missing, size(focusmeta,1))
+focusmeta.cogAssessment = Vector{Union{String,Missing}}(missing, size(focusmeta,1))
 
 map(enumerate(eachrow(focusmeta))) do (i, row)
     # get just the cognitive assessment columns
@@ -174,8 +213,8 @@ map(enumerate(eachrow(focusmeta))) do (i, row)
     end
 end
 
-describe(focusmeta[:cogScore])
-describe(focusmeta[:cogAssessment])
+describe(focusmeta.cogScore)
+describe(focusmeta.cogAssessment)
 ```
 
 ```julia
@@ -193,7 +232,7 @@ savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
 ```
 
 ```julia; results="hidden"
-cogdf = view(focusmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
+cogdf = view(focusmeta, :, [:sample, :cogScore, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
 R"""
@@ -201,5 +240,5 @@ Maaslin2(
      $(joinpath(outpath, "kids_species_abundance.tsv")),
      $(joinpath(outpath, "kids_cog.tsv")),
      $(joinpath(outpath, "species__cog_age_ses_bf_birth")))
-""";
+"""
 ```

@@ -1,4 +1,10 @@
-# Functional Profiles
+---
+title: "Notebook 8: Functional Profiles"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
 
 Now we've been through some analyses of the taxonomic profiles,
 but metagenomes *also* allow the generation of functional profiles;
@@ -6,7 +12,7 @@ that is, what genes are present in a given community.
 
 These profiles were generated with [HUMANn2](http://huttenhower.sph.harvard.edu/humann2).
 
-```julia
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 using Microbiome
 using BiobakeryUtils
@@ -27,10 +33,11 @@ humann2 = bakery["humann2"]
 paths = String[]
 for (root, dirs, files) in walkdir(bakery["path"])
     !occursin("humann2", root) && continue
-    !occursin("merged", root) && continue
+    occursin("merged", root) && continue
     filter!(f-> occursin("genefamilies_relab", f), files)
     append!(paths, joinpath.(root, files))
 end
+paths[1:5]
 ```
 
 ```julia; results="hidden"
@@ -38,9 +45,26 @@ sort!(paths, lt=(x,y)-> split(x, "/")[end] < split(y, "/")[end])
 
 function join_genefamilies(paths)
     df = DataFrame(col1=String[])
-    for p in paths
+    n = length(paths)
+    samples = Tuple[]
+    for (i, p) in enumerate(paths)
+        m = match(r"([CM]\d+)[\-_](\d)F[\-_](\d)([A-Z])", p)
+        if m === nothing
+            @warn "Couldn't find sample name for path" p
+            continue
+        else
+            (subject, timepoint, replicate, aliquot) = m.captures
+            if (subject, timepoint) in samples
+                @info "skipping $(m.match), sample/timpoint already present"
+                continue
+            else
+                push!(samples, (subject, timepoint))
+            end
+            m = Symbol(m.match)
+        end
+        @info "Loading $m ($i of $n)"
         gf = CSV.read(p, delim='\t')
-        rename!(gf, names(gf)[1] => :col1)
+        rename!(gf, [names(gf)[1] => :col1, names(gf)[2]=>m])
         gf = gf[map(row-> !occursin("unclassified", row[:col1]), eachrow(gf)), :]
         df = join(df, gf, on=:col1, kind=:outer)
     end
@@ -48,12 +72,11 @@ function join_genefamilies(paths)
         df[n] = coalesce.(df[n], 0.)
     end
     disallowmissing!(df)
-    names!(df, map(n-> replace(String(n), "_Abundance-RPKs"=>"") |> Symbol, names(df)))
     return df
 end
-
+```
+```julia; results="hidden"
 gf = join_genefamilies(paths)
-gf = deletecols!(gf, map(n-> occursin("ABC-Beer", String(n)), names(gf)))
 
 gf = abundancetable(gf)
 relativeabundance!(gf)
@@ -108,9 +131,9 @@ p[:feature] = "genefamilies"
 p[:variable] = "childGender"
 perm = vcat(perm, p)
 
-p = permanova(kids_dm, kidsmeta[:motherSES], filter=.!ismissing.(kidsmeta[:motherSES]))
+p = permanova(kids_dm, kidsmeta[:mother_HHS], filter=.!ismissing.(kidsmeta[:mother_HHS]))
 p[:feature] = "genefamilies"
-p[:variable] = "motherSES"
+p[:variable] = "mother_HHS"
 perm = vcat(perm, p);
 ```
 
@@ -317,7 +340,7 @@ kidsmeta[:sample] = collect(samplenames(prev))
 filter!(row-> !ismissing(row[:birthType]), kidsmeta)
 
 # view() does not create a new dataframe, but allows us to subset it.
-whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_gf_abundance.tsv"), delim='\t', gfdf)
@@ -349,7 +372,7 @@ We can do this with some other brain data as well:
 
 
 ```julia; results="hidden"
-greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
 R"""
@@ -359,7 +382,7 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "gf__gm_age_ses_bf_birth")))
 """
 
-csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
 R"""
@@ -415,7 +438,7 @@ describe(kidsmeta[:cogAssessment])
 ```
 
 ```julia; results="hidden"
-cogdf = view(kidsmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
+cogdf = view(kidsmeta, [:sample, :cogScore, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
 R"""
@@ -519,9 +542,9 @@ p[:feature] = "ECs"
 p[:variable] = "childGender"
 perm = vcat(perm, p)
 
-p = permanova(kids_dm, kidsmeta[:motherSES], filter=.!ismissing.(kidsmeta[:motherSES]))
+p = permanova(kids_dm, kidsmeta[:mother_HHS], filter=.!ismissing.(kidsmeta[:mother_HHS]))
 p[:feature] = "ECs"
-p[:variable] = "motherSES"
+p[:variable] = "mother_HHS"
 perm = vcat(perm, p);
 ```
 
@@ -727,7 +750,7 @@ kidsmeta[:sample] = collect(samplenames(prev))
 filter!(row-> !ismissing(row[:birthType]), kidsmeta)
 
 # view() does not create a new dataframe, but allows us to subset it.
-whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+whitematterdf = view(kidsmeta, [:sample, :white_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 
 # Maaslin2 also wants tab separated values
 CSV.write(joinpath(outpath, "kids_ec_abundance.tsv"), delim='\t', gfdf)
@@ -759,7 +782,7 @@ We can do this with some other brain data as well:
 
 
 ```julia; results="hidden"
-greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+greymatterdf = view(kidsmeta, [:sample, :grey_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
 R"""
@@ -769,7 +792,7 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "ec__gm_age_ses_bf_birth")))
 """
 
-csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :motherSES, :breastfed, :birthType])
+csfdf = view(kidsmeta, [:sample, :csf_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
 R"""
@@ -825,7 +848,7 @@ describe(kidsmeta[:cogAssessment])
 ```
 
 ```julia; results="hidden"
-cogdf = view(kidsmeta, [:sample, :cogScore, :motherSES, :breastfed, :birthType])
+cogdf = view(kidsmeta, [:sample, :cogScore, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
 
 R"""

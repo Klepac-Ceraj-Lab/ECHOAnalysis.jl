@@ -74,11 +74,11 @@ Returns `true` if any of the following are `true`:
 
 Otherwise returns `false`.
 """
-function breastfeeding(row)
+function breastfeeding(row::DataFrameRow)
     bf = any([
         occursin(r"[Bb]reast", row[:milkFeedingMethods]),
         occursin(r"[Yy]es", row[:exclusivelyNursed]),
-        all(occursin.(r"[Nn]o", row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        all(map(x->occursin(r"[Nn]o", x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
         row[:typicalNumberOfFeedsFromBreast] > 0,
         row[:typicalNumberOfEpressedMilkFeeds] > 0,
         row[:lengthExclusivelyNursedMonths] > 0,
@@ -100,11 +100,11 @@ Returns `true` if any of the following are `true`:
 
 Otherwise returns `false`.
 """
-function formulafeeding(row)
+function formulafeeding(row::DataFrameRow)
     ff = any([
         occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
         occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
-        all(occursin.(r"[Nn]o", row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        all(map(x->occursin(r"[Nn]o",x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
         !ismissing(row[:amountFormulaPerFeed]),
         !ismissing(row[:formulaTypicalType]),
         row[:amountFormulaPerFeed] > 0
@@ -194,16 +194,16 @@ Get the metadata value for a given subject and timepoint
 """
 function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type=nothing)
     m = filter(df) do row
-        !any(ismissing, [row[:metadatum], row[:studyID], row[:timepoint]]) &&
+        !any(ismissing, [row[:metadatum], row[:subject], row[:timepoint]]) &&
             row[:metadatum] == metadatum &&
-            row[:studyID] == subject &&
+            row[:subject] == subject &&
             row[:timepoint] == timepoint
     end
 
     nrow(m) == 0 && return default
     nrow(m) > 1 && throw(ErrorException("More than one value found"))
 
-    v = first(m[:value])
+    v = first(m[!,:value])
     if type === nothing
         return v
     elseif ismissing(v)
@@ -232,11 +232,11 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
 
     df = DataFrame(:subject=>subjects, :timepoint=>timepoints)
     for m in Symbol.(metadata)
-        df[m] = Array{Any}(missing, length(subjects))
+        df[!,m] = Array{Any}(missing, length(subjects))
     end
 
     for row in eachrow(metadf)
-        sub = row[:studyID]
+        sub = row[:subject]
         tp = row[:timepoint]
         md = String(row[:metadatum])
         val = row[:value]
@@ -246,7 +246,7 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
             else
                 rows = collect(intersect(submap[sub], tpmap[tp]))
             end
-            df[rows, Symbol(md)] = val
+            df[rows, Symbol(md)] .= val
         end
     end
     return df
@@ -260,7 +260,7 @@ const metadata_focus_headers = String[
     "exclusivelyNursed",
     "exclusiveFormulaFed",
     "formulaTypicalType",
-    "motherSES",
+    "mother_HHS",
     "assessmentDate",
     # numeric
     "correctedAgeDays",
@@ -366,7 +366,7 @@ customprocess(col, ::MDColumn{:socialEmotionalComposite})           = numberify(
 customprocess(col, ::MDColumn{:motorComposite})                     = numberify(col)
 
 # other custom processing
-function customprocess(col, ::MDColumn{:motherSES})
+function customprocess(col, ::MDColumn{:mother_HSS})
     col = numberify(col)
     # some missing entries are encoded as 9999
     for i in eachindex(col)
@@ -383,8 +383,8 @@ end
 Get a wide-form metadata table with a subset of headers for a subset of subject/sample IDs
 """
 function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
-    subjects = [s.subject for s in samples]
-    timepoints = [s.timepoint for s in samples]
+    subjects = getfield.(samples, :subject)
+    timepoints = getfield.(samples, :timepoint)
 
     # # This code can be used if samples don't conform to normal pattern,
     # # but we don't actually want to deal with that at this stage.
@@ -399,10 +399,16 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
     df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
 
     for n in names(df)
-        df[n] = customprocess(df[n], MDColumn(n))
+        df[!, n] = customprocess(df[!,n], MDColumn(n))
     end
 
-    return df
+    if haskey(samples[1], :sample)
+        df[!, :sample] = getfield.(samples, :sample)
+        # reorder columns so :sample comes first
+        return df[:, [:sample, names(df)[1:end-1]...]]
+    else
+        return df
+    end
 end
 
 

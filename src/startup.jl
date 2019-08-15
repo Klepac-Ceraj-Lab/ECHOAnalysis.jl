@@ -2,7 +2,9 @@ const color1 = ColorBrewer.palette("Set1", 9)
 const color2 = ColorBrewer.palette("Set2", 8)
 const color3 = ColorBrewer.palette("Set3", 12)
 const color4 = ColorBrewer.palette("Paired", 12)
-const datatoml = parsefile("data/data.toml")
+
+tomlpath = "data/data.toml"
+const datatoml = parsefile(tomlpath)
 
 function load_taxonomic_profiles()
     bakery = datatoml["tables"]["biobakery"]
@@ -49,7 +51,7 @@ function load_functional_profiles(kind="genefamilies")
     return tax
 end
 
-function load_metadata(datatoml, metadatakey="all"; samples::Union{Nothing,Vector{<:NamedTuple}}=nothing)
+function load_metadata(datatoml=datatoml, metadatakey="all"; samples::Union{Nothing,Vector{<:NamedTuple}}=nothing)
     long = CSV.read(datatoml["tables"]["metadata"][metadatakey]["path"])
     if !isnothing(samples)
         return getfocusmetadata(long, samples, focus=metadata_focus_headers)
@@ -62,7 +64,7 @@ function notebookpaths!(notebook)
     num = lpad(string(notebook), 2, "0")
     outpath = datatoml["notebooks"][num]["output"]
     figurepath = datatoml["notebooks"][num]["figures"]
-    isdir(outpath) || mkdir(outpath)
-    isdir(figurepath) || mkdir(figurepath)
+    isdir(outpath) || mkpath(outpath)
+    isdir(figurepath) || mkpath(figurepath)
     return outpath, figurepath
 end

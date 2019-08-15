@@ -85,7 +85,7 @@ end
 function getsubtable(df, parent)
     indices = findall(x-> occursin(parent, replace(string(x), " "=>"_")), names(df))
     @debug "Getting subtable $parent at" indices
-    table = deepcopy(df[indices])
+    table = df[:, indices]
     headers = map(x-> splitheader(x)[2], names(table))
     names!(table, Symbol.(headers), makeunique=true)
 
@@ -93,7 +93,7 @@ function getsubtable(df, parent)
 end
 
 
-function elongate(df; idcol=:studyID, tpcol=:timepoint)
+function elongate(df; idcol=:subject, tpcol=:timepoint)
     table = copy(df)
     if tpcol != :timepoint
         rename!(table, tpcol=>:timepoint)
@@ -105,12 +105,13 @@ function elongate(df; idcol=:studyID, tpcol=:timepoint)
 end
 
 function scrubdate!(df, colname)
-    if eltype(df[colname]) <: AbstractString
-        df[:date] = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  df[:date])
-    elseif eltype(df[colname]) <: TimeType
-        df[:date] = df[colname]
+    if eltype(df[!,colname]) <: AbstractString
+        df.date = map(x-> ismissing(x) ? missing : DateTime(x, dateformat"m/d/y"),  df.date)
+    elseif eltype(df[!, colname]) <: TimeType
+        df.date = df[!, colname]
     end
-    colname != :date && deletecols!(df, colname)
+    # delete original date column if it's not called `:date`
+    colname != :date && select!(df, Not(colname))
 end
 
 
@@ -122,11 +123,12 @@ end
 
 ParentTable(s::String) = ParentTable{Symbol(s)}()
 
+# If no specific customprocess function exists, just return the table
 customprocess!(table, ::ParentTable) = table
 
 function customprocess!(table, ::ParentTable{:AAB})
-    @warn "renaing subjectID"!
-    rename!(table, [:subjectID=>:studyID, :timePoint=>:timepoint])
+    @warn "renaming subjectID"!
+    rename!(table, [:subjectID=>:subject, :timePoint=>:timepoint])
 end
 
 function customprocess!(table, ::ParentTable{:Fecal_with_Ethanol})
@@ -184,21 +186,18 @@ end
 # end
 
 function customprocess!(table, ::ParentTable{:Delivery})
-    table[:birthType] = let bt = Union{String,Missing}[]
-        for t in table[:birthType]
-            if ismissing(t)
-                push!(bt, missing)
-            elseif !occursin(r"([cC]esarean|[vV]aginal)", t)
-                push!(bt, t)
-            elseif occursin(r"[cC]esarean", t)
-                push!(bt, "Cesarean")
-            elseif occursin(r"[vV]aginal", t)
-                push!(bt, "Vaginal")
-            else
-                @error "something went wrong" t
-            end
+    table.birthType = map(table.birthType) do t
+        if ismissing(t)
+            return missing
+        elseif !occursin(r"([cC]esarean|[vV]aginal)", t)
+            return t
+        elseif occursin(r"[cC]esarean", t)
+            return "Cesarean"
+        elseif occursin(r"[vV]aginal", t)
+            return "Vaginal"
+        else
+            @error "something went wrong" t
         end
-        bt
     end
     return table
 end
@@ -239,7 +238,7 @@ function main(args)
 
     @info "Processing parent tables" parents
 
-    tables = DataFrame(studyID=String[],
+    tables = DataFrame(subject=String[],
                         timepoint=Union{Int,Missing}[],
                         metadatum=String[],
                         value=Any[],
@@ -251,9 +250,9 @@ function main(args)
 
         # Remove columns where all values are missing
         for n in names(subtable)
-            if all(ismissing, subtable[n])
+            if all(ismissing, subtable[!, n])
                 @info "All entries for subtable $p column $n are missing, removing"
-                deletecols!(subtable, n)
+                select!(subtable, Not(n))
             end
         end
 
@@ -270,26 +269,28 @@ function main(args)
         end
 
         customprocess!(subtable, ParentTable(p))
+        rename!(subtable, :studyID=>:subject)
 
         if !any(n-> n == :timepoint, names(subtable))
             @warn "No timpoint column detected for $p, treating as all-timepoint variable"
-            subtable[:timepoint] = 0
+            subtable[!, :timepoint] .= 0
         end
         nrow(subtable) < 2 && continue
 
-        subtable = elongate(subtable, idcol=:studyID, tpcol=:timepoint)
-        subtable[:parent_table] = p
+        subtable = elongate(subtable, idcol=:subject, tpcol=:timepoint)
+        subtable[!, :parent_table] .= p
 
-        if any(x-> x==2.5, subtable[:timepoint])
+        # One subject has a timepoint recorded as 2.5 for somet reason...
+        if any(x-> x==2.5, subtable.timepoint)
             @warn "Removing timepoint 2.5"
-            filter!(r-> r[:timepoint] != 2.5, subtable)
-            subtable[:timepoint] = [t for t in subtable[:timepoint]]
+            filter!(r-> r.timepoint != 2.5, subtable)
+            subtable.timepoint = [t for t in subtable.timepoint]
         end
 
         tables = vcat(tables, subtable)
     end
 
-    for i in eachindex(tables[:value])
+    for i in eachindex(tables.value)
         isa(tables[i,:value], AbstractString) || continue
         s = tables[i,:value]
         s = replace(s, r"\n"=>"___")

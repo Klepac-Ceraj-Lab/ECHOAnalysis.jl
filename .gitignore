@@ -3,8 +3,10 @@
 *.tsv
 *.fmp12
 *.xlsx
+Rplots.pdf
 scratch*
 build/
 docs/html
 data/figures
 data/notebooks
+data/engaging

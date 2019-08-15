@@ -33,6 +33,8 @@ export
     randrows
 
 using DataFrames
+using RecipesBase
+using MultivariateStats
 using CSV
 using Colors
 using ColorBrewer
@@ -41,9 +43,11 @@ using Pkg.TOML: parsefile
 
 using Microbiome
 
+include_dependency("../data/data.toml")
 include("metadata_handling.jl")
 include("notebook_handling.jl")
 include("file_handling.jl")
+include("pcoa_recipe.jl")
 include("startup.jl")
 
 end  # module ECHOAnalysis
