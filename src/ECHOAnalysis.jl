@@ -43,6 +43,7 @@ using Pkg.TOML: parsefile
 
 using Microbiome
 
+include_dependency("../data/data.toml")
 include("metadata_handling.jl")
 include("notebook_handling.jl")
 include("file_handling.jl")
