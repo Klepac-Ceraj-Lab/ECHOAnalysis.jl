@@ -49,7 +49,45 @@ function resolve_letter_timepoint(sid::AbstractString)
                                 "abcdefghijklmnopqrstuvwxyz")[1])
     end
 end
+
 resolve_letter_timepoint(sid::Missing) = missing
+
+"""
+    samplelessthan(x::T, y::T) where T <: NamedTuple
+    samplelessthan(x::T, y::T) where T <: AbstractString
+
+Function to use for sorting `NamedTuple`s from sample IDs.
+String versions of sampleIDs will be parsed with `resolve_sampleID`
+"""
+samplelessthan(x::T, y::T) where T <: NamedTuple = x.sample < y.sample || (x.sample == y.sample && x.timepoint < y.timepoint)
+
+samplelessthan(x::T, y::T) where T <: AbstractString = samplelessthan(resolve_sampleID.((x, y))...)
+
+"""
+    uniquesamples(samples::AbstractVector{<:NamedTuple}, identifiers::Vector{Symbol}=[:subject,:timepoint];
+                        skipethanol=true, samplefilter=x->true)
+"""
+function uniquesamples(samples::AbstractVector{<:NamedTuple}, identifiers::Vector{Symbol}=[:subject,:timepoint];
+                        skipethanol=true, samplefilter=x->true, takefirst=false)
+    seen = NamedTuple[]
+    uniquesamples = NamedTuple[]
+    takefirst && sort!(samples, lt=samplelessthan)
+
+    map(samples) do s
+        haskey(s, :sample) || throw(ArgumentError("need a NamedTuple with :sample field"))
+        all(k-> haskey(s, k), identifiers) || throw(ArgumentError("need a NamedTuple with fields: $identifiers"))
+
+        !samplefilter(s.sample) && return nothing
+        skipethanol && occursin(r"_\d+E_", s.sample) && return nothing
+
+        subtp = (; (i => s[i] for i in identifiers)...)
+        if !in(subtp, seen)
+            push!(seen, subtp)
+            push!(uniquesamples, s)
+        end
+    end
+    return uniquesamples
+end
 
 import Base.occursin
 
@@ -112,34 +150,26 @@ function formulafeeding(row::DataFrameRow)
     return !ismissing(ff) && ff
 end
 
+
 """
-    firstkids(samples::Vector{<:NamedTuple})
-    firstkids(samples::Vector{<:AbstractString})
+    firstkids(samples::Vector{<:NamedTuple}; skipethanol=true)
+    firstkids(samples::Vector{<:AbstractString}; skipethanol=true)
 
 From a list of sample ids, identify the earliest sample for each child.
 `Samples` may be sample IDs that can be parsed by [`resolve_sampleID`](@ref),
 or `NamedTuple`s containing `:subject` and `:timepoint` fields.
 
+If `skipethanol` is true, sample names containing `_#E_` will be skipped.
+
 Returns a vector of indicies that can be used to slice the original vector.
 """
-function firstkids(samples::AbstractVector{<:NamedTuple})
-    subjects = Dict()
-
-    for i in eachindex(samples)
-        s = samples[i]
-        startswith(s[:sample], "C") || continue
-        if s[:subject] in keys(subjects)
-            if s[:timepoint] < subjects[s[:subject]][:timepoint]
-                continue
-            end
-        end
-
-        subjects[s[:subject]] = (timepoint=s[:timepoint], index=i)
-    end
-    [subjects[k][:index] for k in keys(subjects)]
+function firstkids(samples::AbstractVector{<:NamedTuple}; skipethanol=true)
+    sort!(samples, lt=samplelessthan)
+    us = uniquesamples(samples, [:subject], samplefilter=x->startswith(x, "C"), skipethanol=skipethanol)
+    return getfield.(us, :sample)
 end
 
-firstkids(samples::AbstractVector{<:AbstractString}) = firstkids(resolve_sampleID.(samples))
+firstkids(samples::AbstractVector{<:AbstractString}; skipethanol=true) = firstkids(resolve_sampleID.(samples); skipethanol=skipethanol)
 
 
 """

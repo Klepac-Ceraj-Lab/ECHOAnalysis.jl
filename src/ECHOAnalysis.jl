@@ -4,8 +4,10 @@ export
     # Metadata handling
     resolve_sampleID,
     resolve_letter_timepoint,
+    uniquesamples,
     breastfeeding,
     formulafeeding,
+    samplelessthan,
     firstkids,
     numberify,
     getmetadatum,
