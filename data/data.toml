@@ -93,6 +93,26 @@ test = "test"
     description="Table provided by Muriel through Samepage"
     date="2019-06-03"
 
+[tables.uniprot]
+
+    [tables.uniprot.carbohydates]
+    path="data/uniprot/uniprot-carbohydates.tsv"
+    name="Carbohydrate metabolism"
+    description="keyword:\"Carbohydrate metabolism [KW-0119]\" AND reviewed:yes"
+    date="2019-08-26"
+
+    [tables.uniprot.abxr]
+    path="data/uniprot/uniprot-abxr.tsv"
+    name="Antibiotic Resistance"
+    description="keyword:\"Antibiotic resistance [KW-0046]\" AND reviewed:yes"
+    date="2019-08-26"
+
+    [tables.uniprot.fa]
+    path="data/uniprot/uniprot-fa.tsv"
+    name="Fatty acid metabolism"
+    xdescription="""taxonomy:"Bacteria [2]" (keyword:"Fatty acid biosynthesis [KW-0275]" OR keyword:"Fatty acid metabolism [KW-0276]") AND reviewed:yes"""
+    date="2019-08-26"
+
 [figures]
 path = "data/figures"
 
