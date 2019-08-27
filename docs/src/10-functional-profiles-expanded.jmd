@@ -6,11 +6,8 @@ options:
     wrap : false
 ---
 
-Now we've been through some analyses of the taxonomic profiles,
-but metagenomes *also* allow the generation of functional profiles;
-that is, what genes are present in a given community.
-
-These profiles were generated with [HUMANn2](http://huttenhower.sph.harvard.edu/humann2).
+Let's do some additional analysis of the functional profiles
+started in notebook 8.
 
 ```julia; echo=false; results="hidden"
 using ECHOAnalysis
@@ -21,5 +18,11 @@ using DataFrames
 using Distances
 using CSV
 
-(outpath, figures) = notebookpaths!(8)
+(outpath, figures) = notebookpaths!(10)
 ```
+
+## Humann2 function plots
+
+HUMANn2 provides a convenience script for plotting functional profiles,
+but it requires an annotated table (`pcl` format),
+where metadata comes before bug abundances.

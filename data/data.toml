@@ -147,10 +147,14 @@ path = "data/figures"
     output = "data/notebooks/07"
     figures = "data/figures/07"
     [notebooks.08]
-    filepath = "docs/src/08-significant-bugs.jmd"
+    filepath = "docs/src/08-functional-profiles.jmd"
     output = "data/notebooks/08"
     figures = "data/figures/08"
     [notebooks.09]
-    filepath = "docs/src/09-"
+    filepath = "docs/src/09-figure-edits.jmd"
+    output = "data/notebooks/09"
+    figures = "data/figures/09"
+    [notebooks.10]
+    filepath = "docs/src/10-functional-profiles-expanded.jmd"
     output = "data/notebooks/09"
     figures = "data/figures/09"
