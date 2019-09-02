@@ -1,14 +1,14 @@
-# Subject and Sample Metadata
+# File Handling
 
 ```@contents
-Pages = ["metadata_handling.md"]
+Pages = ["file_handling.md"]
 ```
 
 ## Functions
 
 ```@autodocs
 Modules = [ECHOAnalysis]
-Pages = ["metadata_handling.jl"]
+Pages = ["file_handling.jl"]
 Private = false
 ```
 

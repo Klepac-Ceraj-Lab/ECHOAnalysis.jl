@@ -1,4 +1,4 @@
-# ECHO RESONANCE Paper 1
+# Getting Started
 
 ```@contents
 depth=4
