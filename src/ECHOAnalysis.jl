@@ -40,7 +40,6 @@ using MultivariateStats
 using CSV
 using Colors
 using ColorBrewer
-using PrettyTables
 using Pkg.TOML: parsefile
 using Microbiome
 
