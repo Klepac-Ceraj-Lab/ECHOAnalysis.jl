@@ -26,3 +26,276 @@ using CSV
 HUMANn2 provides a convenience script for plotting functional profiles,
 but it requires an annotated table (`pcl` format),
 where metadata comes before bug abundances.
+
+```julia
+kos = CSV.read("data/aws/joined/batch1-9_kos_names_stratified.tsv", delim='\t')
+names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), "_kneaddata_Abundance-RPKs"=>"")).sample), names(kos)))
+
+# this provides metadata in wide form
+kosmeta = load_metadata(datatoml; samples=resolve_sampleID.(names(kos[!,Not(1)])))
+
+kosmeta[!, :subjectType] = map(eachrow(kosmeta)) do row
+    age = row[:correctedAgeDays] / 365
+    if startswith(row[:sample], "C")
+        if !ismissing(age)
+            if age <= 1
+                return "1au"
+            elseif age <= 2
+                return "1to2"
+            else
+                return "gt2"
+            end
+        else
+            return missing
+        end
+    elseif startswith(row[:sample], "M")
+        return "mom"
+    else
+        return missing
+    end
+end
+
+notmissing = .!ismissing.(kosmeta.subjectType)
+# get samples where age is known (first `true` is to get ec column)
+kos = kos[!,[true, notmissing...]]
+kosmeta = kosmeta[notmissing, :]
+
+# to get metadata in same order as kos table
+function transposedf(df)
+    ns = names(df)
+    dft = DataFrame(ns[1]=>ns[2:end])
+    for (i, n) in enumerate(df[!,1])
+        dft[!, Symbol(n)] = Vector(df[i,Not(1)])
+    end
+    return dft
+end
+
+
+CSV.write(joinpath(outpath, "annotated_kos.pcl"), transposedf(kosmeta[!,[:sample, :subjectType]]), delim='\t')
+CSV.write(joinpath(outpath, "annotated_kos.pcl"), kos, append=true, delim='\t')
+open(joinpath(outpath, "kos.txt"), "w") do io
+    for ec in kos[:,1]
+        write(io, ec, '\n')
+    end
+end
+
+isdir(joinpath(outpath, "humann2_barplots")) || mkdir(joinpath(outpath, "humann2_barplots"))
+```
+
+```julia
+nostrat = CSV.read("data/aws/joined/batch1-9_kos_names_unstratified.tsv", delim='\t')
+
+prev = map(row-> prevalence(collect(row[2:end]), 0.), eachrow(nostrat))
+describe(prev)
+```
+
+```julia
+using Statistics
+using MultivariateStats
+
+accessory = nostrat[prev .< quantile(prev, 0.75), :]
+names!(accessory, map(n-> replace(replace(String(n), r"_S\d+_kneaddata.+$"=>""), "-"=>"_") |> Symbol, names(accessory)))
+aabt = abundancetable(accessory)
+accsamples = resolve_sampleID.(samplenames(aabt))
+au = view(aabt, sites=getfield.(uniquesamples(accsamples, takefirst=true), :sample))
+
+tax = load_taxonomic_profiles()
+taxfilter!(tax)
+taxabt = abundancetable(tax)
+relativeabundance!(taxabt)
+taxsamples = resolve_sampleID.(samplenames(taxabt))
+tu = view(taxabt, sites=getfield.(uniquesamples(taxsamples, takefirst=true), :sample))
+
+overlap = intersect(samplenames(tu),samplenames(au))
+
+oau = view(au, sites=overlap)
+otu = view(tu, sites=overlap)
+
+ometa = load_metadata(datatoml; samples=resolve_sampleID.(samplenames(oau)))
+ometa[!, :subjectType] = map(eachrow(ometa)) do row
+    age = row[:correctedAgeDays] / 365
+    if startswith(row[:sample], "C")
+        if !ismissing(age)
+            if age <= 1
+                return "1au"
+            elseif age <= 2
+                return "1to2"
+            else
+                return "gt2"
+            end
+        else
+            return missing
+        end
+    elseif startswith(row[:sample], "M")
+        return "mom"
+    else
+        return missing
+    end
+end
+
+notmissing = .!ismissing.(ometa.subjectType)
+oaunm = view(oau, sites=notmissing)
+otunm = view(otu, sites=notmissing)
+ometanm = view(ometa, notmissing, :)
+
+oadm = pairwise(BrayCurtis(), oaunm)
+oamds = fit(MDS, oadm, distances=true)
+
+otdm = pairwise(BrayCurtis(), otunm)
+otmds = fit(MDS, otdm, distances=true)
+```
+
+```julia
+scatter(projection(oamds)[:, 1], projection(otmds)[:, 1],
+        group = ometanm.subjectType, legend=:bottomleft,
+        xlabel="Function MDS1", ylabel="Taxonomy MDS1")
+```
+```julia
+savefig(joinpath(outpath, "ko-tax-mds1-subjectType.svg"))
+```
+
+```julia
+scatter(projection(oamds)[:, 1], ometanm.correctedAgeDays ./365,
+    group = ometanm.subjectType, xaxis=:flip, legend=:topleft,
+    xlabel="MDS1", ylabel="Age (years)",
+    title = "Accessory KOs over time")
+```
+```julia
+savefig(joinpath(outpath, "ko-mds1-age-kids.svg"))
+```
+
+```julia
+let nm = .!ismissing.(ometanm.correctedAgeDays)
+    scatter(projection(oamds)[nm, 1], projection(otmds)[nm, 1],
+        zcolor=log.(ometanm.correctedAgeDays[nm]), legend=false,
+        xlabel="Function MDS1", ylabel="Taxonomy MDS1", title="Taxonomy and Functions in Kids",
+        color=:plasma)
+end
+```
+```julia
+savefig(joinpath(outpath, "ko-tax-mds1-age.svg"))
+```
+
+
+```julia
+cor(projection(oamds)[:, 1], projection(otmds)[:, 1])
+```
+
+## Brain KOs
+
+```julia
+brainkos = Set(String[])
+for line in eachline("/lovelace/echo/analysis/gutbrain/GBMs/GBM.inputfile.txt")
+    for m in eachmatch(r"K\d+", line)
+        push!(brainkos, String(m.match))
+    end
+end
+
+brainkos
+```
+```julia
+names!(nostrat, map(n-> replace(replace(String(n), r"_S\d+_kneaddata.+$"=>""), "-"=>"_") |> Symbol, names(nostrat)))
+nsabt = abundancetable(nostrat)
+relativeabundance!(nsabt)
+bkosabt = view(nsabt, species=map(ko-> any(b-> occursin(b, ko), brainkos), nostrat[!, 1]),
+                        sites=getfield.(uniquesamples(resolve_sampleID.(samplenames(nsabt)),takefirst=true), :sample)
+                        )
+bkodm = pairwise(BrayCurtis(), bkosabt)
+bkorowdm = pairwise(BrayCurtis(), bkosabt, dims=1)
+bkorowdm = map(x-> isnan(x) ? 1. : x, bkorowdm)
+
+bkomds = fit(MDS, bkodm, distances=true)
+
+using Clustering
+bkohcl = hclust(bkodm, linkage=:average, branchorder=:optimal)
+bkorowhcl = hclust(bkorowdm, linkage=:average, branchorder=:optimal)
+heatmap(asin.(sqrt.(occurrences(bkosabt)))[bkorowhcl.order, bkohcl.order], color=:PuBu)
+using MicrobiomePlots
+
+bkometa = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(bkosabt)))
+bkometa[!, :subjectType] = map(eachrow(bkometa)) do row
+    age = row[:correctedAgeDays] / 365
+    if startswith(row[:sample], "C")
+        if !ismissing(age)
+            if age <= 1
+                return "1au"
+            elseif age <= 2
+                return "1to2"
+            else
+                return "gt2"
+            end
+        else
+            return missing
+        end
+    elseif startswith(row[:sample], "M")
+        return "mom"
+    else
+        return missing
+    end
+end
+
+heatmap(asin.(sqrt.(occurrences(bkosabt)))[bkorowhcl.order, bkohcl.order], color=:PuBu)
+
+plot(
+    heatmap(asin.(sqrt.(occurrences(bkosabt)))[bkorowhcl.order, bkohcl.order], color=:PuBu),
+    plot(annotationbar([ismissing(x) ? "missing" : x for x in bkometa.subjectType],
+        Dict("1au"=>color2[1], "1to2"=>color2[2], "gt2"=>color2[3], "mom"=>color2[4], "missing"=>color2[end]))),
+    layout=grid(2,1, heights=[0.9, 0.1]))
+```
+```julia
+savefig(joinpath(outpath, "brainkos-heatmap.svg"))
+```
+
+```julia
+plot(bkohcl)
+```
+
+```julia
+## Cognitive Assessment
+
+using Statistics
+# Bayleys doesn't have a compositve score calculated, but we can get it:
+bkometa.bayleysComposite = map(row->
+    mean([row[:languageComposite], row[:motorComposite]]),
+    eachrow(bkometa))
+
+# pre-fill columns for numerical score and name of the measurement test
+bkometa.cogScore = Vector{Union{Float64,Missing}}(missing, size(bkometa,1))
+bkometa.cogAssessment = Vector{Union{String,Missing}}(missing, size(bkometa,1))
+
+map(enumerate(eachrow(bkometa))) do (i, row)
+    # get just the cognitive assessment columns
+    cogs = row[[
+                :mullen_EarlyLearningComposite,
+                :fullScaleComposite, # this is from WSSPI
+                :FSIQ_Composite, # this is from WISC
+                :bayleysComposite
+            ]]
+    # if there's no score, skip row
+    all(ismissing, cogs) && return
+    # otherwise, get the first non-missing value (no timepoints have multiple scores)
+    col = findall(!ismissing, cogs)
+    let assessment = col[1]
+        if assessment == :mullen_EarlyLearningComposite
+            assessment = "Mullen"
+        elseif assessment == :fullScaleComposite
+            assessment = "WSSPI"
+        elseif assessment == :FSIQ_Composite
+            assessment = "WISC"
+        else assessment == :bayleysComposite
+            assessment = "Bayleys"
+        end
+
+        bkometa[i, :cogAssessment] = assessment
+        bkometa[i, :cogScore] = cogs[col[1]]
+    end
+end
+
+
+filt = map(eachrow(bkometa)) do row
+    !ismissing(row.cogScore) && row.correctedAgeDays > 365 * 2
+end
+
+
+permanova(bkodm[filt,filt], bkometa.cogScore[filt])
+```

@@ -32,7 +32,6 @@ names!(genefamilies, map(n-> Symbol(resolve_sampleID(replace(String(n), "_kneadd
 # ~ 5% prevalence filter
 genefamilies = genefamilies[map(row-> sum(x-> x > 0, row[Not(1)]) > 35, eachrow(genefamilies)), :]
 genefamilies = abundancetable(genefamilies)
-any(g-> occursin("Q9HY65", g), featurenames(genefamilies))
 ```
 
 ```julia
