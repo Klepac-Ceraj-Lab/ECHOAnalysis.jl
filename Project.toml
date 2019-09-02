@@ -1,6 +1,6 @@
 name = "ECHOAnalysis"
 uuid = "39b5b81a-5017-403f-bb48-824a42db2b1c"
-authors = ["kescobo <kevbonham@gmail.com"]
+authors = ["kescobo <kbonham@wellesley.edu>"]
 version = "0.0.1"
 
 [deps]
