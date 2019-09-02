@@ -42,7 +42,6 @@ using Colors
 using ColorBrewer
 using PrettyTables
 using Pkg.TOML: parsefile
-
 using Microbiome
 
 include_dependency("../data/data.toml")
