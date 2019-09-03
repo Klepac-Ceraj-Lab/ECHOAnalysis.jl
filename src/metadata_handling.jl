@@ -1,5 +1,6 @@
 """
     resolve_sampleID(sid::Union{AbstractString,Symbol})
+    resolve_sampleID(sids::Vector{<:Union{AbstractString,Symbol}})
 
 Parse a sample name and return its components as a named tuple:
 
@@ -8,6 +9,9 @@ Example: For the sample `C0040_3F_1A`:
 - `3F` means "timepoint **3**", **F**ecal (genotech).
   May also be `E` for **E**thanol.
 - 1A means "replicate **1**, aliquot **A**"
+- Hyphens in sample names are converted to underscores (so "C0001_1F_1A" == "C0001-1F-1A")
+- Samples may also end with `_S\\d+` (well #s from sequencing) which are ignored
+- Samples that don't match the expected pattern return `(sample=sid, subject=nothing, timepoint=nothing)`
 
 This function returns the `NamedTuple` `(sample="C0040_3F_1A", subject=40, timepoint=3)`
 """
@@ -17,7 +21,7 @@ function resolve_sampleID(sid::Union{AbstractString,Symbol})
 
 
     if m == nothing
-        return (sample=sid, subject=nothing, timepoint=nothing)
+        return (sample=String(sid), subject=nothing, timepoint=nothing)
     else
         sample = replace(String(m.captures[1]), "-"=>"_")
         subject = parse(Int, m.captures[3])
@@ -25,6 +29,8 @@ function resolve_sampleID(sid::Union{AbstractString,Symbol})
         return (sample=sample, subject=subject, timepoint=timepoint)
     end
 end
+
+resolve_sampleID(sids::Vector{<:Union{AbstractString,Symbol}}) = resolve_sampleID.(sids)
 
 """
     resolve_letter_timepoint(sid::AbstractString)
@@ -42,7 +48,7 @@ function resolve_letter_timepoint(sid::AbstractString)
                 subject=parse(Int, sid),
                 timepoint=1)
     else
-        return (sample  = sid,
+        return (sample  = lowercase(sid),
                 subject = parse(Int, m.captures[1]),
                 timepoint = findfirst(
                                 lowercase(m.captures[2]),
@@ -51,27 +57,66 @@ function resolve_letter_timepoint(sid::AbstractString)
 end
 
 resolve_letter_timepoint(sid::Missing) = missing
+resolve_letter_timepoint(sids::Vector{<:Union{AbstractString, Missing}}) = resolve_letter_timepoint.(sids)
 
 """
     samplelessthan(x::T, y::T) where T <: NamedTuple
-    samplelessthan(x::T, y::T) where T <: AbstractString
+    samplelessthan(x::T, y::T) where T <: Union{AbstractString, Symbol}
 
 Function to use for sorting `NamedTuple`s from sample IDs.
 String versions of sampleIDs will be parsed with `resolve_sampleID`
 """
 samplelessthan(x::T, y::T) where T <: NamedTuple = x.sample < y.sample || (x.sample == y.sample && x.timepoint < y.timepoint)
 
-samplelessthan(x::T, y::T) where T <: AbstractString = samplelessthan(resolve_sampleID.((x, y))...)
+samplelessthan(x::T, y::T) where T <: Union{AbstractString, Symbol} = samplelessthan(resolve_sampleID.((x, y))...)
 
 """
     uniquesamples(samples::AbstractVector{<:NamedTuple}, identifiers::Vector{Symbol}=[:subject,:timepoint];
                         skipethanol=true, samplefilter=x->true)
+
+Identifies unique samples from a vector of sample tuples.
+Tuples must have a `sample` field, and additional fields specified in `identifiers`.
+Multiple items that have the same values among the `identifiers` will be excluded.
+
+**Example:**
+
+Given the following array of 4 samples:
+
+```@example uniquesamples
+s = [(sample="C0001_1F_1A", subject=1, timepoint=1),
+     (sample="C0001_1F_2A", subject=1, timepoint=1),
+     (sample="C0001_2F_1A", subject=1, timepoint=2)
+     (sample="C0002_1F_1A", subject=2, timepoint=1)];
+```
+
+By default, `identifiers = [:subject, :timepoint]`,
+meaning only the second item would be excluded
+(since both it and the first item are subject 1, timepoint 1).
+
+A single timepoint for each subject can be acquired by passing `identifiers=[:subject]`.
+
+```@example uniquesamples
+uniquesamples(s)
+```
+```@example uniquesamples
+uniquesamples(s, identifiers=[:subject])
+```
+
+**Other parameters**
+
+- `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
+    that is ethanol (as opposed to genotek) samples.
+- `samplefilter=x->true`: a function to select samples to include.
+  By default, all samples are included. Use `samplefilter=x->startswith(x, "C")`
+  to include only child samples for example.
+- `takefirst=true`: if `true`, sorts the samples using [`samplelessthan`]@ref
 """
-function uniquesamples(samples::AbstractVector{<:NamedTuple}, identifiers::Vector{Symbol}=[:subject,:timepoint];
-                        skipethanol=true, samplefilter=x->true, takefirst=false)
+function uniquesamples(samples::AbstractVector{<:NamedTuple};
+                        identifiers::Vector{Symbol}=[:subject,:timepoint],
+                        skipethanol=true, samplefilter=x->true, takefirst=true)
     seen = NamedTuple[]
     uniquesamples = NamedTuple[]
-    takefirst && sort!(samples, lt=samplelessthan)
+    takefirst && (samples = sort(samples, lt=samplelessthan))
 
     map(samples) do s
         haskey(s, :sample) || throw(ArgumentError("need a NamedTuple with :sample field"))
@@ -149,27 +194,6 @@ function formulafeeding(row::DataFrameRow)
         ])
     return !ismissing(ff) && ff
 end
-
-
-"""
-    firstkids(samples::Vector{<:NamedTuple}; skipethanol=true)
-    firstkids(samples::Vector{<:AbstractString}; skipethanol=true)
-
-From a list of sample ids, identify the earliest sample for each child.
-`Samples` may be sample IDs that can be parsed by [`resolve_sampleID`](@ref),
-or `NamedTuple`s containing `:subject` and `:timepoint` fields.
-
-If `skipethanol` is true, sample names containing `_#E_` will be skipped.
-
-Returns a vector of indicies that can be used to slice the original vector.
-"""
-function firstkids(samples::AbstractVector{<:NamedTuple}; skipethanol=true)
-    sort!(samples, lt=samplelessthan)
-    us = uniquesamples(samples, [:subject], samplefilter=x->startswith(x, "C"), skipethanol=skipethanol)
-    return getfield.(us, :sample)
-end
-
-firstkids(samples::AbstractVector{<:AbstractString}; skipethanol=true) = firstkids(resolve_sampleID.(samples); skipethanol=skipethanol)
 
 
 """
