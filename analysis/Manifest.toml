@@ -241,18 +241,6 @@ git-tree-sha1 = "0513f1a8991e9d83255e0140aace0d0fc4486600"
 uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.0"
 
-[[Documenter]]
-deps = ["Base64", "DocStringExtensions", "InteractiveUtils", "JSON", "LibGit2", "Logging", "Markdown", "REPL", "Test", "Unicode"]
-git-tree-sha1 = "1b6ae3796f60311e39cd1770566140d2c056e87f"
-uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-version = "0.23.3"
-
-[[ECHOAnalysis]]
-deps = ["ArgParse", "BiobakeryUtils", "CSV", "Clustering", "CodeTracking", "ColorBrewer", "Colors", "Combinatorics", "DataFrames", "Distances", "GLM", "LoggingExtras", "Microbiome", "MicrobiomePlots", "MultipleTesting", "MultivariateStats", "Pkg", "PlotlyJS", "Plots", "PrettyTables", "RCall", "RecipesBase", "Revise", "SpatialEcology", "StatsBase", "StatsPlots", "Weave", "XLSX"]
-path = ".."
-uuid = "39b5b81a-5017-403f-bb48-824a42db2b1c"
-version = "0.0.1"
-
 [[EcoBase]]
 deps = ["Compat", "RecipesBase"]
 git-tree-sha1 = "927e8aea9c9856b88fda40791e3872de07d05751"
@@ -503,10 +491,8 @@ uuid = "f8716d33-7c4a-5097-896f-ce0ecbd3ef6b"
 version = "0.4.1"
 
 [[MultivariateStats]]
-deps = ["Arpack", "LinearAlgebra", "SparseArrays", "Statistics", "StatsBase"]
-git-tree-sha1 = "024d7fce5bf2799597f3ec29d4d2e283eacf94b8"
-repo-rev = "master"
-repo-url = "https://github.com/JuliaStats/MultivariateStats.jl.git"
+deps = ["Arpack", "LinearAlgebra", "Printf", "Random", "SparseArrays", "Statistics", "StatsBase", "Test"]
+git-tree-sha1 = "cf1c990020bc4a52ff34ba2ee058b7cb677141f2"
 uuid = "6f286f6a-111f-5878-ab1e-185364afe411"
 version = "0.6.0"
 

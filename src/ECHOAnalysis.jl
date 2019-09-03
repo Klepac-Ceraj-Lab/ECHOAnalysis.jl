@@ -4,8 +4,10 @@ export
     # Metadata handling
     resolve_sampleID,
     resolve_letter_timepoint,
+    uniquesamples,
     breastfeeding,
     formulafeeding,
+    samplelessthan,
     firstkids,
     numberify,
     getmetadatum,
@@ -38,9 +40,7 @@ using MultivariateStats
 using CSV
 using Colors
 using ColorBrewer
-using PrettyTables
 using Pkg.TOML: parsefile
-
 using Microbiome
 
 include_dependency("../data/data.toml")
