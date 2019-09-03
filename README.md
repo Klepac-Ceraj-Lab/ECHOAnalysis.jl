@@ -22,20 +22,20 @@ In order to run it, clone the repo, and activate the environment. If you've just
 [2]: https://julialang.org/
 
 ```
-$ git clone https://github.com/danielle-peterson/echo-analysis
+$ git clone https://github.com/Klepac-Ceraj-Lab/echo_analysis.git
 $ cd echo-analysis
 $ julia
-
+Starting Julia...
                _
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
   | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.0.1-pre.0 (2018-08-09)
- _/ |\__'_|_|_|\__'_|  |  release-1.0/1dd2f8b397 (fork: 1 commits, 9 days)
+  | | |_| | | | (_| |  |  Version 1.2.0 (2019-08-20)
+ _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 
-(v1.0) pkg> activate . # to get the pkg repl prompt, just press ']'
+(v1.2) pkg> activate . # to get the pkg repl prompt, just press ']'
 
 (echo-analysis) pkg> instantiate
 ```
