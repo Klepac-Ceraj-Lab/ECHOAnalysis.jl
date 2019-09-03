@@ -1,11 +1,18 @@
-# Echo Paper
-#### by Kevin Bonham, Danielle Peterson, and Lauren Tso 
+# Echo RESONANCE Microbiome Group
+
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://USER_NAME.github.io/PACKAGE_NAME.jl/dev)
+[![Build Status](https://travis-ci.org/Klepac-Ceraj-Lab/echo_analysis.svg?branch=master)](https://travis-ci.org/Klepac-Ceraj-Lab/echo_analysis)
+
+[![Kevin Bonham, PhD](https://img.shields.io/badge/Author-Kevin%20Bonham%2C%20PhD-blueviolet)](http://nequals.me)
+[![Sophie Rowland](https://img.shields.io/badge/Author-Sophie%20Rowland-blueviolet)](http://sophierowland.com/)
+[![Vanja Klepac-Ceraj](https://img.shields.io/badge/Author-Vanja%20Klepec--Ceraj%2C%20PhD-blueviolet)](https://www.vkclab.com/)
+
 
 ## Purpose
 
 Computational analysis of fecal samples and cognitive data from the Resonance cohort by the Klepac-Ceraj lab. This work is funded by the [National Institutes of Health (NIH)][1]
 
-[1]: https://www.nih.gov/echo 
+[1]: https://www.nih.gov/echo
 
 ## Code
 
@@ -18,7 +25,7 @@ In order to run it, clone the repo, and activate the environment. If you've just
 $ git clone https://github.com/danielle-peterson/echo-analysis
 $ cd echo-analysis
 $ julia
-   
+
                _
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
