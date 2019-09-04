@@ -27,6 +27,7 @@ using Clustering
 using PrettyTables
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+@ptconfclean # clear previous configuration
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 outpath, figures = notebookpaths!(5)
@@ -55,7 +56,7 @@ CSV.write(joinpath(outpath, "euk_sp.csv"), euk)
 ```
 
 Those numbers are out of 100
-and there are only results in 9 samples,
+and there are only results in 10 samples,
 so really not much fungi at all,
 at least according to metaphlan.
 There are some other methods to look more specifically at fungi,
@@ -90,7 +91,7 @@ we perform classical multidimensional scaling (which is the same thing
 as principal coordinates analysis).
 
 ```julia
-dm = pairwise(BrayCurtis(), occurrences(abt), dims=2)
+dm = pairwise(BrayCurtis(), abt)
 mds = fit(MDS, dm, distances=true)
 
 # The `src/pcoa_recipe.jl` file has some code for a plot recipe,
@@ -186,6 +187,20 @@ p3 = plot(mds, marker=3, line=1, ticks=false,
 savefig(joinpath(figures, "taxonomic-profiles-bacteroidetes.svg"));
 ```
 
+Often, the first axis of variation in the gut microbiome of westerners
+is the species _Prevotella copri_ (in the phylum Bacteroidetes).
+Let's see what _P. copri_ is doing:
+
+```julia
+
+plot(mds, marker=3, line=1, ticks=false,
+    zcolor=permutedims(collect(occurrences(view(abt, species=["Prevotella_copri"])))),
+    primary = false, color=:plasma,
+    title="All samples, P. copri")
+```
+
+Looks like _P. copri_ is responsible for a decent chunk of the 2nd axis.
+
 ```julia
 p4 = plot(mds, marker=3, line=1, ticks=false,
     zcolor=firmicutes, primary = false, color=:plasma,
@@ -208,32 +223,13 @@ There aren't a ton of moms in the samples yet,
 but let's just see what they look like on their own
 
 ```julia
-# get a sub abundance table with only samples that start with "M"
-moms = view(abt, sites=map(s-> occursin(r"^M", s[:sample]) && occursin("F", s[:sample]),
-                            resolve_sampleID.(sitenames(abt))))
+# use the `uniquesamples` function to get a single sample per mom
+unique_moms = uniquesamples(samplenames(abt), samplefilter=x->startswith(x, "M"))
 
-# this will get us a boolean vector to filter further so we only have
-# one sample per mom.
-unique_moms = let
-    subjects= []
-    unique = Bool[]
-    for sample in sitenames(moms)
-        s = resolve_sampleID(sample)
-        if !in(s[:subject], subjects)
-            push!(subjects, s[:subject])
-            push!(unique,true)
-        else
-            push!(unique,false)
-        end
-    end
-    unique
-end
-
-
-umoms = view(moms, sites=unique_moms)
+umoms = view(abt, sites=getfield.(unique_moms, :sample))
 
 # get pairwise Bray Curtis distance matrix
-umoms_dm = pairwise(BrayCurtis(), umoms, dims=2)
+umoms_dm = pairwise(BrayCurtis(), umoms)
 
 # hierarchical clustering to put similar samples together
 umoms_hcl = hclust(umoms_dm, linkage=:average, branchorder=:optimal)

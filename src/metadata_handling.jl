@@ -134,6 +134,11 @@ function uniquesamples(samples::AbstractVector{<:NamedTuple};
     return uniquesamples
 end
 
+function uniquesamples(samples::AbstractVector{<:AbstractString}; kwargs...)
+    ss = resolve_sampleID(samples)
+    return uniquesamples(ss; kwargs...)
+end
+
 import Base.occursin
 
 # WARNING: This is type piracy.
@@ -307,6 +312,11 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
 end
 
 const metadata_focus_headers = String[
+    # fecal sample info
+    "Mgx_batch",
+    "DOM",
+    "RAInitials_Extract",
+    # basic data
     "childGender",
     "milkFeedingMethods",
     "APOE",

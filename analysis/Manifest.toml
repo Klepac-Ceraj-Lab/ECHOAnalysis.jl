@@ -749,10 +749,12 @@ deps = ["LinearAlgebra", "Random"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[SpatialEcology]]
-deps = ["DataFrames", "DataFramesMeta", "EcoBase", "Random", "RandomBooleanMatrices", "RandomNumbers", "RecipesBase", "SparseArrays", "Statistics", "StatsBase", "Test"]
-git-tree-sha1 = "7e4ae3dd9cd98ac6127a28fc5bc46bdf5e28d86b"
+deps = ["DataFrames", "DataFramesMeta", "Distances", "EcoBase", "Random", "RandomBooleanMatrices", "RandomNumbers", "RecipesBase", "SparseArrays", "Statistics", "StatsBase"]
+git-tree-sha1 = "0dc34039544c5d70a71b45c264c9653649fd9be8"
+repo-rev = "master"
+repo-url = "https://github.com/EcoJulia/SpatialEcology.jl.git"
 uuid = "348f2d5d-71a3-5ad4-b565-8af070f99681"
-version = "0.7.0"
+version = "0.7.1"
 
 [[SpecialFunctions]]
 deps = ["BinDeps", "BinaryProvider", "Libdl", "Test"]

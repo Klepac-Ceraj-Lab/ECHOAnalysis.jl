@@ -24,14 +24,6 @@ function load_taxonomic_profiles()
     return tax
 end
 
-function first_kids_tax_profiles(taxlevel=:species)
-    tax = load_taxonomic_profiles()
-    taxfilter!(tax, taxlevel)
-    abt = abundancetable(tax)
-    relativeabundance!(abt)
-    kids = view(abt, sites=firstkids(samplenames(abt)))
-    return kids
-end
 
 function load_functional_profiles(kind="genefamilies")
     bakery = datatoml["tables"]["biobakery"]
@@ -40,7 +32,7 @@ function load_functional_profiles(kind="genefamilies")
             bakery["path"],
             bakery["humann2"]["root"],
             bakery["humann2"]["filter"],
-            suffix="_genefamilies.tsv")
+            suffix="_$kind.tsv")
 
     # clean up sample names
     names!(tax,
