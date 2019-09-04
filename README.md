@@ -1,6 +1,6 @@
 # Echo RESONANCE Microbiome Group
 
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://USER_NAME.github.io/PACKAGE_NAME.jl/dev)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://klepac-ceraj-lab.github.io/echo_analysis/dev/)
 [![Build Status](https://travis-ci.org/Klepac-Ceraj-Lab/echo_analysis.svg?branch=master)](https://travis-ci.org/Klepac-Ceraj-Lab/echo_analysis)
 
 [![Kevin Bonham, PhD](https://img.shields.io/badge/Author-Kevin%20Bonham%2C%20PhD-blueviolet)](http://nequals.me)

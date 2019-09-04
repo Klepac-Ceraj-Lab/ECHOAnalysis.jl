@@ -3,7 +3,7 @@ const color2 = ColorBrewer.palette("Set2", 8)
 const color3 = ColorBrewer.palette("Set3", 12)
 const color4 = ColorBrewer.palette("Paired", 12)
 
-tomlpath = "data/data.toml"
+tomlpath = joinpath(@__DIR__, "..", "data", "data.toml")
 const datatoml = parsefile(tomlpath)
 
 function load_taxonomic_profiles()
