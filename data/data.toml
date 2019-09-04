@@ -81,17 +81,11 @@ test = "test"
     description="Table provided by Giang-Chow through Samepage"
     date="2019-05-03"
 
-    [tables.brain.cortical]
-    path="data/brain/Cortical_June3rd2019.csv"
+    [tables.brain.hires]
+    path="data/brain/microbiome_corticalVolumes_bambam.csv"
     name="High res structural data"
-    description="Table provided by Muriel through Samepage"
-    date="2019-06-03"
-
-    [tables.brain.subcortical]
-    path="data/brain/Subcortical_June3rd2019.csv"
-    name="High res structural data"
-    description="Table provided by Muriel through Samepage"
-    date="2019-06-03"
+    description="Table provided by Sean through email (subject 'brain data')"
+    date="2019-09-01"
 
 [tables.uniprot]
 
