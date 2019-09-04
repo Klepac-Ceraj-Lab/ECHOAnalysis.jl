@@ -6,8 +6,8 @@ options:
     wrap : false
 ---
 
-In the previous notebook, we generated separate metadata datatoml
-for different tables in the FilemakerPro database.
+In the previous notebook,
+we extracted metadata tables from FilemakerPro.
 Now, we'll get these into a more usable format for analysis.
 
 ## Accessing TOML data in julia
@@ -15,7 +15,11 @@ Now, we'll get these into a more usable format for analysis.
 Information about the locations of data are found in `data/data.toml`.
 Parsing this file gives a set of nested key:value pairs.
 
-```julia; echo=false; results="hidden"
+Extra code for much of this analysis is found in the ECHOAnalysis
+module in the `src/` directory of this repo.
+The docs can be [found here](https://klepac-ceraj-lab.github.io/echo_analysis/dev/).
+
+```julia; results="hidden"
 using ECHOAnalysis
 ```
 
@@ -128,49 +132,33 @@ using the `resolve_letter_timepoint` function.
 
 ```julia
 # convert letter timepoint into number
-brainsid = resolve_letter_timepoint.(brainvol.subject)
+brainsid = resolve_letter_timepoint(brainvol.subject)
 brainsid[1:5]
 ```
 
 ```julia
-brainvol[!, :subject] = getfield.(brainsid, :subject)
-brainvol[!, :timepoint] = getfield.(brainsid, :timepoint)
-brainvol[!, :sample] = getfield.(brainsid, :sample)
+brainvol.subject = getfield.(brainsid, :subject)
+brainvol.timepoint = getfield.(brainsid, :timepoint)
+brainvol.sample = getfield.(brainsid, :sample)
+# This uses slightly different syntax, because the column doesn't exist.
+# The `.=` broadcast assigment makes every row in the column the same string
 brainvol[!, :parent_table] .= "brainVolume"
 
 @pt brainvol
 ```
 
-And now the same thing for the cortical and subcortical volume tables:
+And now the same thing for the high resolution scan table:
 
 ```julia; results="hidden"
-cortical = CSV.read(brainfiles["cortical"]["path"])
-subcortical = CSV.read(brainfiles["subcortical"]["path"])
+hires = CSV.read(brainfiles["hires"]["path"])
 
-corticalids = resolve_letter_timepoint.(cortical[!, :SubjID])
-cortical[!, :subject] = getfield.(corticalids, :subject)
-cortical[!, :timepoint] = getfield.(corticalids, :timepoint)
-
-# we only care about a subset of values for now
-cortical = cortical[:, [:subject, :timepoint, :LThickness, :RThickness,
-                                           :LSurfArea,  :RSurfArea,
-                                           :ICV]]
+rename!(hires, Dict(:ID=>:subject, :Timepoint=>:timepoint))
+# don't want to replicate :age column
+select!(hires, Not(:Age))
 
 # convert to longform
-cortical = melt(cortical, [:subject, :timepoint], variable_name=:metadatum)
-cortical[!, :parent_table] .= "corticalVolumes"
-
-# for the subcortex we mostly care about the total volume rather than individual values
-subcortical[!, :subcortical_volume] = map(row-> sum(Vector(row[2:end-1])), eachrow(subcortical))
-
-subcorticalids = resolve_letter_timepoint.(subcortical[!,:SubjID])
-subcortical[!,:subject] = getfield.(subcorticalids, :subject)
-subcortical[!,:timepoint] = getfield.(subcorticalids, :timepoint)
-subcortical = subcortical[!,[:subject, :timepoint, :subcortical_volume]]
-
-# convert to longform
-subcortical = melt(subcortical, [:subject, :timepoint], variable_name=:metadatum)
-subcortical[!,:parent_table] .= "subcorticalVolumes"
+hires = melt(hires, [:subject, :timepoint], variable_name=:metadatum)
+hires[!, :parent_table] .= "corticalVolumes"
 ```
 
 We can only concatenate tables if they all have the same columns,
@@ -201,19 +189,16 @@ brainvol[!,:sample] = map(r->
         "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
         eachrow(brainvol))
 
-cortical[!,:sample] = map(r->
+hires[!,:sample] = map(r->
         "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
-        eachrow(cortical))
+        eachrow(hires))
 
-subcortical[!,:sample] = map(r->
-        "C" * lpad(string(r[:subject]), 4, "0") * "_$(Int(floor(r[:timepoint])))M",
-        eachrow(subcortical))
 ```
 
 And then concatenate all the tables together
 
 ```julia
-allmeta = vcat(allmeta, brainvol, cortical, subcortical, samples)
+allmeta = vcat(allmeta, brainvol, hires, samples)
 # reorder columns
 allmeta = allmeta[!,[:sample, :subject, :timepoint, :metadatum, :value, :parent_table]]
 # remove rows with missing values
