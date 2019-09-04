@@ -6,12 +6,12 @@ description = """\
               possible, these data are in publically accessible locations, \
               though some data are sensitive and are therefore restricted.
               """
-test = "test"
+
 [filemaker]
-    path="data/metadata/20190613_deidentified.fmp12"
+    path="data/metadata/20190807_deidentified.fmp12"
     name="Deidentified FilemakerPro database"
     description="Obtained from ABI on {{date}}"
-    date="2019-06-13"
+    date="2019-08-07"
 
 [tables.metadata]
     path="data/metadata"
@@ -46,7 +46,7 @@ test = "test"
     path="data/metadata/fecal_samples.csv"
     name="Fecal Samples DNA processing"
     description="Downloaded \"Everything\" view from AirTable database"
-    date="2019-07-30"
+    date="2019-09-04"
 
     [tables.metadata.all]
     path="data/metadata/merged.csv"
