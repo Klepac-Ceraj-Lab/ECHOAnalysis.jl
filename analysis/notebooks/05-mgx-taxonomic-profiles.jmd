@@ -192,7 +192,6 @@ is the species _Prevotella copri_ (in the phylum Bacteroidetes).
 Let's see what _P. copri_ is doing:
 
 ```julia
-
 plot(mds, marker=3, line=1, ticks=false,
     zcolor=permutedims(collect(occurrences(view(abt, species=["Prevotella_copri"])))),
     primary = false, color=:plasma,
@@ -258,17 +257,18 @@ Now, I'll focus on the kids in the group,
 the samples that were stored in Genotek OMNIgeneGUT tubes
 and also remove duplicates
 (since many of the kids are sampled more than once).
-The `firstkids` function identifies the first sample
-for each kid.
+The `uniquesamples` function identifies the first sample for each kid
+when we use `identifiers=[:subject]` (and `takefirst=true` by default)
 
 ```julia
-kids = view(abt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
+firstkids_samples = uniquesamples(samplenames(abt), identifiers=[:subject], samplefilter=x-> startswith(x, "C"))
+kids = view(abt, sites=getfield.(firstkids_samples, :sample))
 
 kids_dm = pairwise(BrayCurtis(), kids)
 kids_mds = fit(MDS, kids_dm, distances=true)
 
 p5 = plot(kids_mds, marker=3, line=1, ticks=false,
-    zcolor=shannon(kids), primary = false, color=:plasma,
+    zcolor=shannon(kids), primary = false, color=:viridis,
     title="Kids, shannon diversity")
 ```
 
@@ -279,7 +279,7 @@ savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg"));
 Let's look at the phyla too:
 
 ```julia
-pkids = view(pabt, sites=firstkids(resolve_sampleID.(samplenames(abt))))
+pkids = view(pabt, sites=getfield.(firstkids_samples, :sample))
 
 kids_bact = vec(collect(occurrences(view(pkids, species=occursin.("Bact", speciesnames(pkids))))))
 kids_firm = vec(collect(occurrences(view(pkids, species=occursin.("Firm", speciesnames(pkids))))))
@@ -321,8 +321,7 @@ we need to return to the metadata.
 I'll use the [`getfocusmetadata`]@ref function.
 
 ```julia
-samples = resolve_sampleID.(samplenames(kids))
-focusmeta = getfocusmetadata(datatoml["tables"]["metadata"]["all"]["path"], samples)
+focusmeta = getfocusmetadata(datatoml["tables"]["metadata"]["all"]["path"], firstkids_samples)
 focusmeta[!,:shannon] = shannon(kids)
 focusmeta[!,:ginisimpson] = ginisimpson(kids)
 
@@ -332,7 +331,7 @@ scatter(pco_axes[:, 1], focusmeta[!, :correctedAgeDays] ./365, xticks=false,
     primary=false, zcolor = focusmeta[!,:shannon], color=:viridis)
 ylabel!("Age (years)")
 xlabel!("MDS1 ($(round(var_explained[1] * 100, digits = 2))%)")
-title!("All kids age / PCoA 1 / Alpha diversity")
+title!("All kids age / MDS axis1 / Alpha diversity")
 ```
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-kids-age-pco1-diversity.svg"));
@@ -357,8 +356,8 @@ savefig(joinpath(figures, "kids-alpha-diversity-box.svg"));
 ```julia
 kids_hcl = hclust(kids_dm, linkage=:average, branchorder=:optimal)
 
-abundanceplot(kids, srt = kids_hcl.order,
-    title="Unique kids, top 10 species",
+abundanceplot(kids, srt = kids_hcl.order, topabund=11,
+    title="Unique kids, top 11 species",
     xticks=false, color=color4', linecolor=:match, linestyle=:dot)
 ```
 ```julia; echo=false; results="hidden"
@@ -431,7 +430,7 @@ ykids_dm = pairwise(BrayCurtis(), ykids)
 ykids_mds = fit(MDS, ykids_dm, distances=true)
 
 ykids_hcl = hclust(ykids_dm, linkage=:average, branchorder=:optimal)
-abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 10 species",
+abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 11 species",
     xticks=false, color=color4', linecolor=:match, linestyle=:dot)
 ```
 ```julia; echo=false; results="hidden"
@@ -439,7 +438,7 @@ savefig(joinpath(figures, "young-kids-abundanceplot.svg"));
 ```
 
 ```julia
-abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 10 species",
+abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, top 11 species",
     xticks=false, color=color4', linecolor=:match, linestyle=:dot,
     legend=false)
 ```
@@ -519,7 +518,8 @@ I'd like to distill all of this into:
 Both of these might be `true`.
 In principle, they shouldn't both be `false`.
 
-I defined `breastfeeding` and `formulafeeding`
+I defined [`breastfeeding`](https://klepac-ceraj-lab.github.io/echo_analysis/dev/metadata_handling/#ECHOAnalysis.breastfeeding-Tuple{DataFrames.DataFrameRow})
+and [`formulafeeding`](https://klepac-ceraj-lab.github.io/echo_analysis/dev/metadata_handling/#ECHOAnalysis.formulafeeding-Tuple{DataFrames.DataFrameRow})
 to calculate these values.
 
 ```julia
