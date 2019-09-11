@@ -26,6 +26,7 @@ using Clustering
 using CSV
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+@ptconfclean # clear previous configuration
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 outpath, figures = notebookpaths!(7)
@@ -36,11 +37,13 @@ tax = load_taxonomic_profiles()
 taxfilter!(tax, :species)
 abt = abundancetable(tax)
 relativeabundance!(abt)
-kids_abt = view(abt, sites=firstkids(samplenames(abt)))
+uniquekids = uniquesamples(samplenames(abt), samplefilter=x-> startswith(x, "C"), identifiers=[:subject])
+kids_abt = view(abt, sites=getfield.(uniquekids, :sample))
 
-focusmeta = load_metadata(datatoml,
-                samples=resolve_sampleID.(samplenames(kids_abt))
-                )
+uniquesamples(samplenames(abt), identifiers=[:subject, :timepoint], samplefilter=x-> startswith(x, "C"))
+uniquesamples(samplenames(abt), identifiers=[:subject, :timepoint], samplefilter=x-> startswith(x, "M"))
+
+focusmeta = load_metadata(datatoml,samples=uniquekids)
 @pt focusmeta
 ```
 
@@ -99,7 +102,6 @@ covariatedf = view(focusmeta, :, [:sample, :correctedAgeDays, :mother_HHS, :brea
 CSV.write(joinpath(outpath, "kids_species_abundance.tsv"), delim='\t', species)
 CSV.write(joinpath(outpath, "kids_covariates.tsv"), delim='\t', covariatedf)
 
-any(!ismissing, covariatedf.mother_HHS)
 @pt covariatedf
 ```
 
@@ -227,7 +229,7 @@ ylabel!("Composite Score")
 ```
 
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "cognitive-scores.svg")); nothing # hide
+savefig(joinpath(figures, "cognitive-scores.svg"))
 # Not hidden
 ```
 

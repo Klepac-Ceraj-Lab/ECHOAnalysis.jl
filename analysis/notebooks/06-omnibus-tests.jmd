@@ -30,7 +30,7 @@ outpath, figures = notebookpaths!(6)
 
 function sigp(data, i, j)
     col = names(data)[j]
-    if col == Symbol("Pr(>F)") || col == :p_value
+    if col == Symbol("Pr(>F)") || col == :p_value || col == :qvalue
         dat = data[i,j]
         return !ismissing(dat) && dat < 0.05
     else
@@ -40,7 +40,8 @@ end
 
 sigp_hl = Highlighter(sigp, Crayon(bold = true, background = :dark_gray))
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
-@ptconf formatter = rounder nosubheader=true screen_size=(-1,120) # highlighters=sigp_hl # highlighters don't work in Weave
+@ptconfclean # clear previous configuration
+@ptconf formatter = rounder nosubheader=true screen_size=(-1,120) highlighters=sigp_hl # highlighters don't work in Weave
 ```
 
 ```julia; results="hidden"
@@ -116,10 +117,11 @@ perm = vcat(perm, p)
 Now we'll focus on the kids.
 
 ```julia; results="hidden"
-kids = view(abt, sites=firstkids(samplenames(abt)))
+uniquekids = uniquesamples(samplenames(abt), samplefilter=x-> startswith(x, "C"), identifiers=[:subject])
+kids = view(abt, sites=getfield.(uniquekids, :sample))
 kids_dm = pairwise(BrayCurtis(), kids, dims=2)
 
-kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)))
+kidsmeta = load_metadata(datatoml, samples=uniquekids)
 
 p = permanova(kids_dm, kidsmeta.correctedAgeDays, filter=.!ismissing.(kidsmeta.correctedAgeDays))
 p[!, :feature] .= "species"
@@ -162,7 +164,7 @@ filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
 ```julia; echo=false
 @pt perm
 ```
-So, age (`R2 = 0.10`) and maternal socioeconomic status (`R2 = 0.017`)
+So, age (`R2 = 0.13`) and maternal socioeconomic status (HHS) (`R2 = 0.021`)
 have significant p values (`Pr(>F)` column).
 It's a bit surprising that breastfeeding and birth type are not significant (p > 0.05),
 though it may be because we're including older kids.
@@ -171,21 +173,21 @@ What happens if we only look at the kids under 2 years old?
 ### Young kids
 
 ```julia; results="hidden"
-# get kids that are less than 2 years old
-young = map(a-> !ismissing(a) && a < 365*2, kidsmeta.correctedAgeDays)
+# get kids that are less than 1.5 years old
+young = map(a-> !ismissing(a) && a <= 365*1.5, kidsmeta.correctedAgeDays)
 youngkids = view(kids, sites=young)
 
 # make new distance matrix
-youngkids_dm = pairwise(BrayCurtis(), youngkids, dims=2)
+youngkids_dm = pairwise(BrayCurtis(), youngkids, dims=2,)
 youngkidsmeta = kidsmeta[young, :]
 
 # Test breasfeeding and formula feeding
-p = permanova(youngkids_dm, youngkidsmeta.breastfed)
+p = permanova(youngkids_dm, youngkidsmeta.breastfed, 10000)
 p[!, :feature] .= "species"
 p[!, :variable] .= "young kids breastfed"
 perm = vcat(perm, p)
 
-p = permanova(youngkids_dm, youngkidsmeta.formulafed)
+p = permanova(youngkids_dm, youngkidsmeta.formulafed, 10000)
 p[!, :feature] .= "species"
 p[!, :variable] .= "young kids formulafed"
 perm = vcat(perm, p)
@@ -198,10 +200,11 @@ filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
 @pt perm[end-1:end, :]
 ```
 
-Still not significant.
-It could be that we don't have enough young kids to see the effect,
-or that for some reason,
-this cohort doesn't have major differences based on these factors.
+Breast feeding is now significant (it wasn't before we included `batch010`).
+Formula feeding is not significant;
+this could just be a numbers game,
+or a result of how we're defining it
+(kids who get both breastmilk and formula are included).
 
 ### Brain Data
 
@@ -288,10 +291,12 @@ p[!, :variable] .= "csf_volume"
 perm = vcat(perm, p[[2],:])
 ```
 ```julia; echo=false
-pretty_table(perm[end-2:end,:], formatter=rounder, nosubheader=true)
+@pt perm[end-2:end,:]
 ```
 
-None of these are significant, alas :-(
+Gery matter and CSF volume are both significant,
+but there's some concern that, even including age in the analysis,
+some of the age effect is bleeding through.
 
 ###Cognitive Assessments
 
