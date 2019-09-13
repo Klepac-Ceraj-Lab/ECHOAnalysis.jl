@@ -87,6 +87,12 @@ description = """\
     description="Table provided by Sean through email (subject 'brain data')"
     date="2019-09-01"
 
+    [tables.brain.regions]
+    path="data/brain/brain_region_key.csv"
+    name="Mapping of High res structural data columns to broader regions"
+    description="Mappings provided by Muriel on private message on Samepage 9/10/2019"
+    date="2019-09-12"
+
 [tables.uniprot]
 
     [tables.uniprot.carbohydates]

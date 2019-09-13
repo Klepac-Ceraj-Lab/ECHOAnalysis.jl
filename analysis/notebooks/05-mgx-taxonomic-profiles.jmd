@@ -555,3 +555,54 @@ savefig(joinpath(figures, "taxonomic-profiles-kids-breastfeeding.svg"));
 
 Nothing obvious from this level, but that's not necessarily surprising.
 We need stats!
+
+
+```julia; echo=false; results="hidden"
+allsamples = resolve_sampleID.(samplenames(abt))
+uabt = view(abt, sites=getfield.(uniquesamples(allsamples, takefirst=true), :sample))
+usamples = resolve_sampleID.(samplenames(uabt))
+umeta = load_metadata(datatoml, samples=usamples)
+
+kidssamples = uniquesamples(allsamples,
+                    samplefilter=s-> startswith(s, "C"),
+                    takefirst=true, identifiers=[:subject])
+momsamples = uniquesamples(allsamples,
+                    samplefilter=s-> startswith(s, "M"),
+                    takefirst=true, identifiers=[:subject])
+
+
+kids = view(kos, sites=getfield.(kidssamples, :sample))
+moms = view(kos, sites=getfield.(momsamples, :sample))
+
+kidsmeta = load_metadata(datatoml, samples=kidssamples)
+momsmeta = load_metadata(datatoml, samples=momsamples)
+
+
+labels = map(eachrow(umeta)) do row
+    age = row[:correctedAgeDays] / 365
+    if startswith(row[:sample], "C")
+        if !ismissing(age)
+            if age <= 1
+                return "1 and under"
+            elseif age <= 2
+                return "1 to 2"
+            else
+                return "2 and over"
+            end
+        else
+            return missing
+        end
+    elseif startswith(row[:sample], "M")
+        return "mom"
+    else
+        return missing
+    end
+end
+
+notmissing = .!ismissing.(labels)
+
+udm = pairwise(BrayCurtis(), uabt)
+nmumds = fit(MDS, udm[notmissing, notmissing], distances=true)
+plot(nmumds, group=String.(labels[notmissing]), legend=:topright)
+title!("Taxonomic Profiles")
+```

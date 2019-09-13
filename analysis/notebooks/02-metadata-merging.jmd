@@ -155,7 +155,22 @@ hires = CSV.read(brainfiles["hires"]["path"])
 rename!(hires, Dict(:ID=>:subject, :Timepoint=>:timepoint))
 # don't want to replicate :age column
 select!(hires, Not(:Age))
+@pt hires
+```
 
+There are a lot of individual brain regions that are separated in this table,
+and the right and left hemispheres are distinguished.
+For the most part, we're not going to need this level of specificity,
+but we can group individual brain regions
+and combine left / right hemispheres.
+I'll also make a column with the total brain volume for later normalization.
+
+```julia
+
+```
+
+
+```julia
 # convert to longform
 hires = melt(hires, [:subject, :timepoint], variable_name=:metadatum)
 hires[!, :parent_table] .= "corticalVolumes"
