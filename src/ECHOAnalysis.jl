@@ -40,7 +40,7 @@ using MultivariateStats
 using CSV
 using Colors
 using ColorBrewer
-using Pkg.TOML: parsefile
+using Pkg.TOML
 using Microbiome
 
 include_dependency("../data/data.toml")

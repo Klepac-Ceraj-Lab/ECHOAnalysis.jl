@@ -1,0 +1,19 @@
+---
+title: "Notebook 9: Functional Profile Omnibus Tests"
+author: "Kevin Bonham, PhD"
+options:
+    line_width : 120
+    wrap : false
+---
+
+```julia; echo=false; results="hidden"
+using ECHOAnalysis
+using Microbiome
+using BiobakeryUtils
+using StatsPlots
+using DataFrames
+using Distances
+using CSV
+
+(outpath, figures) = notebookpaths!(9)
+```

@@ -1,160 +1,161 @@
 title = "ECHO RESONANCE Paper 1 - data description"
 authors = ["Kevin S. Bonham", "Sophie Rowland", "Vanja Klepac-Ceraj"]
-description = """\
-              This file contains machine-readable information about data files \
-              and repositories (eg DataDeps) used in these notebooks. Wherever \
-              possible, these data are in publically accessible locations, \
-              though some data are sensitive and are therefore restricted.
-              """
-
-[filemaker]
-    path="data/metadata/20190807_deidentified.fmp12"
-    name="Deidentified FilemakerPro database"
-    description="Obtained from ABI on {{date}}"
-    date="2019-08-07"
-
-[tables.metadata]
-    path="data/metadata"
-
-    [tables.metadata.filemakerdb]
-    path="data/metadata/filemakerdb.csv"
-    name="FilemakerPro Database Export"
-    description="""\
-                Using FilemakerPro Database from {{date}} \
-                Exported all fields under \
-                "BasicFamilyAndChild", \
-                "Bayley's", \
-                "BreastfeedingDone", \
-                "BreastfeedingStill", \
-                "ChildBodyComposition", \
-                "Delivery", \
-                "Fecal_with_Ethanol", \
-                "FecalSampleCollection", \
-                "Mullen", \
-                "Parent_Demographics", \
-                "TimepointInfo", \
-                "WeightHeight", \
-                "WISC_IV", \
-                "Wisc_V", \
-                "WPPSI_III", \
-                and "Wppsi_IV", \
-                to filemakerall.xlsx. Then ran metascrub.jl (See Notebook 1)"""
-    log="data/metadata/filemakerdb.log"
-    date="2019-06-13"
-
-    [tables.metadata.samples]
-    path="data/metadata/fecal_samples.csv"
-    name="Fecal Samples DNA processing"
-    description="Downloaded \"Everything\" view from AirTable database"
-    date="2019-09-04"
-
-    [tables.metadata.all]
-    path="data/metadata/merged.csv"
-    name="Fecal Samples DNA processing"
-    description="Merged filemakerdb with fecal_samples (see Notebook 2)"
-    date="2019-06-24"
+description = "This file contains machine-readable information about data files and repositories (eg DataDeps) used in these notebooks. Wherever possible, these data are in publically accessible locations, though some data are sensitive and are therefore restricted."
 
 [tables.biobakery]
-    path = "data/engaging"
-
-    [tables.biobakery.kneaddata]
-    root = "kneaddata"
-    filter = ".txt"
-    name = "Kneaddata read counts"
-    description = "need to vcat tables"
-
-    [tables.biobakery.metaphlan2]
-    root = "metaphlan2"
-    filter = "profile"
-    analysis_output = "data/biobakery/metaphlan2"
+path = "data/engaging"
 
     [tables.biobakery.humann2]
     root = "humann2"
     filter = "genefamilies"
     analysis_output = "data/biobakery/humann2"
 
-[tables.brain]
+    [tables.biobakery.metaphlan2]
+    root = "metaphlan2"
+    filter = "profile"
+    analysis_output = "data/biobakery/metaphlan2"
 
-    [tables.brain.gross_volumes]
-    path="data/brain/brain_volumes.csv"
-    name="High res structural data"
-    description="Table provided by Giang-Chow through Samepage"
-    date="2019-05-03"
+    [tables.biobakery.kneaddata]
+    root = "kneaddata"
+    name = "Kneaddata read counts"
+    filter = ".txt"
+    description = "need to vcat tables"
 
-    [tables.brain.hires]
-    path="data/brain/microbiome_corticalVolumes_bambam.csv"
-    name="High res structural data"
-    description="Table provided by Sean through email (subject 'brain data')"
-    date="2019-09-01"
+[tables.brain.gross_volumes]
+name = "High res structural data"
+date = "2019-05-03"
+description = "Table provided by Giang-Chow through Samepage"
+path = "data/brain/brain_volumes.csv"
 
-    [tables.brain.regions]
-    path="data/brain/brain_region_key.csv"
-    name="Mapping of High res structural data columns to broader regions"
-    description="Mappings provided by Muriel on private message on Samepage 9/10/2019"
-    date="2019-09-12"
+[tables.brain.hires]
+name = "High res structural data"
+date = "2019-09-01"
+description = "Table provided by Sean through email (subject 'brain data')"
+path = "data/brain/microbiome_corticalVolumes_bambam.csv"
 
-[tables.uniprot]
+[tables.brain.regions]
+name = "Mapping of High res structural data columns to broader regions"
+date = "2019-09-12"
+description = "Mappings provided by Muriel on private message on Samepage 9/10/2019"
+path = "data/brain/brain_region_key.csv"
 
-    [tables.uniprot.carbohydates]
-    path="data/uniprot/uniprot-carbohydates.tsv"
-    name="Carbohydrate metabolism"
-    description="keyword:\"Carbohydrate metabolism [KW-0119]\" AND reviewed:yes"
-    date="2019-08-26"
+[tables.uniprot.carbohydates]
+name = "Carbohydrate metabolism"
+date = "2019-08-26"
+description = "keyword:\"Carbohydrate metabolism [KW-0119]\" AND reviewed:yes"
+path = "data/uniprot/uniprot-carbohydates.tsv"
 
-    [tables.uniprot.abxr]
-    path="data/uniprot/uniprot-abxr.tsv"
-    name="Antibiotic Resistance"
-    description="keyword:\"Antibiotic resistance [KW-0046]\" AND reviewed:yes"
-    date="2019-08-26"
+[tables.uniprot.abxr]
+name = "Antibiotic Resistance"
+date = "2019-08-26"
+description = "keyword:\"Antibiotic resistance [KW-0046]\" AND reviewed:yes"
+path = "data/uniprot/uniprot-abxr.tsv"
 
-    [tables.uniprot.fa]
-    path="data/uniprot/uniprot-fa.tsv"
-    name="Fatty acid metabolism"
-    xdescription="""taxonomy:"Bacteria [2]" (keyword:"Fatty acid biosynthesis [KW-0275]" OR keyword:"Fatty acid metabolism [KW-0276]") AND reviewed:yes"""
-    date="2019-08-26"
+[tables.uniprot.fa]
+name = "Fatty acid metabolism"
+date = "2019-08-26"
+path = "data/uniprot/uniprot-fa.tsv"
+xdescription = "taxonomy:\"Bacteria [2]\" (keyword:\"Fatty acid biosynthesis [KW-0275]\" OR keyword:\"Fatty acid metabolism [KW-0276]\") AND reviewed:yes"
+
+[tables.metadata]
+path = "data/metadata"
+
+    [tables.metadata.filemakerdb]
+    name = "FilemakerPro Database Export"
+    log = "data/metadata/filemakerdb.log"
+    date = "2019-06-13"
+    description = "Using FilemakerPro Database from {{date}} Exported all fields under \"BasicFamilyAndChild\", \"Bayley's\", \"BreastfeedingDone\", \"BreastfeedingStill\", \"ChildBodyComposition\", \"Delivery\", \"Fecal_with_Ethanol\", \"FecalSampleCollection\", \"Mullen\", \"Parent_Demographics\", \"TimepointInfo\", \"WeightHeight\", \"WISC_IV\", \"Wisc_V\", \"WPPSI_III\", and \"Wppsi_IV\", to filemakerall.xlsx. Then ran metascrub.jl (See Notebook 1)"
+    path = "data/metadata/filemakerdb.csv"
+
+    [tables.metadata.samples]
+    name = "Fecal Samples DNA processing"
+    date = "2019-09-04"
+    description = "Downloaded \"Everything\" view from AirTable database"
+    path = "data/metadata/fecal_samples.csv"
+
+    [tables.metadata.all]
+    name = "Fecal Samples DNA processing"
+    date = "2019-06-24"
+    description = "Merged filemakerdb with fecal_samples (see Notebook 2)"
+    path = "data/metadata/merged.csv"
+
+[filemaker]
+name = "Deidentified FilemakerPro database"
+date = "2019-08-07"
+description = "Obtained from ABI on {{date}}"
+path = "data/metadata/20190807_deidentified.fmp12"
 
 [figures]
 path = "data/figures"
 
-[notebooks]
+[notebooks.07]
+output = "data/notebooks/07"
+figures = "data/figures/07"
+title = "Notebook 7: Taxonomic Profiles Linear Models"
+filepath = "analysis/notebooks/07-tax-linear-models.jmd"
 
-    [notebooks.01]
-    filepath = "docs/src/01-data-sources.jmd"
-    output = "data/notebooks/01"
-    figures = "data/figures/01"
-    [notebooks.02]
-    filepath = "docs/src/02-metadata-merging.jmd"
-    output = "data/notebooks/02"
-    figures = "data/figures/02"
-    [notebooks.03]
-    filepath = "docs/src/03-metadata-analysis.jmd"
-    output = "data/notebooks/03"
-    figures = "data/figures/03"
-    [notebooks.04]
-    filepath = "docs/src/04-mgx-qc.jmd"
-    output = "data/notebooks/04"
-    figures = "data/figures/04"
-    [notebooks.05]
-    filepath = "docs/src/05-mgx-taxonomic-profiles.jmd"
-    output = "data/notebooks/05"
-    figures = "data/figures/05"
-    [notebooks.06]
-    filepath = "docs/src/06-omnibus-tests.jmd"
-    output = "data/notebooks/06"
-    figures = "data/figures/06"
-    [notebooks.07]
-    filepath = "docs/src/07-linear-models.jmd"
-    output = "data/notebooks/07"
-    figures = "data/figures/07"
-    [notebooks.08]
-    filepath = "docs/src/08-functional-profiles.jmd"
-    output = "data/notebooks/08"
-    figures = "data/figures/08"
-    [notebooks.09]
-    filepath = "docs/src/09-figure-edits.jmd"
-    output = "data/notebooks/09"
-    figures = "data/figures/09"
-    [notebooks.10]
-    filepath = "docs/src/10-functional-profiles-expanded.jmd"
-    output = "data/notebooks/10"
-    figures = "data/figures/10"
+[notebooks.12]
+output = "data/notebooks/12"
+figures = "data/figures/12"
+title = "Notebook 9: Miscellaneous work to prep for paper"
+filepath = "analysis/notebooks/12-figure-edits.jmd"
+
+[notebooks.06]
+output = "data/notebooks/06"
+figures = "data/figures/06"
+title = "Notebook 6: Taxonomic Profiles Ombnibus Tests"
+filepath = "analysis/notebooks/06-tax-omnibus-tests.jmd"
+
+[notebooks.03]
+output = "data/notebooks/03"
+figures = "data/figures/03"
+title = "Notebook 3: Metadata Analysis"
+filepath = "analysis/notebooks/03-metadata-analysis.jmd"
+
+[notebooks.11]
+output = "data/notebooks/11"
+figures = "data/figures/11"
+title = "Notebook 11: Additional Functional Profiles Analysis with Biobakery"
+filepath = "analysis/notebooks/11-func-biobakery.jmd"
+
+[notebooks.04]
+output = "data/notebooks/04"
+figures = "data/figures/04"
+title = "Notebook 4: Quality control of metagenomes"
+filepath = "analysis/notebooks/04-mgx-qc.jmd"
+
+[notebooks.09]
+output = "data/notebooks/09"
+figures = "data/figures/09"
+title = "Notebook 9: Functional Profile Omnibus Tests"
+filepath = "analysis/notebooks/09-func-omnibus-tests.jmd"
+
+[notebooks.05]
+output = "data/notebooks/05"
+figures = "data/figures/05"
+title = "Notebook 5: Taxonomic Profiles"
+filepath = "analysis/notebooks/05-mgx-taxonomic-profiles.jmd"
+
+[notebooks.01]
+output = "data/notebooks/01"
+figures = "data/figures/01"
+title = "Notebook 1: Data Sources"
+filepath = "analysis/notebooks/01-data-sources.jmd"
+
+[notebooks.08]
+output = "data/notebooks/08"
+figures = "data/figures/08"
+title = "Notebook 8: Metagenomes Functional Profiles"
+filepath = "analysis/notebooks/08-mgx-functional-profiles.jmd"
+
+[notebooks.10]
+output = "data/notebooks/10"
+figures = "data/figures/10"
+title = "Notebook 10: Functional Profiles Per-feature tests"
+filepath = "analysis/notebooks/10-func-linear-models.jmd"
+
+[notebooks.02]
+output = "data/notebooks/02"
+figures = "data/figures/02"
+title = "Notebook 2: Working with Metadata"
+filepath = "analysis/notebooks/02-metadata-merging.jmd"

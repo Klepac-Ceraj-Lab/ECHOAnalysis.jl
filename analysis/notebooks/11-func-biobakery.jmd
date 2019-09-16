@@ -1,5 +1,5 @@
 ---
-title: "Notebook 10: Functional Profiles Expanded"
+title: "Notebook 11: Additional Functional Profiles Analysis with Biobakery"
 author: "Kevin Bonham, PhD"
 options:
     line_width : 120
@@ -18,7 +18,7 @@ using DataFrames
 using Distances
 using CSV
 
-(outpath, figures) = notebookpaths!(10)
+(outpath, figures) = notebookpaths!(11)
 ```
 
 ## Humann2 function plots

@@ -19,7 +19,7 @@ using Statistics
 using StatsBase
 using Random
 
-(outpath, figures) = notebookpaths!(9)
+(outpath, figures) = notebookpaths!(12)
 ```
 ```julia
 tax = load_taxonomic_profiles()

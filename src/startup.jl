@@ -3,8 +3,9 @@ const color2 = ColorBrewer.palette("Set2", 8)
 const color3 = ColorBrewer.palette("Set3", 12)
 const color4 = ColorBrewer.palette("Paired", 12)
 
-tomlpath = joinpath(@__DIR__, "..", "data", "data.toml")
-const datatoml = parsefile(tomlpath)
+const tomlpath = joinpath(@__DIR__, "..", "data", "data.toml")
+updatenotebooks!()
+const datatoml = TOML.parsefile(tomlpath)
 
 function load_taxonomic_profiles()
     bakery = datatoml["tables"]["biobakery"]
