@@ -166,14 +166,29 @@ and combine left / right hemispheres.
 I'll also make a column with the total brain volume for later normalization.
 
 ```julia
-
+mapping = CSV.read("data/brain/brain_region_key.csv")
+@pt mapping
 ```
+```julia
+cols_seen = let ns = lowercase.(String.(names(hires)))
+    cols_seen = Int[]
+    hires.hires_total = [sum(row[3:end]) for row in eachrow(hires)]
+    by(mapping, :region) do region
+        fs = lowercase.(region.feature)
+        cols = findall(n-> any(f-> occursin(f, n), fs), ns)
+        append!(cols_seen, cols)
+        hires[!, Symbol(first(region.region))] = [sum(row[cols]) for row in eachrow(hires)]
+    end
+    cols_seen
+end
+```
+
 
 
 ```julia
 # convert to longform
 hires = melt(hires, [:subject, :timepoint], variable_name=:metadatum)
-hires[!, :parent_table] .= "corticalVolumes"
+hires[!, :parent_table] .= "hiresVolumes"
 ```
 
 We can only concatenate tables if they all have the same columns,
