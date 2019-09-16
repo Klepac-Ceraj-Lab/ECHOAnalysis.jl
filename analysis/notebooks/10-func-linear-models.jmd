@@ -17,3 +17,255 @@ using CSV
 
 (outpath, figures) = notebookpaths!(10)
 ```
+
+
+
+Because there are so many gene functions,
+we'll do some agressive filtering for
+prevalence and abundance.
+
+```julia
+allsamples = resolve_sampleID.(samplenames(kos))
+uabt = view(kos, sites=getfield.(uniquesamples(allsamples, takefirst=true), :sample))
+usamples = resolve_sampleID.(samplenames(uabt))
+umeta = load_metadata(datatoml, samples=usamples)
+
+kidssamples = uniquesamples(allsamples,
+                    samplefilter=s-> startswith(s, "C"),
+                    takefirst=true, identifiers=[:subject])
+momsamples = uniquesamples(allsamples,
+                    samplefilter=s-> startswith(s, "M"),
+                    takefirst=true, identifiers=[:subject])
+
+
+kids = view(kos, sites=getfield.(kidssamples, :sample))
+moms = view(kos, sites=getfield.(momsamples, :sample))
+
+kidsmeta = load_metadata(datatoml, samples=kidssamples)
+momsmeta = load_metadata(datatoml, samples=momsamples)
+
+```
+
+```julia
+prevfilt = let occ = occurrences(kids)
+    # at least 5% of samples have at least 0.0001% abundance
+    [prevalence(occ[i, :], 1e-6) > 0.05 for i in 1:size(occ, 1)]
+end
+
+prev = view(kids, species=prevfilt)
+
+kodf = DataFrame(EC=featurenames(prev))
+
+let occ = occurrences(prev)
+    for (i, sample) in enumerate(samplenames(prev))
+        ismissing(kidsmeta[i, :birthType]) && continue
+        # Make a column for each sample
+        kodf[!, Symbol(sample)] = occ[:, i]
+    end
+end
+
+kodf[!,1] = map(s-> replace(s, r"[^\w]"=>"."), kodf[!,1])
+```
+
+```julia
+kidsmeta.breastfed = breastfeeding.(eachrow(kidsmeta))
+kidsmeta.formulafed = formulafeeding.(eachrow(kidsmeta))
+
+# view() does not create a new dataframe, but allows us to subset it.
+covariatedf = view(kidsmeta, :, [:sample, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+
+# Maaslin2 also wants tab separated values
+CSV.write(joinpath(outpath, "kids_kos_abundance.tsv"), delim='\t', kodf)
+CSV.write(joinpath(outpath, "kids_covariates.tsv"), delim='\t', covariatedf)
+
+@pt covariatedf
+```
+
+Now, we'll run `Maaslin2` using `RCall.jl`.
+You need to have `Maaslin2` installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
+
+```julia; results="hidden"
+using RCall
+
+R"library(Maaslin2)"
+let version = R"packageVersion('Maaslin2')"
+    println(version)
+end
+```
+
+```julia; results="hidden"
+# Model: species abundance ~ age + mother_HHS + breastfed + birthType
+
+R"""
+fit_data <- Maaslin2(
+            $(joinpath(outpath, "kids_ko_abundance.tsv")),
+            $(joinpath(outpath, "kids_covariates.tsv")),
+            $(joinpath(outpath, "ko__age_ses_bf_birth")))
+"""
+```
+```julia
+# view() does not create a new dataframe, but allows us to subset it.
+whitematterdf = view(kidsmeta, :, [:sample, :white_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+
+# Maaslin2 also wants tab separated values
+CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
+```
+
+Now, we'll run Maaslin2.
+You need to have Maaslin2 installed for this to work - [see here](https://bitbucket.org/biobakery/maaslin2/src/default/#markdown-header-installation)
+
+```julia
+using RCall
+
+R"library(Maaslin2)"
+let version = R"packageVersion('Maaslin2')"
+    @show version
+end;
+```
+
+```julia; results="hidden"
+R"""
+fit_data <- Maaslin2(
+            $(joinpath(outpath, "kids_ko_abundance.tsv")),
+            $(joinpath(outpath, "kids_white_matter.tsv")),
+            $(joinpath(outpath, "ko__wm_age_ses_bf_birth")))
+"""
+```
+
+We can do this with some other brain data as well:
+
+
+```julia; results="hidden"
+greymatterdf = view(kidsmeta, :, [:sample, :grey_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
+
+R"""
+fit_data <- Maaslin2(
+            $(joinpath(outpath, "kids_ko_abundance.tsv")),
+            $(joinpath(outpath, "kids_grey_matter.tsv")),
+            $(joinpath(outpath, "ko__gm_age_ses_bf_birth")))
+"""
+
+csfdf = view(kidsmeta, :, [:sample, :csf_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
+
+R"""
+fit_data <- Maaslin2(
+             $(joinpath(outpath, "kids_ko_abundance.tsv")),
+             $(joinpath(outpath, "kids_csf.tsv")),
+             $(joinpath(outpath, "ko__csf_age_ses_bf_birth")))
+""";
+```
+
+#### Cognitive Assessments
+
+
+```julia
+using Statistics
+# Bayleys doesn't have a compositve score calculated, but we can get it:
+kidsmeta.bayleysComposite = map(row->
+    mean([row[:languageComposite], row[:motorComposite]]),
+    eachrow(kidsmeta))
+
+kidsmeta.cogScore = Vector{Union{Float64,Missing}}(missing, size(kidsmeta,1))
+kidsmeta.cogAssessment = Vector{Union{String,Missing}}(missing, size(kidsmeta,1))
+
+map(enumerate(eachrow(kidsmeta))) do (i, row)
+    # get just the cognitive assessment columns
+    cogs = row[[
+                :mullen_EarlyLearningComposite,
+                :fullScaleComposite, # this is from WSSPI
+                :FSIQ_Composite, # this is from WISC
+                :bayleysComposite
+            ]]
+    # if there's no score, skip row
+    all(ismissing, cogs) && return
+    # otherwise, get the first non-missing value (no timepoints have multiple scores)
+    col = findall(!ismissing, cogs)
+    let assessment = col[1]
+        if assessment == :mullen_EarlyLearningComposite
+            assessment = "Mullen"
+        elseif assessment == :fullScaleComposite
+            assessment = "WSSPI"
+        elseif assessment == :FSIQ_Composite
+            assessment = "WISC"
+        else assessment == :bayleysComposite
+            assessment = "Bayleys"
+        end
+
+        kidsmeta[i, :cogAssessment] = assessment
+        kidsmeta[i, :cogScore] = cogs[col[1]]
+    end
+end
+```
+
+```julia; results="hidden"
+cogdf = view(kidsmeta, :, [:sample, :cogScore, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_cog.tsv"), delim='\t', cogdf)
+
+R"""
+Maaslin2(
+     $(joinpath(outpath, "kids_ko_abundance.tsv")),
+     $(joinpath(outpath, "kids_cog.tsv")),
+     $(joinpath(outpath, "ec__cog_age_ses_bf_birth")))
+""";
+
+```
+
+
+## Better LM heatmap
+
+```julia
+# using ECHOAnalysis
+# using StatsPlots
+# using DataFrames
+# using CSV
+# using PrettyTables
+# df = let dfs = []
+#     for (root, dirs, files) in walkdir("data")
+#         filter!(f-> occursin("all_results", f), files)
+#         if length(files) > 0
+#             df = CSV.read(joinpath(root, files[1]))
+#             rename!(df, Symbol("N.not.0") => :not0)
+#
+#             name = basename(root)
+#             df[:microbe_feature] = split(name, "__")[1]
+#             df[:parent_model] = split(name, "__")[2]
+#             push!(dfs, df)
+#         end
+#     end
+#     vcat(dfs...)
+# end
+# names(df)
+# df[:qval] = [x == "NA" ? missing : parse(Float64, x) for x in df[:qval]]
+# df[:pval] = [x == "NA" ? missing : parse(Float64, x) for x in df[:pval]]
+#
+# filter!(row-> !ismissing(row[:qval]) && row[:qval] < 0.1, df)
+#
+# plotter = let features = unique(df[:feature])
+#     by(df, :metadata) do md
+#         coefs = Float64[]
+#         qvs = Float64[]
+#         parents = String[]
+#         feats = String[]
+#         for feat in features
+#             filt = filter(row-> row[:feature] == feat, md)
+#             if size(filt, 1) == 0
+#                 push!(coefs, 0.)
+#                 push!(qvs, 1.)
+#                 push!(parents, "")
+#                 push!(feats, "")
+#             else size(filt, 1) == 1
+#                 append!(coefs, filt[:coef])
+#                 append!(qvs, filt[:qval])
+#                 append!(parents, filt[:parent_model])
+#                 append!(feats, [feat for _ in 1:size(filt, 1)])
+#             end
+#         end
+#         DataFrame(coef=coefs, qval=qvs, feature=feats, parent_model=parents)
+#     end
+# end
+#
+#
+# @df plotter heatmap()
+```
