@@ -328,6 +328,10 @@ const metadata_focus_headers = String[
     "motherHHS_Occu",
     "motherHHS_Edu",
     "assessmentDate",
+    # calculated
+    "ageLabel",
+    "cogAssessment",
+    "cogScore",
     # numeric
     "correctedAgeDays",
     "amountFormulaPerFeed",
@@ -357,7 +361,7 @@ const metadata_focus_headers = String[
     "languageComposite",
     "socialEmotionalComposite",
     "motorComposite",
-    ### WISC- (6-16 years)
+    ### WISC (6-16 years)
     "FRI_CompositeScore",
     "PSI_Composite",
     "VCI_CompositeScore",

@@ -90,6 +90,106 @@ which is for some reason part of a table that is not timepoint associated.
 But `childHeight` and `childWeight`
 are found in a different table, so we'll just ignore this one.
 
+### Summaries and transforms
+
+There are a few bits of metadata where it's useful
+to have a summary or a slightly transformed version.
+One example of this is age -
+For reasons that will be clear later,
+it's useful to group gids by age groups:
+
+- under 1 year old
+- between 1 and 2 years old
+- over 2 years old
+
+
+```julia
+using Statistics
+agelabels = by(allmeta, [:subject, :timepoint]) do sample
+    age = filter(row-> row.metadatum == "correctedAgeDays", sample)
+    if nrow(age) > 0
+        years = mean(parse.(Int, skipmissing(age.value))) / 365
+
+        if ismissing(years)
+            label=missing
+        elseif years <= 1
+            label="1 and under"
+        elseif 1 < years < 2
+            label="1 to 2"
+        else
+            label="2 and over"
+        end
+    else
+        label=missing
+    end
+    return DataFrame(
+            metadatum="ageLabel",
+            value=label,
+            parent_table="Calculated"
+            )
+end
+dropmissing!(agelabels)
+@pt randrows(agelabels[.!ismissing.(agelabels.value), :])
+```
+```julia; results="hidden"
+# add to main metadata dataframe
+append!(allmeta, agelabels)
+```
+
+For cognitive scores (eg. Mullen),
+we want to use a normalized score that's comparable across tests.
+
+```julia
+cogcols = [
+    "languageComposite", # this is from Bayleys
+    "motorComposite", # also Bayleys
+    "mullen_EarlyLearningComposite",
+    "fullScaleComposite", # this is from WSSPI
+    "FSIQ_Composite",  # this is from WISC
+    ]
+
+cogscores = by(allmeta, [:subject, :timepoint]) do sample
+    cogs = filter(row-> in(row.metadatum, cogcols) &&
+                        !ismissing(row.value),
+                    sample)
+    if nrow(cogs) > 0
+        parent = cogs.parent_table[1]
+        if parent == "Bayley's"
+            nrow(cogs) != 2 && throw(ErrorException("Wrong number of rows for $parent"))
+            assessment = "Bayleys"
+            score = string(mean(parse.(Float64, cogs.value)))
+        else
+            nrow(cogs) != 1 && throw(ErrorException("Wrong number of rows for $parent"))
+            metadatum = cogs.metadatum[1]
+            if metadatum == "mullen_EarlyLearningComposite"
+                assessment = "Mullen"
+            elseif metadatum == "fullScaleComposite"
+                assessment = "WSSPI"
+            elseif metadatum == "FSIQ_Composite"
+                assessment = "WISC"
+            else
+                throw(ErrorException("Couldn't figure out assessment $metadatum"))
+            end
+            score = cogs.value[1]
+        end
+    else
+        assessment = missing
+        score = missing
+    end
+    return DataFrame(metadatum    = ["cogAssessment", "cogScore"],
+                     value        = [assessment,      score],
+                     parent_table = ["Calculated",    "Calculated"])
+end
+
+dropmissing!(cogscores)
+@pt randrows(cogscores[.!ismissing.(cogscores.value), :])
+```
+```julia; results="hidden"
+# add to main metadata dataframe
+append!(allmeta, cogscores)
+```
+
+
 ## Sample Metadata
 
 In addition to the FilemakerPro database,
@@ -107,10 +207,35 @@ samples = melt(samples, [:subject, :timepoint, :sample], variable_name=:metadatu
 dropmissing!(samples, [:subject, :sample])
 samples[!, :parent_table] .= "FecalProcessing"
 ```
+Finally, we want to make sure the maternal samples
+also have a value for `ageLabel`.
+
+```julia
+momlabels = by(samples, [:subject, :timepoint]) do sample
+    if any(s-> startswith(s, "M"), skipmissing(sample.sample))
+        outdf = filter(row-> !ismissing(row.sample) && startswith(row.sample, "M"), sample)
+        outdf.metadatum .= :ageLabel
+        outdf.value .= "mom"
+        outdf.parent_table .= "Calculated"
+    else
+        outdf = DataFrame(first(sample))
+
+    end
+    return unique(outdf[:, [:metadatum, :value, :parent_table, :sample]])
+end
+filter!(row-> row.value == "mom", momlabels)
+@pt randrows(momlabels[.!ismissing.(momlabels.value), :])
+
+```
+```julia; results="hidden"
+# add to main sample dataframe (while reordering columns)
+append!(samples, momlabels[names(samples)])
+```
+
 
 ## Brain Data
 
-Finally, we also have tables of brain volumes for many of our subjects.
+We also have tables of brain volumes for many of our subjects.
 
 ```julia
 brainfiles = datatoml["tables"]["brain"]
@@ -170,9 +295,10 @@ mapping = CSV.read("data/brain/brain_region_key.csv")
 @pt mapping
 ```
 ```julia
+hires.hires_total = [sum(row[3:end]) for row in eachrow(hires)]
+
 cols_seen = let ns = lowercase.(String.(names(hires)))
     cols_seen = Int[]
-    hires.hires_total = [sum(row[3:end]) for row in eachrow(hires)]
     by(mapping, :region) do region
         fs = lowercase.(region.feature)
         cols = findall(n-> any(f-> occursin(f, n), fs), ns)

@@ -299,7 +299,7 @@ function main(args)
         tables[i, :value] = s
     end
 
-
+    tables = unique(tables)
     args["output"] === nothing ? outputpath = inputpath : outputpath = abspath(expanduser(args["output"]))
 
     @info "Writing scrubbed file to $outputpath"
