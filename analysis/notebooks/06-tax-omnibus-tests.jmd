@@ -229,14 +229,14 @@ kidsmeta.csf_normed = kidsmeta.csf_volume ./ kidsmeta.total_lowres
 ```julia; results="hidden"
 using RCall
 
-filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:white_matter_volume]), eachrow(kidsmeta))
-r_meta = kidsmeta[filt, [:correctedAgeDays, :white_matter_volume]]
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:white_matter_normed]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :white_matter_normed]]
 r_dm = kids_dm[filt,filt]
 @rput r_meta
 @rput r_dm
 
 R"""
-p <- adonis(r_dm ~ correctedAgeDays + white_matter_volume,
+p <- adonis(r_dm ~ correctedAgeDays + white_matter_normed,
             data=r_meta, permutations = 10000)
 """
 
@@ -247,11 +247,11 @@ p = p[:aov_tab]
 @pt p
 ```
 
-The second row is `white_matter_volume`.
+The second row is `white_matter_normed`.
 
 ```julia; results="hidden"
 p[!, :feature] .= "species"
-p[!, :variable] .= "white_matter_volume"
+p[!, :variable] .= "white_matter_normed"
 perm = vcat(perm, p[[2],:])
 ```
 ```julia; echo=false
@@ -264,46 +264,46 @@ Let's look at some other brain measures.
 
 ```julia; results="hidden"
 ## grey matter
-filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:grey_matter_volume]), eachrow(kidsmeta))
-r_meta = kidsmeta[filt, [:correctedAgeDays, :grey_matter_volume]]
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:grey_matter_normed]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :grey_matter_normed]]
 r_dm = kids_dm[filt,filt]
 @rput r_meta
 @rput r_dm
 
 R"""
-p <- adonis(r_dm ~ correctedAgeDays + grey_matter_volume,
+p <- adonis(r_dm ~ correctedAgeDays + grey_matter_normed,
             data=r_meta, permutations = 10000)
 """
 
 @rget p
 p = p[:aov_tab]
 p[!, :feature] .= "species"
-p[!, :variable] .= "grey_matter_volume"
+p[!, :variable] .= "grey_matter_normed"
 perm = vcat(perm, p[[2],:])
 
 ## CSF (cerebrospinal fluid volume)
-filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:csf_volume]), eachrow(kidsmeta))
-r_meta = kidsmeta[filt, [:correctedAgeDays, :csf_volume]]
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:csf_normed]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :csf_normed]]
 r_dm = kids_dm[filt,filt]
 @rput r_meta
 @rput r_dm
 
 R"""
-p <- adonis(r_dm ~ correctedAgeDays + csf_volume,
+p <- adonis(r_dm ~ correctedAgeDays + csf_normed,
             data=r_meta, permutations = 10000)
 """
 
 @rget p
 p = p[:aov_tab]
 p[!, :feature] .= "species"
-p[!, :variable] .= "csf_volume"
+p[!, :variable] .= "csf_normed"
 perm = vcat(perm, p[[2],:])
 ```
 ```julia; echo=false
 @pt perm[end-2:end,:]
 ```
 
-All three of these are significant,
+Only CSF and White matter are significant,
 but there's some concern that, even including age in the analysis,
 some of the age effect is bleeding through.
 
@@ -496,5 +496,5 @@ plot!(legend=false, title="Taxonomic Profiles PERMANOVA",
     ylabel="% Variance explainable")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "permanovas.svg"))
+savefig(joinpath(figures, "tax_permanovas.svg"))
 ```

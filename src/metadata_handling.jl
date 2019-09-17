@@ -408,8 +408,8 @@ customprocess(col, ::MDColumn{:grey_matter_volume})                 = numberify(
 customprocess(col, ::MDColumn{:csf_volume})                         = numberify(col)
 
 
-
-
+## Cog scores
+customprocess(col, ::MDColumn{:cogScore})                           = numberify(col)
 ### Mullen
 customprocess(col, ::MDColumn{:mullen_VerbalComposite})             = numberify(col)
 customprocess(col, ::MDColumn{:mullen_NonVerbalComposite})          = numberify(col)
