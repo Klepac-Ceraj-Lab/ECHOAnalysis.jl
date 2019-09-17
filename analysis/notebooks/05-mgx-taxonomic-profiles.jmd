@@ -382,23 +382,14 @@ We can also annotate this plot with the age of the kids
 plot(
     abundanceplot(kids, srt = kids_hcl.order, topabund=11, title="Kids, top 11 species",
         xticks=false, color=color4', legend=false, linecolor=:match, linestyle=:dot),
-    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta.correctedAgeDays[kids_hcl.order]]'),
-        xticks=false, yticks=false, color=:PuBu, colorbar=false),
+    plot(annotationbar(String.(focusmeta.ageLabel[kids_hcl.order]), color2)),
     layout = grid(2,1,heights=[0.9, 0.1])
     )
+
 ```
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-abundanceplot-age.svg"));
 ```
-
-There's not a great way to show the legend in the main figure,
-but here it is:
-
-```julia
-heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in focusmeta.correctedAgeDays[kids_hcl.order]]'),
-    xticks=false, yticks=false, color=:PuBu)
-```
-
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-abundanceplot-age-legend.svg"));
 ```
@@ -423,7 +414,7 @@ over the first years of life.
 Let's focus on just the youngest kids:
 
 ```julia
-youngkids = map(x-> ismissing(x) ? false : x/365 < 2, focusmeta.correctedAgeDays)
+youngkids = map(x-> !ismissing(x) && x/365 < 2, focusmeta.correctedAgeDays)
 
 ykids = view(kids, sites = youngkids)
 ykids_dm = pairwise(BrayCurtis(), ykids)
@@ -563,46 +554,13 @@ uabt = view(abt, sites=getfield.(uniquesamples(allsamples, takefirst=true), :sam
 usamples = resolve_sampleID.(samplenames(uabt))
 umeta = load_metadata(datatoml, samples=usamples)
 
-kidssamples = uniquesamples(allsamples,
-                    samplefilter=s-> startswith(s, "C"),
-                    takefirst=true, identifiers=[:subject])
-momsamples = uniquesamples(allsamples,
-                    samplefilter=s-> startswith(s, "M"),
-                    takefirst=true, identifiers=[:subject])
-
-
-kids = view(kos, sites=getfield.(kidssamples, :sample))
-moms = view(kos, sites=getfield.(momsamples, :sample))
-
-kidsmeta = load_metadata(datatoml, samples=kidssamples)
-momsmeta = load_metadata(datatoml, samples=momsamples)
-
-
-labels = map(eachrow(umeta)) do row
-    age = row[:correctedAgeDays] / 365
-    if startswith(row[:sample], "C")
-        if !ismissing(age)
-            if age <= 1
-                return "1 and under"
-            elseif age <= 2
-                return "1 to 2"
-            else
-                return "2 and over"
-            end
-        else
-            return missing
-        end
-    elseif startswith(row[:sample], "M")
-        return "mom"
-    else
-        return missing
-    end
-end
-
-notmissing = .!ismissing.(labels)
+notmissing = .!ismissing.(umeta.ageLabel)
 
 udm = pairwise(BrayCurtis(), uabt)
 nmumds = fit(MDS, udm[notmissing, notmissing], distances=true)
-plot(nmumds, group=String.(labels[notmissing]), legend=:topright)
+plot(nmumds, group=String.(umeta.ageLabel[notmissing]), legend=:topright)
 title!("Taxonomic Profiles")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "taxonomic-profiles-ageLabel.svg"));
 ```

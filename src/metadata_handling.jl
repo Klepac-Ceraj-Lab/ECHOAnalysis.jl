@@ -398,12 +398,11 @@ customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})            = numberify(
 customprocess(col, ::MDColumn{:childHeight})                        = numberify(col)
 
 ## brain volumes
-customprocess(col, ::MDColumn{:LThickness})                         = numberify(col)
-customprocess(col, ::MDColumn{:RThickness})                         = numberify(col)
-customprocess(col, ::MDColumn{:LSurfArea})                          = numberify(col)
-customprocess(col, ::MDColumn{:RSurfArea})                          = numberify(col)
-customprocess(col, ::MDColumn{:ICV})                                = numberify(col)
-customprocess(col, ::MDColumn{:subcortical_volume})                 = numberify(col)
+customprocess(col, ::MDColumn{:cerebellar})                         = numberify(col)
+customprocess(col, ::MDColumn{:subcortical})                        = numberify(col)
+customprocess(col, ::MDColumn{:neocortical})                        = numberify(col)
+customprocess(col, ::MDColumn{:limbic})                             = numberify(col)
+customprocess(col, ::MDColumn{:hires_total})                        = numberify(col)
 customprocess(col, ::MDColumn{:white_matter_volume})                = numberify(col)
 customprocess(col, ::MDColumn{:grey_matter_volume})                 = numberify(col)
 customprocess(col, ::MDColumn{:csf_volume})                         = numberify(col)

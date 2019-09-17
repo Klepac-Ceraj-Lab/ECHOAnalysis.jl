@@ -217,6 +217,15 @@ so we need to subtract out that variation.
 `BiobakeryUtils` can't handle a PERMANOVA with two variables yet,
 so we need to do this directly using `RCall.jl`.
 
+```julia
+# normalize brain volume measures
+kidsmeta.total_lowres = map(row-> sum(row[[:white_matter_volume, :grey_matter_volume, :csf_volume]]), eachrow(kidsmeta))
+
+kidsmeta.white_matter_normed = kidsmeta.white_matter_volume ./ kidsmeta.total_lowres
+kidsmeta.grey_matter_normed = kidsmeta.grey_matter_volume ./ kidsmeta.total_lowres
+kidsmeta.csf_normed = kidsmeta.csf_volume ./ kidsmeta.total_lowres
+```
+
 ```julia; results="hidden"
 using RCall
 
@@ -227,8 +236,8 @@ r_dm = kids_dm[filt,filt]
 @rput r_dm
 
 R"""
-p <- adonis(r_dm ~ white_matter_volume + correctedAgeDays,
-            method = "bray", data=r_meta, permutations = 10000)
+p <- adonis(r_dm ~ correctedAgeDays + white_matter_volume,
+            data=r_meta, permutations = 10000)
 """
 
 @rget p
@@ -262,8 +271,8 @@ r_dm = kids_dm[filt,filt]
 @rput r_dm
 
 R"""
-p <- adonis(r_dm ~ grey_matter_volume + correctedAgeDays,
-            method = "bray", data=r_meta, permutations = 10000)
+p <- adonis(r_dm ~ correctedAgeDays + grey_matter_volume,
+            data=r_meta, permutations = 10000)
 """
 
 @rget p
@@ -280,8 +289,8 @@ r_dm = kids_dm[filt,filt]
 @rput r_dm
 
 R"""
-p <- adonis(r_dm ~ csf_volume + correctedAgeDays,
-            method = "bray", data=r_meta, permutations = 10000)
+p <- adonis(r_dm ~ correctedAgeDays + csf_volume,
+            data=r_meta, permutations = 10000)
 """
 
 @rget p
@@ -294,56 +303,137 @@ perm = vcat(perm, p[[2],:])
 @pt perm[end-2:end,:]
 ```
 
-Gery matter and CSF volume are both significant,
+All three of these are significant,
 but there's some concern that, even including age in the analysis,
 some of the age effect is bleeding through.
 
-###Cognitive Assessments
-
-Cognitive development is measured using standard tests for certain age groups.
-First, we have to convert these test scores so they are comparable across age groups.
+We can also look at brain regions as identified by the hires scans.
+In addition to normalizing by age,
+we'll also divide each volume by the total brain volume.
 
 ```julia; results="hidden"
-## Cognitive Assessment
+## Brain volume
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:hires_total]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :hires_total]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+R"""
+p <- adonis(r_dm ~ correctedAgeDays + hires_total,
+            data=r_meta, permutations = 10000)
+"""
 
-using Statistics
-# Bayleys doesn't have a compositve score calculated, but we can get it:
-kidsmeta.bayleysComposite = map(row->
-    mean([row[:languageComposite], row[:motorComposite]]),
-    eachrow(kidsmeta))
+@rget p
 
-# pre-fill columns for numerical score and name of the measurement test
-kidsmeta.cogScore = Vector{Union{Float64,Missing}}(missing, size(kidsmeta,1))
-kidsmeta.cogAssessment = Vector{Union{String,Missing}}(missing, size(kidsmeta,1))
+p = p[:aov_tab]
+p[!, :feature] .= "species"
+p[!, :variable] .= "hires_total"
+perm = vcat(perm, p[[2],:])
+```
+```julia; echo=false
+@pt perm[end:end,:]
+```
 
-map(enumerate(eachrow(kidsmeta))) do (i, row)
-    # get just the cognitive assessment columns
-    cogs = row[[
-                :mullen_EarlyLearningComposite,
-                :fullScaleComposite, # this is from WSSPI
-                :FSIQ_Composite, # this is from WISC
-                :bayleysComposite
-            ]]
-    # if there's no score, skip row
-    all(ismissing, cogs) && return
-    # otherwise, get the first non-missing value (no timepoints have multiple scores)
-    col = findall(!ismissing, cogs)
-    let assessment = col[1]
-        if assessment == :mullen_EarlyLearningComposite
-            assessment = "Mullen"
-        elseif assessment == :fullScaleComposite
-            assessment = "WSSPI"
-        elseif assessment == :FSIQ_Composite
-            assessment = "WISC"
-        else assessment == :bayleysComposite
-            assessment = "Bayleys"
-        end
+```julia
+## Cerebellum
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:cerebellar]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :cerebellar, :hires_total]]
+r_meta.cerebellar_normed = r_meta.cerebellar ./ r_meta.hires_total
 
-        kidsmeta[i, :cogAssessment] = assessment
-        kidsmeta[i, :cogScore] = cogs[col[1]]
-    end
-end
 
+r_meta = r_meta[!, [:correctedAgeDays, :cerebellar_normed]]
+r_dm = kids_dm[filt,filt]
+
+CSV.write("/home/kevin/Desktop/df.csv", r_meta)
+CSV.write("/home/kevin/Desktop/dm.csv", DataFrame(r_dm), writeheader=false)
+@rput r_meta
+@rput r_dm
+
+R"""
+p <- adonis(terms(as.formula("r_dm ~  correctedAgeDays + cerebellar_normed"), keep.order=TRUE),
+            data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+p[!, :feature] .= "species"
+p[!, :variable] .= "cerebellar_normed"
+perm = vcat(perm, p[[2],:])
+
+## Subcortical
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:subcortical]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :subcortical, :hires_total]]
+r_meta.subcortical_normed = r_meta.subcortical ./ r_meta.hires_total
+r_meta = r_meta[!, [:correctedAgeDays, :subcortical_normed]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+
+R"""
+p <- adonis(r_dm ~ correctedAgeDays + subcortical_normed,
+            data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+p[!, :feature] .= "species"
+p[!, :variable] .= "subcortical_normed"
+perm = vcat(perm, p[[2],:])
+
+
+## Neocortical
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:neocortical]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :neocortical, :hires_total]]
+r_meta.neocortical_normed = r_meta.neocortical ./ r_meta.hires_total
+r_meta = r_meta[!, [:correctedAgeDays, :neocortical_normed]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+
+R"""
+p <- adonis(r_dm ~ correctedAgeDays + neocortical_normed,
+            data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+p[!, :feature] .= "species"
+p[!, :variable] .= "neocortical_normed"
+perm = vcat(perm, p[[2],:])
+
+## Limbic
+filt = map(row-> !ismissing(row[:correctedAgeDays]) && !ismissing(row[:limbic]), eachrow(kidsmeta))
+r_meta = kidsmeta[filt, [:correctedAgeDays, :limbic, :hires_total]]
+r_meta.limbic = r_meta.limbic ./ r_meta.hires_total
+r_meta = r_meta[!, [:correctedAgeDays, :limbic]]
+r_dm = kids_dm[filt,filt]
+@rput r_meta
+@rput r_dm
+
+# I don't know why, but the order is reversed here.
+R"""
+p <- adonis(r_dm ~ correctedAgeDays + limbic,
+            data=r_meta, permutations = 10000)
+"""
+
+@rget p
+p = p[:aov_tab]
+p[!, :feature] .= "species"
+p[!, :variable] .= "limbic"
+perm = vcat(perm, p[[2],:])
+```
+```julia; echo=false
+filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
+@pt perm[end-4:end,:]
+```
+
+### Cognitive Assessments
+
+Cognitive development is measured using standard tests for certain age groups.
+In notebook 2, we converted these test scores
+so they are comparable across age groups.
+
+```julia; results="hidden"
 p = permanova(kids_dm, kidsmeta.cogScore, filter=.!ismissing.(kidsmeta.cogScore))
 p[!, :feature] .= "species"
 p[!, :variable] .= "cogScore"
@@ -373,7 +463,7 @@ perm = perm[!,[:feature, :variable, :R2, :p_value, :q_value]]
 
 
 ```julia; echo=false; results="hidden"
-CSV.write(joinpath(outpath, "permanovas.csv"), perm)
+CSV.write(joinpath(outpath, "tax_permanovas.csv"), perm)
 ```
 
 Let's see what that looks like in graphical form using `StatsPlots`.
