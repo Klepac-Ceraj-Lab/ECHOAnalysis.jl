@@ -40,9 +40,6 @@ relativeabundance!(abt)
 uniquekids = uniquesamples(samplenames(abt), samplefilter=x-> startswith(x, "C"), identifiers=[:subject])
 kids_abt = view(abt, sites=getfield.(uniquekids, :sample))
 
-uniquesamples(samplenames(abt), identifiers=[:subject, :timepoint], samplefilter=x-> startswith(x, "C"))
-uniquesamples(samplenames(abt), identifiers=[:subject, :timepoint], samplefilter=x-> startswith(x, "M"))
-
 focusmeta = load_metadata(datatoml,samples=uniquekids)
 @pt focusmeta
 ```
@@ -80,10 +77,16 @@ In addition, we want the brain volumes to be normalized
 by the total brain volume.
 
 ```julia; results="hidden"
-focusmeta.brain_volume = map(row-> sum(row[[:csf_volume, :white_matter_volume, :grey_matter_volume]]), eachrow(focusmeta))
-focusmeta.csf_volume = focusmeta.csf_volume ./ focusmeta.brain_volume
-focusmeta.white_matter_volume = focusmeta.white_matter_volume ./ focusmeta.brain_volume
-focusmeta.grey_matter_volume = focusmeta.grey_matter_volume ./ focusmeta.brain_volume
+focusmeta.total_lowres = map(row-> sum(row[[:csf_volume, :white_matter_volume, :grey_matter_volume]]), eachrow(focusmeta))
+focusmeta.csf_normed = focusmeta.csf_volume ./ focusmeta.total_lowres
+focusmeta.white_matter_normed = focusmeta.white_matter_volume ./ focusmeta.total_lowres
+focusmeta.grey_matter_normed = focusmeta.grey_matter_volume ./ focusmeta.total_lowres
+
+focusmeta.cerebellar_normed = focusmeta.cerebellar ./ focusmeta.hires_total
+focusmeta.subcortical_normed = focusmeta.subcortical ./ focusmeta.hires_total
+focusmeta.neocortical_normed = focusmeta.neocortical ./ focusmeta.hires_total
+focusmeta.limbic_normed = focusmeta.limbic ./ focusmeta.hires_total
+
 ```
 
 Now we'll subset the metadata `DataFrame` to include a subset of the metadata.
@@ -133,10 +136,10 @@ The results from this run can be found in `data/notebooks/07/species__wm_age_ses
 We can do this with brain data as well:
 
 ```julia; results="hidden"
-whitematterdf = view(focusmeta, :, [:sample, :white_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+whitematterdf = view(focusmeta, :, [:sample, :white_matter_normed, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_white_matter.tsv"), delim='\t', whitematterdf)
 
-# Model: species abundance ~ white_matter_volume + age + mother_HHS + breastfed + birthType
+# Model: species abundance ~ white_matter_normed + age + mother_HHS + breastfed + birthType
 R"""
 fit_data <- Maaslin2(
             $(joinpath(outpath, "kids_species_abundance.tsv")),
@@ -146,10 +149,10 @@ fit_data <- Maaslin2(
 ```
 
 ```julia; results="hidden"
-greymatterdf = view(focusmeta, :, [:sample, :grey_matter_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+greymatterdf = view(focusmeta, :, [:sample, :grey_matter_normed, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_grey_matter.tsv"), delim='\t', greymatterdf)
 
-# Model: species abundance ~ grey_matter_volume + age + mother_HHS + breastfed + birthType
+# Model: species abundance ~ grey_matter_normed + age + mother_HHS + breastfed + birthType
 
 R"""
 fit_data <- Maaslin2(
@@ -158,10 +161,10 @@ fit_data <- Maaslin2(
             $(joinpath(outpath, "species__gmNorm_age_ses_bf_birth")))
 """
 
-csfdf = view(focusmeta, :, [:sample, :csf_volume, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+csfdf = view(focusmeta, :, [:sample, :csf_normed, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
 CSV.write(joinpath(outpath, "kids_csf.tsv"), delim='\t', csfdf)
 
-# Model: species abundance ~ csf_volume + age + mother_HHS + breastfed + birthType
+# Model: species abundance ~ csf_normed + age + mother_HHS + breastfed + birthType
 
 R"""
 fit_data <- Maaslin2(
@@ -169,55 +172,61 @@ fit_data <- Maaslin2(
              $(joinpath(outpath, "kids_csf.tsv")),
              $(joinpath(outpath, "species__csfNorm_age_ses_bf_birth")))
 """
+
+cerebellardf = view(focusmeta, :, [:sample, :cerebellar_normed, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_cerebellar.tsv"), delim='\t', cerebellardf)
+
+# Model: species abundance ~ cerebellar_normed + age + mother_HHS + breastfed + birthType
+
+R"""
+fit_data <- Maaslin2(
+             $(joinpath(outpath, "kids_species_abundance.tsv")),
+             $(joinpath(outpath, "kids_cerebellar.tsv")),
+             $(joinpath(outpath, "species__cerebellarNorm_age_ses_bf_birth")))
+"""
+
+
+subcorticaldf = view(focusmeta, :, [:sample, :subcortical_normed, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_subcortical.tsv"), delim='\t', subcorticaldf)
+
+# Model: species abundance ~ subcortical_normed + age + mother_HHS + breastfed + birthType
+
+R"""
+fit_data <- Maaslin2(
+             $(joinpath(outpath, "kids_species_abundance.tsv")),
+             $(joinpath(outpath, "kids_subcortical.tsv")),
+             $(joinpath(outpath, "species__subcorticalNorm_age_ses_bf_birth")))
+"""
+
+neocorticaldf = view(focusmeta, :, [:sample, :neocortical_normed, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_neocortical.tsv"), delim='\t', neocorticaldf)
+
+# Model: species abundance ~ neocortical_normed + age + mother_HHS + breastfed + birthType
+
+R"""
+fit_data <- Maaslin2(
+             $(joinpath(outpath, "kids_species_abundance.tsv")),
+             $(joinpath(outpath, "kids_neocortical.tsv")),
+             $(joinpath(outpath, "species__neocorticalNorm_age_ses_bf_birth")))
+"""
+
+limbicdf = view(focusmeta, :, [:sample, :limbic_normed, :correctedAgeDays, :mother_HHS, :breastfed, :birthType])
+CSV.write(joinpath(outpath, "kids_limbic.tsv"), delim='\t', limbicdf)
+
+# Model: species abundance ~ limbic_normed + age + mother_HHS + breastfed + birthType
+
+R"""
+fit_data <- Maaslin2(
+             $(joinpath(outpath, "kids_species_abundance.tsv")),
+             $(joinpath(outpath, "kids_limbic.tsv")),
+             $(joinpath(outpath, "species__limbicNorm_age_ses_bf_birth")))
+"""
+
 ```
 
 Again, the results from these Maaslin2 runs can be found in `data/notebooks/07/`.
 
 ## Cognitive Assessments
-
-As we did in notebook 6, we'll create a new column
-that contains the age-appropriate  composite cognitive score for each kid.
-
-```julia
-# Bayleys doesn't have a composite score calculated, but we can get it:
-focusmeta.bayleysComposite = map(row->
-    mean([row[:languageComposite], row[:motorComposite]]),
-    eachrow(focusmeta))
-
-focusmeta.cogScore = Vector{Union{Float64,Missing}}(missing, size(focusmeta,1))
-focusmeta.cogAssessment = Vector{Union{String,Missing}}(missing, size(focusmeta,1))
-
-map(enumerate(eachrow(focusmeta))) do (i, row)
-    # get just the cognitive assessment columns
-    cogs = row[[
-                :mullen_EarlyLearningComposite,
-                :fullScaleComposite, # this is from WSSPI
-                :FSIQ_Composite, # this is from WISC
-                :bayleysComposite
-            ]]
-    # if there's no score, skip row
-    all(ismissing, cogs) && return
-    # otherwise, get the first non-missing value (no timepoints have multiple scores)
-    col = findall(!ismissing, cogs)
-    let assessment = col[1]
-        if assessment == :mullen_EarlyLearningComposite
-            assessment = "Mullen"
-        elseif assessment == :fullScaleComposite
-            assessment = "WSSPI"
-        elseif assessment == :FSIQ_Composite
-            assessment = "WISC"
-        else assessment == :bayleysComposite
-            assessment = "Bayleys"
-        end
-
-        focusmeta[i, :cogAssessment] = assessment
-        focusmeta[i, :cogScore] = cogs[col[1]]
-    end
-end
-
-describe(focusmeta.cogScore)
-describe(focusmeta.cogAssessment)
-```
 
 ```julia
 @df focusmeta scatter(:correctedAgeDays ./ 365, :cogScore,
@@ -230,7 +239,6 @@ ylabel!("Composite Score")
 
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "cognitive-scores.svg"))
-# Not hidden
 ```
 
 ```julia; results="hidden"
