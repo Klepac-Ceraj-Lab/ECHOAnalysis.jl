@@ -9,10 +9,11 @@ files = filter(f-> endswith(f, ".jmd"), readdir(inpath))
 sort!(files)
 
 !isdir(outpath) && mkdir(outpath)
-for f in sort(files)[1:9]
+for f in sort(files)[3:9]
+    @info "Weaving $f"
     weave(joinpath(inpath, f),
             doctype="github",
-            out_path=joinpath(out_path, replace(f, "jmd"=>"html")),
+            out_path=joinpath(outpath, replace(f, "jmd"=>"html")),
             throw_errors=true
             )
 end

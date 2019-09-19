@@ -174,8 +174,8 @@ is added to every row for that subject.
 
 ```julia
 # we don't actually need to do this here, but for future reference
-uniquesamples = CSV.read(joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"))
+usamples = CSV.read(joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"))
 
-focus = getfocusmetadata(allmeta, resolve_sampleID.(uniquesamples.sample))
+focus = getfocusmetadata(allmeta, resolve_sampleID.(usamples.sample))
 @pt randrows(focus)
 ```
