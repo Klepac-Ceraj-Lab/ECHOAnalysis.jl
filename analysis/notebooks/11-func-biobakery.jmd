@@ -28,34 +28,14 @@ but it requires an annotated table (`pcl` format),
 where metadata comes before bug abundances.
 
 ```julia
-kos = CSV.read("data/aws/joined/batch1-9_kos_names_stratified.tsv", delim='\t')
-names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), "_kneaddata_Abundance-RPKs"=>"")).sample), names(kos)))
-
+kos = CSV.read("data/engaging/merged/batch1-10_kos_names.csv")
+names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), "_Abundance-RPKs"=>"")).sample), names(kos)))
+# ~ 5% prevalence filter
+kos = kos[map(row-> sum(x-> x > 0, row[Not(1)]) > ncol(kos) * .05, eachrow(kos)), :]
 # this provides metadata in wide form
 kosmeta = load_metadata(datatoml; samples=resolve_sampleID.(names(kos[!,Not(1)])))
 
-kosmeta[!, :subjectType] = map(eachrow(kosmeta)) do row
-    age = row[:correctedAgeDays] / 365
-    if startswith(row[:sample], "C")
-        if !ismissing(age)
-            if age <= 1
-                return "1au"
-            elseif age <= 2
-                return "1to2"
-            else
-                return "gt2"
-            end
-        else
-            return missing
-        end
-    elseif startswith(row[:sample], "M")
-        return "mom"
-    else
-        return missing
-    end
-end
-
-notmissing = .!ismissing.(kosmeta.subjectType)
+notmissing = .!ismissing.(kosmeta.ageLabel)
 # get samples where age is known (first `true` is to get ec column)
 kos = kos[!,[true, notmissing...]]
 kosmeta = kosmeta[notmissing, :]
@@ -71,7 +51,7 @@ function transposedf(df)
 end
 
 
-CSV.write(joinpath(outpath, "annotated_kos.pcl"), transposedf(kosmeta[!,[:sample, :subjectType]]), delim='\t')
+CSV.write(joinpath(outpath, "annotated_kos.pcl"), transposedf(kosmeta[!,[:sample, :ageLabel]]), delim='\t')
 CSV.write(joinpath(outpath, "annotated_kos.pcl"), kos, append=true, delim='\t')
 open(joinpath(outpath, "kos.txt"), "w") do io
     for ec in kos[:,1]
@@ -83,7 +63,7 @@ isdir(joinpath(outpath, "humann2_barplots")) || mkdir(joinpath(outpath, "humann2
 ```
 
 ```julia
-nostrat = CSV.read("data/aws/joined/batch1-9_kos_names_unstratified.tsv", delim='\t')
+nostrat = CSV.read("data/engaging/merged/batch1-10_kos_names.csv")
 
 prev = map(row-> prevalence(collect(row[2:end]), 0.), eachrow(nostrat))
 describe(prev)
@@ -94,7 +74,8 @@ using Statistics
 using MultivariateStats
 
 accessory = nostrat[prev .< quantile(prev, 0.75), :]
-names!(accessory, map(n-> replace(replace(String(n), r"_S\d+_kneaddata.+$"=>""), "-"=>"_") |> Symbol, names(accessory)))
+names(accessory)
+names!(accessory, map(n-> replace(replace(String(n), r"_S\d+_Abundance-RPKs"=>""), "-"=>"_") |> Symbol, names(accessory)))
 aabt = abundancetable(accessory)
 accsamples = resolve_sampleID.(samplenames(aabt))
 au = view(aabt, sites=getfield.(uniquesamples(accsamples, takefirst=true), :sample))
@@ -112,28 +93,8 @@ oau = view(au, sites=overlap)
 otu = view(tu, sites=overlap)
 
 ometa = load_metadata(datatoml; samples=resolve_sampleID.(samplenames(oau)))
-ometa[!, :subjectType] = map(eachrow(ometa)) do row
-    age = row[:correctedAgeDays] / 365
-    if startswith(row[:sample], "C")
-        if !ismissing(age)
-            if age <= 1
-                return "1au"
-            elseif age <= 2
-                return "1to2"
-            else
-                return "gt2"
-            end
-        else
-            return missing
-        end
-    elseif startswith(row[:sample], "M")
-        return "mom"
-    else
-        return missing
-    end
-end
 
-notmissing = .!ismissing.(ometa.subjectType)
+notmissing = .!ismissing.(ometa.ageLabel)
 oaunm = view(oau, sites=notmissing)
 otunm = view(otu, sites=notmissing)
 ometanm = view(ometa, notmissing, :)
@@ -146,18 +107,49 @@ otmds = fit(MDS, otdm, distances=true)
 ```
 
 ```julia
-scatter(projection(oamds)[:, 1], projection(otmds)[:, 1],
-        group = ometanm.subjectType, legend=:bottomleft,
+filter!(row-> in(row.Sample, samplenames(otunm)), qc)
+by(qc, [:Sample]) do df
+    if nrow(df) >1
+        @info df
+    end
+end
+unique!(qc, :Sample)
+sort!(qc, :Sample)
+wqc = map(x-> in(x, qc.Sample), samplenames(otunm))
+
+α = shannon(view(otunm, sites=wqc))
+describe(log.(qc.trimmed ./ α))
+scatter(projection(oamds)[wqc, 1], projection(otmds)[wqc, 1],
+        zcolor=log.(qc.trimmed ./ α),
         xlabel="Function MDS1", ylabel="Taxonomy MDS1")
+
+
+df = DataFrame(taxmds1=projection(otmds)[wqc, 1],
+                funcmds1=projection(oamds)[wqc, 1],
+                shannon=α,
+                trimmed=qc.trimmed)
+df.pos = df.funcmds1 .< -0.025
+@df df boxplot(:pos, log.(qc.trimmed ./ α))
+
+wqcmeta = load_metadata(datatoml, samples=resolve_sampleID(samplenames(otunm)[wqc]))
+wqcnm = .!ismissing.(wqcmeta.mother_HHS)
+
+scatter(projection(oamds)[wqc, 1][wqcnm], projection(otmds)[wqc, 1][wqcnm],
+        zcolor=wqcmeta.mother_HHS[wqcnm],
+        xlabel="Function MDS1", ylabel="Taxonomy MDS1")
+
+scatter(projection(oamds)[wqc, 1][wqcnm], wqcmeta.mother_HHS[wqcnm])
+
+
 ```
 ```julia
-savefig(joinpath(outpath, "ko-tax-mds1-subjectType.svg"))
+savefig(joinpath(outpath, "ko-tax-mds1-ageLabel.svg"))
 ```
 
 ```julia
-scatter(projection(oamds)[:, 1], ometanm.correctedAgeDays ./365,
-    group = ometanm.subjectType, xaxis=:flip, legend=:topleft,
-    xlabel="MDS1", ylabel="Age (years)",
+scatter(ometanm.correctedAgeDays ./365, projection(oamds)[:, 1],
+    group = ometanm.ageLabel, xaxis=:flip, legend=false,
+    ylabel="MDS1", xlabel="Age (years)",
     title = "Accessory KOs over time")
 ```
 ```julia
@@ -213,7 +205,7 @@ heatmap(asin.(sqrt.(occurrences(bkosabt)))[bkorowhcl.order, bkohcl.order], color
 using MicrobiomePlots
 
 bkometa = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(bkosabt)))
-bkometa[!, :subjectType] = map(eachrow(bkometa)) do row
+bkometa[!, :ageLabel] = map(eachrow(bkometa)) do row
     age = row[:correctedAgeDays] / 365
     if startswith(row[:sample], "C")
         if !ismissing(age)
@@ -238,7 +230,7 @@ heatmap(asin.(sqrt.(occurrences(bkosabt)))[bkorowhcl.order, bkohcl.order], color
 
 plot(
     heatmap(asin.(sqrt.(occurrences(bkosabt)))[bkorowhcl.order, bkohcl.order], color=:PuBu),
-    plot(annotationbar([ismissing(x) ? "missing" : x for x in bkometa.subjectType],
+    plot(annotationbar([ismissing(x) ? "missing" : x for x in bkometa.ageLabel],
         Dict("1au"=>color2[1], "1to2"=>color2[2], "gt2"=>color2[3], "mom"=>color2[4], "missing"=>color2[end]))),
     layout=grid(2,1, heights=[0.9, 0.1]))
 ```

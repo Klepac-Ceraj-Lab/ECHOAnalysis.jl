@@ -56,27 +56,6 @@ focusmeta = load_metadata(datatoml, samples=uniquekids)
 
 ```
 
-```julia
-prevfilt = let occ = occurrences(kids)
-    # between 5% and 80% of samples have at least 0.0001% abundance
-    [0.05 < prevalence(occ[i, :], 1e-6) < 0.8 for i in 1:size(occ, 1)]
-end
-
-prev = view(kids, species=prevfilt)
-
-kodf = DataFrame(EC=featurenames(prev))
-
-let occ = occurrences(prev)
-    for (i, sample) in enumerate(samplenames(prev))
-        ismissing(kidsmeta[i, :birthType]) && continue
-        # Make a column for each sample
-        kodf[!, Symbol(sample)] = occ[:, i]
-    end
-end
-
-kodf[!,1] = map(s-> replace(s, r"[^\w]"=>"."), kodf[!,1])
-```
-
 First, we'll use `Maaslin2` from the Huttenhower lab.
 To do this, we need to first save the abundance table
 and the metadata we want to include in the model.
@@ -94,16 +73,26 @@ Where `{Brain data}` is a brain volume measure or cognitive score.
 `Maaslin2` doesn't play nice with missing categorical data,
 so I'll manually remove samples that don't have `birthType` information
 
-```julia
-kos = DataFrame(kos=speciesnames(kids))
 
-let occ = occurrences(kids)
-    for (i, sample) in enumerate(samplenames(kids))
+```julia
+prevfilt = let occ = occurrences(kids)
+    # between 5% and 80% of samples have at least 0.0001% abundance
+    [0.05 < prevalence(occ[i, :], 1e-6) < 0.8 for i in 1:size(occ, 1)]
+end
+
+prev = view(kids, species=prevfilt)
+
+kos = DataFrame(EC=featurenames(prev))
+
+let occ = occurrences(prev)
+    for (i, sample) in enumerate(samplenames(prev))
         ismissing(focusmeta[i, :birthType]) && continue
         # Make a column for each sample
-        kos[!,Symbol(sample)] = occ[:, i]
+        kos[!, Symbol(sample)] = occ[:, i]
     end
 end
+
+kos[!,1] = map(s-> replace(s, r"[^\w]"=>"."), kos[!,1])
 ```
 
 In addition, we want the brain volumes to be normalized

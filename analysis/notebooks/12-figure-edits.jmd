@@ -32,7 +32,6 @@ uabt = view(abt, sites=getfield.(uniquesamples(allsamples, takefirst=true), :sam
 usamples = resolve_sampleID.(samplenames(uabt))
 umeta = load_metadata(datatoml, samples=usamples)
 
-by(umeta)
 
 kids = view(abt, sites=getfield.(
                 uniquesamples(allsamples,
@@ -50,12 +49,12 @@ kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)))
 momsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(moms)))
 
 fkids = view(abt, sites=getfield.(
-                uniquesamples(allsamples, [:subject],
+                uniquesamples(allsamples, identifiers=[:subject],
                 samplefilter=s-> startswith(s, "C"),
                 takefirst=true), :sample))
 
 fmoms = view(abt, sites=getfield.(
-                uniquesamples(allsamples, [:subject],
+                uniquesamples(allsamples, identifiers=[:subject],
                 samplefilter=s-> startswith(s, "M"),
                 takefirst=true), :sample))
 
@@ -67,8 +66,9 @@ sum(!ismissing, umeta.subject |> unique)
 nsamples(kids)
 nsamples(moms)
 
+
 sum(!ismissing, kidsmeta.white_matter_volume)
-sum(!ismissing, kidsmeta.ICV)
+sum(!ismissing, kidsmeta.cerebellar)
 
 sum(x-> !ismissing(x) && x / 365 < 2, kidsmeta.correctedAgeDays)
 sum(x-> x > 1, by(umeta, :subject) do df
@@ -94,26 +94,7 @@ sum(x-> x > 1, by(filter(row-> match(r"^M\d+_\dF_1A", row[:sample]) != nothing,
 Cluster/permutation analysis
 
 ```julia
-labels = map(eachrow(umeta)) do row
-    age = row[:correctedAgeDays] / 365
-    if startswith(row[:sample], "C")
-        if !ismissing(age)
-            if age <= 1
-                return "< 1 yo kid"
-            elseif age <= 2
-                return "1-2 yo kid"
-            else
-                return "> 2 yo kid"
-            end
-        else
-            return missing
-        end
-    elseif startswith(row[:sample], "M")
-        return "mom"
-    else
-        return missing
-    end
-end
+labels = umeta.ageLabel
 
 
 dm = pairwise(BrayCurtis(), uabt, dims=2)

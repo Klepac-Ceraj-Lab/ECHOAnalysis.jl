@@ -60,7 +60,6 @@ rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 allmeta = CSV.File(datatoml["tables"]["metadata"]["filemakerdb"]["path"]) |> DataFrame
-
 # pretty print table
 @pt allmeta
 ```
@@ -139,6 +138,7 @@ append!(allmeta, agelabels)
 For cognitive scores (eg. Mullen),
 we want to use a normalized score that's comparable across tests.
 
+
 ```julia
 cogcols = [
     "languageComposite", # this is from Bayleys
@@ -147,7 +147,6 @@ cogcols = [
     "fullScaleComposite", # this is from WSSPI
     "FSIQ_Composite",  # this is from WISC
     ]
-
 cogscores = by(allmeta, [:subject, :timepoint]) do sample
     cogs = filter(row-> in(row.metadatum, cogcols) &&
                         !ismissing(row.value),
@@ -362,9 +361,4 @@ dropmissing!(allmeta)
 
 # show a random assortment of ~ 10 rows
 @pt randrows(allmeta)
-```
-
-```julia
-CSV.write(datatoml["tables"]["metadata"]["all"]["path"], allmeta);
-@assert isfile(datatoml["tables"]["metadata"]["all"]["path"])
 ```

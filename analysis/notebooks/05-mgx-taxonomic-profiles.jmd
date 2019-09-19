@@ -52,6 +52,8 @@ CSV.write(joinpath(outpath, "euk.csv"), euk)
 # get a df with only species
 taxfilter!(euk)
 CSV.write(joinpath(outpath, "euk_sp.csv"), euk)
+
+print(euk)
 @pt euk
 ```
 
@@ -91,6 +93,8 @@ we perform classical multidimensional scaling (which is the same thing
 as principal coordinates analysis).
 
 ```julia
+
+
 dm = pairwise(BrayCurtis(), abt)
 mds = fit(MDS, dm, distances=true)
 
