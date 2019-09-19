@@ -134,6 +134,11 @@ function uniquesamples(samples::AbstractVector{<:NamedTuple};
     return uniquesamples
 end
 
+function uniquesamples(samples::AbstractVector{<:AbstractString}; kwargs...)
+    ss = resolve_sampleID(samples)
+    return uniquesamples(ss; kwargs...)
+end
+
 import Base.occursin
 
 # WARNING: This is type piracy.
@@ -307,6 +312,11 @@ function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoin
 end
 
 const metadata_focus_headers = String[
+    # fecal sample info
+    "Mgx_batch",
+    "DOM",
+    "RAInitials_Extract",
+    # basic data
     "childGender",
     "milkFeedingMethods",
     "APOE",
@@ -318,6 +328,10 @@ const metadata_focus_headers = String[
     "motherHHS_Occu",
     "motherHHS_Edu",
     "assessmentDate",
+    # calculated
+    "ageLabel",
+    "cogAssessment",
+    "cogScore",
     # numeric
     "correctedAgeDays",
     "amountFormulaPerFeed",
@@ -329,12 +343,11 @@ const metadata_focus_headers = String[
     "childHeight",
     "childWeight",
     ## From brain data
-    "LThickness",
-    "RThickness",
-    "LSurfArea",
-    "RSurfArea",
-    "ICV",
-    "subcortical_volume",
+    "subcortical",
+    "neocortical",
+    "cerebellar",
+    "limbic",
+    "hires_total",
     "white_matter_volume",
     "grey_matter_volume",
     "csf_volume",
@@ -348,7 +361,7 @@ const metadata_focus_headers = String[
     "languageComposite",
     "socialEmotionalComposite",
     "motorComposite",
-    ### WISC- (6-16 years)
+    ### WISC (6-16 years)
     "FRI_CompositeScore",
     "PSI_Composite",
     "VCI_CompositeScore",
@@ -385,19 +398,18 @@ customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})            = numberify(
 customprocess(col, ::MDColumn{:childHeight})                        = numberify(col)
 
 ## brain volumes
-customprocess(col, ::MDColumn{:LThickness})                         = numberify(col)
-customprocess(col, ::MDColumn{:RThickness})                         = numberify(col)
-customprocess(col, ::MDColumn{:LSurfArea})                          = numberify(col)
-customprocess(col, ::MDColumn{:RSurfArea})                          = numberify(col)
-customprocess(col, ::MDColumn{:ICV})                                = numberify(col)
-customprocess(col, ::MDColumn{:subcortical_volume})                 = numberify(col)
+customprocess(col, ::MDColumn{:cerebellar})                         = numberify(col)
+customprocess(col, ::MDColumn{:subcortical})                        = numberify(col)
+customprocess(col, ::MDColumn{:neocortical})                        = numberify(col)
+customprocess(col, ::MDColumn{:limbic})                             = numberify(col)
+customprocess(col, ::MDColumn{:hires_total})                        = numberify(col)
 customprocess(col, ::MDColumn{:white_matter_volume})                = numberify(col)
 customprocess(col, ::MDColumn{:grey_matter_volume})                 = numberify(col)
 customprocess(col, ::MDColumn{:csf_volume})                         = numberify(col)
 
 
-
-
+## Cog scores
+customprocess(col, ::MDColumn{:cogScore})                           = numberify(col)
 ### Mullen
 customprocess(col, ::MDColumn{:mullen_VerbalComposite})             = numberify(col)
 customprocess(col, ::MDColumn{:mullen_NonVerbalComposite})          = numberify(col)
@@ -456,7 +468,7 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
     #     subjects = Int.(subjects); timepoints = Int.(timepoints)
     # end
 
-    df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
+    df = getmetadata(df, subjects, timepoints, focus)
 
     for n in names(df)
         df[!, n] = customprocess(df[!,n], MDColumn(n))

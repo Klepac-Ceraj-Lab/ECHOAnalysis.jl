@@ -3,8 +3,9 @@ const color2 = ColorBrewer.palette("Set2", 8)
 const color3 = ColorBrewer.palette("Set3", 12)
 const color4 = ColorBrewer.palette("Paired", 12)
 
-tomlpath = joinpath(@__DIR__, "..", "data", "data.toml")
-const datatoml = parsefile(tomlpath)
+const tomlpath = joinpath(@__DIR__, "..", "data", "data.toml")
+updatenotebooks!()
+const datatoml = TOML.parsefile(tomlpath)
 
 function load_taxonomic_profiles()
     bakery = datatoml["tables"]["biobakery"]
@@ -24,14 +25,6 @@ function load_taxonomic_profiles()
     return tax
 end
 
-function first_kids_tax_profiles(taxlevel=:species)
-    tax = load_taxonomic_profiles()
-    taxfilter!(tax, taxlevel)
-    abt = abundancetable(tax)
-    relativeabundance!(abt)
-    kids = view(abt, sites=firstkids(samplenames(abt)))
-    return kids
-end
 
 function load_functional_profiles(kind="genefamilies")
     bakery = datatoml["tables"]["biobakery"]
@@ -40,7 +33,7 @@ function load_functional_profiles(kind="genefamilies")
             bakery["path"],
             bakery["humann2"]["root"],
             bakery["humann2"]["filter"],
-            suffix="_genefamilies.tsv")
+            suffix="_$kind.tsv")
 
     # clean up sample names
     names!(tax,

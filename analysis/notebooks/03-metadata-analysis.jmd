@@ -11,7 +11,7 @@ options:
 Now that we have the metadata in long form,
 it's a bit easier to query it for the stuff we want.
 
-```julia; echo=false; results="hidden"
+```julia; results="hidden"
 ENV["GKSwstype"] = "100"
 using ECHOAnalysis
 using DataFrames
@@ -19,6 +19,8 @@ using StatsPlots
 using PrettyTables
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+
+@ptconfclean # clear previous configuration
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 outpath, figures = notebookpaths!(3)
@@ -48,7 +50,6 @@ end
 filter!(row-> row.nsamples > 0, sampleinfo)
 # sort by the subject identifier
 sort!(sampleinfo, :subject)
-
 @pt randrows(sampleinfo)
 ```
 
@@ -117,12 +118,14 @@ Using the `resolve_sampleID` function,
 I can get just the relevant info for filtering on the first sample.
 
 ```julia
-samples = resolve_sampleID.(mgxsamples.sample)
+samples = resolve_sampleID(mgxsamples.sample)
 samples[1:4]
 ```
 ```julia
 seen = NamedTuple[]
-uniquesamples = NamedTuple[]
+usamples = NamedTuple[]
+
+sort!(samples, lt=samplelessthan)
 
 map(samples) do s
     # skip ethanol samples
@@ -130,16 +133,19 @@ map(samples) do s
     subtp = (subject=s.subject, timepoint=s.timepoint)
     if !in(subtp, seen)
         push!(seen, subtp)
-        push!(uniquesamples, s)
+        push!(usamples, s)
     end
 end
-
-sort!(uniquesamples, lt=(x,y)-> x.sample < y.sample)
-
-# convert to dataframe
-uniquesamples = DataFrame([uniquesamples...])
-@pt uniquesamples
 ```
+
+The `ECHOAnalysis` module also has [a function](https://klepac-ceraj-lab.github.io/echo_analysis/dev/metadata_handling/#ECHOAnalysis.uniquesamples-Tuple{AbstractArray{#s17,1}%20where%20#s17%3C:NamedTuple})
+that does this, and has a bunch of other options too.
+
+```julia
+usamples2 = uniquesamples(samples)
+@assert usamples2 == usamples
+```
+
 
 For simplicity later on, so I don't have to redo this,
 I'll write this to a `csv` file.
@@ -148,9 +154,14 @@ I'll write this to a `csv` file.
 using CSV
 using Pkg.TOML: parsefile
 
+# convert to dataframe
+usamples = DataFrame([usamples...])
+@pt usamples
+
+
 CSV.write(
     joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"),
-    uniquesamples
+    usamples
     )
 ```
 
@@ -163,8 +174,8 @@ is added to every row for that subject.
 
 ```julia
 # we don't actually need to do this here, but for future reference
-uniquesamples = CSV.read(joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"))
+usamples = CSV.read(joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamples.csv"))
 
-focus = getfocusmetadata(allmeta, resolve_sampleID.(uniquesamples.sample))
+focus = getfocusmetadata(allmeta, resolve_sampleID.(usamples.sample))
 @pt randrows(focus)
 ```

@@ -19,6 +19,7 @@ using CSV, DataFrames
 using PrettyTables
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
+@ptconfclean # clear previous configuration
 @ptconf formatter = rounder nosubheader=true screen_size=(20,120)
 
 outpath, figures = notebookpaths!(4)

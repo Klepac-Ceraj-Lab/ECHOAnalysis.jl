@@ -52,8 +52,10 @@ uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
 version = "0.5.6"
 
 [[BiobakeryUtils]]
-deps = ["CSV", "DataFrames", "Microbiome", "RCall", "Random", "Statistics", "Test"]
-git-tree-sha1 = "d81eabca1fa04b08ae4d9d043fd8eaf60bcacb83"
+deps = ["CSV", "DataFrames", "Microbiome", "RCall", "Statistics"]
+git-tree-sha1 = "2bb07c03edcb4fef0391525f8e353e7c6a49dc78"
+repo-rev = "master"
+repo-url = "https://github.com/BioJulia/BiobakeryUtils.jl.git"
 uuid = "fa5322f5-bd84-5069-834a-abf3230fb8f8"
 version = "0.1.0"
 
@@ -241,6 +243,18 @@ git-tree-sha1 = "0513f1a8991e9d83255e0140aace0d0fc4486600"
 uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.0"
 
+[[DocumenterTools]]
+deps = ["Base64", "DocStringExtensions", "LibGit2", "Pkg", "Test"]
+git-tree-sha1 = "f5803a9c2c23ff226e8eab2df7ac4c75e77a0d53"
+uuid = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
+version = "0.1.0"
+
+[[ECHOAnalysis]]
+deps = ["ArgParse", "BiobakeryUtils", "CSV", "ColorBrewer", "Colors", "DataFrames", "DocumenterTools", "LoggingExtras", "Microbiome", "MicrobiomePlots", "MultipleTesting", "MultivariateStats", "Pkg", "RecipesBase", "XLSX"]
+path = ".."
+uuid = "39b5b81a-5017-403f-bb48-824a42db2b1c"
+version = "0.0.1"
+
 [[EcoBase]]
 deps = ["Compat", "RecipesBase"]
 git-tree-sha1 = "927e8aea9c9856b88fda40791e3872de07d05751"
@@ -315,9 +329,9 @@ version = "0.41.0"
 
 [[GeometryTypes]]
 deps = ["ColorTypes", "FixedPointNumbers", "IterTools", "LinearAlgebra", "StaticArrays"]
-git-tree-sha1 = "2b0bfb379a54bdfcd2942f388f7d045f8952373d"
+git-tree-sha1 = "4bf5706f3b9a2c5adbbc473c8c91582c1fa816a3"
 uuid = "4d00f742-c7ba-57c2-abde-4428a4b178cb"
-version = "0.7.5"
+version = "0.7.6"
 
 [[HTTP]]
 deps = ["Base64", "Dates", "IniFile", "MbedTLS", "Sockets"]
@@ -333,9 +347,9 @@ version = "0.2.2"
 
 [[Highlights]]
 deps = ["DocStringExtensions", "InteractiveUtils", "REPL"]
-git-tree-sha1 = "676cce3d079ce5891ec532092dcf0f57de41b289"
+git-tree-sha1 = "2fa66a8c9343124ad7bf79ef3804f6965ee7c71d"
 uuid = "eafb193a-b7ab-5a9e-9068-77385905fa72"
-version = "0.4.2"
+version = "0.4.3"
 
 [[IniFile]]
 deps = ["Test"]
@@ -387,12 +401,6 @@ git-tree-sha1 = "b34d7cef7b337321e97d22242c3c2b91f476748e"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.0"
 
-[[JuliaInterpreter]]
-deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
-git-tree-sha1 = "a4bb251f96cb22141cff4185b724c2e4f46245d2"
-uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
-version = "0.7.0"
-
 [[KernelDensity]]
 deps = ["Distributions", "FFTW", "Interpolations", "Optim", "StatsBase", "Test"]
 git-tree-sha1 = "c1048817fe5711f699abc8fabd47b1ac6ba4db04"
@@ -435,12 +443,6 @@ git-tree-sha1 = "5c47830453708ffd09bf83a15e14924daa6570f7"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "0.3.0"
 
-[[LoweredCodeUtils]]
-deps = ["JuliaInterpreter"]
-git-tree-sha1 = "ea065f38cccb556b4eabe43b3b3b91e1c67cbffd"
-uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
-version = "0.3.8"
-
 [[MacroTools]]
 deps = ["CSTParser", "Compat", "DataStructures", "Test", "Tokenize"]
 git-tree-sha1 = "d6e9dedb8c92c3465575442da456aec15a89ff76"
@@ -464,16 +466,20 @@ uuid = "442fdcdd-2543-5da2-b0f3-8c86c306513e"
 version = "0.3.0"
 
 [[Microbiome]]
-deps = ["Clustering", "DataFrames", "Distances", "LinearAlgebra", "Reexport", "SpatialEcology", "Statistics", "StatsBase"]
-git-tree-sha1 = "0cf5eb5c0a230eb060a894d740e07ce49b819a8d"
+deps = ["DataFrames", "MultivariateStats", "Reexport", "SpatialEcology", "Statistics", "StatsBase"]
+git-tree-sha1 = "c29b4c7ac3952563c4cf00a1c60f6fc8913bb5ee"
+repo-rev = "master"
+repo-url = "https://github.com/BioJulia/Microbiome.jl.git"
 uuid = "3bd8f0ae-a0f2-5238-a5af-e1b399a4940c"
-version = "0.4.1"
+version = "0.5.0"
 
 [[MicrobiomePlots]]
-deps = ["Colors", "Microbiome", "Random", "RecipesBase", "StatPlots", "Test"]
-git-tree-sha1 = "d479525e5af9fbaadbb8f672cd3412cd8184f75f"
+deps = ["Colors", "Microbiome", "RecipesBase", "StatsPlots"]
+git-tree-sha1 = "5f55184c3f16205916f85e3e2f3af40d22be37d8"
+repo-rev = "master"
+repo-url = "https://github.com/BioJulia/MicrobiomePlots.jl.git"
 uuid = "bed85cf4-5cc8-5ac4-9eb3-09fbf92b2ce2"
-version = "0.1.0"
+version = "0.2.0"
 
 [[Missings]]
 deps = ["SparseArrays", "Test"]
@@ -491,8 +497,10 @@ uuid = "f8716d33-7c4a-5097-896f-ce0ecbd3ef6b"
 version = "0.4.1"
 
 [[MultivariateStats]]
-deps = ["Arpack", "LinearAlgebra", "Printf", "Random", "SparseArrays", "Statistics", "StatsBase", "Test"]
-git-tree-sha1 = "cf1c990020bc4a52ff34ba2ee058b7cb677141f2"
+deps = ["Arpack", "LinearAlgebra", "SparseArrays", "Statistics", "StatsBase"]
+git-tree-sha1 = "024d7fce5bf2799597f3ec29d4d2e283eacf94b8"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaStats/MultivariateStats.jl.git"
 uuid = "6f286f6a-111f-5878-ab1e-185364afe411"
 version = "0.6.0"
 
@@ -699,12 +707,6 @@ git-tree-sha1 = "f6fbf4ba64d295e146e49e021207993b6b48c7d1"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "0.5.2"
 
-[[Revise]]
-deps = ["CodeTracking", "Distributed", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Pkg", "REPL", "UUIDs", "Unicode"]
-git-tree-sha1 = "44a36fadf916ce20ffb33fb33ff67c67404e55ac"
-uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
-version = "2.1.9"
-
 [[Rmath]]
 deps = ["BinaryProvider", "Libdl", "Random", "Statistics", "Test"]
 git-tree-sha1 = "9a6c758cdf73036c3239b0afbea790def1dabff9"
@@ -747,22 +749,18 @@ deps = ["LinearAlgebra", "Random"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[SpatialEcology]]
-deps = ["DataFrames", "DataFramesMeta", "EcoBase", "Random", "RandomBooleanMatrices", "RandomNumbers", "RecipesBase", "SparseArrays", "Statistics", "StatsBase", "Test"]
-git-tree-sha1 = "7e4ae3dd9cd98ac6127a28fc5bc46bdf5e28d86b"
+deps = ["DataFrames", "DataFramesMeta", "Distances", "EcoBase", "Random", "RandomBooleanMatrices", "RandomNumbers", "RecipesBase", "SparseArrays", "Statistics", "StatsBase"]
+git-tree-sha1 = "0dc34039544c5d70a71b45c264c9653649fd9be8"
+repo-rev = "master"
+repo-url = "https://github.com/EcoJulia/SpatialEcology.jl.git"
 uuid = "348f2d5d-71a3-5ad4-b565-8af070f99681"
-version = "0.7.0"
+version = "0.7.1"
 
 [[SpecialFunctions]]
 deps = ["BinDeps", "BinaryProvider", "Libdl", "Test"]
 git-tree-sha1 = "0b45dc2e45ed77f445617b99ff2adf0f5b0f23ea"
 uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
 version = "0.7.2"
-
-[[StatPlots]]
-deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "IterableTables", "KernelDensity", "Observables", "Plots", "RecipesBase", "Reexport", "StatsBase", "TableTraits", "TableTraitsUtils", "Test", "Widgets"]
-git-tree-sha1 = "245c50f8a6534bb16ada031e064363f8298b61b9"
-uuid = "60ddc479-9b66-56df-82fc-76a74619b69c"
-version = "0.9.2"
 
 [[StaticArrays]]
 deps = ["LinearAlgebra", "Random", "Statistics"]
