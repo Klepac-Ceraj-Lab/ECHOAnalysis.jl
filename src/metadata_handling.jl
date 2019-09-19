@@ -468,7 +468,7 @@ function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; 
     #     subjects = Int.(subjects); timepoints = Int.(timepoints)
     # end
 
-    df = getmetadata(df, subjects, timepoints, metadata_focus_headers)
+    df = getmetadata(df, subjects, timepoints, focus)
 
     for n in names(df)
         df[!, n] = customprocess(df[!,n], MDColumn(n))
