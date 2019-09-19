@@ -6,7 +6,7 @@
 Rplots.pdf
 scratch*
 build/
-docs/html
+analysis/html
 data/figures
 data/notebooks
 data/engaging
