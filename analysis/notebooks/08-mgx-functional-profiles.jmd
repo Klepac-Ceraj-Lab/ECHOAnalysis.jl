@@ -13,13 +13,20 @@ that is, what genes are present in a given community.
 These profiles were generated with [HUMANn2](http://huttenhower.sph.harvard.edu/humann2).
 
 ```julia; echo=false; results="hidden"
+using Revise, OhMyREPL, Pkg
+Pkg.activate("analysis")
+```
+```julia; echo=false; results="hidden"
 using ECHOAnalysis
 using Microbiome
 using BiobakeryUtils
+using Statistics
+using StatsBase
 using StatsPlots
 using DataFrames
 using Distances
 using PrettyTables
+using MultivariateStats
 using CSV
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
@@ -29,16 +36,255 @@ rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
 (outpath, figures) = notebookpaths!(8)
 ```
 
-## Kegg Orthology functions
+There are a few different ways to classify genes,
+some of which capture more of the total sequence space than others.
+For example, UniProt's UniRef90 groupings
+capture basically everything that's ever been sequenced before,
+but many of those labels have no actual information associated with them.
+By contrast, InterPro's `PFam` and Kegg Orthology (KO) databases
+are much smaller, but each annotation has some information associated with it.
+
+This also means that the uniref90 files are _much_ larger.
+
+```julia
+uniref_path = "data/engaging/merged/batch1-10_genefamilies_names.tsv"
+pfam_path = "data/engaging/merged/batch1-10_pfam_names.tsv"
+ko_path = "data/engaging/merged/batch1-10_kos_names.tsv"
+
+# UniRef90s Gb
+filesize(uniref_path) / 1e9
+```
+
+```julia
+# Pfam Gb
+filesize(pfam_path) / 1e9
+```
+
+```julia
+# KEGG Orthology Gb
+filesize(ko_path) / 1e9
+```
+
+```julia
+samples = samples_from_file(uniref_path)
+```
+
+Each of these tables is taxonomically stratified - that is,
+each gene group is also split by the organism that contributed it.
+For now, we don't need that information,
+and the unstratified tables are much smaller.
+
+
+```julia
+uniref_unstrat = "data/engaging/merged/batch1-10_genefamilies_names_unstratified.tsv"
+filesize(uniref_unstrat) / 1e9
+```
+Even still, this file is so large
+that the typical CSV parsers have issues parsing it.
+Since I know the first column is strings (the features)
+and every other column is floats, I can just do this manually.
+
+
+```julia
+numsamples = length(samples)
+
+cols = Symbol.(getfield.(samples, :sample))
+unirefs = DataFrame(:uniref=>String[], (s => Float64[] for s in cols)...)
+
+for row in CSV.Rows(uniref_unstrat)
+    occursin("NO_NAME", row[1]) && continue
+    nums = parse.(Float64, (row[i] for i in 2:numsamples+1))
+    if prevalence(nums) > 0.05
+        r = (row[1], nums...)
+        push!(unirefs, r)
+    end
+end
+
+uniref_abt = abundancetable(unirefs)
+
+usamples = uniquesamples(samples, identifiers=[:subject])
+uniref_meta = load_metadata(datatoml, samples=usamples)
+uuniref = view(uniref_abt, sites=getfield.(usamples, :sample))
+
+
+kidssamples = uniquesamples(samples,
+                    samplefilter=s-> startswith(s, "C"),
+                    takefirst=true, identifiers=[:subject])
+momsamples = uniquesamples(samples,
+                    samplefilter=s-> startswith(s, "M"),
+                    takefirst=true, identifiers=[:subject])
+
+kidsmeta = load_metadata(datatoml, samples=kidssamples)
+momsmeta = load_metadata(datatoml, samples=momsamples)
+
+moms = view(uuniref, sites=getfield.(momsamples, :sample))
+
+dropmissing!(kidsmeta, :correctedAgeDays)
+kids = view(uuniref, sites = map(s-> s in kidsmeta.sample, sitenames(uuniref)))
+```
+
+```julia
+occ = occurrences(kids)
+
+occ_srt = view(occ, :, sortperm(kidsmeta.correctedAgeDays))
+
+num_genes = map(col-> sum(x-> x > 0, col), eachcol(occ_srt))
+scatter(sort(kidsmeta.correctedAgeDays), num_genes,
+    legend=false, xlabel="Age (days)", ylabel="Identified UniRef90s")
+```
+```julia
+savefig(joinpath(figures, "num_genes_age.svg"))
+```
+
+
+
+```julia
+agecors = cor(kidsmeta.correctedAgeDays, occurrences(kids), dims=2)'
+rank = sortperm(agecors)
+describe(agecors)
+```
+```julia
+scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2])
+title!("UniRef90 age correlations")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations.svg"))
+```
+
+```julia
+abxr = CSV.read("data/uniprot/uniprot-abxr.tsv")
+
+features = match.(r"UniRef90_(\w+)", featurenames(kids))
+features = map(f-> isnothing(f) ? "unknown" : String(f.captures[1]), features)
+
+abx_pos = findall(x-> x in abxr.Entry, features)
+
+scatter!(invperm(rank)[abx_pos], agecors[abx_pos], markersize=5, color=color1[3], label="abxR genes")
+```
+
+
+```julia
+using HypothesisTests
+@show mean(agecors[abx_pos])
+pvalue(ApproximateTwoSampleKSTest(agecors[abx_pos], agecors))
+```
+
+```julia
+# test some random samples
+ps = Float64[]
+
+for _ in 1:10_000
+    s = sample(agecors, 100)
+    push!(ps, pvalue(ApproximateTwoSampleKSTest(s, agecors)))
+end
+
+histogram(ps, legend=false, title="Random gene subsets (10k)", xlabel="p-value", ylabel="number")
+```
+
+
+```julia
+carbs = CSV.read("data/uniprot/uniprot-carbohydrate.tsv")
+carbs_pos = findall(x-> x in carbs.Entry, features)
+scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+    title = "UniRef90 age correlations")
+scatter!(invperm(rank)[carbs_pos], agecors[carbs_pos], markersize=5, color=color1[4], label="Carbohydrate metabolism genes")
+
+ApproximateTwoSampleKSTest(agecors[rank[carbs_pos]], agecors[rank])
+```
+
+```julia
+fa = CSV.read("data/uniprot/uniprot-fa.tsv")
+fa_pos = findall(x-> x in fa.Entry, features)
+scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+    title = "UniRef90 age correlations")
+scatter!(invperm(rank)[fa_pos], agecors[fa_pos], markersize=5, color=color1[5], label="Fatty Acid metabolism genes")
+
+ApproximateTwoSampleKSTest(agecors[rank[fa_pos]], agecors[rank])
+```
+
+```julia
+ecs = Dict()
+for line in eachline("data/engaging/ec2uniref90.txt")
+    line = split(line, '\t')
+    ecs[line[1]] = map(x-> String(match(r"UniRef90_(\w+)", x).captures[1]), line[2:end])
+end
+
+
+tkase_pos = findall(x-> x in ecs["2.2.1.1"], features)
+scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+    title = "UniRef90 age correlations")
+scatter!(invperm(rank)[tkase_pos], agecors[tkase_pos], markersize=5, color=color1[5], label="Transketolase genes")
+
+
+tkase_pos = findall(x-> x in ecs["2.2.1.1"], features)
+scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+    title = "UniRef90 age correlations")
+scatter!(tkase_pos, agecors[rank[tkase_pos]], markersize=5, color=color1[5], label="Transketolase genes")
+
+ApproximateTwoSampleKSTest(agecors[rank[tkase_pos]], -1 .* agecors[rank])
+
+
+
+OAdcase_pos = findall(x-> x in ecs["4.1.1.3"], features)
+
+scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+    title = "UniRef90 age correlations")
+scatter!(invperm(rank)[OAdcase_pos], agecors[OAdcase_pos], markersize=5, color=color1[5], label="Oxaloacetate decarboxylase genes")
+
+mean(agecors[OAdcase_pos])
+ApproximateTwoSampleKSTest(agecors[rank[OAdcase_pos]], -1 .* agecors[rank])
+
+GSase_pos = findall(x-> x in ecs["1.4.1.14"], features)
+
+scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+    title = "UniRef90 age correlations")
+scatter!(invperm(rank)[GSase_pos], agecors[GSase_pos], markersize=5, color=color1[5], label="Oxaloacetate decarboxylase genes")
+
+
+
+
+ApproximateTwoSampleKSTest(agecors[rank[GSase_pos]], -1 .* agecors[rank])
+
+
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6296767/figure/F3/
+pos_control = [mean(agecors[findall(x-> x in ecs[ec], features)]) for ec in
+    ("6.1.1.18", "2.8.4.4", "2.2.1.1", "2.7.1.144", "2.3.1.179", "5.4.2.12",
+     "2.7.1.26", "2.7.1.11", "4.1.1.49", "2.6.1.83", "2.3.1.51", "1.7.99.1",
+     "2.5.1.3", "1.7.99.1", "2.4.1.21", "2.5.1.3","4.1.99.17","2.7.1.90",
+     "3.4.24.78","2.5.1.49","1.4.1.14", "4.1.1.3")]
+
+```
+
+
+
+
+
 
 ```julia; results="hidden"
-kos = CSV.read("data/engaging/merged/batch1-10_kos_names.csv")
+kos = CSV.read("data/engaging/merged/batch1-10_kos_names.tsv")
 names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), "_Abundance-RPKs"=>"")).sample), names(kos)))
 # ~ 5% prevalence filter
 kos = kos[map(row-> sum(x-> x > 0, row[Not(1)]) > ncol(kos) * .05, eachrow(kos)), :]
 kos = abundancetable(kos)
 relativeabundance!(kos)
 ```
+
+```julia; results="hidden"
+pfam = CSV.read("data/engaging/merged/batch1-10_pfam_names_unstratified.tsv")
+names!(pfam, map(n-> Symbol(resolve_sampleID(replace(String(n), "_Abundance-RPKs"=>"")).sample), names(pfam)))
+# ~ 5% prevalence filter
+pfam = pfam[map(row-> sum(x-> x > 0, row[Not(1)]) > ncol(pfam) * .05, eachrow(pfam)), :]
+pfam = abundancetable(pfam)
+relativeabundance!(pfam)
+```
+
 
 ```julia
 allsamples = resolve_sampleID.(samplenames(kos))
@@ -59,39 +305,14 @@ moms = view(kos, sites=getfield.(momsamples, :sample))
 
 kidsmeta = load_metadata(datatoml, samples=kidssamples)
 momsmeta = load_metadata(datatoml, samples=momsamples)
-
 ```
 ```julia
-using StatsPlots
-using MultivariateStats
-
 udm = pairwise(BrayCurtis(), uabt, dims=2)
 
-labels = map(eachrow(umeta)) do row
-    age = row[:correctedAgeDays] / 365
-    if startswith(row[:sample], "C")
-        if !ismissing(age)
-            if age <= 1
-                return "1 and under"
-            elseif age <= 2
-                return "1 to 2"
-            else
-                return "2 and over"
-            end
-        else
-            return missing
-        end
-    elseif startswith(row[:sample], "M")
-        return "mom"
-    else
-        return missing
-    end
-end
-
-notmissing = .!ismissing.(labels)
+notmissing = .!ismissing.(umeta.ageLabel)
 
 nmumds = fit(MDS, udm[notmissing, notmissing], distances=true)
-plot(nmumds, group=String.(labels[notmissing]), legend=:bottomleft)
+plot(nmumds, group=String.(umeta.ageLabel[notmissing]), legend=:bottomleft)
 title!("Functional Profiles (KOs)")
 ```
 ```julia; echo=false; results="hidden"
