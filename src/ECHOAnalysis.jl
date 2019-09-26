@@ -18,6 +18,7 @@ export
     #File Handling
     add_batch_info,
     merge_tables,
+    samples_from_file,
 
     # Startup Functions
     datatoml,
