@@ -27,6 +27,7 @@ using DataFrames
 using Distances
 using PrettyTables
 using MultivariateStats
+using HypothesisTests
 using CSV
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
@@ -65,8 +66,9 @@ filesize(pfam_path) / 1e9
 filesize(ko_path) / 1e9
 ```
 
-```julia
+```julia;
 samples = samples_from_file(uniref_path)
+samples[1:5]
 ```
 
 Each of these tables is taxonomically stratified - that is,
@@ -139,12 +141,12 @@ savefig(joinpath(figures, "num_genes_age.svg"))
 
 
 ```julia
-agecors = cor(kidsmeta.correctedAgeDays, occurrences(kids), dims=2)'
-rank = sortperm(agecors)
+agecors = cor(kidsmeta.correctedAgeDays, occ, dims=2)'
+agerank = sortperm(agecors)
 describe(agecors)
 ```
 ```julia
-scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
     xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2])
 title!("UniRef90 age correlations")
 ```
@@ -159,15 +161,22 @@ features = match.(r"UniRef90_(\w+)", featurenames(kids))
 features = map(f-> isnothing(f) ? "unknown" : String(f.captures[1]), features)
 
 abx_pos = findall(x-> x in abxr.Entry, features)
+ks = ApproximateTwoSampleKSTest(agecors[agerank[abx_pos]], agecors[agerank])
+```
+```julia
+m = round(mean(agecors[abx_pos]), sigdigits=4)
+p = round(pvalue(ks), sigdigits=4)
 
-scatter!(invperm(rank)[abx_pos], agecors[abx_pos], markersize=5, color=color1[3], label="abxR genes")
+scatter!(invperm(agerank)[abx_pos], agecors[abx_pos], markersize=5, color=color1[3], label="abxR genes")
+annotate!(1000, 0.4, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations_abxR.svg"))
 ```
 
-
 ```julia
-using HypothesisTests
 @show mean(agecors[abx_pos])
-pvalue(ApproximateTwoSampleKSTest(agecors[abx_pos], agecors))
+ApproximateTwoSampleKSTest(agecors[abx_pos], agecors)
 ```
 
 ```julia
@@ -181,108 +190,399 @@ end
 
 histogram(ps, legend=false, title="Random gene subsets (10k)", xlabel="p-value", ylabel="number")
 ```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations_random_histogram.svg"))
+```
 
 
 ```julia
 carbs = CSV.read("data/uniprot/uniprot-carbohydrate.tsv")
 carbs_pos = findall(x-> x in carbs.Entry, features)
-scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+ks = ApproximateTwoSampleKSTest(agecors[agerank[carbs_pos]], agecors[agerank])
+```
+```julia
+m = round(mean(agecors[carbs_pos]), sigdigits=4)
+p = pvalue(ks)
+scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
     xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
     title = "UniRef90 age correlations")
-scatter!(invperm(rank)[carbs_pos], agecors[carbs_pos], markersize=5, color=color1[4], label="Carbohydrate metabolism genes")
+scatter!(invperm(agerank)[carbs_pos], agecors[carbs_pos], markersize=5, color=color1[4], label="Carbohydrate metabolism genes")
+annotate!(1000, 0.4, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations_carbs.svg"))
+```
 
-ApproximateTwoSampleKSTest(agecors[rank[carbs_pos]], agecors[rank])
+
+```julia
+@show mean(agecors[carbs_pos])
+ApproximateTwoSampleKSTest(agecors[agerank[carbs_pos]], agecors[agerank])
 ```
 
 ```julia
 fa = CSV.read("data/uniprot/uniprot-fa.tsv")
 fa_pos = findall(x-> x in fa.Entry, features)
-scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+ks = ApproximateTwoSampleKSTest(agecors[agerank[fa_pos]], agecors[agerank])
+```
+```julia
+m = round(mean(agecors[fa_pos]), sigdigits=4)
+p = round(pvalue(ks), sigdigits=4)
+scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
     xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
     title = "UniRef90 age correlations")
-scatter!(invperm(rank)[fa_pos], agecors[fa_pos], markersize=5, color=color1[5], label="Fatty Acid metabolism genes")
-
-ApproximateTwoSampleKSTest(agecors[rank[fa_pos]], agecors[rank])
+scatter!(invperm(agerank)[fa_pos], agecors[fa_pos], markersize=5, color=color1[5], label="Fatty Acid metabolism genes")
+annotate!(1000, 0.4, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations_fas.svg"))
 ```
 
 ```julia
-ecs = Dict()
+@show mean(agecors[fa_pos])
+ApproximateTwoSampleKSTest(agecors[agerank[fa_pos]], agecors[agerank])
+```
+
+```julia
+ecs2uniref = Dict()
 for line in eachline("data/engaging/ec2uniref90.txt")
     line = split(line, '\t')
-    ecs[line[1]] = map(x-> String(match(r"UniRef90_(\w+)", x).captures[1]), line[2:end])
+    ecs2uniref[line[1]] = map(x-> String(match(r"UniRef90_(\w+)", x).captures[1]), line[2:end])
 end
 
+# Something that should be positive based on https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6296767/figure/F3/
+tkase_pos = findall(x-> x in ecs2uniref["2.2.1.1"], features)
+ks = ApproximateTwoSampleKSTest(agecors[agerank[tkase_pos]], agecors[agerank])
+```
+```julia
+m = round(mean(agecors[tkase_pos]), sigdigits=4)
+p = round(pvalue(ks), sigdigits=4)
 
-tkase_pos = findall(x-> x in ecs["2.2.1.1"], features)
-scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
     xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
     title = "UniRef90 age correlations")
-scatter!(invperm(rank)[tkase_pos], agecors[tkase_pos], markersize=5, color=color1[5], label="Transketolase genes")
+scatter!(invperm(agerank)[tkase_pos], agecors[tkase_pos], markersize=5, color=color1[5], label="Transketolase genes")
+annotate!(1000, 0.4, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations_tkase.svg"))
+```
+```julia
+@show mean(agecors[tkase_pos])
+ApproximateTwoSampleKSTest(agecors[agerank[tkase_pos]], agecors[agerank])
+```
 
+```julia
+OAdcase_pos = findall(x-> x in ecs2uniref["4.1.1.3"], features)
+ks = ApproximateTwoSampleKSTest(agecors[agerank[OAdcase_pos]], agecors[agerank])
+```
+```julia
+m = round(mean(agecors[OAdcase_pos]), sigdigits=4)
+p = round(pvalue(ks), sigdigits=4)
 
-tkase_pos = findall(x-> x in ecs["2.2.1.1"], features)
-scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
+scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
     xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
     title = "UniRef90 age correlations")
-scatter!(tkase_pos, agecors[rank[tkase_pos]], markersize=5, color=color1[5], label="Transketolase genes")
+scatter!(invperm(agerank)[OAdcase_pos], agecors[OAdcase_pos], markersize=5, color=color1[5], label="Oxaloacetate decarboxylase genes")
+annotate!(1000, 0.4, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations_OAdecarboxylase.svg"))
+```
 
-ApproximateTwoSampleKSTest(agecors[rank[tkase_pos]], -1 .* agecors[rank])
-
-
-
-OAdcase_pos = findall(x-> x in ecs["4.1.1.3"], features)
-
-scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
-    title = "UniRef90 age correlations")
-scatter!(invperm(rank)[OAdcase_pos], agecors[OAdcase_pos], markersize=5, color=color1[5], label="Oxaloacetate decarboxylase genes")
-
-mean(agecors[OAdcase_pos])
-ApproximateTwoSampleKSTest(agecors[rank[OAdcase_pos]], -1 .* agecors[rank])
-
-GSase_pos = findall(x-> x in ecs["1.4.1.14"], features)
-
-scatter(invperm(rank), agecors, markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
-    title = "UniRef90 age correlations")
-scatter!(invperm(rank)[GSase_pos], agecors[GSase_pos], markersize=5, color=color1[5], label="Oxaloacetate decarboxylase genes")
-
-
-
-
-ApproximateTwoSampleKSTest(agecors[rank[GSase_pos]], -1 .* agecors[rank])
-
-
+```julia
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6296767/figure/F3/
-pos_control = [mean(agecors[findall(x-> x in ecs[ec], features)]) for ec in
+pos_control = [mean(agecors[findall(x-> x in ecs2uniref[ec], features)]) for ec in
     ("6.1.1.18", "2.8.4.4", "2.2.1.1", "2.7.1.144", "2.3.1.179", "5.4.2.12",
      "2.7.1.26", "2.7.1.11", "4.1.1.49", "2.6.1.83", "2.3.1.51", "1.7.99.1",
      "2.5.1.3", "1.7.99.1", "2.4.1.21", "2.5.1.3","4.1.99.17","2.7.1.90",
      "3.4.24.78","2.5.1.49","1.4.1.14", "4.1.1.3")]
+# what fraction of these genes are + correlated?
+count(x-> x > 0, pos_control) / length(pos_control)
+```
 
+```julia
+neg_control = [mean(agecors[findall(x-> x in ecs2uniref[ec], features)]) for ec in
+    ("3.6.1.1","2.7.7.56","2.6.1.42","3.1.22.4","1.6.1.2","1.1.1.44","5.4.2.11",
+     "6.3.4.18","6.3.1.2","2.3.1.117","5.3.1.6","4.2.1.1","2.7.7.72","2.5.1.74",
+     "2.3.1.54","4.4.1.8","2.7.1.15","1.11.1.15","6.3.4.14")]
+ # what fraction of these genes are - correlated?
+count(x-> x < 0, neg_control) / length(neg_control)
 ```
 
 
+# ECs
+
+```julia
+# ecs_unstrat = "data/engaging/merged/batch1-10_ecs_names_unstratified.tsv"
+#
+# ecs = CSV.read(ecs_unstrat)
+# names!(ecs, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RPKs"=>"")).sample), names(ecs)))
+# ecs_abt = abundancetable(ecs)
+# uecs = view(ecs_abt, sites=getfield.(usamples, :sample))
+#
+# ecs_moms = view(uecs, sites=getfield.(momsamples, :sample))
+# ecs_kids = view(uecs, sites = map(s-> s in kidsmeta.sample, sitenames(uecs)))
+```
 
 
+# KOs
 
 
 ```julia; results="hidden"
 kos = CSV.read("data/engaging/merged/batch1-10_kos_names.tsv")
-names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), "_Abundance-RPKs"=>"")).sample), names(kos)))
-# ~ 5% prevalence filter
-kos = kos[map(row-> sum(x-> x > 0, row[Not(1)]) > ncol(kos) * .05, eachrow(kos)), :]
-kos = abundancetable(kos)
-relativeabundance!(kos)
+names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RPKs"=>"")).sample), names(kos)))
+kos_abt = abundancetable(kos)
+relativeabundance!(kos_abt)
+
+ukos = view(kos_abt, sites=getfield.(usamples, :sample),
+        # 5% prevalence filter
+        species=map(row-> sum(x-> x > 0, row) / nsamples(kos_abt) > 0.05, eachrow(occurrences(kos_abt))))
+
+kos_moms = view(kos_abt, sites=getfield.(momsamples, :sample))
+kos_kids = view(kos_abt, sites = map(s-> s in kidsmeta.sample, sitenames(ukos)))
+
+
+@assert nsamples(kos_kids) == nrow(kidsmeta)
+@assert nsamples(kos_moms) == nrow(momsmeta)
+```
+
+## Getting neuroactive KOs
+
+```julia; results="hidden"
+neuroactive = Dict()
+
+let (mgb, desc) = ("", "")
+    for line in eachline("data/uniprot/gbm.txt")
+        line = split(line, r"[\t,]")
+        if startswith(line[1], "MGB")
+            (mgb, desc) = line
+            desc = rstrip(replace(desc, r"\bI+\b.*$"=>""))
+            if desc in keys(neuroactive)
+                push!(neuroactive[desc].mgbs, mgb)
+            else
+                neuroactive[desc] = (mgbs=[mgb], kos=String[])
+            end
+        else
+            filter!(l-> occursin(r"^K\d+$", l), line)
+            append!(neuroactive[desc].kos, String.(line))
+        end
+    end
+end
+```
+
+```julia
+kos2uniref = Dict()
+for line in eachline("data/engaging/ko2uniref90.txt")
+    line = split(line, '\t')
+    kos2uniref[line[1]] = map(x-> String(match(r"UniRef90_(\w+)", x).captures[1]), line[2:end])
+end
+
+
+na_uniref = let urefs = []
+    for (key, value) in neuroactive
+        for k in value.kos
+            if k in keys(kos2uniref)
+                append!(urefs, kos2uniref[k])
+            end
+        end
+    end
+    Set{String}(urefs)
+end
+
+neuroactive_pos = findall(f-> f in na_uniref, features)
+ks = ApproximateTwoSampleKSTest(agecors[agerank[neuroactive_pos]], agecors[agerank])
+```
+```julia
+m = round(mean(agecors[neuroactive_pos]), sigdigits=4)
+p = round(pvalue(ks), sigdigits=3)
+
+scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+    title = "UniRef90 age correlations")
+scatter!(invperm(agerank)[neuroactive_pos], agecors[neuroactive_pos],
+    markersize=4, color=color1[5],
+    label="All neuroactive genes")
+annotate!(1000, 0.4, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_age_correlations_neuroactive.svg"))
+```
+
+
+```julia
+nadf = DataFrame(mgb=String[], description=String[], n_unirefs = Int[], mean_cor=Float64[], pvalue=Float64[])
+
+for (desc, (mgbs, kos)) in neuroactive
+    unirefs = []
+    for ko in kos
+        ko in keys(kos2uniref) && append!(unirefs, kos2uniref[ko])
+    end
+    pos = findall(f-> f in unirefs, features)
+
+    n = length(pos)
+    n > 2 || continue
+
+    @show length(pos)
+    ks = ApproximateTwoSampleKSTest(agecors[agerank[pos]], agecors[agerank])
+    m = round(mean(agecors[pos]), sigdigits=4)
+    p = round(pvalue(ks), sigdigits=4)
+
+    push!(nadf, (mgb, desc, n, m, p))
+    plt = scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
+        xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
+        title = "UniRef90 age correlations")
+    scatter!(invperm(agerank)[pos], agecors[pos],
+        markersize=4, color=color1[1],
+        label="$desc")
+    annotate!(1000, 0.4, "n = $n\nmean_cor = $m\npvalue=$p", :left)
+    display(plt)
+    savefig(joinpath(figures, "uniref90_age_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).svg"))
+end
+
+@pt nadf
+```
+```julia; echo=false; results="hidden"
+CSV.write(joinpath(outpath, "age_neuroactive_correlations.csv"), nadf)
+```
+
+
+# Cognitive Scores
+
+```julia
+cog_filter = map(row-> row.correctedAgeDays > 365 && !ismissing(row.cogScore), eachrow(kidsmeta))
+cogmeta = kidsmeta[cog_filter, :]
+cog = view(kids, sites=cog_filter)
+
+occ = occurrences(cog)
+
+cogcors = cor(cogmeta.cogScore, occ, dims=2)'
+cogcors = [isnan(c) ? 0. : c for c in cogcors]
+cogrank = sortperm(cogcors)
+describe(cogcors)
+```
+
+
+```julia
+scatter(invperm(cogrank), cogcors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with Cognitive Score", primary=false, color=color1[2])
+title!("UniRef90 cogScore correlations")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_cog_correlations.svg"))
+```
+
+```julia
+abxr = CSV.read("data/uniprot/uniprot-abxr.tsv")
+
+features = match.(r"UniRef90_(\w+)", featurenames(kids))
+features = map(f-> isnothing(f) ? "unknown" : String(f.captures[1]), features)
+
+abx_pos = findall(x-> x in abxr.Entry, features)
+ks = ApproximateTwoSampleKSTest(cogcors[cogrank[abx_pos]], cogcors[cogrank])
+```
+```julia
+m = round(mean(cogcors[abx_pos]), sigdigits=4)
+p = round(pvalue(ks), sigdigits=4)
+
+scatter!(invperm(cogrank)[abx_pos], cogcors[abx_pos], markersize=5, color=color1[3], label="abxR genes")
+annotate!(1000, 0.2, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_cog_correlations_abxR.svg"))
+```
+
+
+```julia
+carbs = CSV.read("data/uniprot/uniprot-carbohydrate.tsv")
+carbs_pos = findall(x-> x in carbs.Entry, features)
+ks = ApproximateTwoSampleKSTest(cogcors[cogrank[carbs_pos]], cogcors[cogrank])
+```
+```julia
+m = round(mean(cogcors[carbs_pos]), sigdigits=4)
+p = pvalue(ks)
+scatter(invperm(cogrank), cogcors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with cog", primary=false, color=color1[2],
+    title = "UniRef90 cog correlations")
+scatter!(invperm(cogrank)[carbs_pos], cogcors[carbs_pos], markersize=5, color=color1[4], label="Carbohydrate metabolism genes")
+annotate!(1000, 0.2, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_cog_correlations_carbs.svg"))
+```
+
+
+```julia
+@show mean(cogcors[carbs_pos])
+ApproximateTwoSampleKSTest(cogcors[cogrank[carbs_pos]], cogcors[cogrank])
+```
+
+```julia
+fa = CSV.read("data/uniprot/uniprot-fa.tsv")
+fa_pos = findall(x-> x in fa.Entry, features)
+ks = ApproximateTwoSampleKSTest(cogcors[cogrank[fa_pos]], cogcors[cogrank])
+```
+```julia
+m = round(mean(cogcors[fa_pos]), sigdigits=4)
+p = round(pvalue(ks), sigdigits=4)
+scatter(invperm(cogrank), cogcors, markersize=1, markerstrokecolor=:match,
+    xlabel="rank", ylabel="Pearson correlation with cog", primary=false, color=color1[2],
+    title = "UniRef90 cog correlations")
+scatter!(invperm(cogrank)[fa_pos], cogcors[fa_pos], markersize=5, color=color1[5], label="Fatty Acid metabolism genes")
+annotate!(1000, 0.2, "mean_cor = $m\npvalue=$p", :left)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "uniref90_cog_correlations_fas.svg"))
 ```
 
 ```julia; results="hidden"
+cognadf = DataFrame(mgb=String[], description=String[], n_unirefs = Int[], mean_cor=Float64[], pvalue=Float64[])
+
+for (desc, (mgbs, kos)) in neuroactive
+    unirefs = []
+    for ko in kos
+        ko in keys(kos2uniref) && append!(unirefs, kos2uniref[ko])
+    end
+    pos = findall(f-> f in unirefs, features)
+
+    n = length(pos)
+    n > 2 || continue
+
+    @show length(pos)
+    ks = ApproximateTwoSampleKSTest(cogcors[cogrank[pos]], cogcors[cogrank])
+    m = round(mean(cogcors[pos]), sigdigits=4)
+    p = round(pvalue(ks), sigdigits=4)
+
+    push!(cognadf, (mgb, desc, n, m, p))
+    plt = scatter(invperm(cogrank), cogcors, markersize=1, markerstrokecolor=:match,
+        xlabel="rank", ylabel="Pearson correlation with cogScore", primary=false, color=color1[2],
+        title = "UniRef90 cogScore correlations")
+    scatter!(invperm(cogrank)[pos], cogcors[pos],
+        markersize=4, color=color1[1],
+        label="$desc")
+    annotate!(1000, 0.2, "n = $n\nmean_cor = $m\npvalue=$p", :left)
+    display(plt)
+    savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).svg"))
+end
+
+@pt cognadf
+```
+```julia; echo=false; results="hidden"
+CSV.write(joinpath(outpath, "cogscore_neuroactive_correlations.csv"), cognadf)
+```
+
+
+
+# Pfams
+
+```julia; results="hidden"
 pfam = CSV.read("data/engaging/merged/batch1-10_pfam_names_unstratified.tsv")
-names!(pfam, map(n-> Symbol(resolve_sampleID(replace(String(n), "_Abundance-RPKs"=>"")).sample), names(pfam)))
-# ~ 5% prevalence filter
-pfam = pfam[map(row-> sum(x-> x > 0, row[Not(1)]) > ncol(pfam) * .05, eachrow(pfam)), :]
+names!(pfam, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RPKs"=>"")).sample), names(pfam)))
 pfam = abundancetable(pfam)
 relativeabundance!(pfam)
+uecs = view(ecs_abt, sites=getfield.(usamples, :sample))
+
+ecs_moms = view(uecs, sites=getfield.(momsamples, :sample))
+ecs_kids = view(uecs, sites = map(s-> s in kidsmeta.sample, sitenames(uecs)))
 ```
 
 
