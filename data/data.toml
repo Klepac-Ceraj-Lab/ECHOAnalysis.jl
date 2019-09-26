@@ -33,6 +33,12 @@ date = "2019-09-01"
 description = "Table provided by Sean through email (subject 'brain data')"
 path = "data/brain/microbiome_corticalVolumes_bambam.csv"
 
+[tables.brain.gbm]
+name = "Gut brain modules"
+date = "2019-09-19"
+description = "ref: https://doi.org/10.1038/s41564-018-0337-x"
+path = "data/uniprot/gba.txt"
+
 [tables.brain.regions]
 name = "Mapping of High res structural data columns to broader regions"
 date = "2019-09-12"
@@ -54,8 +60,8 @@ path = "data/uniprot/uniprot-abxr.tsv"
 [tables.uniprot.fa]
 name = "Fatty acid metabolism"
 date = "2019-08-26"
+description = "taxonomy:\"Bacteria [2]\" (keyword:\"Fatty acid biosynthesis [KW-0275]\" OR keyword:\"Fatty acid metabolism [KW-0276]\") AND reviewed:yes"
 path = "data/uniprot/uniprot-fa.tsv"
-xdescription = "taxonomy:\"Bacteria [2]\" (keyword:\"Fatty acid biosynthesis [KW-0275]\" OR keyword:\"Fatty acid metabolism [KW-0276]\") AND reviewed:yes"
 
 [tables.metadata]
 path = "data/metadata"
@@ -63,7 +69,7 @@ path = "data/metadata"
     [tables.metadata.filemakerdb]
     name = "FilemakerPro Database Export"
     log = "data/metadata/filemakerdb.log"
-    date = "2019-06-13"
+    date = "2019-09-19"
     description = "Using FilemakerPro Database from {{date}} Exported all fields under\n        - \"Allergies\"\n        - \"AntibioticsPrescriptions\"\n        - \"BasicFamilyAndChild\"\n        - \"Bayley's\"\n        - \"BreastfeedingDone\"\n        - \"BreastfeedingStill\"\n        - \"ChildBodyComposition\"\n        - \"Delivery\"\n        - \"Fecal_with_Ethanol\"\n        - \"FecalSampleCollection\"\n        - \"Mullen\"\n        - \"Parent_Demographics\"\n        - \"Pets\"\n        - \"Pregnancy\"\n        - \"PrebioticsProbiotics\"\n        - \"TimepointInfo\"\n        - \"WeightHeight\"\n        - \"WISC_IV\"\n        - \"Wisc_V\"\n        - \"WPPSI_III\"\n        - \"Wppsi_IV\"\n    to filemakerall.xlsx. Then ran metascrub.jl (See Notebook 1)\"\n    path = \"data/metadata/filemakerdb.csv"
     path = "data/metadata/filemakerdb.csv"
 
@@ -75,15 +81,15 @@ path = "data/metadata"
 
     [tables.metadata.all]
     name = "Fecal Samples DNA processing"
-    date = "2019-06-24"
+    date = "2019-09-19"
     description = "Merged filemakerdb with fecal_samples (see Notebook 2)"
     path = "data/metadata/merged.csv"
 
 [filemaker]
 name = "Deidentified FilemakerPro database"
-date = "2019-08-07"
+date = "2019-09-13"
 description = "Obtained from ABI on {{date}}"
-path = "data/metadata/20190807_deidentified.fmp12"
+path = "data/metadata/20190913_deidentified.fmp12"
 
 [figures]
 path = "data/figures"
