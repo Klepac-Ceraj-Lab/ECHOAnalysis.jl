@@ -13,10 +13,8 @@ that is, what genes are present in a given community.
 These profiles were generated with [HUMANn2](http://huttenhower.sph.harvard.edu/humann2).
 
 ```julia; echo=false; results="hidden"
-using Revise, OhMyREPL, Pkg
-Pkg.activate("analysis")
-```
-```julia; echo=false; results="hidden"
+ENV["GKSwstype"] = "100" # hide
+
 using ECHOAnalysis
 using Microbiome
 using BiobakeryUtils
@@ -410,7 +408,7 @@ savefig(joinpath(figures, "uniref90_age_correlations_neuroactive.svg"))
 
 
 ```julia
-nadf = DataFrame(mgb=String[], description=String[], n_unirefs = Int[], mean_cor=Float64[], pvalue=Float64[])
+nadf = DataFrame(description=String[], n_unirefs = Int[], mean_cor=Float64[], pvalue=Float64[])
 
 for (desc, (mgbs, kos)) in neuroactive
     unirefs = []
@@ -427,7 +425,7 @@ for (desc, (mgbs, kos)) in neuroactive
     m = round(mean(agecors[pos]), sigdigits=4)
     p = round(pvalue(ks), sigdigits=4)
 
-    push!(nadf, (mgb, desc, n, m, p))
+    push!(nadf, (desc, n, m, p))
     plt = scatter(invperm(agerank), agecors, markersize=1, markerstrokecolor=:match,
         xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
         title = "UniRef90 age correlations")
@@ -535,7 +533,7 @@ savefig(joinpath(figures, "uniref90_cog_correlations_fas.svg"))
 ```
 
 ```julia; results="hidden"
-cognadf = DataFrame(mgb=String[], description=String[], n_unirefs = Int[], mean_cor=Float64[], pvalue=Float64[])
+cognadf = DataFrame(description=String[], n_unirefs = Int[], mean_cor=Float64[], pvalue=Float64[])
 
 for (desc, (mgbs, kos)) in neuroactive
     unirefs = []
@@ -552,7 +550,7 @@ for (desc, (mgbs, kos)) in neuroactive
     m = round(mean(cogcors[pos]), sigdigits=4)
     p = round(pvalue(ks), sigdigits=4)
 
-    push!(cognadf, (mgb, desc, n, m, p))
+    push!(cognadf, (desc, n, m, p))
     plt = scatter(invperm(cogrank), cogcors, markersize=1, markerstrokecolor=:match,
         xlabel="rank", ylabel="Pearson correlation with cogScore", primary=false, color=color1[2],
         title = "UniRef90 cogScore correlations")
@@ -577,44 +575,10 @@ CSV.write(joinpath(outpath, "cogscore_neuroactive_correlations.csv"), cognadf)
 ```julia; results="hidden"
 pfam = CSV.read("data/engaging/merged/batch1-10_pfam_names_unstratified.tsv")
 names!(pfam, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RPKs"=>"")).sample), names(pfam)))
-pfam = abundancetable(pfam)
+pfam_abt = abundancetable(pfam)
 relativeabundance!(pfam)
-uecs = view(ecs_abt, sites=getfield.(usamples, :sample))
+upfam = view(pfam_abt, sites=getfield.(usamples, :sample))
 
-ecs_moms = view(uecs, sites=getfield.(momsamples, :sample))
-ecs_kids = view(uecs, sites = map(s-> s in kidsmeta.sample, sitenames(uecs)))
-```
-
-
-```julia
-allsamples = resolve_sampleID.(samplenames(kos))
-uabt = view(kos, sites=getfield.(uniquesamples(allsamples, takefirst=true), :sample))
-usamples = resolve_sampleID.(samplenames(uabt))
-umeta = load_metadata(datatoml, samples=usamples)
-
-kidssamples = uniquesamples(allsamples,
-                    samplefilter=s-> startswith(s, "C"),
-                    takefirst=true, identifiers=[:subject])
-momsamples = uniquesamples(allsamples,
-                    samplefilter=s-> startswith(s, "M"),
-                    takefirst=true, identifiers=[:subject])
-
-
-kids = view(kos, sites=getfield.(kidssamples, :sample))
-moms = view(kos, sites=getfield.(momsamples, :sample))
-
-kidsmeta = load_metadata(datatoml, samples=kidssamples)
-momsmeta = load_metadata(datatoml, samples=momsamples)
-```
-```julia
-udm = pairwise(BrayCurtis(), uabt, dims=2)
-
-notmissing = .!ismissing.(umeta.ageLabel)
-
-nmumds = fit(MDS, udm[notmissing, notmissing], distances=true)
-plot(nmumds, group=String.(umeta.ageLabel[notmissing]), legend=:bottomleft)
-title!("Functional Profiles (KOs)")
-```
-```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "kos_unique_pcoa.svg"))
+pfam_moms = view(upfam, sites=getfield.(momsamples, :sample))
+pfam_kids = view(upfam, sites = map(s-> s in kidsmeta.sample, sitenames(uecs)))
 ```

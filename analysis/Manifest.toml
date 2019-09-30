@@ -263,9 +263,9 @@ version = "0.1.0"
 
 [[DoubleFloats]]
 deps = ["GenericSVD", "GenericSchur", "LinearAlgebra", "Polynomials", "Quadmath", "Random", "Requires"]
-git-tree-sha1 = "bf3094f0d9f80e2804399613480a7d89cc3f05e8"
+git-tree-sha1 = "86c04127c22739e8a3b47e6c71faa49b381c2178"
 uuid = "497a8b3b-efae-58df-a0af-a86822472b78"
-version = "0.9.9"
+version = "0.9.10"
 
 [[ECHOAnalysis]]
 deps = ["ArgParse", "BiobakeryUtils", "CSV", "ColorBrewer", "Colors", "DataFrames", "DocumenterTools", "LoggingExtras", "Microbiome", "MicrobiomePlots", "MultipleTesting", "MultivariateStats", "Pkg", "RecipesBase", "XLSX"]
@@ -308,9 +308,9 @@ uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays"]
-git-tree-sha1 = "4c707c87ddd3199fc5624d5c98b2c706e4d00675"
+git-tree-sha1 = "bc45e8feb90728a35194f844ef6aadc688e31881"
 uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "0.7.0"
+version = "0.7.1"
 
 [[FixedPointNumbers]]
 git-tree-sha1 = "d14a6fa5890ea3a7e5dcab6811114f132fec2b4b"
@@ -319,9 +319,9 @@ version = "0.6.1"
 
 [[Formatting]]
 deps = ["Printf"]
-git-tree-sha1 = "aef8983c0f77c84ae77ced1bb3ecf5ab7d687700"
+git-tree-sha1 = "a0c901c29c0e7c763342751c0a94211d56c0de5c"
 uuid = "59287772-0a20-5a39-b81b-1366585eb4c0"
-version = "0.4.0"
+version = "0.4.1"
 
 [[ForwardDiff]]
 deps = ["CommonSubexpressions", "DiffResults", "DiffRules", "InteractiveUtils", "LinearAlgebra", "NaNMath", "Random", "SparseArrays", "SpecialFunctions", "StaticArrays", "Test"]
@@ -681,9 +681,9 @@ version = "0.2.2"
 
 [[PrettyTables]]
 deps = ["Crayons", "Formatting", "Parameters", "Reexport", "Tables"]
-git-tree-sha1 = "ddb0c844dd21725ffd850e1bae1573cd9d6abd3a"
+git-tree-sha1 = "2268242f037e0290e87d55c02060320c1d0d6b03"
 uuid = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
-version = "0.5.1"
+version = "0.6.0"
 
 [[Printf]]
 deps = ["Unicode"]
@@ -700,10 +700,10 @@ uuid = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
 version = "2.0.3"
 
 [[Quadmath]]
-deps = ["Random", "Requires"]
-git-tree-sha1 = "0d177ab3217bd6347d01bdf56e5da0571222d7f3"
+deps = ["Printf", "Random", "Requires"]
+git-tree-sha1 = "99293530380620c20a1d187e6bdc03a88b858bbf"
 uuid = "be4d8f0f-7fa4-5f49-b795-2f01399ab2dd"
-version = "0.5.0"
+version = "0.5.1"
 
 [[RCall]]
 deps = ["CategoricalArrays", "Conda", "DataFrames", "DataStructures", "Dates", "Libdl", "Missings", "REPL", "Random", "Requires", "StatsModels", "WinReg"]
