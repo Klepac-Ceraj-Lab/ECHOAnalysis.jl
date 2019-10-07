@@ -17,7 +17,7 @@ This function returns the `NamedTuple` `(sample="C0040_3F_1A", subject=40, timep
 """
 function resolve_sampleID(sid::Union{AbstractString,Symbol})
     sid = String(sid)
-    m = match(r"^(([CM])(\d+)[_\-](\d)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.+", sid)
+    m = match(r"^(([CM])(\d+)[_\-](\d)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sid)
 
 
     if m == nothing
