@@ -27,10 +27,11 @@ taxfilter!(tax)
 
 abt = abundancetable(tax)
 relativeabundance!(abt)
+
+ss = samplenames(abt)
+
 allsamples = resolve_sampleID.(samplenames(abt))
-uabt = view(abt, sites=getfield.(uniquesamples(allsamples, takefirst=true), :sample))
-usamples = resolve_sampleID.(samplenames(uabt))
-umeta = load_metadata(datatoml, samples=usamples)
+usamples = uniquesamples(samplenames(abt))
 
 
 kids = view(abt, sites=getfield.(
