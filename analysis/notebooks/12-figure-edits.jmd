@@ -15,13 +15,17 @@ using BiobakeryUtils
 using DataFrames
 using Distances
 using Clustering
+using MultivariateStats
 using Statistics
 using StatsBase
+using Combinatorics
+using StatsPlots
 using Random
+using CSV
 
 (outpath, figures) = notebookpaths!(12)
 ```
-```julia
+```julia; results="hidden"
 tax = load_taxonomic_profiles()
 taxfilter!(tax)
 
@@ -31,66 +35,102 @@ relativeabundance!(abt)
 ss = samplenames(abt)
 
 allsamples = resolve_sampleID.(samplenames(abt))
-usamples = uniquesamples(samplenames(abt))
+
+kidsamples = uniquesamples(allsamples, samplefilter=s-> startswith(s, "C"), identifiers=[:subject])
+momsamples = uniquesamples(allsamples, samplefilter=s-> startswith(s, "M"), identifiers=[:subject])
+firstsamples = [kidsamples; momsamples]
+
+firsts = view(abt, sites=getfield.(firstsamples, :sample))
+kids = view(abt, sites=getfield.(kidsamples, :sample))
+moms = view(abt, sites=getfield.(momsamples, :sample))
+
+firstsmeta = load_metadata(datatoml, samples=firstsamples)
+kidsmeta = load_metadata(datatoml, samples=kidssamples)
+momsmeta = load_metadata(datatoml, samples=momsamples)
+```
 
 
-kids = view(abt, sites=getfield.(
-                uniquesamples(allsamples,
-                samplefilter=s-> startswith(s, "C"),
-                takefirst=true), :sample))
-moms = view(abt, sites=getfield.(
-                uniquesamples(allsamples,
-                samplefilter=s-> startswith(s, "M"),
-                takefirst=true), :sample))
+```julia
+uniref_unstrat = "data/engaging/merged/batch1-10_genefamilies_relab_unstratified.tsv"
+uniref_samples = samples_from_file(uniref_unstrat)
+unirefs = DataFrame(:uniref=>String[], (Symbol(getfield(s, :sample))=>Float64[] for s in firstsamples)...)
+keep = [[1]; findall(c-> in(c, uniref_samples), firstsamples) .+ 1 ]
+for row in CSV.Rows(uniref_unstrat)
+    row = view(row, keep)
+    push!(unirefs, (row[1], (parse(Float64, row[i]) for i in 2:length(row))...))
+end
 
-kidssamples = resolve_sampleID.(samplenames(kids))
-momsamples = resolve_sampleID.(samplenames(moms))
+unirefs=abundancetable(unirefs)
 
-kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)))
-momsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(moms)))
+accessory = view(unirefs, species = [0.05 < prevalence(row, 0.) < 0.85 for row in eachrow(occurrences(unirefs))]
+    )
+println.(sitenames(accessory))
+```
 
-fkids = view(abt, sites=getfield.(
-                uniquesamples(allsamples, identifiers=[:subject],
-                samplefilter=s-> startswith(s, "C"),
-                takefirst=true), :sample))
+```julia; results="hidden"
+taxdm = pairwise(BrayCurtis(), unique)
+unirefdm = pairwise(BrayCurtis(), unirefs)
+accessorydm = pairwise(BrayCurtis(), accessory)
 
-fmoms = view(abt, sites=getfield.(
-                uniquesamples(allsamples, identifiers=[:subject],
-                samplefilter=s-> startswith(s, "M"),
-                takefirst=true), :sample))
 
-fkidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(fkids)))
-fmomsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(fmoms)))
+taxmds = fit(MDS, taxdm, distances=true)
+unirefmds = fit(MDS, unirefdm, distances=true)
+accessorymds = fit(MDS, accessorydm, distances=true)
+plot(taxmds, group = uniquemeta.ageLabel, color=color2', legend=:topright)
+plot(unirefmds, group = uniquemeta.ageLabel, color=color2', legend=:bottomright )
+plot(accessorymds, group = uniquemeta.ageLabel, color=color2', legend=:bottomleft)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "accessory-genes-pcoa-agelabels.svg"))
+```
+
+```julia
+scatter(projection(taxmds)[:,1],projection(accessorymds)[:,1], group = uniquemeta.ageLabel,
+    color=color2', legend=:bottomright,
+    xlabel="Taxonomic Profile MDS 1",
+    ylabel="Functional Profile MDS 1")
 ```
 ```julia
-sum(!ismissing, umeta.subject |> unique)
-nsamples(kids)
-nsamples(moms)
-
-
-sum(!ismissing, kidsmeta.white_matter_volume)
-sum(!ismissing, kidsmeta.cerebellar)
-
-sum(x-> !ismissing(x) && x / 365 < 2, kidsmeta.correctedAgeDays)
-sum(x-> x > 1, by(umeta, :subject) do df
-    size(df, 1) end.x1)
-
-sum(x-> x > 1, by(kidsmeta, :subject) do df
-    size(df, 1) end.x1)
-sum(x-> x > 1, by(momsmeta, :subject) do df
-    size(df, 1) end.x1)
-
-
-sum(x-> x > 1, by(filter(row-> match(r"^C\d+_\dF_1A", row[:sample]) != nothing,
-    meta), :subject) do df
-        size(df, 1)
-    end.x1)
-
-sum(x-> x > 1, by(filter(row-> match(r"^M\d+_\dF_1A", row[:sample]) != nothing,
-    meta), :subject) do df
-        size(df, 1)
-    end.x1)
+savefig(joinpath(figures, "tax-func-mds.svg"))
 ```
+
+
+```julia; results="hidden"
+function labeldiff(dm, labels)
+    u = sort(unique(labels))
+    d = Dict(u1 => Dict() for u1 in u)
+    for (l1 , l2) in multiset_permutations(repeat(u,2), 2)
+        l1pos = findall(isequal(l1), labels)
+        l2pos = findall(isequal(l2), labels)
+        ds = vec(dm[l1pos, l2pos])
+        d[l1][l2] = ds
+    end
+    d
+end
+
+taxdiffs = labeldiff(taxdm, String.(firstsmeta.ageLabel))
+funcdiffs = labeldiff(unirefdm, String.(firstsmeta.ageLabel))
+
+keypairs = multiset_permutations(repeat(sort(collect(keys(taxdiffs))),2), 2)
+```
+```julia
+boxplot([taxdiffs[k][l] for (k, l) in keypairs], xticks = (1:length(keypairs), ["$k-$l" for (k,l) in keypairs]),
+    xrotation=45, color=color2[1:4]', legend=false, ylabel="Bray Curtis dissimilarity",
+    ylims=(0., 1.))
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax-diffs-boxplot.svg"))
+```
+
+```julia
+boxplot([funcdiffs[k][l] for (k, l) in keypairs], xticks = (1:length(keypairs), ["$k-$l" for (k,l) in keypairs]),
+    xrotation=45, color=color2[1:4]', legend=false, ylabel="Bray Curtis dissimilarity",
+    ylims=(0., 1.))
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "func-diffs-boxplot.svg"))
+```
+
 
 Cluster/permutation analysis
 

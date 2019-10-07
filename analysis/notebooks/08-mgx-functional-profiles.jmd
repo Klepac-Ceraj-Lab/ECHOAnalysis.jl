@@ -66,7 +66,7 @@ filesize(ko_path) / 1e9
 ```
 
 ```julia;
-samples = samples_from_file(uniref_path)
+ 
 samples[1:5]
 ```
 
