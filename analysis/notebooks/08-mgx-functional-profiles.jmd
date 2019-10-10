@@ -26,6 +26,7 @@ using Distances
 using PrettyTables
 using MultivariateStats
 using HypothesisTests
+using MultipleTesting
 using CSV
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
@@ -63,7 +64,7 @@ filesize(pfam_path) / 1e9
 filesize(ko_path) / 1e9
 ```
 
-```julia;
+```julia
 samples = samples_from_file(uniref_path)
 samples[1:5]
 ```
@@ -96,11 +97,12 @@ keep = [[1]; findall(c-> in(c, names(unirefs)), Symbol.(getfield.(samples, :samp
 for row in CSV.Rows(uniref_unstrat)
     occursin("NO_NAME", row[1]) && continue
     row = row[keep]
-    push!(unirefs, (row[1], (parse(Float64, row[i]) for i in 2:length(row))...))
+    rownums = (parse(Float64, row[i]) for i in 2:length(row))
+    all(isequal(0.), rownums) && continue
+    push!(unirefs, (row[1], rownums...))
 end
 @assert !any(row-> occursin("GeneID", row[1]), eachrow(unirefs))
 @assert !any(row-> occursin("UniRef50", row[1]), eachrow(unirefs))
-
 
 unirefs = abundancetable(unirefs)
 uniref_meta = load_metadata(datatoml, samples=[kidallsamples; momallsamples])
@@ -109,9 +111,11 @@ kidallmeta = load_metadata(datatoml, samples=kidallsamples)
 momallmeta = load_metadata(datatoml, samples=momallsamples)
 
 moms = view(unirefs, sites=getfield.(momallsamples, :sample))
+moms = view(moms, species= map(row-> !all(isequal(0.), row), eachrow(occurrences(moms))))
 
 dropmissing!(kidallmeta, :correctedAgeDays)
 kids = view(unirefs, sites = map(s-> s in kidallmeta.sample, sitenames(unirefs)))
+kids = view(kids, species= map(row-> !all(isequal(0.), row), eachrow(occurrences(kids))))
 ```
 
 Because the microbial taxonomic diversity increases with age,
@@ -184,7 +188,7 @@ savefig(joinpath(figures, "all_genes_unique_agelabel_pcoa.svg"))
 ```
 
 ```julia
-uaccessory = view(uunirefs, sites=getfield.([kidsamples;momsamples], :sample))
+uaccessory = view(accessory, sites=getfield.([kidsamples;momsamples], :sample))
 dm = pairwise(BrayCurtis(), uaccessory)
 mds = fit(MDS, dm, distances=true)
 
@@ -206,16 +210,11 @@ momsmeta = load_metadata(datatoml, samples=momsamples)
 moms = view(uaccessory, sites=getfield.(momsamples, :sample))
 kids = view(uaccessory, sites=map(s-> s in kidsmeta.sample, sitenames(unirefs)))
 occ = occurrences(kids)
-
+@assert !any(row-> all(isequal(0.), row), eachrow(occ))
 ```
 
 ```julia
 agecors = cor(kidsmeta.correctedAgeDays, occ, dims=2)'
-nans = findall(isnan, agecors)
-nan_abt = view(kids, species=nans)
-
-describe(occurrences(nan_abt))
-
 agecors = [isnan(c) ? 0 : c for c in agecors]
 agerank = sortperm(agecors)
 describe(agecors)
@@ -242,10 +241,12 @@ mwu = MannWhitneyUTest(agecors[abx_pos], agecors[Not(abx_pos)])
 m = round(median(agecors[abx_pos]), sigdigits=4)
 p = round(pvalue(mwu), sigdigits=4)
 
-scatter(invperm(agerank)[1:200:end], agecors[1:200:end], markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
-    title = "UniRef90 age correlations")
-scatter!(invperm(agerank)[abx_pos], agecors[abx_pos], markersize=5, color=color1[3], label="abxR genes")
+itp = LinearInterpolation(eachindex(agecors), agecors[agerank])
+
+plot(itp, xlabel="rank", ylabel="Pearson correlation with age",
+    primary=false, color=color1[2], title = "UniRef90 age correlations")
+scatter!(invperm(agerank)[abx_pos], agecors[abx_pos], markersize=5, color=color1[3], label="abxR genes",
+    legend=:bottomright)
 annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
@@ -277,9 +278,9 @@ mwu = MannWhitneyUTest(agecors[carbs_pos], agecors[Not(carbs_pos)])
 ```julia
 m = round(median(agecors[carbs_pos]), sigdigits=4)
 p = round(pvalue(mwu), sigdigits=4)
-scatter(invperm(agerank)[1:200:end], agecors[1:200:end], markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
-    title = "UniRef90 age correlations")
+plot(itp, xlabel="rank", ylabel="Pearson correlation with age",
+        primary=false, color=color1[2], title = "UniRef90 age correlations")
+
 scatter!(invperm(agerank)[carbs_pos], agecors[carbs_pos], markersize=5, color=color1[4], label="Carbohydrate metabolism genes")
 annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 ```
@@ -297,9 +298,9 @@ mwu = MannWhitneyUTest(agecors[fa_pos], agecors[Not(fa_pos)])
 ```julia
 m = round(median(agecors[fa_pos]), sigdigits=4)
 p = round(pvalue(mwu), sigdigits=4)
-scatter(invperm(agerank)[1:200:end], agecors[1:200:end], markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
-    title = "UniRef90 age correlations")
+plot(itp, xlabel="rank", ylabel="Pearson correlation with age",
+        primary=false, color=color1[2], title = "UniRef90 age correlations")
+
 scatter!(invperm(agerank)[fa_pos], agecors[fa_pos], markersize=5, color=color1[5], label="Fatty Acid metabolism genes")
 annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 ```
@@ -385,7 +386,7 @@ kos = abundancetable(kos)
 
 ukos = view(kos, sites=getfield.([kidsamples; momsamples], :sample),
         # 5% prevalence filter
-        species=map(row-> 0.05 < prevalence(row) < 0.85,
+        species=map(row-> 0.05 < prevalence(row),
         eachrow(occurrences(kos))))
 
 kos_moms = view(kos, sites=getfield.(momsamples, :sample))
@@ -446,9 +447,9 @@ mwu = MannWhitneyUTest(agecors[neuroactive_pos], agecors[Not(neuroactive_pos)])
 m = round(median(agecors[neuroactive_pos]), sigdigits=4)
 p = round(pvalue(mwu), sigdigits=3)
 
-scatter(invperm(agerank)[1:200:end], agecors[1:200:end], markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
-    title = "UniRef90 age correlations")
+plot(itp, xlabel="rank", ylabel="Pearson correlation with age",
+        primary=false, color=color1[2], title = "UniRef90 age correlations")
+
 scatter!(invperm(agerank)[neuroactive_pos], agecors[neuroactive_pos],
     markersize=4, color=color1[5],
     label="All neuroactive genes")
@@ -466,7 +467,7 @@ dm = pairwise(BrayCurtis(), unirefs)
 mds = fit(MDS, dm, distances=true)
 
 plot(mds, zcolor=uniref_meta.neuroactive_sum, color=:plasma,
-    legend=false, title="Neuroactive genes")
+    title="Neuroactive genes")
 ```
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "neuroactive_pcoa.svg"))
@@ -486,15 +487,14 @@ for (desc, (mgbs, kos)) in neuroactive
     n = length(pos)
     n > 2 || continue
 
-    @show length(pos)
     mwu = MannWhitneyUTest(agecors[pos], agecors[Not(pos)])
     m = round(median(agecors[pos]), sigdigits=4)
     p = round(pvalue(mwu), sigdigits=4)
 
     push!(nadf, (desc, n, m, p, pos))
-    plt = scatter(invperm(agerank)[1:200:end], agecors[1:200:end], markersize=1, markerstrokecolor=:match,
-        xlabel="rank", ylabel="Pearson correlation with age", primary=false, color=color1[2],
-        title = "UniRef90 age correlations")
+    plt = plot(itp, xlabel="rank", ylabel="Pearson correlation with age",
+            primary=false, color=color1[2], title = "UniRef90 age correlations")
+
     scatter!(invperm(agerank)[pos], agecors[pos],
         markersize=4, color=color1[1],
         label="$desc")
@@ -502,7 +502,7 @@ for (desc, (mgbs, kos)) in neuroactive
     display(plt)
     savefig(joinpath(figures, "uniref90_age_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).svg"))
 end
-
+nadf.qvalue = adjust(nadf.pvalue, BenjaminiHochberg())
 @pt nadf
 ```
 ```julia
@@ -511,20 +511,20 @@ boxplot([agecors[pos] for pos in (abx_pos, carbs_pos, fa_pos, 1:length(agecors))
     ylabel="Median Age Correlation")
 ```
 ```julia; echo=false; results="hidden"
-CSV.write(joinpath(outpath, "age_neuroactive_correlations.csv"), nadf)
+CSV.write(joinpath(outpath, "age_metab_correlations.csv"), nadf)
 ```
 
 ```julia
-sort!(nadf, :description)
+sort!(nadf, :median)
 plt = boxplot([agecors[pos] for pos in nadf.idx], color=:lightgrey,
     legend=false, xticks=(1:nrow(nadf), nadf.description), xrotation=45,
     ylabel="Median Age Correlation")
 for (i, row) in enumerate(eachrow(nadf))
-    if row.pvalue < 0.001
+    if row.qvalue < 0.005
         annotate!(i, 0.32, "**", align=:center)
-    # elseif row.pvalue < 0.01
+    # elseif row.qvalue < 0.01
     #     annotate!(i, 0.32, "**", align=:center)
-    elseif row.pvalue < 0.05
+elseif row.qvalue < 0.05
         annotate!(i, 0.32, "*", align=:center)
     end
 end
@@ -552,7 +552,7 @@ describe(cogcors)
 
 
 ```julia
-scatter(invperm(cogrank)[1:500:end], cogcors[1:500:end], markersize=1, markerstrokecolor=:match,
+scatter(invperm(cogrank), cogcors, markersize=1, markerstrokecolor=:match,
     xlabel="rank", ylabel="Pearson correlation with Cognitive Score",
     primary=false, color=color1[2])
 title!("UniRef90 cogScore correlations")
@@ -574,9 +574,11 @@ mwu = MannWhitneyUTest(cogcors[abx_pos], cogcors[Not(abx_pos)])
 m = round(median(cogcors[abx_pos]), sigdigits=4)
 p = round(pvalue(mwu), sigdigits=4)
 
-scatter(invperm(cogrank)[1:500:end], cogcors[1:500:end], markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with Cognitive Score", primary=false, color=color1[2],
-    title="UniRef90 cogScore correlations")
+itp = LinearInterpolation(eachindex(cogcors), cogcors[cogrank])
+
+plot(itp, xlabel="rank", ylabel="Pearson correlation with cogscore",
+    primary=false, color=color1[2], title = "UniRef90 cogscore correlations")
+
 scatter!(invperm(cogrank)[abx_pos], cogcors[abx_pos], markersize=5, color=color1[3], label="abxR genes")
 annotate!(1000, 0.2, "median = $m\npvalue=$p", :left)
 ```
@@ -593,9 +595,8 @@ mwu = MannWhitneyUTest(cogcors[carbs_pos], cogcors[Not(carbs_pos)])
 ```julia
 m = round(median(cogcors[carbs_pos]), sigdigits=4)
 p = round(pvalue(mwu), sigdigits=4)
-scatter(invperm(cogrank)[1:500:end], cogcors[1:500:end], markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with cog", primary=false, color=color1[2],
-    title = "UniRef90 cog correlations")
+plot(itp, xlabel="rank", ylabel="Pearson correlation with cogscore",
+    primary=false, color=color1[2], title = "UniRef90 cogscore correlations")
 scatter!(invperm(cogrank)[carbs_pos], cogcors[carbs_pos], markersize=5, color=color1[4], label="Carbohydrate metabolism genes")
 annotate!(1000, 0.2, "median = $m\npvalue=$p", :left)
 ```
@@ -611,9 +612,8 @@ mwu = MannWhitneyUTest(cogcors[fa_pos], cogcors[Not(fa_pos)])
 ```julia
 m = round(median(cogcors[fa_pos]), sigdigits=4)
 p = round(pvalue(mwu), sigdigits=4)
-scatter(invperm(cogrank)[1:500:end], cogcors[1:500:end], markersize=1, markerstrokecolor=:match,
-    xlabel="rank", ylabel="Pearson correlation with cog", primary=false, color=color1[2],
-    title = "UniRef90 cog correlations")
+plot(itp, xlabel="rank", ylabel="Pearson correlation with cogscore",
+    primary=false, color=color1[2], title = "UniRef90 cogscore correlations")
 scatter!(invperm(cogrank)[fa_pos], cogcors[fa_pos], markersize=5, color=color1[5], label="Fatty Acid metabolism genes")
 annotate!(1000, 0.2, "median = $m\npvalue=$p", :left)
 ```
@@ -622,7 +622,7 @@ savefig(joinpath(figures, "uniref90_cog_correlations_fas.svg"))
 ```
 
 ```julia; results="hidden"
-cognadf = DataFrame(description=String[], n_unirefs = Int[], mean_cor=Float64[], pvalue=Float64[], idx=[])
+cognadf = DataFrame(description=String[], n_unirefs = Int[], median=Float64[], pvalue=Float64[], idx=[])
 
 for (desc, (mgbs, kos)) in neuroactive
     unirefs = []
@@ -640,9 +640,8 @@ for (desc, (mgbs, kos)) in neuroactive
     p = round(pvalue(mwu), sigdigits=4)
 
     push!(cognadf, (desc, n, m, p, pos))
-    plt = scatter(invperm(cogrank)[1:500:end], cogcors[1:500:end], markersize=1, markerstrokecolor=:match,
-        xlabel="rank", ylabel="Pearson correlation with cogScore", primary=false, color=color1[2],
-        title = "UniRef90 cogScore correlations")
+    plt = plot(itp, xlabel="rank", ylabel="Pearson correlation with cogscore",
+        primary=false, color=color1[2], title = "UniRef90 cogscore correlations")
     scatter!(invperm(cogrank)[pos], cogcors[pos],
         markersize=4, color=color1[1],
         label="$desc")
@@ -650,6 +649,7 @@ for (desc, (mgbs, kos)) in neuroactive
     display(plt)
     savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).svg"))
 end
+cognadf.qvalue = adjust(cognadf.pvalue, BenjaminiHochberg())
 
 @pt cognadf
 ```
@@ -662,20 +662,22 @@ boxplot([cogcors[pos] for pos in (abx_pos, carbs_pos, fa_pos, 1:length(cogcors))
     ylabel="Median cogScore Correlation")
 ```
 ```julia
-sort!(cognadf, :description)
+sort!(cognadf, :median)
 plt = boxplot([cogcors[pos] for pos in cognadf.idx], color=:lightgrey,
     legend=false, xticks=(1:nrow(nadf), cognadf.description), xrotation=45,
     ylabel="Median cogScore Correlation")
-for (i, row) in enumerate(eachrow(nadf))
-    if row.pvalue < 0.001
-        annotate!(i, 0.22, "**", align=:center)
-    # elseif row.pvalue < 0.01
+for (i, row) in enumerate(eachrow(cognadf))
+    if row.qvalue < 0.005
+        annotate!(i, 0.15, "**", align=:center)
+    # elseif row.qvalue < 0.01
     #     annotate!(i, 0.22, "**", align=:center)
-    elseif row.pvalue < 0.05
-        annotate!(i, 0.22, "*", align=:center)
+elseif row.qvalue < 0.05
+        annotate!(i, 0.15, "*", align=:center)
     end
 end
-
+for (d, q) in eachrow(cognadf[!, [:description, :qvalue]])
+    println(d, " ", q)
+end
 display(plt)
 ```
 ```julia; echo=false; results="hidden"
@@ -688,15 +690,14 @@ savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_boxplot.svg"))
 pfam = CSV.read("data/engaging/merged/batch1-10_pfam_names_relab_unstratified.tsv")
 names!(pfam, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RELAB"=>"")).sample), names(pfam)))
 pfam_abt = abundancetable(pfam)
-relativeabundance!(pfam_abt)
-upfam = view(pfam_abt, sites=getfield.(usamples, :sample))
+upfam = view(pfam_abt, sites=getfield.([kidsamples; momsamples], :sample))
 
 pfam_moms = view(upfam, sites=getfield.(momsamples, :sample))
 pfam_kids = view(upfam, sites = map(s-> s in kidsmeta.sample, sitenames(upfam)))
 
-@assert nsampl es(kos_kids) == nrow(kidsmeta)
+@assert nsamples(kos_kids) == nrow(kidsmeta)
 @assert nsamples(kos_moms) == nrow(momsmeta)
-@assert all(i-> samplenames(upfam)[i] == uniref_meta.sample[i], 1:433)
+@assert all(i-> samplenames(upfam)[i] == umeta.sample[i], nsamples(upfam))
 ```
 
 ## Compare to taxonomic profiles
@@ -706,9 +707,60 @@ tax = load_taxonomic_profiles()
 taxfilter!(tax)
 tax = abundancetable(tax)
 relativeabundance!(tax)
-utax = view(tax, sites=getfield.([momsamples; kidsamples], :sample))
+utax = view(tax, sites=getfield.([kidsamples; momsamples], :sample))
 
+funcdm = pairwise(BrayCurtis(), uunirefs)
+funcmds = fit(MDS, funcdm, distances=true)
 taxdm = pairwise(BrayCurtis(), utax)
 taxmds = fit(MDS, taxdm, distances=true)
 
-scatter(projection(taxmds)[:,1], projection(mds)[:,1])
+scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
+    group=umeta.ageLabel, color=color2',
+    xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax_v_func_mds1.svg"))
+```
+```julia
+scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
+    group=umeta.ageLabel, color=color2',
+    xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax_v_func_mds2.svg"))
+```
+
+```julia
+ufeatures = match.(r"UniRef90_(\w+)", featurenames(uunirefs))
+ufeatures = map(f-> isnothing(f) ? "unknown" : String(f.captures[1]), ufeatures)
+
+neuroactive_pos = findall(f-> f in na_uniref, ufeatures)
+na = view(uunirefs, species=neuroactive_pos)
+umeta.neuroactive_sum = sum(occurrences(na), dims=1) |> vec
+
+scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
+    zcolor=umeta.neuroactive_sum,
+    xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax_v_func_mds1.svg"))
+```
+```julia
+scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
+    zcolor=umeta.neuroactive_sum,
+    xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax_v_func_mds2.svg"))
+```
+```julia
+pcopri = occurrences(view(utax, species=["Prevotella_copri"]))|> vec
+scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
+    zcolor=pcopri,
+    xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1")
+
+scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
+    zcolor=pcopri,
+    xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
+
+```
