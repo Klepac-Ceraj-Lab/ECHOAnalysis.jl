@@ -27,6 +27,7 @@ using PrettyTables
 using MultivariateStats
 using HypothesisTests
 using MultipleTesting
+using Interpolations
 using CSV
 
 rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
@@ -85,11 +86,15 @@ Since I know the first column is strings (the features)
 and every other column is floats, I can just do this manually.
 
 
-```julia
+```julia; results="hidden"
 #Get unique samples for each subject and subset by type
 kidallsamples = uniquesamples(samples, samplefilter=s-> startswith(s, "C"))
 momallsamples = uniquesamples(samples, samplefilter=s-> startswith(s, "M"))
+kidallmeta = load_metadata(datatoml, samples=kidallsamples)
+momallmeta = load_metadata(datatoml, samples=momallsamples)
+```
 
+```julia
 cols = [Symbol.(getfield.(kidallsamples, :sample)); Symbol.(getfield.(momallsamples, :sample))]
 unirefs = DataFrame(:uniref=>String[], (s => Float64[] for s in cols)...)
 keep = [[1]; findall(c-> in(c, names(unirefs)), Symbol.(getfield.(samples, :sample))) .+ 1 ]
@@ -107,8 +112,6 @@ end
 unirefs = abundancetable(unirefs)
 uniref_meta = load_metadata(datatoml, samples=[kidallsamples; momallsamples])
 
-kidallmeta = load_metadata(datatoml, samples=kidallsamples)
-momallmeta = load_metadata(datatoml, samples=momallsamples)
 
 moms = view(unirefs, sites=getfield.(momallsamples, :sample))
 moms = view(moms, species= map(row-> !all(isequal(0.), row), eachrow(occurrences(moms))))
@@ -133,7 +136,7 @@ scatter(sort(kidallmeta.correctedAgeDays), num_genes,
     legend=false, xlabel="Age (days)", ylabel="Identified UniRef90s",
     title="Genes by age")
 ```
-```julia
+```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "num_genes_age.svg"))
 ```
 
@@ -147,8 +150,25 @@ just because the original table is so enormous.
 
 ```julia; results="hidden"
 Microbiome.prevalence(a, minabundance::Float64=0.0001) = mean(x-> present(x, minabundance), (y for y in a))
-unirefs = copy(view(unirefs, species=map(row-> 0.05 < prevalence(row, 0.), eachrow(occurrences(unirefs)))))
-accessory = view(unirefs, species=map(row-> prevalence(row, 0.) < 0.85, eachrow(occurrences(unirefs))))
+
+prevfilt = map(eachrow(occurrences(unirefs))) do row
+    prevalence(row[map(x-> x == "1 and under", uniref_meta.ageLabel)], 0.) > 0.05 && return true
+    prevalence(row[map(x-> x != "mom" && x != "1 and under", uniref_meta.ageLabel)], 0.) > 0.05 && return true
+    prevalence(row[map(x-> x == "mom", uniref_meta.ageLabel)], 0.) > 0.05 && return true
+    false
+end
+
+unirefs = copy(view(unirefs, species=prevfilt))
+
+accfilt = map(eachrow(occurrences(unirefs))) do row
+    prevalence(row[map(x-> x == "1 and under", uniref_meta.ageLabel)], 0.) < 0.9 && return true
+    prevalence(row[map(x-> x != "mom" && x != "1 and under", uniref_meta.ageLabel)], 0.) < 0.9 && return true
+    prevalence(row[map(x-> x == "mom", uniref_meta.ageLabel)], 0.) < 0.9 && return true
+    false
+end
+
+
+accessory = view(unirefs, species=accfilt)
 ```
 
 ```julia
@@ -209,6 +229,10 @@ momsmeta = load_metadata(datatoml, samples=momsamples)
 
 moms = view(uaccessory, sites=getfield.(momsamples, :sample))
 kids = view(uaccessory, sites=map(s-> s in kidsmeta.sample, sitenames(unirefs)))
+
+moms = copy(view(moms, species = map(row-> any(x-> x > 0, row), eachrow(occurrences(moms)))))
+kids = copy(view(kids, species = map(row-> any(x-> x > 0, row), eachrow(occurrences(kids)))))
+
 occ = occurrences(kids)
 @assert !any(row-> all(isequal(0.), row), eachrow(occ))
 ```
@@ -259,7 +283,7 @@ savefig(joinpath(figures, "uniref90_age_correlations_abxR.svg"))
 ps = Float64[]
 
 for _ in 1:5000
-    s = sample(1:length(agecors), 100)
+    s = sample(1:length(agecors), 50)
     push!(ps, pvalue(MannWhitneyUTest(agecors[s], agecors[Not(s)])))
 end
 
