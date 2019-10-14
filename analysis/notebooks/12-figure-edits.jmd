@@ -132,7 +132,7 @@ savefig(joinpath(figures, "func-diffs-boxplot.svg"))
 ```
 
 
-Cluster/permutation analysis
+## Cluster/permutation analysis
 
 ```julia
 labels = umeta.ageLabel
@@ -203,263 +203,28 @@ savefig(joinpath(figures, "age-groups-pcoa.svg"))
 ```
 
 
-## Miscellaneous figure plotting
+## Maaslin2 heatmaps
 
 ```julia
-using ECHOAnalysis
-using Microbiome
-using StatsPlots
-using CSV
-using DataFrames
-using ColorBrewer
-
-(outpath, figures) = notebookpaths!(9)
-
-sp_perm = CSV.read("data/notebooks/06/permanovas.csv")
-gf_perm = CSV.read("data/notebooks/08/genefamilies_permanovas.csv")
-ec_perm = CSV.read("data/notebooks/08/ecs_permanovas.csv")
-
-allperm = vcat(sp_perm, gf_perm, ec_perm)
-filter!(row-> row[:variable] != "Subject ID", allperm)
-sort!(allperm, :R2)
-allperm[:perc] = allperm[:R2] .* 100
-allperm[:variable] = map(v-> replace(v, " lafed"=>"formulafed"), allperm[:variable])
-
-xs = filter(row-> row[:feature] == "species", allperm)[:variable]
-
-@df allperm groupedbar(:perc, group=:feature, yticks=0:10, legend=:topleft,
-  color=ColorBrewer.palette("Set2", 3)',
-  xticks=(1:13, xs), xrotation=45)
-
-plot!(title="PERMANOVAs",
-  ylabel="% Variance explainable")
-```
-```julia
-savefig(joinpath(figures, "all_permanovas.svg"))
-CSV.write(joinpath(outpath, "all_permanovas.csv"), allperm)
-```
-
-
-## Top tax heatmap
-
-```julia; echo=false; results="hidden"
-using ECHOAnalysis
-using Microbiome
-using StatsPlots
-using CSV
-using DataFrames
-using ColorBrewer
-using BiobakeryUtils
-using Clustering
-using Distances
-using Statistics
-
-(outpath, figures) = notebookpaths!(9)
-```
-```julia
-tax = load_taxonomic_profiles()
-taxfilter!(tax)
-
-abt = abundancetable(tax)
-relativeabundance!(abt)
-allsamples = resolve_sampleID.(samplenames(abt))
-uabt = view(abt, sites=getfield.(uniquesamples(allsamples, [:subject], takefirst=true), :sample))
-usamples = resolve_sampleID.(samplenames(uabt))
-umeta = load_metadata(datatoml, samples=usamples)
-
-kids = view(abt, sites=getfield.(
-                uniquesamples(allsamples,
-                samplefilter=s-> startswith(s, "C"),
-                takefirst=true), :sample))
-moms = view(abt, sites=getfield.(
-                uniquesamples(allsamples,
-                samplefilter=s-> startswith(s, "M"),
-                takefirst=true), :sample))
-
-kidssamples = resolve_sampleID.(samplenames(kids))
-momsamples = resolve_sampleID.(samplenames(moms))
-
-kidsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(kids)))
-momsmeta = load_metadata(datatoml, samples=resolve_sampleID.(samplenames(moms)))
-```
-
-
-
-```julia
-ku1filter = map(x-> !ismissing(x) && x <= 365, kidsmeta[:correctedAgeDays])
-k12filter = map(x-> !ismissing(x) && 365 < x <= 365*2, kidsmeta[:correctedAgeDays])
-ko2filter = map(x-> !ismissing(x) && 365*2 < x, kidsmeta[:correctedAgeDays])
-
-labels = map(1:size(umeta, 1)) do i
-    startswith(umeta.sample[i], "M") && return "mother"
-    ismissing(umeta[i, :correctedAgeDays]) && return missing
-    umeta[i, :correctedAgeDays] <= 365 && return "under 1 yo"
-    365 < umeta[i, :correctedAgeDays] <= 365*2 && return "1-2 yo"
-    umeta[i, :correctedAgeDays] > 365*2 && return "over 2yo"
-end
-filter!(!ismissing, labels)
-labels = String[labels...]
-
-topbugs = map(row-> prevalence(row) > 0.1 ? mean([x for x in row if x > 0]) > 0.025 : false,
-    eachrow(occurrences(uabt)))
-
-rowdm = map(x-> isnan(x) ? 1. : x, pairwise(Jaccard(), view(uabt, species=topbugs), dims=1))
-rowhcl = hclust(rowdm, linkage=:average, branchorder=:optimal)
-
-ku1 = view(uabt, sites=ku1filter, species=topbugs)
-coldm = pairwise(BrayCurtis(), ku1, dims=2)
-colhcl = hclust(coldm, linkage=:average, branchorder=:optimal)
-
-ku1hm = heatmap(asin.(sqrt.(occurrences(ku1)))[rowhcl.order, colhcl.order],
-        yticks=(1:nfeatures(ku1), featurenames(ku1)[rowhcl.order]),
-        ytickfont=font(6), color=:BuPu)
-
-k12 = view(uabt, sites=k12filter, species=topbugs)
-coldm = pairwise(BrayCurtis(), k12, dims=2)
-colhcl = hclust(coldm, linkage=:average, branchorder=:optimal)
-
-k12hm = heatmap(asin.(sqrt.(occurrences(k12)))[rowhcl.order, colhcl.order],
-        yticks=(1:nfeatures(k12), featurenames(k12)[rowhcl.order]),
-        ytickfont=font(6), color=:BuPu)
-
-ko2 = view(uabt, sites=ko2filter, species=topbugs)
-coldm = pairwise(BrayCurtis(), ko2, dims=2)
-colhcl = hclust(coldm, linkage=:average, branchorder=:optimal)
-
-ko2hm = heatmap(asin.(sqrt.(occurrences(ko2)))[rowhcl.order, colhcl.order],
-        yticks=(1:nfeatures(ko2), featurenames(ko2)[rowhcl.order]),
-        ytickfont=font(6), color=:BuPu)
-
-ms = view(moms, species=topbugs)
-coldm = pairwise(BrayCurtis(), ms, dims=2)
-colhcl = hclust(coldm, linkage=:average, branchorder=:optimal)
-
-mshm = heatmap(asin.(sqrt.(occurrences(ms)))[rowhcl.order, colhcl.order],
-        yticks=(1:nfeatures(ms), featurenames(ms)[rowhcl.order]),
-        ytickfont=font(6), color=:BuPu)
-
-plot(ku1hm, k12hm, ko2hm, mshm, legend=false, yticks = false)
-savefig(joinpath(figures, "agesplit_species_heatmap.svg"))
-
-allcoldm = pairwise(
-            BrayCurtis(),
-            view(uabt, sites=map(i-> startswith(umeta.sample[i], "M") ||
-                                    !ismissing(umeta[i,:correctedAgeDays]),
-                                    1:nrow(umeta)),
-                        species=topbugs),
-             dims=2)
-allcolhcl = hclust(allcoldm, linkage=:average, branchorder=:optimal)
-
-allhm = heatmap(asin.(sqrt.(occurrences(view(uabt, species=topbugs))))[rowhcl.order, allcolhcl.order],
-        yticks=(1:nfeatures(ku1), featurenames(ku1)[rowhcl.order]),
-        ytickfont=font(6), color=:BuPu)
-
-using MicrobiomePlots
-
-plot(allhm,
-    plot(annotationbar(labels[allcolhcl.order], color2[end-4:end])),
-    layout = grid(2,1,heights=[0.9, 0.1]))
-cdict= Dict(l => color2[end-4:end][i] for (i, l) in enumerate(unique(labels)))
-
-cdict["under 1 yo"]
-cdict["1-2 yo"]
-cdict["over 2yo"]
-cdict["mother"]
-
-annotationbar(labels[allcolhcl.order], color2[end-4:end])
-savefig(joinpath(figures, "all_species_heatmap.svg"))
-```
-
-
-```julia
-# separate over 2 and under 2
-missingage = ismissing.(kids.correctedAgeDays)
-over2 = map(a-> !ismissing(a) && a / 365 >= 2, kids.correctedAgeDays)
-under2 = map(a-> !ismissing(a) && a / 365 < 2, kids.correctedAgeDays)
-
-ykids = view(kids, sites=under2, species=filt)
-okids = view(kids, sites=over2, species=filt)
-mkids = view(kids, sites=missingage, species=filt)
-
-ykids_dm = pairwise(BrayCurtis(), ykids, dims=2)
-okids_dm = pairwise(BrayCurtis(), okids, dims=2)
-mkids_dm = pairwise(BrayCurtis(), mkids, dims=2)
-
-ykids_hcl = hclust(ykids_dm, branchorder=:optimal)
-okids_hcl = hclust(okids_dm, branchorder=:optimal)
-mkids_hcl = hclust(mkids_dm, branchorder=:optimal)
-
-idx = 1:nsamples(kids)
-
-ykidsidx = idx[under2][ykids_hcl.order]
-okidsidx = idx[over2][okids_hcl.order]
-mkidsidx = idx[missingage][mkids_hcl.order]
-
-ord = vcat(ykidsidx, okidsidx, mkidsidx)
-
-function agegroup(age)
-    ismissing(age) && return "missing"
-    age / 365 >=2 ? "over 2" : "under 2"
-end
-
-kids.ageGroup = map(agegroup, kids.correctedAgeDays)
-kids.breastfed = breastfeeding.(eachrow(kidsmeta))
-
-
-
-plot(
-    heatmap(asin.(sqrt.(occurrences(filtkids)))[rowhcl.order, ord],
-        yticks=(1:nfeatures(filtkids), featurenames(filtkids)[rowhcl.order]),
-        ytickfont=font(6), color=:BuPu, xticks=false),
-    heatmap(collect(Float64[ismissing(x) ? 0 : x / 365 for x in kids.correctedAgeDays[ord]]'),
-        xticks=false, yticks=false, color=:PuBu),
-    layout = grid(2,1,heights=[0.9, 0.1]))
-savefig(joinpath(figures, "species_heatmap.svg"))
-
-using Plots.PlotMeasures
-
-
-l = @layout [[a{0.3w} b{0.65w} c{0.05w}]
-             grid(4, 1)]
-
-plot(
-    plot(ykids_hcl, xticks=false, yticks=false),
-    plot(okids_hcl, xticks=false, yticks=false),
-    plot(mkids_hcl, xticks=false, yticks=false),
-    plot(annotationbar(kids.ageGroup[ord], color3)),
-    plot(annotationbar(string.(kids.breastfed[ord]), color3[4:end])),
-    plot(annotationbar(string.(kids.birthType[ord]), color3[6:end])),
-    plot(annotationbar(string.(kids.childGender[ord]), color3[9:end])),
-    layout=l, top_margin=1mm, bottom_margin=1mm
-    )
-
-count(ismissing, kids.childGender[ord])
-
-savefig(joinpath(figures, "species_heatmap_annotations.svg"))
-```
-
-```julia
-infantis = CSV.read("data/infantis_presence.csv")
-infantis = filter(row-> !ismissing(row[sample]), infantis)
-infantis = filter(row-> startswith(row[sample], "C"), infantis)
-samples = resolve_sampleID.(infantis[sample])
-infantis[:subject] = getfield.(samples, :subject)
-infantis[:timepoint] = getfield.(samples, :timepoint)
-
-infantismeta = load_metadata(datatoml, samples=samples)
-infantis[:correctedAgeDays] = infantis.correctedAgeDays
-infantis[:mother_HHS] = infantis.mother_HHS
-infantis[:birthType] = infantis.birthType
-
-st = []
-rows = Int[]
-for (i,row) in enumerate(eachrow(infantis))
-    tup = (row[:subject], row[:timepoint])
-    if !in(tup, st)
-        push!(rows, i)
-        push!(st, tup)
+results = let
+    results = DataFrame(metadata=String[], feature=String[],
+                        value=Float64[], coef=Float64[], stderr=Float64[],
+                        N=Int[], not_zero=Int[], pval=Float64[], qval=Float64[], model=String[], kind=String[])
+    headers = names(results)
+    for (root, dirs, files) in walkdir("data/notebooks")
+        filter!(f-> f == "all_results.tsv", files)
+        length(files) > 0 || continue
+        df = CSV.read(joinpath(root, files[1]))
+        (kind, model) = split(basename(root), "__")
+        df[!, :model] = model
+        df[!, :kind] = kind
+        names!(df, headers)
+        append!(results, df)
     end
+    results
 end
 
-CSV.write("data/infantis_presence.csv", infantis[rows, :])
+filter!(row-> row.qval < 0.1, results)
+
+
 ```

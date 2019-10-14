@@ -279,18 +279,18 @@ savefig(joinpath(figures, "uniref90_age_correlations_abxR.svg"))
 
 
 ```julia
-# test some random samples
-ps = Float64[]
-
-for _ in 1:5000
-    s = sample(1:length(agecors), 50)
-    push!(ps, pvalue(MannWhitneyUTest(agecors[s], agecors[Not(s)])))
-end
-
-histogram(ps, legend=false, title="Random gene subsets (5k)", xlabel="p-value", ylabel="number")
+# # test some random samples
+# ps = Float64[]
+#
+# for _ in 1:5000
+#     s = sample(1:length(agecors), 50)
+#     push!(ps, pvalue(MannWhitneyUTest(agecors[s], agecors[Not(s)])))
+# end
+#
+# histogram(ps, legend=false, title="Random gene subsets (5k)", xlabel="p-value", ylabel="number")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_age_correlations_random_histogram.svg"))
+# savefig(joinpath(figures, "uniref90_age_correlations_random_histogram.svg"))
 ```
 
 
@@ -490,8 +490,8 @@ uniref_meta.neuroactive_sum = sum(occurrences(na), dims=1) |> vec
 dm = pairwise(BrayCurtis(), unirefs)
 mds = fit(MDS, dm, distances=true)
 
-plot(mds, zcolor=uniref_meta.neuroactive_sum, color=:plasma,
-    title="Neuroactive genes")
+plot(mds, zcolor=log.(uniref_meta.neuroactive_sum), color=:plasma,
+    title="Neuroactive genes", primary=false)
 ```
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "neuroactive_pcoa.svg"))
@@ -726,7 +726,7 @@ pfam_kids = view(upfam, sites = map(s-> s in kidsmeta.sample, sitenames(upfam)))
 
 ## Compare to taxonomic profiles
 
-```julia
+```julia; results="hidden"
 tax = load_taxonomic_profiles()
 taxfilter!(tax)
 tax = abundancetable(tax)
@@ -737,7 +737,8 @@ funcdm = pairwise(BrayCurtis(), uunirefs)
 funcmds = fit(MDS, funcdm, distances=true)
 taxdm = pairwise(BrayCurtis(), utax)
 taxmds = fit(MDS, taxdm, distances=true)
-
+```
+```julia
 scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
     group=umeta.ageLabel, color=color2',
     xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1")
@@ -754,28 +755,29 @@ scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
 savefig(joinpath(figures, "tax_v_func_mds2.svg"))
 ```
 
-```julia
+```julia; results="hidden"
 ufeatures = match.(r"UniRef90_(\w+)", featurenames(uunirefs))
 ufeatures = map(f-> isnothing(f) ? "unknown" : String(f.captures[1]), ufeatures)
 
 neuroactive_pos = findall(f-> f in na_uniref, ufeatures)
 na = view(uunirefs, species=neuroactive_pos)
 umeta.neuroactive_sum = sum(occurrences(na), dims=1) |> vec
-
+```
+```julia
 scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
-    zcolor=umeta.neuroactive_sum,
+    zcolor=umeta.neuroactive_sum, primary=false,
     xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds1.svg"))
+savefig(joinpath(figures, "tax_v_func_mds1_neuroactive.svg"))
 ```
 ```julia
 scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
-    zcolor=umeta.neuroactive_sum,
+    zcolor=umeta.neuroactive_sum, primary=false,
     xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds2.svg"))
+savefig(joinpath(figures, "tax_v_func_mds2_neuroactive.svg"))
 ```
 ```julia
 pcopri = occurrences(view(utax, species=["Prevotella_copri"]))|> vec
@@ -783,8 +785,16 @@ scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
     zcolor=pcopri,
     xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1")
 
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax_v_func_mds1_pcopri.svg"))
+```
+```julia
 scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
     zcolor=pcopri,
     xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
 
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax_v_func_mds2_pcopri.svg"))
 ```
