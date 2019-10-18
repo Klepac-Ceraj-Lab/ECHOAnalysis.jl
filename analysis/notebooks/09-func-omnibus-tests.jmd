@@ -38,12 +38,12 @@ rounder = Dict(0 => (v,i) -> typeof(v) <: AbstractFloat ? round(v,digits=3) : v)
 ```
 
 ```julia; results="hidden"
-kos = CSV.read("data/engaging/merged/batch1-10_kos_names.csv")
-names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), "_Abundance-RPKs"=>"")).sample), names(kos)))
+kos = CSV.read("data/engaging/merged/batch1-10_ko_names_relab_unstratified.tsv")
+names!(kos, map(n-> Symbol(resolve_sampleID(replace(String(n), "_kneaddata_Abundance-RELAB"=>"")).sample), names(kos)))
 # ~ 5% prevalence filter
-kos = kos[map(row-> sum(x-> x > 0, row[Not(1)]) > ncol(kos) * .05, eachrow(kos)), :]
+Microbiome.prevalence(a, minabundance::Float64=0.0001) = mean(x-> present(x, minabundance), (y for y in a))
 kos = abundancetable(kos)
-relativeabundance!(kos)
+kos = copy(view(kos, species=map(row-> prevalence(row[Not(1)], 0.) > 0.05, eachrow(occurrences(kos)))))
 ```
 
 ```julia
@@ -67,13 +67,13 @@ perm[!,:variable] .= "Subject Type"
 ```
 
 In this table, `R2` tells us about the magnitutude of the effect
-(`R2 = 0.029` means 2.9% of variation can be explained by this variable),
+(`R2 = 0.062` means 6.2% of variation can be explained by this variable),
 and the `Pr(>F)` column is the p value.
 The first row is what's being tested (the other two account for what's left).
 
 So this table tells us that, when comparing all the samples,
 whether the sample from a mom or a kid (aka `Subject Type`)
-can explain ~5.6% of the variation,
+can explain ~6.2% of the variation,
 and the result is significant (p < 0.001).
 
 ```julia; results="hidden"
@@ -85,7 +85,7 @@ p = permanova(dm, string.(metadata.subject))
 ```
 
 
-Here, we can see that over 80% of variability (`R2`) is attributable to who the person is.
+Here, we can see that over 90% of variability (`R2`) is attributable to who the person is.
 Which is to say that people are really different!
 
 Because of this, the numbers from PERMANOVA tend to be small (1-5%),
@@ -156,7 +156,7 @@ filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
 ```julia; echo=false
 @pt perm
 ```
-So, only age (`R2 = 0.243`) has a significant p value (`Pr(>F)` column).
+So, only age (`R2 = 0.268`) has a significant p value (`Pr(>F)` column).
 This is a way larger R2 than with taxonomic profiles.
 What happens if we only look at the kids under 2 years old?
 
