@@ -36,6 +36,7 @@ ss = samplenames(abt)
 
 allsamples = resolve_sampleID.(samplenames(abt))
 
+
 kidsamples = uniquesamples(allsamples, samplefilter=s-> startswith(s, "C"), identifiers=[:subject])
 momsamples = uniquesamples(allsamples, samplefilter=s-> startswith(s, "M"), identifiers=[:subject])
 firstsamples = [kidsamples; momsamples]
@@ -45,7 +46,7 @@ kids = view(abt, sites=getfield.(kidsamples, :sample))
 moms = view(abt, sites=getfield.(momsamples, :sample))
 
 firstsmeta = load_metadata(datatoml, samples=firstsamples)
-kidsmeta = load_metadata(datatoml, samples=kidssamples)
+kidsmeta = load_metadata(datatoml, samples=kidsamples)
 momsmeta = load_metadata(datatoml, samples=momsamples)
 ```
 
@@ -53,53 +54,40 @@ momsmeta = load_metadata(datatoml, samples=momsamples)
 ```julia
 uniref_unstrat = "data/engaging/merged/batch1-10_genefamilies_relab_unstratified.tsv"
 uniref_samples = samples_from_file(uniref_unstrat)
+
 unirefs = DataFrame(:uniref=>String[], (Symbol(getfield(s, :sample))=>Float64[] for s in firstsamples)...)
-keep = [[1]; findall(c-> in(c, uniref_samples), firstsamples) .+ 1 ]
+
+keep = [[1]; map(s-> findfirst(isequal(s), uniref_samples), firstsamples) .+ 1 ]
 for row in CSV.Rows(uniref_unstrat)
-    row = view(row, keep)
+    row = row[keep]
+    rownums = (parse(Float64, row[i]) for i in 2:length(row))
+    all(isequal(0.), rownums) && continue
     push!(unirefs, (row[1], (parse(Float64, row[i]) for i in 2:length(row))...))
 end
+
 
 unirefs=abundancetable(unirefs)
 
 accessory = view(unirefs, species = [0.05 < prevalence(row, 0.) < 0.85 for row in eachrow(occurrences(unirefs))]
     )
-println.(sitenames(accessory))
 ```
 
 ```julia; results="hidden"
-taxdm = pairwise(BrayCurtis(), unique)
+taxdm = pairwise(BrayCurtis(), firsts)
 unirefdm = pairwise(BrayCurtis(), unirefs)
 accessorydm = pairwise(BrayCurtis(), accessory)
-
 
 taxmds = fit(MDS, taxdm, distances=true)
 unirefmds = fit(MDS, unirefdm, distances=true)
 accessorymds = fit(MDS, accessorydm, distances=true)
-plot(taxmds, group = uniquemeta.ageLabel, color=color2', legend=:topright)
-plot(unirefmds, group = uniquemeta.ageLabel, color=color2', legend=:bottomright )
-plot(accessorymds, group = uniquemeta.ageLabel, color=color2', legend=:bottomleft)
 ```
-```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "accessory-genes-pcoa-agelabels.svg"))
-```
-
-```julia
-scatter(projection(taxmds)[:,1],projection(accessorymds)[:,1], group = uniquemeta.ageLabel,
-    color=color2', legend=:bottomright,
-    xlabel="Taxonomic Profile MDS 1",
-    ylabel="Functional Profile MDS 1")
-```
-```julia
-savefig(joinpath(figures, "tax-func-mds.svg"))
-```
-
 
 ```julia; results="hidden"
 function labeldiff(dm, labels)
     u = sort(unique(labels))
     d = Dict(u1 => Dict() for u1 in u)
     for (l1 , l2) in multiset_permutations(repeat(u,2), 2)
+
         l1pos = findall(isequal(l1), labels)
         l2pos = findall(isequal(l2), labels)
         ds = vec(dm[l1pos, l2pos])
@@ -114,7 +102,7 @@ funcdiffs = labeldiff(unirefdm, String.(firstsmeta.ageLabel))
 keypairs = multiset_permutations(repeat(sort(collect(keys(taxdiffs))),2), 2)
 ```
 ```julia
-boxplot([taxdiffs[k][l] for (k, l) in keypairs], xticks = (1:length(keypairs), ["$k-$l" for (k,l) in keypairs]),
+boxplot([filter(>(0.), taxdiffs[k][l]) for (k, l) in keypairs], xticks = (1:length(keypairs), ["$k-$l" for (k,l) in keypairs]),
     xrotation=45, color=color2[1:4]', legend=false, ylabel="Bray Curtis dissimilarity",
     ylims=(0., 1.))
 ```
@@ -123,12 +111,16 @@ savefig(joinpath(figures, "tax-diffs-boxplot.svg"))
 ```
 
 ```julia
-boxplot([funcdiffs[k][l] for (k, l) in keypairs], xticks = (1:length(keypairs), ["$k-$l" for (k,l) in keypairs]),
+boxplot([filter(>(0.), funcdiffs[k][l]) for (k, l) in keypairs], xticks = (1:length(keypairs), ["$k-$l" for (k,l) in keypairs]),
     xrotation=45, color=color2[1:4]', legend=false, ylabel="Bray Curtis dissimilarity",
     ylims=(0., 1.))
 ```
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "func-diffs-boxplot.svg"))
+```
+```julia
+scatter(projection(taxmds)[:, 1], projection(unirefmds)[:, 1],
+    xlabel="taxonomic", ylabel="all unirefs", group=firstsmeta.ageLabel)
 ```
 
 
@@ -136,7 +128,6 @@ savefig(joinpath(figures, "func-diffs-boxplot.svg"))
 
 ```julia
 labels = umeta.ageLabel
-
 
 dm = pairwise(BrayCurtis(), uabt, dims=2)
 
@@ -175,8 +166,6 @@ pt = permutation_test(labels, dm, nperms=5000)
 ls = unique(labels)
 sum(x-> x > d[2,4], pt[2,4,:])
 
-using StatsPlots
-
 plot(let myplots = []
     for i in 1:size(d, 1), j in 1:size(d, 1)
         h = histogram(pt[i,j,:], label = "distribution")
@@ -208,16 +197,20 @@ savefig(joinpath(figures, "age-groups-pcoa.svg"))
 ```julia
 results = let
     results = DataFrame(metadata=String[], feature=String[],
-                        value=Float64[], coef=Float64[], stderr=Float64[],
+                        value=String[], coef=Float64[], stderr=Float64[],
                         N=Int[], not_zero=Int[], pval=Float64[], qval=Float64[], model=String[], kind=String[])
     headers = names(results)
     for (root, dirs, files) in walkdir("data/notebooks")
         filter!(f-> f == "all_results.tsv", files)
         length(files) > 0 || continue
-        df = CSV.read(joinpath(root, files[1]))
+        df = CSV.read(joinpath(root, files[1]), missingstring="NA")
+
+        df.qval = coalesce.(df.qval, NaN)
+        df.pval = coalesce.(df.pval, NaN)
+
         (kind, model) = split(basename(root), "__")
-        df[!, :model] = model
-        df[!, :kind] = kind
+        df[!, :model] .= model
+        df[!, :kind] .= kind
         names!(df, headers)
         append!(results, df)
     end
@@ -225,6 +218,54 @@ results = let
 end
 
 filter!(row-> row.qval < 0.1, results)
+sort!(results, :qval)
 
+CSV.write(joinpath(outpath, "all_lms.csv"), results)
+```
 
+```julia; results="hidden"
+basemodel = view(results, results.model .== "age_ses_bf_birth", :)
+
+braintypes = ["cerebellar", "subcortical", "neocortical", "limbic"]
+brainmodels = view(results, map(row-> any(m-> occursin(m, row.model), braintypes), eachrow(results)), :)
+
+base_spec = view(basemodel, basemodel.kind .== "species", :)
+brain_spec = view(brainmodels, brainmodels.kind .== "species", :)
+base_func = view(basemodel, basemodel.kind .== "func", :)
+brain_func = view(brainmodels, brainmodels.kind .== "func", :)
+```
+
+```julia
+features = unique(base_spec.feature)[1:30]
+mds = unique(base_spec.metadata)
+fidx = Dict(f=>i for (i, f) in enumerate(features))
+midx = Dict(f=>i for (i, f) in enumerate(mds))
+
+C = zeros(length(features), length(mds))
+Q = ones(length(features), length(mds))
+
+for row in eachrow(base_spec)
+    row.feature ∈ features || continue
+    C[fidx[row.feature], midx[row.metadata]] = row.coef
+    Q[fidx[row.feature], midx[row.metadata]] = row.qval
+end
+
+lim = maximum(abs.([maximum(C), minimum(C)]))
+hm = heatmap(C, clim=(-lim, lim), color=:RdBu_r,
+    yticks=(eachindex(features), features),
+    xticks=(eachindex(mds), mds), xrotation=45)
+
+for (x,y) in Tuple.(CartesianIndices(Q))
+    if Q[x,y] < 0.001
+        annotate!(y,x-0.4, "***", :center)
+    elseif Q[x,y] < 0.005
+        annotate!(y,x-0.4, "**", :center)
+    elseif Q[x,y] < 0.05
+        annotate!(y,x-0.4, "*", :center)
+    end
+end
+display(hm)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "tax_maaslin_heatmap.pdf"))
 ```
