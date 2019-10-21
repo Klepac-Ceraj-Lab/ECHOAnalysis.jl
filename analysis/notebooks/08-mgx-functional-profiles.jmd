@@ -156,7 +156,7 @@ scatter(sort(kidallmeta.correctedAgeDays), num_genes,
     title="Genes by age", color=:lightgrey)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "num_genes_age.pdf"))
+savefig(joinpath(figures, "num_genes_age.svg"))
 ```
 
 Going forward, we don't *really* care about genes that are very rare,
@@ -189,7 +189,7 @@ plot(mds, group=uniref_meta.ageLabel, color=color3',
     legend=:bottomright, title="All genes, All samples", markersize=3)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "all_genes_agelabel_pcoa.pdf"))
+savefig(joinpath(figures, "all_genes_agelabel_pcoa.svg"))
 ```
 
 ```julia
@@ -199,7 +199,7 @@ plot(mds, group=uniref_meta.ageLabel, color=color3', markersize=3,
     legend=:bottomright, title="Accessory genes, All samples")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "accessory_genes_agelabel_pcoa.pdf"))
+savefig(joinpath(figures, "accessory_genes_agelabel_pcoa.svg"))
 ```
 
 ```julia
@@ -215,7 +215,7 @@ plot(mds, group=umeta.ageLabel, color=color3',
     legend=:topright, title="All genes, first samples")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "all_genes_unique_agelabel_pcoa.pdf"))
+savefig(joinpath(figures, "all_genes_unique_agelabel_pcoa.svg"))
 ```
 
 ```julia
@@ -227,7 +227,7 @@ plot(mds, group=umeta.ageLabel, color=color3',
     legend=:topright, title="Accessory genes, first samples")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "accessory_genes_unique_agelabel_pcoa.pdf"))
+savefig(joinpath(figures, "accessory_genes_unique_agelabel_pcoa.svg"))
 ```
 
 
@@ -262,7 +262,7 @@ plot(itp([range(1, stop=length(itp), length=100)]...),
     color=color1[2], legend=:bottomright, title="UniRef90 age correlations")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_age_correlations.pdf"))
+savefig(joinpath(figures, "uniref90_age_correlations.svg"))
 ```
 
 ```julia
@@ -289,7 +289,7 @@ scatter!(invperm(agerank)[abx_pos], agecors[abx_pos], color=color1[3], label="ab
 annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_age_correlations_abxR.pdf"))
+savefig(joinpath(figures, "uniref90_age_correlations_abxR.svg"))
 ```
 
 
@@ -305,7 +305,7 @@ savefig(joinpath(figures, "uniref90_age_correlations_abxR.pdf"))
 # histogram(ps, legend=false, title="Random gene subsets (5k)", xlabel="p-value", ylabel="number")
 ```
 ```julia; echo=false; results="hidden"
-# savefig(joinpath(figures, "uniref90_age_correlations_random_histogram.pdf"))
+# savefig(joinpath(figures, "uniref90_age_correlations_random_histogram.svg"))
 ```
 
 
@@ -326,7 +326,7 @@ scatter!(invperm(agerank)[carbs_pos], agecors[carbs_pos], color=color1[4], label
 annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_age_correlations_carbs.pdf"))
+savefig(joinpath(figures, "uniref90_age_correlations_carbs.svg"))
 ```
 
 
@@ -348,7 +348,7 @@ scatter!(invperm(agerank)[fa_pos], agecors[fa_pos], color=color1[5], label="Fatt
 annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_age_correlations_fas.pdf"))
+savefig(joinpath(figures, "uniref90_age_correlations_fas.svg"))
 ```
 
 
@@ -502,7 +502,7 @@ scatter!(invperm(agerank)[neuroactive_pos], agecors[neuroactive_pos],
 annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_age_correlations_neuroactive.pdf"))
+savefig(joinpath(figures, "uniref90_age_correlations_neuroactive.svg"))
 ```
 
 ```julia
@@ -520,14 +520,14 @@ plot(mds, zcolor=log.(uniref_meta.identified_sum), color=:solar,
     title="Identified genes, all samples", primary=false)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "identified_genes_pcoa.pdf"))
+savefig(joinpath(figures, "identified_genes_pcoa.svg"))
 ```
 ```julia
 plot(mds, zcolor=log.(uniref_meta.neuroactive_sum ./ uniref_meta.identified_sum), color=:solar,
     title="Neuroactive genes, all samples", primary=false)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "neuroactive_genes_pcoa.pdf"))
+savefig(joinpath(figures, "neuroactive_genes_pcoa.svg"))
 ```
 ```julia
 dm = pairwise(BrayCurtis(), accessory)
@@ -536,14 +536,14 @@ plot(mds, zcolor=log.(uniref_meta.identified_sum), color=:solar,
     title="Identified genes, all samples", primary=false)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "identified_accessory_genes_pcoa.pdf"))
+savefig(joinpath(figures, "identified_accessory_genes_pcoa.svg"))
 ```
 ```julia
 plot(mds, zcolor=log.(uniref_meta.neuroactive_sum ./ uniref_meta.identified_sum), color=:solar,
     title="Neuroactive genes, all samples", primary=false)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "identified_genes_accessory_pcoa.pdf"))
+savefig(joinpath(figures, "identified_genes_accessory_pcoa.svg"))
 ```
 
 ```julia
@@ -559,7 +559,7 @@ plot(mds, zcolor=log.(ukidsmeta.neuroactive_sum ./ ukidsmeta.total_accessory), c
 ```
 
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "neuroactive_kids_pcoa.pdf"))
+savefig(joinpath(figures, "neuroactive_kids_pcoa.svg"))
 ```
 
 ```julia
@@ -568,7 +568,7 @@ plot(mds, group=ukidsmeta.ageLabel, color=color3',
 ```
 
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "kids_functions_agelabel_pcoa.pdf"))
+savefig(joinpath(figures, "kids_functions_agelabel_pcoa.svg"))
 ```
 
 ```julia
@@ -599,7 +599,7 @@ for (desc, (mgbs, kos)) in neuroactive
         label="$desc")
     annotate!(1000, 0.3, "n = $n\nmedian = $m\npvalue=$p", :left)
     display(plt)
-    savefig(joinpath(figures, "uniref90_age_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).pdf"))
+    savefig(joinpath(figures, "uniref90_age_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).svg"))
 end
 nadf.qvalue = adjust(nadf.pvalue, BenjaminiHochberg())
 @pt nadf
@@ -630,7 +630,7 @@ end
 display(plt)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_age_correlations_neuroactive_boxplot.pdf"))
+savefig(joinpath(figures, "uniref90_age_correlations_neuroactive_boxplot.svg"))
 ```
 
 ```julia
@@ -679,7 +679,7 @@ plot(range(1, stop=length(itp), length=100), itp(range(1, stop=length(itp), leng
     label="all genes", color=color1[2], title="UniRef90 cogScore correlations", legend=:bottomright)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_cog_correlations.pdf"))
+savefig(joinpath(figures, "uniref90_cog_correlations.svg"))
 ```
 
 ```julia
@@ -705,7 +705,7 @@ scatter!(invperm(cogrank)[abx_pos], cogcors[abx_pos], color=color1[3], label="ab
 annotate!(1000, 0.2, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_cog_correlations_abxR.pdf"))
+savefig(joinpath(figures, "uniref90_cog_correlations_abxR.svg"))
 ```
 
 
@@ -725,7 +725,7 @@ scatter!(invperm(cogrank)[carbs_pos], cogcors[carbs_pos], color=color1[4], label
 annotate!(1000, 0.2, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_cog_correlations_carbs.pdf"))
+savefig(joinpath(figures, "uniref90_cog_correlations_carbs.svg"))
 ```
 
 ```julia
@@ -744,7 +744,7 @@ scatter!(invperm(cogrank)[fa_pos], cogcors[fa_pos], color=color1[5], label="Fatt
 annotate!(1000, 0.2, "median = $m\npvalue=$p", :left)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_cog_correlations_fas.pdf"))
+savefig(joinpath(figures, "uniref90_cog_correlations_fas.svg"))
 ```
 
 ```julia; results="hidden"
@@ -774,7 +774,7 @@ for (desc, (mgbs, kos)) in neuroactive
         label="$desc")
     annotate!(1000, 0.2, "n = $n\nmedian = $m\npvalue=$p", :left)
     display(plt)
-    savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).pdf"))
+    savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_$(replace(desc, r"[^\w]+"=>'-')).svg"))
 end
 cognadf.qvalue = adjust(cognadf.pvalue, BenjaminiHochberg())
 @pt cognadf
@@ -804,7 +804,7 @@ end
 display(plt)
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_boxplot.pdf"))
+savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_boxplot.svg"))
 ```
 
 
@@ -845,7 +845,7 @@ scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
     xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds1.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds1.svg"))
 ```
 ```julia
 scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
@@ -853,7 +853,7 @@ scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
     xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds2.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds2.svg"))
 ```
 
 ```julia; results="hidden"
@@ -872,7 +872,7 @@ scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
     xlabel="Taxonomic MDS1", ylabel="Accessory genes MDS1", title="Neuroactive / total accessory")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds1_neuroactive.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds1_neuroactive.svg"))
 ```
 ```julia
 scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
@@ -880,7 +880,7 @@ scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
     xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2", title="Neuroactive / total accessory")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds2_neuroactive.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds2_neuroactive.svg"))
 ```
 ```julia
 pcopri = occurrences(view(utax, species=["Prevotella_copri"]))|> vec
@@ -890,7 +890,7 @@ scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
 
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds1_pcopri.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds1_pcopri.svg"))
 ```
 ```julia
 scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
@@ -898,7 +898,7 @@ scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
     xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds2_pcopri.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds2_pcopri.svg"))
 ```
 ```julia
 αdiv = shannon(utax)
@@ -908,7 +908,7 @@ scatter(projection(taxmds)[:,1], projection(funcmds)[:,1],
 
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds1_alphadiv.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds1_alphadiv.svg"))
 ```
 ```julia
 scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
@@ -916,5 +916,5 @@ scatter(projection(taxmds)[:,2], projection(funcmds)[:,2],
     xlabel="Taxonomic MDS2", ylabel="Accessory genes MDS2")
 ```
 ```julia; echo=false; results="hidden"
-savefig(joinpath(figures, "tax_v_func_mds2_alphadiv.pdf"))
+savefig(joinpath(figures, "tax_v_func_mds2_alphadiv.svg"))
 ```
