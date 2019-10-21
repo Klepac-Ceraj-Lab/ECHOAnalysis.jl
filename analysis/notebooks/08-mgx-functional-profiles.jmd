@@ -124,6 +124,7 @@ unirefs = filter_tsv(uniref_unstrat, keep)
 names!(unirefs, [:uniref, (normalize_colname(col) for col in names(unirefs)[2:end])...])
 permutecols!(unirefs, [:uniref, (Symbol(getfield(s, :sample)) for s in [kidallsamples; momallsamples])...])
 
+# some checks to make sure different gene types didn't make it through
 @assert !any(row-> occursin("GeneID", row[1]), eachrow(unirefs))
 @assert !any(row-> occursin("UniRef50", row[1]), eachrow(unirefs))
 ```
@@ -182,6 +183,8 @@ prevalent = view(unirefs, species=[p[1] for p in prevfilt])
 accessory = view(unirefs, species=map(all, prevfilt))
 ```
 
+Here's our typical PCoA:
+
 ```julia
 dm = pairwise(BrayCurtis(), prevalent)
 mds = fit(MDS, dm, distances=true)
@@ -201,6 +204,9 @@ plot(mds, group=uniref_meta.ageLabel, color=color3', markersize=3,
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "accessory_genes_agelabel_pcoa.svg"))
 ```
+
+Until now, I've been looking at all samples.
+Here, let's filter down to only the first sample for each subject.
 
 ```julia
 ukidsamples = uniquesamples(kidallsamples, identifiers=[:subject])
@@ -230,9 +236,6 @@ plot(mds, group=umeta.ageLabel, color=color3',
 savefig(joinpath(figures, "accessory_genes_unique_agelabel_pcoa.svg"))
 ```
 
-
-
-
 ```julia
 ukidsmeta = load_metadata(datatoml, samples=ukidsamples)
 dropmissing!(ukidsmeta, :correctedAgeDays)
@@ -247,6 +250,13 @@ ukids = copy(view(ukids, species = map(row-> any(x-> x > 0, row), eachrow(occurr
 occ = occurrences(ukids)
 @assert !any(row-> all(isequal(0.), row), eachrow(occ))
 ```
+
+## Looking for associations
+
+If we just pulled a bunch of genes at random,
+we'd expect some of them to positively or negatively correlate
+with our subject covariates.
+Probably, they'd have a normal distribution of correlations.
 
 ```julia
 agecors = cor(ukidsmeta.correctedAgeDays, occ, dims=2)'
@@ -264,6 +274,21 @@ plot(itp([range(1, stop=length(itp), length=100)]...),
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "uniref90_age_correlations.svg"))
 ```
+
+Rather than doing a statistical test on each gene function directly,
+we can do a variant of "gene set enrichment analysis" (GSEA).
+Here, we use a statistical test called a Mann-Whitney U test
+to ask if a set of genes as a whole (say, antibiotic resistance genes)
+tend to be positively or negatively correlated with age.
+
+If any given antibiotic resistance gene is as likely
+to be positively correlated with age as negatively correlated,
+we'd be less confident that any given correlation is "real",
+it could just be random.
+But if all or even most AbxR genes fall on one side,
+we can be more confident that there's something interesting to look at.
+
+This set of AbxR genes comes from UniProt.
 
 ```julia
 abxr = CSV.read("data/uniprot/uniprot-abxr.tsv")
@@ -292,6 +317,10 @@ annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 savefig(joinpath(figures, "uniref90_age_correlations_abxR.svg"))
 ```
 
+The following code can be uncommented to do a random permutation test
+to show that if genes are selected at random,
+the pvalues are uniformaly distributed as expected.
+The code here is not run because it takes a really long time.
 
 ```julia
 # # test some random samples
@@ -308,6 +337,7 @@ savefig(joinpath(figures, "uniref90_age_correlations_abxR.svg"))
 # savefig(joinpath(figures, "uniref90_age_correlations_random_histogram.svg"))
 ```
 
+We can do the same test for carbohydrate metabolims genes from UniProt...
 
 ```julia
 carbs = CSV.read("data/uniprot/uniprot-carbohydrate.tsv")
@@ -329,7 +359,7 @@ annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 savefig(joinpath(figures, "uniref90_age_correlations_carbs.svg"))
 ```
 
-
+... and fatty acid metabolism genes.
 
 ```julia
 fa = CSV.read("data/uniprot/uniprot-fa.tsv")
@@ -351,6 +381,17 @@ annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 savefig(joinpath(figures, "uniref90_age_correlations_fas.svg"))
 ```
 
+### Reproducibility of previous findings
+
+Vatanen et. al. 2018 investigated the metagenomes
+of a different cohort of children
+to test for associations with risk of developing Type I diabetes.
+In figure 3 of this paper,
+they showed a number of enzyme classes that were associated
+with the age of children.
+We can map these enzype classes (ECs) to UniRef90s as gene sets,
+and test if they are also associated with age in our cohort
+
 
 ```julia
 ecs2uniref = Dict()
@@ -361,7 +402,6 @@ end
 ```
 
 ```julia
-# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6296767/figure/F3/
 pos_control = let pc = []
     for ec in ("6.1.1.18", "2.8.4.4", "2.2.1.1", "2.7.1.144", "2.3.1.179", "5.4.2.12",
                "2.7.1.26", "2.7.1.11", "4.1.1.49", "2.6.1.83", "2.3.1.51", "1.7.99.1",
@@ -404,24 +444,12 @@ count(x-> x[1] < 0, neg_control) / length(neg_control)
 count(x-> x[1] < 0 && x[2] < 0.01, neg_control) / length(neg_control)
 ```
 
-
-# ECs
-
-```julia
-# ecs_unstrat = "data/engaging/merged/batch1-10_ecs_relab_names_unstratified.tsv"
-#
-# ecs = CSV.read(ecs_unstrat)
-# names!(ecs, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RPKs"=>"")).sample), names(ecs)))
-# ecs_abt = abundancetable(ecs)
-# uecs = view(ecs_abt, sites=getfield.(usamples, :sample))
-#
-# ecs_moms = view(uecs, sites=getfield.(momsamples, :sample))
-# ecs_kids = view(uecs, sites = map(s-> s in kidsmeta.sample, sitenames(uecs)))
-```
-
-
 # KOs
 
+In Valles-Colomer et. al., 2019,
+a number of "neuroactive" microbial genes were identified.
+They are identified by their Kegg-Orthology (KO) codes,
+which we can also conveniently load:
 
 ```julia; results="hidden"
 kos_unstrat = "data/engaging/merged/batch1-10_ko_names_relab_unstratified.tsv"
@@ -444,6 +472,9 @@ kos_kids = view(ukos, sites = map(s-> s in ukidsmeta.sample, sitenames(ukos)))
 
 ## Getting neuroactive KOs
 
+The supplementary data from that paper is in a slightly odd format,
+but can be easily parsed to pull out the codes we want
+
 ```julia; results="hidden"
 neuroactive = Dict()
 
@@ -465,6 +496,8 @@ let (mgb, desc) = ("", "")
     end
 end
 ```
+
+And we can convert those KOs to UniRef90s to get our gene set.
 
 ```julia
 kos2uniref = Dict()
@@ -505,12 +538,12 @@ annotate!(1000, 0.3, "median = $m\npvalue=$p", :left)
 savefig(joinpath(figures, "uniref90_age_correlations_neuroactive.svg"))
 ```
 
+
+
 ```julia
 na = view(unirefs, species=neuroactive_pos)
 uniref_meta.neuroactive_sum = sum(occurrences(na), dims=1) |> vec
 uniref_meta.identified_sum = sum(occurrences(unirefs)[3:end, :], dims=1) |> vec
-
-speciesnames(unirefs)
 
 @assert all(map(x-> isapprox(1., x, rtol=8), sum(occurrences(unirefs), dims=1) |> vec))
 
@@ -570,6 +603,8 @@ plot(mds, group=ukidsmeta.ageLabel, color=color3',
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids_functions_agelabel_pcoa.svg"))
 ```
+
+Checking all of the neuroactive categories in our childhood cohort:
 
 ```julia
 nadf = DataFrame(description=String[], n_unirefs = Int[], median=Float64[], pvalue=Float64[], idx=[])
@@ -634,7 +669,6 @@ savefig(joinpath(figures, "uniref90_age_correlations_neuroactive_boxplot.svg"))
 ```
 
 ```julia
-
 nacols = [:sample, :subject, :timepoint, :neuroactive_sum]
 @assert length(features) == nfeatures(ukids)
 
@@ -649,12 +683,17 @@ for row in eachrow(nadf)
 end
 
 @pt ukidsmeta[!, nacols]
-
+```
+```julia; echo=false; results="hidden"
 CSV.write(joinpath(outpath, "neuroactive_genes.csv"), ukidsmeta[!, nacols])
 ```
 
 
 # Cognitive Scores
+
+That was correlation with age, which is interesting,
+but we'd also like to know if these microbial genes
+are associated with neurocognitive features in our kiddos.
 
 ```julia
 cog_filter = map(row-> row.correctedAgeDays > 365 && !ismissing(row.cogScore), eachrow(ukidsmeta))
@@ -810,17 +849,17 @@ savefig(joinpath(figures, "uniref90_cog_correlations_neuroactive_boxplot.svg"))
 
 # Pfams
 ```julia; results="hidden"
-pfam = CSV.read("data/engaging/merged/batch1-10_pfam_names_relab_unstratified.tsv")
-names!(pfam, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RELAB"=>"")).sample), names(pfam)))
-pfam_abt = abundancetable(pfam)
-upfam = view(pfam_abt, sites=getfield.([kidsamples; momsamples], :sample))
-
-pfam_moms = view(upfam, sites=getfield.(momsamples, :sample))
-pfam_kids = view(upfam, sites = map(s-> s in kidsmeta.sample, sitenames(upfam)))
-
-@assert nsamples(kos_kids) == nrow(kidsmeta)
-@assert nsamples(kos_moms) == nrow(momsmeta)
-@assert all(i-> samplenames(upfam)[i] == umeta.sample[i], nsamples(upfam))
+# pfam = CSV.read("data/engaging/merged/batch1-10_pfam_names_relab_unstratified.tsv")
+# names!(pfam, map(n-> Symbol(resolve_sampleID(replace(String(n), r"S\d+_Abundance-RELAB"=>"")).sample), names(pfam)))
+# pfam_abt = abundancetable(pfam)
+# upfam = view(pfam_abt, sites=getfield.([kidsamples; momsamples], :sample))
+#
+# pfam_moms = view(upfam, sites=getfield.(momsamples, :sample))
+# pfam_kids = view(upfam, sites = map(s-> s in kidsmeta.sample, sitenames(upfam)))
+#
+# @assert nsamples(kos_kids) == nrow(kidsmeta)
+# @assert nsamples(kos_moms) == nrow(momsmeta)
+# @assert all(i-> samplenames(upfam)[i] == umeta.sample[i], nsamples(upfam))
 ```
 
 ## Compare to taxonomic profiles
