@@ -21,6 +21,17 @@ path = "data/engaging"
     filter = ".txt"
     description = "need to vcat tables"
 
+    [tables.biobakery.uniref90]
+    path="data/tables/unique_samples_uniref90.csv"
+    name = "Humann2 gene families, unique samples"
+    description = "Relative abundance normalized genefamilies tables, includes unique genotek samples"
+
+    [tables.biobakery.uniref90_5_90]
+    path="data/tables/unique_samples_uniref90_prevalence.csv"
+    name = "Humann2 gene families, unique samples, prevalence filtered"
+    description = "5% / 90% within group prevalence filter on unirefs"
+
+
 [tables.brain.gross_volumes]
 name = "High res structural data"
 date = "2019-05-03"

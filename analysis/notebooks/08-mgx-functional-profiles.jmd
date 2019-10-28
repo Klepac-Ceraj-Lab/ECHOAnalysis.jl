@@ -140,7 +140,30 @@ if !isfile(uuniref_path)
 else
     unirefs = CSV.read(uuniref_path)
 end
+
+# Make sure everything is relative abundance
+@assert all(col-> isapprox(sum(col), 1, rtol=1e-6), eachcol(unirefs[!,2:end]))
 ```
+
+```julia
+prevalence_filter_path = joinpath(tabledir, "unique_samples_uniref90_prevalence.csv")
+uniref_meta = load_metadata(datatoml, samples=[kidallsamples; momallsamples])
+Microbiome.prevalence(a, minabundance::Float64=0.0001) = mean(x-> present(x, minabundance), (y for y in a))
+
+if !isfile(prevalence_filter_path)
+    prevfilt = map(eachrow(unirefs) do row
+        row = row[2:end]
+        u1_prev = prevalence(row[map(x-> x == "1 and under", uniref_meta.ageLabel)], 0.)
+        o1_prev = prevalence(row[map(x-> x != "mom" && x != "1 and under", uniref_meta.ageLabel)], 0.)
+        mom_prev = prevalence(row[map(x-> x == "mom", uniref_meta.ageLabel)], 0.)
+
+        return (any(>(0.05), [u1_prev, o1_prev, mom_prev]), all(<(0.9), [u1_prev, o1_prev, mom_prev]) )
+    end
+
+
+
+```
+
 
 
 ```julia; results="hidden"
