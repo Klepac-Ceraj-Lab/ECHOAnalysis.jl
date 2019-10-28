@@ -258,8 +258,6 @@ perm = vcat(perm, p[[2],:])
 @pt perm
 ```
 
-**The effect of which is not significant**
-
 Let's look at some other brain measures.
 
 ```julia; results="hidden"

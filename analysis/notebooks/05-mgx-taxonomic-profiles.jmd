@@ -11,7 +11,6 @@ Each sample is run separately, and needs to be joined in a single table.
 I'll use the function `load_taxonomic_profiles`
 
 ```julia; echo=false; results="hidden"
-
 ENV["GKSwstype"] = "100"
 
 using ECHOAnalysis
@@ -93,8 +92,6 @@ we perform classical multidimensional scaling (which is the same thing
 as principal coordinates analysis).
 
 ```julia
-
-
 dm = pairwise(BrayCurtis(), abt)
 mds = fit(MDS, dm, distances=true)
 
