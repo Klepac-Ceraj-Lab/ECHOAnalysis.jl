@@ -119,15 +119,29 @@ function normalize_colname(col)
     c = replace(c, "-"=>"_")
     return Symbol(c)
 end
-
-unirefs = filter_tsv(uniref_unstrat, keep)
-names!(unirefs, [:uniref, (normalize_colname(col) for col in names(unirefs)[2:end])...])
-permutecols!(unirefs, [:uniref, (Symbol(getfield(s, :sample)) for s in [kidallsamples; momallsamples])...])
-
-# some checks to make sure different gene types didn't make it through
-@assert !any(row-> occursin("GeneID", row[1]), eachrow(unirefs))
-@assert !any(row-> occursin("UniRef50", row[1]), eachrow(unirefs))
 ```
+
+For easier loading later,
+
+```julia; results="hidden"
+tabledir = "data/tables"
+uuniref_path = joinpath(tabledir, "unique_samples_uniref90.csv")
+if !isfile(uuniref_path)
+    unirefs = filter_tsv(uniref_unstrat, keep)
+
+    # some checks to make sure different gene types didn't make it through
+    @assert !any(row-> occursin("GeneID", row[1]), eachrow(unirefs))
+    @assert !any(row-> occursin("UniRef50", row[1]), eachrow(unirefs))
+
+    names!(unirefs, [:uniref, (normalize_colname(col) for col in names(unirefs)[2:end])...])
+    permutecols!(unirefs, [:uniref, (Symbol(getfield(s, :sample)) for s in [kidallsamples; momallsamples])...])
+    !isdir(tabledir) && mkdir(tabledir)
+    CSV.write(uuniref_path, unirefs)
+else
+    unirefs = CSV.read(uuniref_path)
+end
+```
+
 
 ```julia; results="hidden"
 unirefs = abundancetable(unirefs)
