@@ -10,27 +10,26 @@ path = "data/engaging"
     filter = "genefamilies"
     analysis_output = "data/biobakery/humann2"
 
-    [tables.biobakery.metaphlan2]
-    root = "metaphlan2"
-    filter = "profile"
-    analysis_output = "data/biobakery/metaphlan2"
-
     [tables.biobakery.kneaddata]
     root = "kneaddata"
     name = "Kneaddata read counts"
     filter = ".txt"
     description = "need to vcat tables"
 
+    [tables.biobakery.metaphlan2]
+    root = "metaphlan2"
+    filter = "profile"
+    analysis_output = "data/biobakery/metaphlan2"
+
     [tables.biobakery.uniref90]
-    path="data/tables/unique_samples_uniref90.csv"
     name = "Humann2 gene families, unique samples"
     description = "Relative abundance normalized genefamilies tables, includes unique genotek samples"
+    path = "data/tables/unique_samples_uniref90.csv"
 
     [tables.biobakery.uniref90_5_90]
-    path="data/tables/unique_samples_uniref90_prevalence.csv"
     name = "Humann2 gene families, unique samples, prevalence filtered"
     description = "5% / 90% within group prevalence filter on unirefs"
-
+    path = "data/tables/unique_samples_uniref90_prevalence.csv"
 
 [tables.brain.gross_volumes]
 name = "High res structural data"

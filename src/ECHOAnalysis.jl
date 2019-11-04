@@ -33,7 +33,10 @@ export
     notebookpaths!,
 
     # Notebook handling
-    randrows
+    randrows,
+
+    # functional profiles
+    load_functional
 
 using DataFrames
 using RecipesBase
@@ -50,5 +53,6 @@ include("notebook_handling.jl")
 include("file_handling.jl")
 include("pcoa_recipe.jl")
 include("startup.jl")
+include("functional_profiles.jl")
 
 end  # module ECHOAnalysis

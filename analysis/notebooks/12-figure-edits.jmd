@@ -269,3 +269,73 @@ display(hm)
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "tax_maaslin_heatmap.pdf"))
 ```
+
+```julia
+features = unique(brain_spec.feature)
+mds = unique(brain_spec.metadata)
+fidx = Dict(f=>i for (i, f) in enumerate(features))
+midx = Dict(f=>i for (i, f) in enumerate(mds))
+
+C = zeros(length(features), length(mds))
+Q = ones(length(features), length(mds))
+
+for row in eachrow(base_spec)
+    row.feature ∈ features || continue
+    C[fidx[row.feature], midx[row.metadata]] = row.coef
+    Q[fidx[row.feature], midx[row.metadata]] = row.qval
+end
+
+lim = maximum(abs.([maximum(C), minimum(C)]))
+hm = heatmap(C, clim=(-lim, lim), color=:RdBu_r,
+    yticks=(eachindex(features), features),
+    xticks=(eachindex(mds), mds), xrotation=45)
+
+for (x,y) in Tuple.(CartesianIndices(Q))
+    if Q[x,y] < 0.001
+        annotate!(y,x-0.4, "***", :center)
+    elseif Q[x,y] < 0.005
+        annotate!(y,x-0.4, "**", :center)
+    elseif Q[x,y] < 0.05
+        annotate!(y,x-0.4, "*", :center)
+    end
+end
+display(hm)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "brain_maaslin_heatmap.pdf"))
+```
+
+```julia
+features = unique(brain_func.feature)
+mds = unique(brain_func.metadata)
+fidx = Dict(f=>i for (i, f) in enumerate(features))
+midx = Dict(f=>i for (i, f) in enumerate(mds))
+
+C = zeros(length(features), length(mds))
+Q = ones(length(features), length(mds))
+
+for row in eachrow(base_spec)
+    row.feature ∈ features || continue
+    C[fidx[row.feature], midx[row.metadata]] = row.coef
+    Q[fidx[row.feature], midx[row.metadata]] = row.qval
+end
+
+lim = maximum(abs.([maximum(C), minimum(C)]))
+hm = heatmap(C, clim=(-lim, lim), color=:RdBu_r,
+    yticks=(eachindex(features), features),
+    xticks=(eachindex(mds), mds), xrotation=45)
+
+for (x,y) in Tuple.(CartesianIndices(Q))
+    if Q[x,y] < 0.001
+        annotate!(y,x-0.4, "***", :center)
+    elseif Q[x,y] < 0.005
+        annotate!(y,x-0.4, "**", :center)
+    elseif Q[x,y] < 0.05
+        annotate!(y,x-0.4, "*", :center)
+    end
+end
+display(hm)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "brain_maaslin_func_heatmap.pdf"))
+```

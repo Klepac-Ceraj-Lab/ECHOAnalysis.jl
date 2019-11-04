@@ -169,6 +169,7 @@ savefig(joinpath(figures, "taxonomic-profiles-shannon.svg"));
 Neat! It looks like both of the first 2 axes of variation are related
 to low vs high diversity.
 
+
 ##### Major Phyla
 
 Because we were able to filter the original taxonomic profile by phyla,
@@ -260,6 +261,25 @@ and also remove duplicates
 (since many of the kids are sampled more than once).
 The `uniquesamples` function identifies the first sample for each kid
 when we use `identifiers=[:subject]` (and `takefirst=true` by default)
+
+```julia
+kids_samples = uniquesamples(samplenames(abt), samplefilter=x-> startswith(x, "C"))
+kids = view(abt, sites=getfield.(kids_samples, :sample))
+nsp = map(sample -> count(x-> x > 0.001, sample), eachcol(occurrences(kids)))
+
+kids_dm = pairwise(BrayCurtis(), kids)
+kids_mds = fit(MDS, kids_dm, distances=true)
+kidsmeta = getfocusmetadata(datatoml["tables"]["metadata"]["all"]["path"], kids_samples)
+
+scatter(kidsmeta.correctedAgeDays ./ 365, nsp,
+    title="Samples by age", xlabel="Age (years)",
+    ylabel="N species", legend=false, color=:lightgrey)
+
+
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "species-by-age.svg"))
+```
 
 ```julia
 firstkids_samples = uniquesamples(samplenames(abt), identifiers=[:subject], samplefilter=x-> startswith(x, "C"))
@@ -489,6 +509,8 @@ plot(kids_mds, line=1,
 scatter!([],[], color=color2[4], label=unique(focusmeta.birthType)[1])
 scatter!([],[], color=color2[5], label=unique(focusmeta.birthType)[2])
 scatter!([],[], color=color2[end], label="missing", legend=:bottomleft)
+
+sum(!ismissing, focusmeta.cogScore)
 ```
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-kids-birth.svg"));
