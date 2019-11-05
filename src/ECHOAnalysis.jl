@@ -47,12 +47,11 @@ using ColorBrewer
 using Pkg.TOML
 using Microbiome
 
-include_dependency("../data/data.toml")
 include("metadata_handling.jl")
 include("notebook_handling.jl")
 include("file_handling.jl")
 include("pcoa_recipe.jl")
 include("startup.jl")
-include("functional_profiles.jl")
+include_dependency("../data/data.toml")
 
 end  # module ECHOAnalysis
