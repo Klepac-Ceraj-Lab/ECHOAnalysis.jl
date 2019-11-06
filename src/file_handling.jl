@@ -66,3 +66,24 @@ function merge_tables(folder, dataroot, fltr; suffix=fltr)
     disallowmissing!(df)
     return df
 end
+
+
+"""
+    samples_from_file(file::AbstractString; delim::Char)
+
+Read the first line of a file, and pull out sampleIDs
+"""
+function samples_from_file(file::AbstractString; delim::Union{Symbol,Char}=:default)
+    line = first(eachline(file))
+
+    if delim == :default
+        delim = ','
+        endswith(file, "tsv") && (delim = '\t')
+    elseif delim isa Symbol
+        throw(ArgumentError("delim option '$delim' not supported"))
+    end
+
+    samples = split(line, delim)[2:end]
+    length(samples) < 2 && @warn "Are you sure you used the right delim?"
+    return resolve_sampleID(samples)
+end

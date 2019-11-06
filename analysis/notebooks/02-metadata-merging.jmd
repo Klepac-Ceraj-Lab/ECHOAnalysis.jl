@@ -143,7 +143,8 @@ we want to use a normalized score that's comparable across tests.
 cogcols = [
     "languageComposite", # this is from Bayleys
     "motorComposite", # also Bayleys
-    "mullen_EarlyLearningComposite",
+    # "mullen_EarlyLearningComposite",
+    "mullen_NonVerbalComposite", # used because composite score includes verbal, very young children not always verbal
     "fullScaleComposite", # this is from WSSPI
     "FSIQ_Composite",  # this is from WISC
     ]
@@ -160,7 +161,7 @@ cogscores = by(allmeta, [:subject, :timepoint]) do sample
         else
             nrow(cogs) != 1 && throw(ErrorException("Wrong number of rows for $parent"))
             metadatum = cogs.metadatum[1]
-            if metadatum == "mullen_EarlyLearningComposite"
+            if metadatum == "mullen_NonVerbalComposite"
                 assessment = "Mullen"
             elseif metadatum == "fullScaleComposite"
                 assessment = "WSSPI"
@@ -355,7 +356,7 @@ And then concatenate all the tables together
 ```julia
 allmeta = vcat(allmeta, brainvol, hires, samples)
 # reorder columns
-allmeta = allmeta[!,[:sample, :subject, :timepoint, :metadatum, :value, :parent_table]]
+permutecols!(allmeta, [:sample, :subject, :timepoint, :metadatum, :value, :parent_table])
 # remove rows with missing values
 dropmissing!(allmeta)
 

@@ -4,7 +4,7 @@ const color3 = ColorBrewer.palette("Set3", 12)
 const color4 = ColorBrewer.palette("Paired", 12)
 
 const tomlpath = joinpath(@__DIR__, "..", "data", "data.toml")
-updatenotebooks!()
+# updatenotebooks!() # mucks with precompilation
 const datatoml = TOML.parsefile(tomlpath)
 
 function load_taxonomic_profiles()

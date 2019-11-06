@@ -90,9 +90,9 @@ To see what samples are from those folks that gave a bunch:
 
 ```julia
 highsamplers_df = filter(mgxsamples) do row
-        # find rows from subjects in the highly sampled pool
-        in(row.subject, highsamplers)
-    end
+    # find rows from subjects in the highly sampled pool
+    in(row.subject, highsamplers)
+end
 
 sort!(highsamplers_df, [:subject, :timepoint])
 
@@ -178,4 +178,34 @@ usamples = CSV.read(joinpath(datatoml["tables"]["metadata"]["path"], "uniquesamp
 
 focus = getfocusmetadata(allmeta, resolve_sampleID.(usamples.sample))
 @pt randrows(focus)
+```
+
+This can help with things like plotting.
+For example, let's look at the age-adjusted cognitive scores.
+First, we'll filter on kids that have cognitive scores and ages:
+
+```julia
+toplot = filter(row-> !any(ismissing, [row.cogScore, row.correctedAgeDays]), focus)
+scatter(toplot.correctedAgeDays ./ 365, toplot.cogScore, group=toplot.cogAssessment,
+    color=color1[2:end]', xlabel="age (years)", ylabel="Composite Score",
+    title="Cognitive Assessments", legend=:bottom)
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "cogscore_age_scatter.svg"))
+```
+
+```julia
+using Statistics
+m = mean(toplot.cogScore)
+s = std(toplot.cogScore)
+
+toplot.zscore = map(x-> (x - m)/s, toplot.cogScore)
+
+scatter(toplot.correctedAgeDays ./ 365, toplot.zscore,
+    group = toplot.cogAssessment, color=color1[2:end]',
+    ylabel = "zscore", xlabel = "age", legend=:bottom,
+    title="Cognitive Assessments")
+```
+```julia; echo=false; results="hidden"
+savefig(joinpath(figures, "cogscore_zscore_age_scatter.svg"))
 ```
