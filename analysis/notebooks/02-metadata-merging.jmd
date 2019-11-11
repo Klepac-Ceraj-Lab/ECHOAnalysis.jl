@@ -95,7 +95,7 @@ There are a few bits of metadata where it's useful
 to have a summary or a slightly transformed version.
 One example of this is age -
 For reasons that will be clear later,
-it's useful to group gids by age groups:
+it's useful to group kids by age groups:
 
 - under 1 year old
 - between 1 and 2 years old
@@ -231,7 +231,7 @@ filter!(row-> row.value == "mom", momlabels)
 # add to main sample dataframe (while reordering columns)
 append!(samples, momlabels[names(samples)])
 ```
-
+<!--Is this table meant to show the value of a mother's age? Or is the value just `mom`?-->
 
 ## Brain Data
 
@@ -252,7 +252,7 @@ brainvol = stack(brainvol, [:white_matter_volume, :grey_matter_volume, :csf_volu
 @pt brainvol
 ```
 
-We need to fix the subjects - the letters represent timepoints -
+We need to fix `subject` - the letters represent timepoints but we want numbers for timepoints -
 using the `resolve_letter_timepoint` function.
 
 ```julia
@@ -294,6 +294,8 @@ I'll also make a column with the total brain volume for later normalization.
 mapping = CSV.read("data/brain/brain_region_key.csv")
 @pt mapping
 ```
+<!--What is this table meant to look like? It doesn't seem to match your written description.-->
+
 ```julia
 hires.hires_total = [sum(row[3:end]) for row in eachrow(hires)]
 

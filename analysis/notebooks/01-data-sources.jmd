@@ -28,6 +28,7 @@ First, make sure all records are being displayed
 by clicking the `Show All` button (if it is not greyed out).
 
 ![Show all button](../src/img/01.showall.png)
+<!-- TODO: Edit path to correct location of images -->
 
 Next, export desired sections as an excel file.
 The following demonstrates the steps
@@ -45,6 +46,7 @@ to get the metadata associated with timepoints,
     1. Then click `Move All`
     1. Repeat for additional tables/fields, then `Export`
 
+<!-- TODO: Edit paths to correct locations of images -->
 ![Export](../src/img/01.export.png)
 
 ![Save](../src/img/01.save.png)
