@@ -9,12 +9,14 @@ export
     uniquesamples,
     breastfeeding,
     samplelessthan,
-    numberify
+    numberify,
+    widemetadata,
+    getsamples
 
     ## Database Operations
 
+using SQLite
 using DataFrames
-using MultivariateStats
 using CSV
 using Colors
 using Microbiome

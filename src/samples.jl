@@ -1,4 +1,16 @@
 """
+    getsamples(rawfolder::String)
+
+parse sample ids from raw fastq folder
+"""
+function getsamples(rawfolder)
+    samples = stoolsample(readdir(rawfolder))
+    samples = unique(samples)
+    return samples
+end
+
+
+"""
 Represents a given timepoint data collection or sample.
 
 Required fields:

@@ -1,3 +1,43 @@
+function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:NamedTuple};
+                        metadata::Set=Set(unique(longdf.metadatum)),
+                        parents::Set=Set(unique(longdf.parent_table)))
+    filter!(row-> row.parent_table in parents, longdf)
+    df = DataFrame(samples)
+
+    ss = unique(df.subject)
+    subtps = Dict(s => Set([0, df.timepoint[findall(isequal(s), df.subject)]...]) for s in ss)
+
+    submap = Dict(s => findall(isequal(s), df.subject) for s in ss)
+    tpmap = Dict(t => findall(isequal(t), df.timepoint) for t in unique(df.timepoint))
+
+    metadict = Dict{Int,Dict}()
+    notime_metadata = Set()
+    timepoint_metadata = Set()
+
+    nsamples = nrow(df)
+    metadata = union(metadata, longdf.metadatum)
+    for m in Symbol.(metadata)
+        df[!,m] = Array{Any}(missing, nsamples)
+    end
+
+    for row in eachrow(longdf)
+        sub = row[:subject]
+        tp = row[:timepoint]
+        md = String(row[:metadatum])
+        val = row[:value]
+        if !any(ismissing, [sub, tp, md]) && md in metadata && sub in df.subject && tp in subtps[sub]
+            if tp == 0
+                rows = submap[sub]
+            else
+                rows = collect(intersect(submap[sub], tpmap[tp]))
+            end
+            df[rows, Symbol(md)] .= val
+        end
+    end
+    return df
+end
+
+
 """
     timepointlessthan(x::T, y::T) where T <: AbstractTimepoint
     timepointlessthan(x::T, y::T) where T <: Union{AbstractString, Symbol}
