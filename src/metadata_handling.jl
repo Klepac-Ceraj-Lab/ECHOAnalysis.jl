@@ -1,77 +1,15 @@
 """
-    resolve_sampleID(sid::Union{AbstractString,Symbol})
-    resolve_sampleID(sids::Vector{<:Union{AbstractString,Symbol}})
-
-Parse a sample name and return its components as a named tuple:
-
-Example: For the sample `C0040_3F_1A`:
-- `C0040` means ""**C**hild, subject ID **40**"
-- `3F` means "timepoint **3**", **F**ecal (genotech).
-  May also be `E` for **E**thanol.
-- 1A means "replicate **1**, aliquot **A**"
-- Hyphens in sample names are converted to underscores (so "C0001_1F_1A" == "C0001-1F-1A")
-- Samples may also end with `_S\\d+` (well #s from sequencing) which are ignored
-- Samples that don't match the expected pattern return `(sample=sid, subject=nothing, timepoint=nothing)`
-
-This function returns the `NamedTuple` `(sample="C0040_3F_1A", subject=40, timepoint=3)`
-"""
-function resolve_sampleID(sid::Union{AbstractString,Symbol})
-    sid = String(sid)
-    m = match(r"^(([CM])(\d+)[_\-](\d)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sid)
-
-
-    if m == nothing
-        return (sample=String(sid), subject=nothing, timepoint=nothing)
-    else
-        sample = replace(String(m.captures[1]), "-"=>"_")
-        subject = parse(Int, m.captures[3])
-        timepoint = parse(Int, m.captures[4])
-        return (sample=sample, subject=subject, timepoint=timepoint)
-    end
-end
-
-resolve_sampleID(sids::Vector{<:Union{AbstractString,Symbol}}) = resolve_sampleID.(sids)
-
-"""
-    resolve_letter_timepoint(sid::AbstractString)
-    resolve_letter_timepoint(sid::Missing)
-
-Deals with sampleIDs in which the timepoint is given as a letter.
-Eg. `40b` indicates timepoint 2 from subject ID 40. If no letter
-is provided, timepoint is assumed to be 1.
-"""
-function resolve_letter_timepoint(sid::AbstractString)
-    m = match(r"(\d+)([a-zA-Z])?", sid)
-    isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
-    if isnothing(m.captures[2])
-        return (sample = sid,
-                subject=parse(Int, sid),
-                timepoint=1)
-    else
-        return (sample  = lowercase(sid),
-                subject = parse(Int, m.captures[1]),
-                timepoint = findfirst(
-                                lowercase(m.captures[2]),
-                                "abcdefghijklmnopqrstuvwxyz")[1])
-    end
-end
-
-resolve_letter_timepoint(sid::Missing) = missing
-resolve_letter_timepoint(sids::Vector{<:Union{AbstractString, Missing}}) = resolve_letter_timepoint.(sids)
-
-"""
-    samplelessthan(x::T, y::T) where T <: NamedTuple
-    samplelessthan(x::T, y::T) where T <: Union{AbstractString, Symbol}
+    timepointlessthan(x::T, y::T) where T <: AbstractTimepoint
+    timepointlessthan(x::T, y::T) where T <: Union{AbstractString, Symbol}
 
 Function to use for sorting `NamedTuple`s from sample IDs.
 String versions of sampleIDs will be parsed with `resolve_sampleID`
 """
-samplelessthan(x::T, y::T) where T <: NamedTuple = x.sample < y.sample || (x.sample == y.sample && x.timepoint < y.timepoint)
-
-samplelessthan(x::T, y::T) where T <: Union{AbstractString, Symbol} = samplelessthan(resolve_sampleID.((x, y))...)
+timepointlessthan(x::T, y::T) where T <: AbstractTimepoint = x.sample < y.sample || (x.sample == y.sample && x.timepoint < y.timepoint)
+timepointlessthan(x::T, y::T) where T <: Union{AbstractString, Symbol} = timepointlessthan(stoolsample.((x, y))...)
 
 """
-    uniquesamples(samples::AbstractVector{<:NamedTuple}, identifiers::Vector{Symbol}=[:subject,:timepoint];
+    uniquesamples(samples::AbstractVector{<:StoolSample}, identifiers::Vector{Symbol}=[:subject,:timepoint];
                         skipethanol=true, samplefilter=x->true)
 
 Identifies unique samples from a vector of sample tuples.
@@ -83,10 +21,7 @@ Multiple items that have the same values among the `identifiers` will be exclude
 Given the following array of 4 samples:
 
 ```@example uniquesamples
-s = [(sample="C0001_1F_1A", subject=1, timepoint=1),
-     (sample="C0001_1F_2A", subject=1, timepoint=1),
-     (sample="C0001_2F_1A", subject=1, timepoint=2)
-     (sample="C0002_1F_1A", subject=2, timepoint=1)];
+s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
 ```
 
 By default, `identifiers = [:subject, :timepoint]`,
@@ -107,23 +42,20 @@ uniquesamples(s, identifiers=[:subject])
 - `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
     that is ethanol (as opposed to genotek) samples.
 - `samplefilter=x->true`: a function to select samples to include.
-  By default, all samples are included. Use `samplefilter=x->startswith(x, "C")`
+  By default, all samples are included. Use `samplefilter=iskid`
   to include only child samples for example.
-- `takefirst=true`: if `true`, sorts the samples using [`samplelessthan`]@ref
+- `takefirst=true`: if `true`, sorts the samples using [`timepointlessthan`]@ref
 """
-function uniquesamples(samples::AbstractVector{<:NamedTuple};
+function uniquesamples(samples::AbstractVector{<:StoolSample};
                         identifiers::Vector{Symbol}=[:subject,:timepoint],
                         skipethanol=true, samplefilter=x->true, takefirst=true)
     seen = NamedTuple[]
-    uniquesamples = NamedTuple[]
-    takefirst && (samples = sort(samples, lt=samplelessthan))
+    uniquesamples = StoolSample[]
+    takefirst && (samples = sort(samples, lt=timepointlessthan))
 
     map(samples) do s
-        haskey(s, :sample) || throw(ArgumentError("need a NamedTuple with :sample field"))
-        all(k-> haskey(s, k), identifiers) || throw(ArgumentError("need a NamedTuple with fields: $identifiers"))
-
-        !samplefilter(s.sample) && return nothing
-        skipethanol && occursin(r"_\d+E_", s.sample) && return nothing
+        !samplefilter(s) && return nothing
+        skipethanol && sampletype(s) == "ethanol" && return nothing
 
         subtp = (; (i => s[i] for i in identifiers)...)
         if !in(subtp, seen)
@@ -135,16 +67,22 @@ function uniquesamples(samples::AbstractVector{<:NamedTuple};
 end
 
 function uniquesamples(samples::AbstractVector{<:AbstractString}; kwargs...)
-    ss = resolve_sampleID(samples)
+    ss = stoolsample(samples)
     return uniquesamples(ss; kwargs...)
 end
 
-import Base.occursin
+"""
+    safeoccursin(s::String, thing)
+    safeoccursin(r::Regex, thing)
 
-# WARNING: This is type piracy.
-# But it beats having to check if the thing is missing each time
-occursin(::String, ::Missing) = missing
-occursin(::Regex, ::Missing) = missing
+Same as `Base.occursin`, except returns `missing`
+if the thing to be searched is `missing`
+rather than throwing an error.
+"""
+safeoccursin(s::String, thing::Any) = occursin(s, thing)
+safeoccursin(r::Regex, thing::Any) = occursin(r, thing)
+safeoccursin(::String, ::Missing) = missing
+safeoccursin(::Regex, ::Missing) = missing
 
 """
     breastfeeding(row::DataFrameRow)
@@ -164,9 +102,9 @@ Otherwise returns `false`.
 """
 function breastfeeding(row::DataFrameRow)
     bf = any([
-        occursin(r"[Bb]reast", row[:milkFeedingMethods]),
-        occursin(r"[Yy]es", row[:exclusivelyNursed]),
-        all(map(x->occursin(r"[Nn]o", x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        safeoccursin(r"[Bb]reast", row[:milkFeedingMethods]),
+        safeoccursin(r"[Yy]es", row[:exclusivelyNursed]),
+        all(map(x->safeoccursin(r"[Nn]o", x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
         row[:typicalNumberOfFeedsFromBreast] > 0,
         row[:typicalNumberOfEpressedMilkFeeds] > 0,
         row[:lengthExclusivelyNursedMonths] > 0,
@@ -190,9 +128,9 @@ Otherwise returns `false`.
 """
 function formulafeeding(row::DataFrameRow)
     ff = any([
-        occursin(r"[Ff]ormula", row[:milkFeedingMethods]),
-        occursin(r"[Yy]es", row[:exclusiveFormulaFed]),
-        all(map(x->occursin(r"[Nn]o",x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
+        safeoccursin(r"[Ff]ormula", row[:milkFeedingMethods]),
+        safeoccursin(r"[Yy]es", row[:exclusiveFormulaFed]),
+        all(map(x->safeoccursin(r"[Nn]o",x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
         !ismissing(row[:amountFormulaPerFeed]),
         !ismissing(row[:formulaTypicalType]),
         row[:amountFormulaPerFeed] > 0
@@ -218,7 +156,7 @@ function numberify(x)
     ismissing(x) && return missing
     x isa Real && return x
     if x isa AbstractString
-        occursin(r"[\.e]", x) ? parse(Float64, x) : parse(Int, x)
+        safeoccursin(r"[\.e]", x) ? parse(Float64, x) : parse(Int, x)
     else
         @warn "Something weird" x typeof(x)
         return missing
@@ -447,54 +385,4 @@ end
 
 function customprocess(col, ::Union{MDColumn{:motherHHS_Occu},MDColumn{:motherHHS_Edu}})
     return customprocess(col, MDColumn(:mother_HHS))
-end
-
-"""
-    getfocusmetadata(df, samples; focus=metadata_focus_headers)
-
-Get a wide-form metadata table with a subset of headers for a subset of subject/sample IDs
-"""
-function getfocusmetadata(df::AbstractDataFrame, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
-    subjects = getfield.(samples, :subject)
-    timepoints = getfield.(samples, :timepoint)
-
-    # # This code can be used if samples don't conform to normal pattern,
-    # # but we don't actually want to deal with that at this stage.
-    # nothings = union(findall(isnothing, subjects), findall(isnothing, timepoints))
-    # if length(nothings) > 0
-    #     @warn "Some samples couldn't be resolved" samples[nothings]
-    #     nothings = sort(collect(nothings))
-    #     deleteat!(subjects, nothings); deleteat!(timepoints, nothings)
-    #     subjects = Int.(subjects); timepoints = Int.(timepoints)
-    # end
-
-    df = getmetadata(df, subjects, timepoints, focus)
-
-    for n in names(df)
-        df[!, n] = customprocess(df[!,n], MDColumn(n))
-    end
-
-    if haskey(samples[1], :sample)
-        df[!, :sample] = getfield.(samples, :sample)
-        # reorder columns so :sample comes first
-        return df[:, [:sample, names(df)[1:end-1]...]]
-    else
-        return df
-    end
-end
-
-
-"""
-    getfocusmetadata(longfilepath, samples; focus=metadata_focus_headers)
-
-Get a wide-form metadata table with a subset of headers for a subset of subject/sample IDs
-"""
-function getfocusmetadata(longfilepath::AbstractString, samples::Vector{<:NamedTuple}; focus=metadata_focus_headers)
-    md = CSV.read(longfilepath)
-    getfocusmetadata(md, samples; focus=focus)
-end
-
-#
-function getfocusmetadata(longfilepath, samples::Vector{<:AbstractString}; focus=metadata_focus_headers)
-    getfocusmetadata(longfilepath, resolve_sampleID.(samples), focus=focus)
 end
