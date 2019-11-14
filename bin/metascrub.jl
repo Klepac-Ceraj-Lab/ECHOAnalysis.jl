@@ -1,3 +1,8 @@
+using Pkg
+Pkg.activate(normpath(joinpath(@__DIR__, "..")))
+push!(LOAD_PATH, @__DIR__)
+@info "Scrubbing metadata"
+
 using ArgParse
 using Logging
 using LoggingExtras

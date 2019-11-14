@@ -1,16 +1,4 @@
 """
-    getsamples(rawfolder::String)
-
-parse sample ids from raw fastq folder
-"""
-function getsamples(rawfolder)
-    samples = stoolsample(readdir(rawfolder))
-    samples = unique(samples)
-    return samples
-end
-
-
-"""
 Represents a given timepoint data collection or sample.
 
 Required fields:
@@ -26,6 +14,10 @@ abstract type AbstractTimepoint end
 sampleid(s::AbstractTimepoint)  = s.id
 subject(s::AbstractTimepoint)   = s.subject
 timepoint(s::AbstractTimepoint) = s.timepoint
+
+function Base.isless(x::AbstractTimepoint, y::AbstractTimepoint)
+    subject(x) < subject(y) || (subject(x) == subject(y) && timepoint(x) < timepoint(y))
+end
 
 function Base.show(io::IO, tp::AbstractTimepoint)
     println(io, "Sample id: $(sampleid(tp))")
@@ -60,8 +52,7 @@ end
     stoolsample(sid::Union{AbstractString,Symbol})
     stoolsample(sids::Vector{<:Union{AbstractString,Symbol}})
 
-Parse a sample ID and create a `StoolSample`
-or parse a vector of sample IDs and create a vector of `StoolSample`s
+Parse a sample ID and create a `StoolSample`.
 
 Example: For the sample `C0040_3F_1A`:
 - `C0040` means ""**C**hild, subject ID **40**"
@@ -83,18 +74,17 @@ function stoolsample(sid::String)
         type = String(m.captures[5])
         if type == "E"
             type = "ethanol"
-        elseif type = "F"
+        elseif type == "F"
             type = "omnigene"
         else
             throw(ArgumentError("unknown type of FecalSample: $type"))
         end
 
-        return StoolSample(id, subject, timepoint, type)
+        return StoolSample(sample, subject, timepoint, type)
     end
 end
 
 stoolsample(sid::Union{AbstractString,Symbol}) = stoolsample(String(sid))
-stoolsample(sids::Vector{<:Union{AbstractString,Symbol}}) = stoolsample.(sids)
 
 sampletype(s::StoolSample) = s.type
 
@@ -118,7 +108,7 @@ function resolve_letter_timepoint(sid::AbstractString)
                 subject=parse(Int, sid),
                 timepoint=1)
     else
-        tp = findfirst(lowercase(m.captures[2]), "abcdefghijklmnopqrstuvwxyz")[1])
+        tp = findfirst(lowercase(m.captures[2]), "abcdefghijklmnopqrstuvwxyz")[1]
         return Timepoint(lowercase(sid), parse(Int, m.captures[1]), tp)
     end
 end

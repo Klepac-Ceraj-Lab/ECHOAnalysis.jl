@@ -39,43 +39,24 @@ end
 
 
 """
-    timepointlessthan(x::T, y::T) where T <: AbstractTimepoint
-    timepointlessthan(x::T, y::T) where T <: Union{AbstractString, Symbol}
+    uniquetimepoints(samples::AbstractVector{<:AbstractTimepoint};
+                                samplefilter=x->true, sortfirst=true)
+    uniquetimepoints(samples::AbstractVector{<:StoolSample};
+                        skipethanol=true, samplefilter=x->true, sortfirst=true)
 
-Function to use for sorting `NamedTuple`s from sample IDs.
-String versions of sampleIDs will be parsed with `resolve_sampleID`
-"""
-timepointlessthan(x::T, y::T) where T <: AbstractTimepoint = x.sample < y.sample || (x.sample == y.sample && x.timepoint < y.timepoint)
-timepointlessthan(x::T, y::T) where T <: Union{AbstractString, Symbol} = timepointlessthan(stoolsample.((x, y))...)
-
-"""
-    uniquesamples(samples::AbstractVector{<:StoolSample}, identifiers::Vector{Symbol}=[:subject,:timepoint];
-                        skipethanol=true, samplefilter=x->true)
-
-Identifies unique samples from a vector of sample tuples.
-Tuples must have a `sample` field, and additional fields specified in `identifiers`.
-Multiple items that have the same values among the `identifiers` will be excluded.
+Identifies unique timepoints (that is, `subject=>timepoint` pairs)
+from a vector of [`AbstractTimepoint`]@ref.
 
 **Example:**
 
 Given the following array of 4 samples:
 
-```@example uniquesamples
+```@example uniquetimepoints
 s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
 ```
 
-By default, `identifiers = [:subject, :timepoint]`,
-meaning only the second item would be excluded
-(since both it and the first item are subject 1, timepoint 1).
-
-A single timepoint for each subject can be acquired by passing `identifiers=[:subject]`.
-
-```@example uniquesamples
-uniquesamples(s)
-```
-```@example uniquesamples
-uniquesamples(s, identifiers=[:subject])
-```
+The second item will be excluded, since it's a duplicate of the first.
+If a single sample for each subject is desired, use [`uniquesubjects`]@ref
 
 **Other parameters**
 
@@ -84,20 +65,20 @@ uniquesamples(s, identifiers=[:subject])
 - `samplefilter=x->true`: a function to select samples to include.
   By default, all samples are included. Use `samplefilter=iskid`
   to include only child samples for example.
-- `takefirst=true`: if `true`, sorts the samples using [`timepointlessthan`]@ref
+- `sort=true`: if `true`, sorts the vector (to pick the earliest example
+  of each timepoint)
 """
-function uniquesamples(samples::AbstractVector{<:StoolSample};
-                        identifiers::Vector{Symbol}=[:subject,:timepoint],
-                        skipethanol=true, samplefilter=x->true, takefirst=true)
-    seen = NamedTuple[]
+function uniquetimepoints(samples::AbstractVector{<:StoolSample};
+                           skipethanol=true, samplefilter=x->true, sortfirst=true)
+    seen = Tuple[]
     uniquesamples = StoolSample[]
-    takefirst && (samples = sort(samples, lt=timepointlessthan))
+    sortfirst && (samples = sort(samples))
 
     map(samples) do s
         !samplefilter(s) && return nothing
         skipethanol && sampletype(s) == "ethanol" && return nothing
 
-        subtp = (; (i => s[i] for i in identifiers)...)
+        subtp = (subject(s), timepoint(s))
         if !in(subtp, seen)
             push!(seen, subtp)
             push!(uniquesamples, s)
@@ -106,9 +87,64 @@ function uniquesamples(samples::AbstractVector{<:StoolSample};
     return uniquesamples
 end
 
-function uniquesamples(samples::AbstractVector{<:AbstractString}; kwargs...)
-    ss = stoolsample(samples)
-    return uniquesamples(ss; kwargs...)
+function uniquetimepoints(samples::AbstractVector{<:AbstractString}; kwargs...)
+    ss = stoolsample.(samples)
+    return uniquetimepoints(ss; kwargs...)
+end
+
+"""
+    uniquesubjects(samples::AbstractVector{<:AbstractTimepoint};
+                                samplefilter=x->true, sortfirst=true)
+    uniquesubjects(samples::AbstractVector{<:StoolSample};
+                        skipethanol=true, samplefilter=x->true, sortfirst=true)
+
+Returns a single sample per subject
+from a vector of [`AbstractTimepoint`]@ref.
+
+**Example:**
+
+Given the following array of 4 samples:
+
+```@example uniquesubjects
+s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
+```
+
+The second and third samples will be excluded,
+since they are both from the same subject as the first sample.
+If a single sample for each subject/timepoint pair is desired, use [`uniquetimepoints`]@ref
+
+**Other parameters**
+
+- `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
+    that is ethanol (as opposed to genotek) samples.
+- `samplefilter=x->true`: a function to select samples to include.
+  By default, all samples are included. Use `samplefilter=iskid`
+  to include only child samples for example.
+- `sortfirst=true`: if `true`, sorts the vector (to pick the earliest timepoint
+  of each subject)
+"""
+function uniquesubjects(samples::AbstractVector{<:StoolSample};
+                           skipethanol=true, samplefilter=x->true, sortfirst=true)
+    seen = Int[]
+    uniquesamples = StoolSample[]
+    sortfirst && (samples = sort(samples))
+
+    map(samples) do s
+        !samplefilter(s) && return nothing
+        skipethanol && sampletype(s) == "ethanol" && return nothing
+
+        sub = subject(s)
+        if !in(sub, seen)
+            push!(seen, sub)
+            push!(uniquesamples, s)
+        end
+    end
+    return uniquesamples
+end
+
+function uniquesubjects(samples::AbstractVector{<:AbstractString}; kwargs...)
+    ss = stoolsample.(samples)
+    return uniquesubjects(ss; kwargs...)
 end
 
 """
@@ -128,19 +164,16 @@ safeoccursin(::Regex, ::Missing) = missing
     breastfeeding(row::DataFrameRow)
 
 Checks a wide-form metadata row for breastfeeding information.
-Returns `true` if any of the following are `true`:
-- `:milkFeedingMethods` contains "breast"
-- `:exclusivelyNursed` is "Yes" (or "yes")
-- Both `:exclusivelyNursed` and `:exclusiveFormulaFed` are "No" (or "no")
-- Any of the following have values > 0:
-    - `:typicalNumberOfFeedsFromBreast`
-    - `:typicalNumberOfEpressedMilkFeeds`
-    - `:lengthExclusivelyNursedMonths`
-    - `:noLongerFeedBreastmilkAge`
+Possible return values are
 
-Otherwise returns `false`.
+- `:breastfed`: at least 3 months exlussively breastfed,
+    or where at least 80% of feedings are from breast
+- `:formulafed`: no breastmilk after 2 weeks
+- `:mixed`: all others
+- `missing`: not enough information
 """
 function breastfeeding(row::DataFrameRow)
+    # not yet working
     bf = any([
         safeoccursin(r"[Bb]reast", row[:milkFeedingMethods]),
         safeoccursin(r"[Yy]es", row[:exclusivelyNursed]),
@@ -150,34 +183,9 @@ function breastfeeding(row::DataFrameRow)
         row[:lengthExclusivelyNursedMonths] > 0,
         row[:noLongerFeedBreastmilkAge] > 0
         ])
-    return !ismissing(bf) && bf
+    # return !ismissing(bf) && bf
+    return missing
 end
-
-"""
-    formulafeeding(row::DataFrameRow)
-
-Checks a wide-form metadata row for formula feeding information.
-Returns `true` if any of the following are `true`:
-- `:milkFeedingMethods` contains "Formula" (or "formula")
-- `:exclusivelyFormulaFed` is "Yes" (or "yes")
-- Both `:exclusivelyNursed` and `:exclusiveFormulaFed` are "No" (or "no")
-- `:amountFormulaPerFeed` is > 0:
-- Either `:amountFormulaPerFeed` or `:formulaTypicalType` have (non-missing) values
-
-Otherwise returns `false`.
-"""
-function formulafeeding(row::DataFrameRow)
-    ff = any([
-        safeoccursin(r"[Ff]ormula", row[:milkFeedingMethods]),
-        safeoccursin(r"[Yy]es", row[:exclusiveFormulaFed]),
-        all(map(x->safeoccursin(r"[Nn]o",x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
-        !ismissing(row[:amountFormulaPerFeed]),
-        !ismissing(row[:formulaTypicalType]),
-        row[:amountFormulaPerFeed] > 0
-        ])
-    return !ismissing(ff) && ff
-end
-
 
 """
     numberify(x)
