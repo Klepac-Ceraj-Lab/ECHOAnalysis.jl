@@ -37,6 +37,7 @@ tax = load_taxonomic_profiles()
 ```
 
 Some analysis of the fungi:
+<!--Do we need to justify why we're looking specifically at fungi? Or is that not super important?-->
 
 ```julia
 euk = filter(tax) do row
@@ -154,6 +155,7 @@ savefig(joinpath(figures, "taxonomic-profiles-moms-kids.svg"));
 ```
 
 ##### Diversity
+<!--TODO:Change section title because `Diversity` could be misinterpreted as being related to other metadata-->
 
 The `shannon` function can calculate Shannon diversity for the entire `AbundanceTable`.
 
@@ -217,11 +219,12 @@ savefig(joinpath(figures, "taxonomic-profiles-grid.svg"));
 ```
 
 So that balance is somewhat visible, but there's something else going on too.
-
+<!--What balance?-->
 #### Moms
 
 There aren't a ton of moms in the samples yet,
-but let's just see what they look like on their own
+<!--Is this still true?-->
+but let's just see what they look like on their own.
 
 ```julia
 # use the `uniquesamples` function to get a single sample per mom
@@ -252,6 +255,7 @@ savefig(joinpath(figures, "moms-abundanceplot-nolegend.svg"));
 ```
 
 Those look like normal adult microbiomes.
+<!--"Normal"? Maybe expected Western adult gut microbiomes?-->
 
 #### Kids
 
@@ -261,7 +265,7 @@ and also remove duplicates
 (since many of the kids are sampled more than once).
 The `uniquesamples` function identifies the first sample for each kid
 when we use `identifiers=[:subject]` (and `takefirst=true` by default)
-
+<!--Below code chunk has not been updated in html files (ada:/home/kevin/repos/paper1_resonance/analysis/html/)-->
 ```julia
 kids_samples = uniquesamples(samplenames(abt), samplefilter=x-> startswith(x, "C"))
 kids = view(abt, sites=getfield.(kids_samples, :sample))
@@ -277,6 +281,7 @@ scatter(kidsmeta.correctedAgeDays ./ 365, nsp,
 
 
 ```
+<!--Why is this figure so sparse? Is this the correct number of unique child subjects?-->
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "species-by-age.svg"))
 ```
@@ -292,7 +297,7 @@ p5 = plot(kids_mds, marker=3, line=1, ticks=false,
     zcolor=shannon(kids), primary = false, color=:viridis,
     title="Kids, shannon diversity")
 ```
-
+<!--Previous variable was `kids_samples` vs `firstkids_samples`. Will that inconsistency affect the code?-->
 ```julia
 savefig(joinpath(figures, "taxonomic-profiles-kids-shannon.svg"));
 ```
@@ -394,10 +399,10 @@ abundanceplot(kids, srt = kids_hcl.order, topabund=11,
 savefig(joinpath(figures, "kids-abundanceplot-nolegend.svg"));
 ```
 
-These also look like adult microbiomes, with a smattering of young-kids
-microbes thrown in for good measure (eg _Bifidobacterium longum_).
+These also look like adult microbiomes, with a smattering of
+microbes associated with young kids thrown in for good measure (eg _Bifidobacterium longum_).
 
-We can also annotate this plot with the age of the kids
+We can also annotate this plot with the age of the kids.
 
 ```julia
 plot(
@@ -414,6 +419,8 @@ savefig(joinpath(figures, "kids-abundanceplot-age.svg"));
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "kids-abundanceplot-age-legend.svg"));
 ```
+<!--Is there a reason the title of this chart is `Kids` and not `Unique Kids`?
+Also, the border around the age colors below are too thick to interpret the colors.-->
 
 ```julia
 x = pco_axes[.!ismissing.(focusmeta.correctedAgeDays), 1]
@@ -427,9 +434,9 @@ ylabel!("MDS2 ($(round(var_explained[2]*100, digits = 2))%)")
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-mds-kids-age.svg"));
 ```
-
+<!--Not super clear the gradient is by age. Can you add a label?-->
 Here it looks like the outlying tail is the youngest kids.
-Again, this makes sense. We know that infants microbiomes change quite a bit
+Again, this makes sense. We know that infant microbiomes change quite a bit
 over the first years of life.
 
 Let's focus on just the youngest kids:
@@ -458,7 +465,7 @@ abundanceplot(ykids, srt = ykids_hcl.order, topabund=11, title="Kids under 2, to
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "young-kids-abundanceplot-nolegend.svg"));
 ```
-
+<!--Should there be a brief summary sentence (or two) here?-->
 ### Other Metadata Overviews
 
 Eventually, we'll want to do statistical tests for associations,
@@ -499,7 +506,7 @@ savefig(joinpath(figures, "kids-brain-quartiles.svg"));
 
 #### Birth type
 
-Birth type (vaginal or cesarean) is known to have a substantial affect on kids'
+Birth type (vaginal or cesarean) is known to have a substantial effect on kids'
 microbiomes. Let's see where that falls in our data:
 
 ```julia
@@ -527,7 +534,7 @@ and has different information.
 I'd like to distill all of this into:
 
 1. breastfeeding: `true`/`false`,
-2. formula: `true`/`false`
+2. formulafeeding: `true`/`false`
 
 Both of these might be `true`.
 In principle, they shouldn't both be `false`.
@@ -587,3 +594,5 @@ title!("Taxonomic Profiles")
 ```julia; echo=false; results="hidden"
 savefig(joinpath(figures, "taxonomic-profiles-ageLabel.svg"));
 ```
+<!--Not sure this figure is relevant/helpful.
+It would be much more helpful to have an equivalent PCoA plot of Unique Kids colored by age.-->
