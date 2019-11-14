@@ -172,6 +172,7 @@ What happens if we only look at the kids under 2 years old?
 
 ### Young kids
 
+<!--Less than 2 yo or less than 1.5 yo?-->
 ```julia; results="hidden"
 # get kids that are less than 1.5 years old
 young = map(a-> !ismissing(a) && a <= 365*1.5, kidsmeta.correctedAgeDays)
@@ -205,6 +206,8 @@ Formula feeding is not significant;
 this could just be a numbers game,
 or a result of how we're defining it
 (kids who get both breastmilk and formula are included).
+<!--Should we clarify we're not analyzing time associated data?
+ie we're including kids actively being breastfed/formulafed with those who have moved to solid food?-->
 
 ### Brain Data
 
@@ -225,7 +228,7 @@ kidsmeta.white_matter_normed = kidsmeta.white_matter_volume ./ kidsmeta.total_lo
 kidsmeta.grey_matter_normed = kidsmeta.grey_matter_volume ./ kidsmeta.total_lowres
 kidsmeta.csf_normed = kidsmeta.csf_volume ./ kidsmeta.total_lowres
 ```
-
+<!--Is this result necessary to show? It's mostly missing values-->
 ```julia; results="hidden"
 using RCall
 
@@ -302,10 +305,12 @@ perm = vcat(perm, p[[2],:])
 ```
 
 Only CSF and White matter are significant,
+<!--The p values get cutoff so not obvious they are significant-->
 but there's some concern that, even including age in the analysis,
 some of the age effect is bleeding through.
 
 We can also look at brain regions as identified by the hires scans.
+<!--It is not obvious "hires"="hi-res" or "hi res"-->
 In addition to normalizing by age,
 we'll also divide each volume by the total brain volume.
 
@@ -424,11 +429,13 @@ perm = vcat(perm, p[[2],:])
 filter!(r-> !ismissing(r[Symbol("Pr(>F)")]), perm)
 @pt perm[end-4:end,:]
 ```
-
+<!--Do you want to publish 2 tables here?
+One of all analyzed PERMANOVAs and one of just the added brain measures?-->
 ### Cognitive Assessments
 
 Cognitive development is measured using standard tests for certain age groups.
 In notebook 2, we converted these test scores
+<!--TODO: Link to notebook 2-->
 so they are comparable across age groups.
 
 ```julia; results="hidden"
