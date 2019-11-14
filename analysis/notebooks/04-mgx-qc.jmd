@@ -131,3 +131,4 @@ According to Andre Comeau of [Integrated Microbiome Research](http://www.imr.bio
 > However, even with sample normalization, the best value that kits/protocols can obtain is about a 2-fold difference from the mean...which then means if your average # of reads is, for example, 8 M, then you'll see samples up to 2-fold higher and 2-fold lower at max = about 4-16 M range.
 >
 > Now added on top of that is that each NextSeq run is independent and the loading (cluster density, which is a bit of an art) tends to vary a little bit, so overall output per sample also varies there too, but usually within a tighter "true" 2-fold range. Hence this explains a bunch of the variation.
+<!--Should we add a date to this quote? Just for records?-->
