@@ -14,7 +14,12 @@ function sampletable(rawfastqs::AbstractVector{<:AbstractString})
     return df
 end
 
-function taxonomic_profiles(db, biobakery_path)
+function taxonomic_profiles(db, biobakery_path; replace=false)
+    if "taxa" in DataFrame(SQLite.tables(db)).name
+        !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
+        SQLite.drop!(db, "taxa")
+    end
+
     taxlevels = BiobakeryUtils.taxlevels
     taxlevels = sort(collect(keys(taxlevels)), lt=(x,y)-> taxlevels[x] < taxlevels[y])
     for (root, dirs, files) in walkdir(biobakery_path)
@@ -41,21 +46,40 @@ function taxonomic_profiles(db, biobakery_path)
 end
 
 function functional_profiles(db, biobakery_path)
+    if "genefamilies" in DataFrame(SQLite.tables(db)).name
+        !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
+        SQLite.drop!(db, "genefamilies")
+    end
 
+    
 end
 
 function getlongmetadata(db, tablename="metadata")
     SQLite.Query(db, "SELECT * FROM '$tablename'") |> DataFrame
 end
 
-function sqlprofile(db, tablename="taxa")
-    samples = DataFrame(SQLite.Query(db, "SELECT DISTINCT sample FROM '$tablename'"))[!,1] |> sort
-    taxa = SQLite.Query(db, "SELECT DISTINCT taxon FROM '$tablename' WHERE kind='species'") |> DataFrame
-    taxa |> SQLite.load!(db, "temp", temp=true, ifnotexists=true)
 
-    for s in samples[1:1]
-        sdf = SQLite.Query(db, "SELECT taxon abundance FROM '$tablename' WHERE kind='species' AND sample='$s'") |> DataFrame
+function makerowidx(df::DataFrame)
+    Dict(r=>i for (i,r) in enumerate(df[!,1]))
+end
+
+function sqlprofile(db; tablename="taxa", kind="species", samplefilter=x->true)
+    samples = stoolsample.(DataFrame(SQLite.Query(db, "SELECT DISTINCT sample FROM '$tablename'"))[!,1])
+    filter!(samplefilter, samples)
+
+    taxa = SQLite.Query(db, "SELECT DISTINCT taxon FROM '$tablename' WHERE kind='$kind'") |> DataFrame
+    ridx = makerowidx(taxa)
+
+    for s in samples
+        taxa[!, Symbol(s)] = Union{Float64,Missing}[missing for _ in eachrow(taxa)]
+        sdf = SQLite.Query(db, "SELECT taxon, abundance FROM '$tablename' WHERE kind='species' AND sample='$s'") |> DataFrame
+
+        taxa[map(e-> ridx[e], sdf.taxon), Symbol(s)] .= sdf[!,2]
     end
 
-    SQLite.drop!(db, "temp")
+    replace!.(eachcol(taxa[!,2:end]), Ref(missing=>0.))
+    disallowmissing!(taxa)
+    return taxa
 end
+
+sqlprofile(samplefilter, db; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)

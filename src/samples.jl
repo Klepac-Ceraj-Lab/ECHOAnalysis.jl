@@ -63,7 +63,7 @@ Example: For the sample `C0040_3F_1A`:
 - Samples may also end with `_S\\d+` (well #s from sequencing) which are ignored
 """
 function stoolsample(sid::String)
-    m = match(r"^(([CM])(\d+)[_\-](\d)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sid)
+    m = match(r"^(([CM])(\d+)[_\-](\d+)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sid)
 
     if m == nothing
         throw(ArgumentError("Input '$sid' doesn't match stool sample"))
