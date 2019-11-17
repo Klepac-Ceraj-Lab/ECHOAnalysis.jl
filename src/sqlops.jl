@@ -45,13 +45,13 @@ function taxonomic_profiles(db, biobakery_path; replace=false)
     end
 end
 
-function functional_profiles(db, biobakery_path)
-    if "genefamilies" in DataFrame(SQLite.tables(db)).name
-        !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
-        SQLite.drop!(db, "genefamilies")
+function functional_profiles(db, biobakery_path, kind="genefamiles")
+    if kind in DataFrame(SQLite.tables(db)).name
+        !replace && error("$kind already present in this database. Use `replace=true` to replace it")
+        SQLite.drop!(db, "$kind")
     end
 
-    
+
 end
 
 function getlongmetadata(db, tablename="metadata")
