@@ -1,4 +1,4 @@
-using Test, ECHOAnalysis
+using Test, ECHOAnalysis, SQLite
 
 sid_strings = ["C0001_1F_1A_S1",
                "C0001_1F_1A",
@@ -63,6 +63,39 @@ end
 end
 
 @testset "SQL operations" begin
-    # TODO: Write tests for SQL ops
-    @test 1==1
+    datapath = "data"
+    db = SQLite.DB(tempname())
+    add_taxonomic_profiles(db, datapath, foldermatch="taxprofiles")
+    @test "taxa" in SQLite.tables(db).name
+    @test SQLite.columns(db, "taxa").name == ["taxon", "abundance", "kind", "sample"]
+    @test collect(x.sample for x in SQLite.Query(db, "SELECT DISTINCT sample FROM taxa")) ==  ["C0175_2F_1A","C0192_4F_1A"]
+
+    @test_throws ErrorException add_taxonomic_profiles(db, datapath, foldermatch="taxprofiles")
+    # @test_logs (:warn, "removing table taxa") add_taxonomic_profiles(db, datapath, foldermatch="taxprofiles", replace=true)
+
+    add_functional_profiles(db, datapath, kind="genefamilies_relab", foldermatch="funcprofiles")
+    @test "genefamilies_relab" in SQLite.tables(db).name
+    @test SQLite.columns(db, "genefamilies_relab").name == ["function", "abundance", "stratified", "kind", "sample"]
+    @test collect(x.sample for x in SQLite.Query(db, "SELECT DISTINCT sample FROM genefamilies_relab")) ==  ["C0175_2F_1A","C0192_4F_1A"]
+
+    @test_throws ErrorException add_functional_profiles(db, datapath, kind="genefamilies_relab", foldermatch="funcprofiles")
+    # @test_logs (:warn, "removing table genefamilies_relab") add_functional_profiles(db, datapath, kind="genefamilies_relab", foldermatch="funcprofiles", replace=true)
+
+    taxa = sqlprofile(db, kind="species")
+    @test size(taxa) == (74, 3)
+    @test sum(taxa[!, 2]) ≈ 1.
+    @test sum(taxa[!, 3]) ≈ 1.
+
+    @test all(!any(ismissing, col) for col in eachcol(taxa))
+
+    func = sqlprofile(db, tablename="genefamilies_relab", kind="genefamilies_relab")
+    @test size(func) == (26, 3)
+    @test all(!any(ismissing, col) for col in eachcol(func))
+
+    taxa2 = sqlprofile(db, kind="species") do s
+        sampleid(s) == "C0175_2F_1A"
+    end
+    @test size(taxa2)[2] == 2
+    @test !any(==(0), taxa2.C0175_2F_1A)
+    @test !any(ismissing, taxa2.C0175_2F_1A)
 end
