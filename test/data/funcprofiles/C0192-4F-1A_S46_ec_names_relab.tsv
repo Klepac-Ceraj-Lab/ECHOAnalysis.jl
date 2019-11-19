@@ -1,0 +1,100 @@
+# Gene Family	C0192-4F-1A_S46_kneaddata_Abundance-RELAB
+UNMAPPED	0.298
+UNGROUPED	0.635
+UNGROUPED|g__Adlercreutzia.s__Adlercreutzia_equolifaciens	0.001
+UNGROUPED|g__Alistipes.s__Alistipes_finegoldii	0.002
+UNGROUPED|g__Alistipes.s__Alistipes_onderdonkii	0.003
+UNGROUPED|g__Alistipes.s__Alistipes_putredinis	0.004
+UNGROUPED|g__Anaerostipes.s__Anaerostipes_hadrus	0.003
+UNGROUPED|g__Bacteroides.s__Bacteroides_caccae	0.004
+UNGROUPED|g__Bacteroides.s__Bacteroides_dorei	0.014
+UNGROUPED|g__Bacteroides.s__Bacteroides_fragilis	0.008
+UNGROUPED|g__Bacteroides.s__Bacteroides_ovatus	0.01
+UNGROUPED|g__Bacteroides.s__Bacteroides_plebeius	0.02
+UNGROUPED|g__Bacteroides.s__Bacteroides_stercoris	0.046
+UNGROUPED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.002
+UNGROUPED|g__Bacteroides.s__Bacteroides_uniformis	0.009
+UNGROUPED|g__Bacteroides.s__Bacteroides_vulgatus	0.047
+UNGROUPED|g__Bacteroides.s__Bacteroides_xylanisolvens	0.003
+UNGROUPED|g__Bifidobacterium.s__Bifidobacterium_adolescentis	0.001
+UNGROUPED|g__Bifidobacterium.s__Bifidobacterium_bifidum	0.001
+UNGROUPED|g__Bifidobacterium.s__Bifidobacterium_catenulatum	0.001
+UNGROUPED|g__Bifidobacterium.s__Bifidobacterium_longum	0.005
+UNGROUPED|g__Blautia.s__Ruminococcus_gnavus	0.005
+UNGROUPED|g__Blautia.s__Ruminococcus_obeum	0.012
+UNGROUPED|g__Blautia.s__Ruminococcus_torques	0.015
+UNGROUPED|g__Clostridium.s__Clostridium_celatum	0.0
+UNGROUPED|g__Clostridium.s__Clostridium_leptum	0.003
+UNGROUPED|g__Clostridium.s__Clostridium_symbiosum	0.002
+UNGROUPED|g__Collinsella.s__Collinsella_aerofaciens	0.003
+UNGROUPED|g__Coprococcus.s__Coprococcus_comes	0.005
+UNGROUPED|g__Dialister.s__Dialister_invisus	0.001
+UNGROUPED|g__Dorea.s__Dorea_formicigenerans	0.009
+UNGROUPED|g__Dorea.s__Dorea_longicatena	0.009
+UNGROUPED|g__Erysipelotrichaceae_noname.s__Erysipelotrichaceae_bacterium_6_1_45	0.002
+UNGROUPED|g__Erysipelotrichaceae_noname.s__Eubacterium_biforme	0.005
+UNGROUPED|g__Escherichia.s__Escherichia_coli	0.005
+UNGROUPED|g__Eubacterium.s__Eubacterium_hallii	0.009
+UNGROUPED|g__Eubacterium.s__Eubacterium_rectale	0.031
+UNGROUPED|g__Faecalibacterium.s__Faecalibacterium_prausnitzii	0.068
+UNGROUPED|g__Haemophilus.s__Haemophilus_parainfluenzae	0.003
+UNGROUPED|g__Lachnospiraceae_noname.s__Lachnospiraceae_bacterium_1_4_56FAA	0.0
+UNGROUPED|g__Lachnospiraceae_noname.s__Lachnospiraceae_bacterium_3_1_46FAA	0.001
+UNGROUPED|g__Lachnospiraceae_noname.s__Lachnospiraceae_bacterium_5_1_63FAA	0.003
+UNGROUPED|g__Lachnospiraceae_noname.s__Lachnospiraceae_bacterium_7_1_58FAA	0.003
+UNGROUPED|g__Lachnospiraceae_noname.s__Lachnospiraceae_bacterium_8_1_57FAA	0.002
+UNGROUPED|g__Lactococcus.s__Lactococcus_lactis	0.0
+UNGROUPED|g__Megamonas.s__Megamonas_funiformis	0.005
+UNGROUPED|g__Megamonas.s__Megamonas_hypermegale	0.007
+UNGROUPED|g__Megamonas.s__Megamonas_rupellensis	0.004
+UNGROUPED|g__Parabacteroides.s__Parabacteroides_distasonis	0.004
+UNGROUPED|g__Parabacteroides.s__Parabacteroides_merdae	0.017
+UNGROUPED|g__Peptostreptococcaceae_noname.s__Clostridium_bartlettii	0.004
+UNGROUPED|g__Peptostreptococcus.s__Peptostreptococcus_anaerobius	0.0
+UNGROUPED|g__Roseburia.s__Roseburia_hominis	0.002
+UNGROUPED|g__Roseburia.s__Roseburia_intestinalis	0.04
+UNGROUPED|g__Roseburia.s__Roseburia_inulinivorans	0.042
+UNGROUPED|g__Ruminococcus.s__Ruminococcus_lactaris	0.006
+UNGROUPED|g__Ruminococcus.s__Ruminococcus_sp_5_1_39BFAA	0.016
+UNGROUPED|g__Streptococcus.s__Streptococcus_australis	0.0
+UNGROUPED|g__Streptococcus.s__Streptococcus_parasanguinis	0.001
+UNGROUPED|g__Streptococcus.s__Streptococcus_salivarius	0.003
+UNGROUPED|g__Streptococcus.s__Streptococcus_sanguinis	0.0
+UNGROUPED|g__Streptococcus.s__Streptococcus_thermophilus	0.003
+UNGROUPED|g__Veillonella.s__Veillonella_atypica	0.0
+UNGROUPED|g__Veillonella.s__Veillonella_dispar	0.001
+UNGROUPED|g__Veillonella.s__Veillonella_parvula	0.001
+UNGROUPED|unclassified	0.096
+1.1.1.1: Alcohol_dehydrogenase	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Alistipes.s__Alistipes_putredinis	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Bifidobacterium.s__Bifidobacterium_longum	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Blautia.s__Ruminococcus_gnavus	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Blautia.s__Ruminococcus_torques	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Coprococcus.s__Coprococcus_comes	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Dorea.s__Dorea_formicigenerans	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Dorea.s__Dorea_longicatena	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Erysipelotrichaceae_noname.s__Eubacterium_biforme	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Escherichia.s__Escherichia_coli	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Faecalibacterium.s__Faecalibacterium_prausnitzii	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Lactococcus.s__Lactococcus_lactis	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Ruminococcus.s__Ruminococcus_lactaris	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Ruminococcus.s__Ruminococcus_sp_5_1_39BFAA	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Streptococcus.s__Streptococcus_parasanguinis	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Streptococcus.s__Streptococcus_salivarius	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Streptococcus.s__Streptococcus_thermophilus	0.0
+1.1.1.1: Alcohol_dehydrogenase|g__Veillonella.s__Veillonella_dispar	0.0
+1.1.1.1: Alcohol_dehydrogenase|unclassified	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Anaerostipes.s__Anaerostipes_hadrus	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Bacteroides.s__Bacteroides_fragilis	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Bacteroides.s__Bacteroides_stercoris	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Bacteroides.s__Bacteroides_uniformis	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Bacteroides.s__Bacteroides_xylanisolvens	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Bifidobacterium.s__Bifidobacterium_longum	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Blautia.s__Ruminococcus_obeum	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Blautia.s__Ruminococcus_torques	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Dorea.s__Dorea_formicigenerans	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Escherichia.s__Escherichia_coli	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Eubacterium.s__Eubacterium_hallii	0.0
+1.1.1.100: 3_oxoacyl_acyl_carrier_protein_reductase|g__Eubacterium.s__Eubacterium_rectale	0.0
