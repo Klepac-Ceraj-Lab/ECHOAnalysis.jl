@@ -22,7 +22,10 @@ export
 
     ## Database Operations
     sampletable,
-    getlongmetadata
+    getlongmetadata,
+    add_taxonomic_profiles,
+    add_functional_profiles,
+    sqlprofile
 
 using SQLite
 using DataFrames

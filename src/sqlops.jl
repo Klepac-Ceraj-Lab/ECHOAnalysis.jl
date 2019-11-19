@@ -14,9 +14,11 @@ function sampletable(rawfastqs::AbstractVector{<:AbstractString})
     return df
 end
 
-function taxonomic_profiles(db, biobakery_path; replace=false)
+function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false)
     if "taxa" in DataFrame(SQLite.tables(db)).name
         !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
+        @warn "removing table taxa"
+        SQLite.dropindex!(db, kind, "samples_taxa")
         SQLite.drop!(db, "taxa")
     end
 
@@ -43,18 +45,48 @@ function taxonomic_profiles(db, biobakery_path; replace=false)
             end
         end
     end
+    @info "Creating sample index"
+    SQLite.createindex!(db, kind, "samples_taxa", "sample", unique=false)
+    @info "Done!"
 end
 
-function functional_profiles(db, biobakery_path, kind="genefamiles")
+function add_functional_profiles(db::SQLite.DB, biobakery_path; kind="genefamiles", stratified=false, replace=false)
     if kind in DataFrame(SQLite.tables(db)).name
         !replace && error("$kind already present in this database. Use `replace=true` to replace it")
-        SQLite.drop!(db, "$kind")
+        @warn "removing table $kind"
+        SQLite.dropindex!(db, kind, "samples_$kind")
+        SQLite.drop!(db, kind)
+    end
+    
+    @info "Loading $kind functions, stratified = $stratified"
+    for (root, dirs, files) in walkdir(biobakery_path)
+        occursin(r"output\/humann2", root) || continue
+        filter!(f-> occursin(Regex(kind*".tsv"), f), files)
+
+        for file in files
+            @info "Loading functions for $file"
+            sample = stoolsample(file)
+            func = CSV.read(joinpath(root, file), copycols=true)
+            names!(func, [:function, :abundance])
+            func.stratified = map(row-> occursin(r"\|g__\w+\.s__\w+$", row[1]) ||
+                                        occursin(r"\|unclassified$", row[1]),
+                                        eachrow(func))
+
+            stratified || filter!(row-> !row.stratified, func)
+
+            func[!, :kind] .= kind
+            func[!, :sample] .= sampleid(sample)
+            SQLite.load!(func, db, kind)
+        end
     end
 
-
+    @info "Creating sample index"
+    SQLite.createindex!(db, kind, "samples_$kind", "sample", unique=false)
+    @info "Done!"
 end
 
-function getlongmetadata(db, tablename="metadata")
+
+function getlongmetadata(db::SQLite.DB, tablename="metadata")
     SQLite.Query(db, "SELECT * FROM '$tablename'") |> DataFrame
 end
 
@@ -63,23 +95,34 @@ function makerowidx(df::DataFrame)
     Dict(r=>i for (i,r) in enumerate(df[!,1]))
 end
 
-function sqlprofile(db; tablename="taxa", kind="species", samplefilter=x->true)
+function sqlprofile(db::SQLite.DB; tablename="taxa", kind="species", stratified=false, samplefilter=x->true)
     samples = stoolsample.(DataFrame(SQLite.Query(db, "SELECT DISTINCT sample FROM '$tablename'"))[!,1])
     filter!(samplefilter, samples)
+    samples = Set(samples)
 
-    taxa = SQLite.Query(db, "SELECT DISTINCT taxon FROM '$tablename' WHERE kind='$kind'") |> DataFrame
-    ridx = makerowidx(taxa)
-
-    for s in samples
-        taxa[!, Symbol(s)] = Union{Float64,Missing}[missing for _ in eachrow(taxa)]
-        sdf = SQLite.Query(db, "SELECT taxon, abundance FROM '$tablename' WHERE kind='species' AND sample='$s'") |> DataFrame
-
-        taxa[map(e-> ridx[e], sdf.taxon), Symbol(s)] .= sdf[!,2]
+    @info "Creating table for $kind"
+    cols = SQLite.columns(db, tablename)[!, :name]
+    if stratified
+        profile = SQLite.Query(db, "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind' AND stratified=true") |> DataFrame
+    else
+        profile = SQLite.Query(db, "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind'") |> DataFrame
     end
 
-    replace!.(eachcol(taxa[!,2:end]), Ref(missing=>0.))
-    disallowmissing!(taxa)
-    return taxa
+    ridx = makerowidx(profile)
+
+    for s in samples
+        @info "Loading $s"
+        profile[!, Symbol(sampleid(s))] = Union{Float64,Missing}[missing for _ in eachrow(profile)]
+        sdf = SQLite.Query(db, "SELECT $(cols[1]), abundance FROM '$tablename' WHERE kind='$kind' AND sample='$s'") |> DataFrame
+
+        profile[map(e-> ridx[e], sdf[!, Symbol(cols[1])]), Symbol(sampleid(s))] .= sdf[!,2]
+    end
+
+    @info "pruning empty rows"
+    filter!(row-> all(ismissing, row[2:end]), profile)
+    replace!.(eachcol(profile[!,2:end]), Ref(missing=>0.))
+    disallowmissing!(profile)
+    return profile
 end
 
-sqlprofile(samplefilter, db; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)
+sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)

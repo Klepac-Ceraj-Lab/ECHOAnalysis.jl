@@ -61,3 +61,8 @@ end
     @test eltype(numberify(["1", "2e3", 3])) <: Union{AbstractFloat, Missing}
     @test eltype(numberify(["1", "2", missing])) <: Union{Integer, Missing}
 end
+
+@testset "SQL operations" begin
+    # TODO: Write tests for SQL ops
+    @test 1==1
+end
