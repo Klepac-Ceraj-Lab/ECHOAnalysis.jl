@@ -12,9 +12,9 @@ function setup_logs!(loglevel, logpath; dryrun=false)
         global_logger(glog)
     else
         logpath = abspath(expanduser(logpath))
-        global_logger(DemuxLogger(
-            MinLevelLogger(FileLogger(logpath), loglevel),
-            glog, include_current_global=false))
+        global_logger(
+            TeeLogger(MinLevelLogger(FileLogger(logpath), loglevel),
+            glog))
     end
 end
 
