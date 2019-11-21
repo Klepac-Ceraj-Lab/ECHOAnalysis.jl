@@ -1,8 +1,28 @@
-function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:NamedTuple};
+"""
+    widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
+                        metadata::Set=Set(unique(longdf.metadatum)),
+                        parents::Set=Set(unique(longdf.parent_table)))
+    widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...)
+
+Convert data in a long-form metadata table into wide-form,
+where each sample is given a single row
+and each metadatum a single column.
+
+Timepoint-specific metadata
+(specifically, metadata that comes from a parent table that has a `timepoint` field)
+is only associated with samples from that timepoint,
+while others (eg. childGender)
+are associated with every sample for a given subject.
+
+Optional:
+    - Pass vector of Parent Tables to include
+    - Pass vector of metadatum fields to include
+"""
+function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
                         metadata::Set=Set(unique(longdf.metadatum)),
                         parents::Set=Set(unique(longdf.parent_table)))
     filter!(row-> row.parent_table in parents, longdf)
-    df = DataFrame(samples)
+    df = DataFrame((sample=sampleid(s), subject=subject(s), timepoint=timepoint(s)) for s in samples)
 
     ss = unique(df.subject)
     subtps = Dict(s => Set([0, df.timepoint[findall(isequal(s), df.subject)]...]) for s in ss)
@@ -16,11 +36,19 @@ function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:NamedTuple};
 
     nsamples = nrow(df)
     metadata = union(metadata, longdf.metadatum)
-    for m in Symbol.(metadata)
-        df[!,m] = Array{Any}(missing, nsamples)
+    for md in metadata
+        v = view(longdf, longdf.metadatum .== md, :)
+        if length(unique(v.parent_table)) != 1
+            v.metadatum = map(row-> join([row.metadatum, row.parent_table], "___"), eachrow(v))
+        end
+        metadata = union(metadata, v.metadatum)
+        pop!(metadata, md)
+
+        ms = Symbol(md)
+        df[!,ms] = Array{Any}(missing, nsamples)
     end
 
-    for row in eachrow(longdf)
+        for row in eachrow(longdf)
         sub = row[:subject]
         tp = row[:timepoint]
         md = String(row[:metadatum])
@@ -36,6 +64,9 @@ function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:NamedTuple};
     end
     return df
 end
+
+
+widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...) = widemetadata(longdf, stoolsample.(samples); kwargs...)
 
 
 """
