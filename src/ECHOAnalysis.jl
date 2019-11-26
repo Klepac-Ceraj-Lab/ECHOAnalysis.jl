@@ -25,7 +25,9 @@ export
     getlongmetadata,
     add_taxonomic_profiles,
     add_functional_profiles,
-    sqlprofile
+    sqlprofile,
+    getallsamples,
+    getmgxmetadata
 
 using SQLite
 using DataFrames

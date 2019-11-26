@@ -1,184 +1,4 @@
 """
-    widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
-                        metadata::Set=Set(unique(longdf.metadatum)),
-                        parents::Set=Set(unique(longdf.parent_table)))
-    widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...)
-
-Convert data in a long-form metadata table into wide-form,
-where each sample is given a single row
-and each metadatum a single column.
-
-Timepoint-specific metadata
-(specifically, metadata that comes from a parent table that has a `timepoint` field)
-is only associated with samples from that timepoint,
-while others (eg. childGender)
-are associated with every sample for a given subject.
-
-Optional:
-    - Pass vector of Parent Tables to include
-    - Pass vector of metadatum fields to include
-"""
-function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
-                        metadata::Set=Set(unique(longdf.metadatum)),
-                        parents::Set=Set(unique(longdf.parent_table)))
-    filter!(row-> row.parent_table in parents, longdf)
-    df = DataFrame((sample=sampleid(s), subject=subject(s), timepoint=timepoint(s)) for s in samples)
-
-    ss = unique(df.subject)
-    subtps = Dict(s => Set([0, df.timepoint[findall(isequal(s), df.subject)]...]) for s in ss)
-
-    submap = Dict(s => findall(isequal(s), df.subject) for s in ss)
-    tpmap = Dict(t => findall(isequal(t), df.timepoint) for t in unique(df.timepoint))
-
-    metadict = Dict{Int,Dict}()
-    notime_metadata = Set()
-    timepoint_metadata = Set()
-
-    nsamples = nrow(df)
-    metadata = union(metadata, longdf.metadatum)
-    for md in metadata
-        v = view(longdf, longdf.metadatum .== md, :)
-        if length(unique(v.parent_table)) != 1
-            v.metadatum = map(row-> join([row.metadatum, row.parent_table], "___"), eachrow(v))
-        end
-        metadata = union(metadata, v.metadatum)
-        pop!(metadata, md)
-
-        ms = Symbol(md)
-        df[!,ms] = Array{Any}(missing, nsamples)
-    end
-
-        for row in eachrow(longdf)
-        sub = row[:subject]
-        tp = row[:timepoint]
-        md = String(row[:metadatum])
-        val = row[:value]
-        if !any(ismissing, [sub, tp, md]) && md in metadata && sub in df.subject && tp in subtps[sub]
-            if tp == 0
-                rows = submap[sub]
-            else
-                rows = collect(intersect(submap[sub], tpmap[tp]))
-            end
-            df[rows, Symbol(md)] .= val
-        end
-    end
-    return df
-end
-
-
-widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...) = widemetadata(longdf, stoolsample.(samples); kwargs...)
-
-
-"""
-    uniquetimepoints(samples::AbstractVector{<:AbstractTimepoint};
-                                samplefilter=x->true, sortfirst=true)
-    uniquetimepoints(samples::AbstractVector{<:StoolSample};
-                        skipethanol=true, samplefilter=x->true, sortfirst=true)
-
-Identifies unique timepoints (that is, `subject=>timepoint` pairs)
-from a vector of [`AbstractTimepoint`]@ref.
-
-**Example:**
-
-Given the following array of 4 samples:
-
-```@example uniquetimepoints
-s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
-```
-
-The second item will be excluded, since it's a duplicate of the first.
-If a single sample for each subject is desired, use [`uniquesubjects`]@ref
-
-**Other parameters**
-
-- `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
-    that is ethanol (as opposed to genotek) samples.
-- `samplefilter=x->true`: a function to select samples to include.
-  By default, all samples are included. Use `samplefilter=iskid`
-  to include only child samples for example.
-- `sort=true`: if `true`, sorts the vector (to pick the earliest example
-  of each timepoint)
-"""
-function uniquetimepoints(samples::AbstractVector{<:StoolSample};
-                           skipethanol=true, samplefilter=x->true, sortfirst=true)
-    seen = Tuple[]
-    uniquesamples = StoolSample[]
-    sortfirst && (samples = sort(samples))
-
-    map(samples) do s
-        !samplefilter(s) && return nothing
-        skipethanol && sampletype(s) == "ethanol" && return nothing
-
-        subtp = (subject(s), timepoint(s))
-        if !in(subtp, seen)
-            push!(seen, subtp)
-            push!(uniquesamples, s)
-        end
-    end
-    return uniquesamples
-end
-
-function uniquetimepoints(samples::AbstractVector{<:AbstractString}; kwargs...)
-    ss = stoolsample.(samples)
-    return uniquetimepoints(ss; kwargs...)
-end
-
-"""
-    uniquesubjects(samples::AbstractVector{<:AbstractTimepoint};
-                                samplefilter=x->true, sortfirst=true)
-    uniquesubjects(samples::AbstractVector{<:StoolSample};
-                        skipethanol=true, samplefilter=x->true, sortfirst=true)
-
-Returns a single sample per subject
-from a vector of [`AbstractTimepoint`]@ref.
-
-**Example:**
-
-Given the following array of 4 samples:
-
-```@example uniquesubjects
-s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
-```
-
-The second and third samples will be excluded,
-since they are both from the same subject as the first sample.
-If a single sample for each subject/timepoint pair is desired, use [`uniquetimepoints`]@ref
-
-**Other parameters**
-
-- `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
-    that is ethanol (as opposed to genotek) samples.
-- `samplefilter=x->true`: a function to select samples to include.
-  By default, all samples are included. Use `samplefilter=iskid`
-  to include only child samples for example.
-- `sortfirst=true`: if `true`, sorts the vector (to pick the earliest timepoint
-  of each subject)
-"""
-function uniquesubjects(samples::AbstractVector{<:StoolSample};
-                           skipethanol=true, samplefilter=x->true, sortfirst=true)
-    seen = Int[]
-    uniquesamples = StoolSample[]
-    sortfirst && (samples = sort(samples))
-
-    map(samples) do s
-        !samplefilter(s) && return nothing
-        skipethanol && sampletype(s) == "ethanol" && return nothing
-
-        sub = subject(s)
-        if !in(sub, seen)
-            push!(seen, sub)
-            push!(uniquesamples, s)
-        end
-    end
-    return uniquesamples
-end
-
-function uniquesubjects(samples::AbstractVector{<:AbstractString}; kwargs...)
-    ss = stoolsample.(samples)
-    return uniquesubjects(ss; kwargs...)
-end
-
-"""
     safeoccursin(s::String, thing)
     safeoccursin(r::Regex, thing)
 
@@ -190,6 +10,19 @@ safeoccursin(s::String, thing::Any) = occursin(s, thing)
 safeoccursin(r::Regex, thing::Any) = occursin(r, thing)
 safeoccursin(::String, ::Missing) = missing
 safeoccursin(::Regex, ::Missing) = missing
+
+"""
+    safematch(s::String, thing)
+    safematch(r::Regex, thing)
+
+Same as `Base.match`, except returns `nothing`
+if the thing to be searched is `missing`
+rather than throwing an error.
+"""
+safematch(s::String, thing::Any) = match(s, thing)
+safematch(r::Regex, thing::Any) = match(r, thing)
+safematch(::String, ::Missing) = nothing
+safematch(::Regex, ::Missing) = nothing
 
 """
     breastfeeding(row::DataFrameRow)
@@ -291,42 +124,6 @@ function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type
     end
 end
 
-"""
-Get the metadata values for a given set of subjects and timepoints
-"""
-function getmetadata(metadf::AbstractDataFrame, subjects::Array{Int,1}, timepoints::Array{Int,1}, metadata::Array{<:AbstractString,1})
-    length(subjects) == length(timepoints) || throw(ErrorException("Subjects and timeponts must be the same length"))
-    ss = unique(subjects)
-    subtps = Dict(s => Set([0, timepoints[findall(isequal(s), subjects)]...]) for s in ss)
-
-    submap = Dict(s => findall(isequal(s), subjects) for s in ss)
-    tpmap = Dict(t => findall(isequal(t), timepoints) for t in unique(timepoints))
-
-    metadict = Dict{Int,Dict}()
-    notime_metadata = Set()
-    timepoint_metadata = Set()
-
-    df = DataFrame(:subject=>subjects, :timepoint=>timepoints)
-    for m in Symbol.(metadata)
-        df[!,m] = Array{Any}(missing, length(subjects))
-    end
-
-    for row in eachrow(metadf)
-        sub = row[:subject]
-        tp = row[:timepoint]
-        md = String(row[:metadatum])
-        val = row[:value]
-        if !any(ismissing, [sub, tp, md]) && md in metadata && sub in subjects && tp in subtps[sub]
-            if tp == 0
-                rows = submap[sub]
-            else
-                rows = collect(intersect(submap[sub], tpmap[tp]))
-            end
-            df[rows, Symbol(md)] .= val
-        end
-    end
-    return df
-end
 
 const metadata_focus_headers = String[
     # fecal sample info
@@ -413,6 +210,11 @@ customprocess(col, ::MDColumn{:typicalNumberOfFeedsFromBreast})     = numberify(
 customprocess(col, ::MDColumn{:noLongerFeedBreastmilkAge})          = numberify(col)
 customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})            = numberify(col)
 customprocess(col, ::MDColumn{:childHeight})                        = numberify(col)
+function customprocess(col, ::MDColumn{:Mgx_batch})
+    ms = (safematch.(r"[Bb]atch (\d+)", b) for b in col)
+    return [isnothing(m) ? missing : parse(Int, m.captures[1]) for m in ms]
+end
+
 
 ## brain volumes
 customprocess(col, ::MDColumn{:cerebellar})                         = numberify(col)
@@ -464,4 +266,201 @@ end
 
 function customprocess(col, ::Union{MDColumn{:motherHHS_Occu},MDColumn{:motherHHS_Edu}})
     return customprocess(col, MDColumn(:mother_HHS))
+end
+
+"""
+    widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
+                        metadata::Set=Set(unique(longdf.metadatum)),
+                        parents::Set=Set(unique(longdf.parent_table)))
+    widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...)
+    widemetadata(db::SQLite.DB, tablename, samples; kwargs...)
+
+Convert data in a long-form metadata table into wide-form,
+where each sample is given a single row
+and each metadatum a single column.
+
+Timepoint-specific metadata
+(specifically, metadata that comes from a parent table that has a `timepoint` field)
+is only associated with samples from that timepoint,
+while others (eg. childGender)
+are associated with every sample for a given subject.
+
+Optional:
+    - Pass vector of Parent Tables to include
+    - Pass vector of metadatum fields to include
+"""
+function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
+                        metadata::Set=Set(unique(longdf.metadatum)),
+                        parents::Set=Set(unique(longdf.parent_table)))
+    filter!(row-> row.parent_table in parents, longdf)
+    df = DataFrame((sample=sampleid(s), subject=subject(s), timepoint=timepoint(s)) for s in samples)
+
+    ss = unique(df.subject)
+    subtps = Dict(s => Set([0, df.timepoint[findall(isequal(s), df.subject)]...]) for s in ss)
+
+    submap = Dict(s => findall(isequal(s), df.subject) for s in ss)
+    tpmap = Dict(t => findall(isequal(t), df.timepoint) for t in unique(df.timepoint))
+
+    metadict = Dict{Int,Dict}()
+    notime_metadata = Set()
+    timepoint_metadata = Set()
+
+    nsamples = nrow(df)
+    metadata = union(metadata, longdf.metadatum)
+    for md in metadata
+        v = view(longdf, longdf.metadatum .== md, :)
+        if length(unique(v.parent_table)) != 1
+            v.metadatum .= map(row-> join([row.metadatum, row.parent_table], "___"), eachrow(v))
+            metadata = union(metadata, v.metadatum)
+            pop!(metadata, md)
+        end
+
+
+        for ms in Symbol.(unique(v.metadatum))
+            df[!,ms] = Array{Any}(missing, nsamples)
+        end
+    end
+
+    for row in eachrow(longdf)
+        sub = row[:subject]
+        tp = row[:timepoint]
+        md = String(row[:metadatum])
+        val = row[:value]
+        if !any(ismissing, [sub, tp, md]) && md in metadata && sub in df.subject && tp in subtps[sub]
+            if tp == 0
+                rows = submap[sub]
+            else
+                rows = collect(intersect(submap[sub], tpmap[tp]))
+            end
+            df[rows, Symbol(md)] .= val
+        end
+    end
+    for n in names(df)
+        df[!,n] = customprocess(df[!,n], MDColumn(n))
+    end
+    return df
+end
+
+function widemetadata(db::SQLite.DB, tablename, samples; kwargs...)
+    df = SQLite.Query(db, "SELECT * FROM $tablename") |> DataFrame
+    widemetadata(df, samples; kwargs...)
+end
+
+widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...) = widemetadata(longdf, stoolsample.(samples); kwargs...)
+
+
+"""
+    uniquetimepoints(samples::AbstractVector{<:AbstractTimepoint};
+                        samplefilter=x->true,
+                        sortfirst=true,
+                        takefirst=true)
+    uniquetimepoints(samples::AbstractVector{<:StoolSample};
+                        skipethanol=true,
+                        samplefilter=x->true,
+                        sortfirst=true,
+                        takefirst=true)
+
+Identifies unique timepoints (that is, `subject=>timepoint` pairs)
+from a vector of [`AbstractTimepoint`]@ref.
+
+**Example:**
+
+Given the following array of 4 samples:
+
+```@example uniquetimepoints
+s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
+```
+
+The second item will be excluded, since it's a duplicate of the first.
+If a single sample for each subject is desired, use [`uniquesubjects`]@ref
+
+**Other parameters**
+
+- `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
+    that is ethanol (as opposed to genotek) samples.
+- `samplefilter=x->true`: a function to select samples to include.
+  By default, all samples are included. Use `samplefilter=iskid`
+  to include only child samples for example.
+- `sortfirst=true`: if `true`, sorts the vector at the beginning
+- `takefirst=false`: if `true`, only takes 1 timepoint for each subject.
+    Use with `sortfirst` to get only the first timepoint.
+"""
+function uniquetimepoints(samples::AbstractVector{<:StoolSample};
+                           skipethanol=true, samplefilter=x->true,
+                           sortfirst=true, takefirst=true)
+    seen = Tuple[]
+    uniquesamples = StoolSample[]
+    sortfirst && (samples = sort(samples))
+
+    map(samples) do s
+        !samplefilter(s) && return nothing
+        skipethanol && sampletype(s) == "ethanol" && return nothing
+
+        takefirst ? subtp = (subject(s),) : subtp = (subject(s), timepoint(s))
+        if !in(subtp, seen)
+            push!(seen, subtp)
+            push!(uniquesamples, s)
+        end
+    end
+    return uniquesamples
+end
+
+function uniquetimepoints(samples::AbstractVector{<:AbstractString}; kwargs...)
+    ss = stoolsample.(samples)
+    return uniquetimepoints(ss; kwargs...)
+end
+
+"""
+    uniquesubjects(samples::AbstractVector{<:AbstractTimepoint};
+                                samplefilter=x->true, sortfirst=true)
+    uniquesubjects(samples::AbstractVector{<:StoolSample};
+                        skipethanol=true, samplefilter=x->true, sortfirst=true)
+
+Returns a single sample per subject
+from a vector of [`AbstractTimepoint`]@ref.
+
+**Example:**
+
+Given the following array of 4 samples:
+
+```@example uniquesubjects
+s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
+```
+
+The second and third samples will be excluded,
+since they are both from the same subject as the first sample.
+If a single sample for each subject/timepoint pair is desired, use [`uniquetimepoints`]@ref
+
+**Other parameters**
+
+- `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
+    that is ethanol (as opposed to genotek) samples.
+- `samplefilter=x->true`: a function to select samples to include.
+  By default, all samples are included. Use `samplefilter=iskid`
+  to include only child samples for example.
+- `sortfirst=true`: if `true`, sorts the vector (to pick the earliest timepoint
+  of each subject)
+"""
+function uniquesubjects(samples::AbstractVector{<:StoolSample};
+                           skipethanol=true, samplefilter=x->true, sortfirst=true)
+    seen = Int[]
+    uniquesamples = StoolSample[]
+    sortfirst && (samples = sort(samples))
+
+    map(samples) do s
+        !samplefilter(s) && return nothing
+        skipethanol && sampletype(s) == "ethanol" && return nothing
+
+        sub = subject(s)
+        if !in(sub, seen)
+            push!(seen, sub)
+            push!(uniquesamples, s)
+        end
+    end
+    return uniquesamples
+end
+
+function uniquesubjects(samples::AbstractVector{<:AbstractString}; kwargs...)
+    ss = stoolsample.(samples)
+    return uniquesubjects(ss; kwargs...)
 end

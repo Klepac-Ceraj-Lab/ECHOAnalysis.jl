@@ -18,7 +18,8 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
     if "taxa" in DataFrame(SQLite.tables(db)).name
         !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
         @warn "removing table taxa"
-        SQLite.dropindex!(db, "samples_taxa")
+        SQLite.dropindex!(db, "taxa_samples_idx")
+        SQLite.dropindex!(db, "taxa_taxon_idx")
         SQLite.drop!(db, "taxa")
     end
 
@@ -46,7 +47,8 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
         end
     end
     @info "Creating sample index"
-    SQLite.createindex!(db, "taxa", "samples_taxa", "sample", unique=false)
+    SQLite.createindex!(db, "taxa", "taxa_samples_idx", "sample", unique=false)
+    SQLite.createindex!(db, "taxa", "taxa_taxon_idx", "taxon", unique=false)
     @info "Done!"
 end
 
@@ -56,7 +58,8 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
     if kind in DataFrame(SQLite.tables(db)).name
         !replace && error("$kind already present in this database. Use `replace=true` to replace it")
         @warn "removing table $kind"
-        SQLite.dropindex!(db, "samples_$kind")
+        SQLite.dropindex!(db, "$(kind)_samples_idx")
+        SQLite.dropindex!(db, "$(kind)_function_idx")
         SQLite.drop!(db, kind)
     end
 
@@ -83,7 +86,8 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
     end
 
     @info "Creating sample index"
-    SQLite.createindex!(db, kind, "samples_$kind", "sample", unique=false)
+    SQLite.createindex!(db, kind, "$(kind)_samples_idx", "sample", unique=false)
+    SQLite.createindex!(db, kind, "$(kind)_function_idx", "function", unique=false)
     @info "Done!"
 end
 
@@ -128,3 +132,22 @@ function sqlprofile(db::SQLite.DB; tablename="taxa", kind="species", stratified=
 end
 
 sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)
+
+function getallsamples(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata")
+    db = SQLite.DB(sqlite_path)
+    samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
+    filter!(s-> !occursin(r"^[CM]\d+_\d+M$", s), samples)
+    return stoolsample.(samples)
+end
+
+function getmgxmetadata(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata"; samples=:all)
+    db = SQLite.DB(sqlite_path)
+    if samples == :all
+        samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
+        filter!(s-> !occursin(r"^[CM]\d+_\d+M$", s), samples)
+    end
+
+    mdf = widemetadata(db, table, samples)
+    filter!(row-> !ismissing(row.Mgx_batch), mdf)
+    return mdf
+end
