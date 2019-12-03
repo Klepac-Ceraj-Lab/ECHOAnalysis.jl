@@ -302,9 +302,9 @@ function main(args)
         tables = vcat(tables, subtable)
     end
 
-    for i in eachindex(tables.value)
-        isa(tables[i,:value], AbstractString) || continue
-        s = tables[i,:value]
+    @info "Fixing weird strings"
+    for (i, s) in enumerate(tables.value)
+        isa(s, AbstractString) || continue
         s = replace(s, r"\n"=>"___")
         s = replace(s, r"\""=>"'")
         s = replace(s, r","=>";")
@@ -312,7 +312,6 @@ function main(args)
     end
 
     tables = unique(tables)
-    by(tables, [:metadatum])
 
     @info "Writing scrubbed file to $outputpath"
     if !args["dry-run"]
