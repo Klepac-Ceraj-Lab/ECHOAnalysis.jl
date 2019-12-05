@@ -101,17 +101,42 @@ function makerowidx(df::DataFrame)
     Dict(r=>i for (i,r) in enumerate(df[!,1]))
 end
 
-function sqlprofile(db::SQLite.DB; tablename="taxa", kind="species", stratified=false, samplefilter=x->true)
+
+"""
+    sqlprofile(db::SQLite.DB;
+                    tablename="taxa", kind="species",
+                    stratified=false, samplefilter=x->true,
+                    prevalencefilter=(0.,1.)
+
+Get a taxonomic or functional profile from SQLite database
+"""
+function sqlprofile(db::SQLite.DB;
+                    tablename="taxa", kind="species",
+                    stratified=false, samplefilter=x->true,
+                    prevalencefilter=(0.,1.))
     samples = stoolsample.(DataFrame(SQLite.Query(db, "SELECT DISTINCT sample FROM '$tablename'"))[!,1])
     filter!(samplefilter, samples)
-    samples = Set(samples)
+    sort!(samples)
 
     @info "Creating table for $kind"
     cols = SQLite.columns(db, tablename)[!, :name]
-    if stratified
-        profile = SQLite.Query(db, "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind' AND stratified=true") |> DataFrame
-    else
-        profile = SQLite.Query(db, "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind'") |> DataFrame
+
+    query = "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind'"
+    stratified && (query *=  " AND stratified=true")
+
+    profile = let rows = SQLite.Query(db, query)
+        if prevalencefilter == (0.,1.)
+            rows |> DataFrame
+        else
+            nsamples = length(samples)
+            (lower, upper) = prevalencefilter
+            filter(rows) do row
+                feature = values(row)[1]
+                featurecount = SQLite.Query(db, "SELECT COUNT(abundance) FROM $tablename WHERE $(cols[1])='$feature'") |> collect
+
+                lower < featurecount[1][1] / nsamples < upper
+            end |> DataFrame
+        end
     end
 
     ridx = makerowidx(profile)
