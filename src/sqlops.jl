@@ -53,14 +53,16 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
 end
 
 function add_functional_profiles(db::SQLite.DB, biobakery_path;
-        kind="genefamiles", stratified=false, replace=false,
-        foldermatch=r"output\/humann2")
+        kind="genefamiles_relab", stratified=false, replace=false,
+        foldermatch=r"output\/humann2", samples=:all)
     if kind in DataFrame(SQLite.tables(db)).name
         !replace && error("$kind already present in this database. Use `replace=true` to replace it")
         @warn "removing table $kind"
-        SQLite.dropindex!(db, "$(kind)_samples_idx")
-        SQLite.dropindex!(db, "$(kind)_function_idx")
+        SQLite.dropindex!(db, "$(kind)_samples_idx", ifexists=true)
+        SQLite.dropindex!(db, "$(kind)_function_idx", ifexists=true)
         SQLite.drop!(db, kind)
+        SQLite.drop!(db, "distinct_functions")
+        SQLite.drop!(db, "distinct_samples")
     end
 
     @info "Loading $kind functions, stratified = $stratified"
@@ -71,6 +73,8 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
         for file in files
             @info "Loading functions for $file"
             sample = stoolsample(file)
+
+            (samples == :all || sample in samples) || continue
             func = CSV.read(joinpath(root, file), copycols=true)
             names!(func, [:function, :abundance])
             func.stratified = map(row-> occursin(r"\|g__\w+\.s__\w+$", row[1]) ||
@@ -87,7 +91,14 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
 
     @info "Creating sample index"
     SQLite.createindex!(db, kind, "$(kind)_samples_idx", "sample", unique=false)
+    @info "Creating feature index"
     SQLite.createindex!(db, kind, "$(kind)_function_idx", "function", unique=false)
+    @info "Making distinct feature/sample tables"
+    SQLite.Query(db, "SELECT DISTINCT function FROM $kind") |>
+        SQLite.load!(db, "distinct_functions")
+    SQLite.Query(db, "SELECT DISTINCT sample FROM $kind") |>
+        SQLite.load!(db, "distinct_samples")
+
     @info "Done!"
 end
 
@@ -97,66 +108,83 @@ function getlongmetadata(db::SQLite.DB, tablename="metadata")
 end
 
 
-function makerowidx(df::DataFrame)
-    Dict(r=>i for (i,r) in enumerate(df[!,1]))
-end
-
-
 """
     sqlprofile(db::SQLite.DB;
                     tablename="taxa", kind="species",
                     stratified=false, samplefilter=x->true,
                     prevalencefilter=(0.,1.)
 
-Get a taxonomic or functional profile from SQLite database
+Get a taxonomic or functional profile from SQLite database.
+Returns dictionaries mapping sample-> column number
+and feature-> row number,
+along with a `SparseArray` of values.
 """
 function sqlprofile(db::SQLite.DB;
                     tablename="taxa", kind="species",
-                    stratified=false, samplefilter=x->true,
-                    prevalencefilter=(0.,1.))
-    samples = stoolsample.(DataFrame(SQLite.Query(db, "SELECT DISTINCT sample FROM '$tablename'"))[!,1])
+                    stratified=false, samplefilter=x->true)
+    @info "Starting"
+    samples = let query = SQLite.Query(db, "SELECT DISTINCT sample FROM '$tablename'")
+        [stoolsample(s[:sample]) for s in query]
+    end
+
     filter!(samplefilter, samples)
     sort!(samples)
+    sampleids = sampleid.(samples)
+    sidx = dictionary(k=>i for (i,k) in enumerate(sampleids))
 
     @info "Creating table for $kind"
     cols = SQLite.columns(db, tablename)[!, :name]
 
-    query = "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind'"
-    stratified && (query *=  " AND stratified=true")
+    query = "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind'" # AND sample IN ($(SQLite.esc_id(sampleid.(samples))))"
+    stratified && (query *= " AND stratified=true")
 
-    profile = let rows = SQLite.Query(db, query)
-        if prevalencefilter == (0.,1.)
-            rows |> DataFrame
-        else
-            nsamples = length(samples)
-            (lower, upper) = prevalencefilter
-            filter(rows) do row
-                feature = values(row)[1]
-                featurecount = SQLite.Query(db, "SELECT COUNT(abundance) FROM $tablename WHERE $(cols[1])='$feature'") |> collect
+    @info "Finding relevant features"
+    features = map(row-> row[1], SQLite.Query(db, query))
+    fidx = dictionary(k=>i for (i,k) in enumerate(features))
 
-                lower < featurecount[1][1] / nsamples < upper
-            end |> DataFrame
+    profile = spzeros(length(fidx), length(sidx))
+    @info "Building profile"
+    @showprogress 1 "Getting samples" for s in sampleids
+        col = sidx[s]
+        for (feature, value) in SQLite.Query(db, "SELECT $(cols[1]), abundance FROM $tablename WHERE kind='$kind' AND sample='$s'")
+            row = fidx[feature]
+            profile[row, col] = value
         end
     end
-
-    ridx = makerowidx(profile)
-
-    for s in samples
-        @info "Loading $s"
-        profile[!, Symbol(sampleid(s))] = Union{Float64,Missing}[missing for _ in eachrow(profile)]
-        sdf = SQLite.Query(db, "SELECT $(cols[1]), abundance FROM '$tablename' WHERE kind='$kind' AND sample='$(sampleid(s))'") |> DataFrame
-
-        profile[map(e-> ridx[e], sdf[!, Symbol(cols[1])]), Symbol(sampleid(s))] .= sdf[!,2]
-    end
-
-    @info "pruning empty rows"
-    filter!(row-> any(!ismissing, row[2:end]), profile)
-    replace!.(eachcol(profile[!,2:end]), Ref(missing=>0.))
-    disallowmissing!(profile)
-    return profile
+    return ComMatrix(profile, features, sampleids)
 end
 
 sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)
+
+function getfunctionsfromfiles(
+                biobakerypath="/lovelace/echo/analysis/engaging";
+                foldermatch=r"output\/humann2", samples=:all,
+                kind="genefamilies_relab", stratified=false)
+    filepaths = String[]
+    for (root, dirs, files) in walkdir(biobakerypath)
+        samples == :all || filter!(f->stoolsample(f) in samples, files)
+        append!(filepaths, joinpath.(root, files))
+    end
+    samples = basename.(filepaths) .|> stoolsample
+
+    sdict = HashDictionary{String,Vector{String}}()
+    features = Set(String[])
+    @info "Collecting features"
+    @showprogress for fp in filepaths
+        df = CSV.read(fp)
+        filter!(row-> stratified ||
+                      !(occursin(r"\|g__\w+\.s__\w+$", row[1]) ||
+                        occursin(r"\|unclassified$", row[1])),
+                    df)
+        s = sampleid(stoolsample(basename(fp)))
+        insert!(sdict, s, df[!,1])
+        union!(features, df[!,1])
+    end
+
+    @info "Building profile"
+    
+    profile
+end
 
 function getallsamples(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata")
     db = SQLite.DB(sqlite_path)

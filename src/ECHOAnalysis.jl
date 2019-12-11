@@ -35,6 +35,9 @@ using CSV
 using Colors
 using Microbiome
 using BiobakeryUtils
+using Dictionaries
+using SparseArrays
+using ProgressMeter
 
 include("samples.jl")
 include("metadata_handling.jl")

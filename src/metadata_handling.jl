@@ -387,7 +387,7 @@ If a single sample for each subject is desired, use [`uniquesubjects`]@ref
 """
 function uniquetimepoints(samples::AbstractVector{<:StoolSample};
                            skipethanol=true, samplefilter=x->true,
-                           sortfirst=true, takefirst=true)
+                           sortfirst=true, takefirst=false)
     seen = Tuple[]
     uniquesamples = StoolSample[]
     sortfirst && (samples = sort(samples))
