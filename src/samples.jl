@@ -48,6 +48,10 @@ struct StoolSample <: AbstractTimepoint
     type::String
 end
 
+isstoolsample(::StoolSample) = true
+isstoolsample(sid::AbstractTimepoint) = occursin(r"^(([CM])(\d+)[_\-](\d+)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sampleid(sid))
+isstoolsample(sid::AbstractString) = occursin(r"^(([CM])(\d+)[_\-](\d+)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sid)
+
 """
     stoolsample(sid::Union{AbstractString,Symbol})
     stoolsample(sids::Vector{<:Union{AbstractString,Symbol}})

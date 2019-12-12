@@ -9,6 +9,7 @@ export
     Timepoint,
     StoolSample,
     stoolsample,
+    isstoolsample,
     iskid,
     ismom,
     sampletype,

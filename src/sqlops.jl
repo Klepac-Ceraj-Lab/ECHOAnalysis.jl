@@ -139,7 +139,11 @@ function sqlprofile(db::SQLite.DB;
     stratified && (query *= " AND stratified=true")
 
     @info "Finding relevant features"
-    features = map(row-> row[1], SQLite.Query(db, query))
+    if "distinct_functions" in SQLite.tables(db)[!,1]
+        features = [x[1] for x in SQLite.Query(db, "SELECT DISTINCT $(cols[1]) FROM distinct_functions")]
+    else
+        features = [x[1] for x in SQLite.Query(db, query)]
+    end
     fidx = dictionary(k=>i for (i,k) in enumerate(features))
 
     profile = spzeros(length(fidx), length(sidx))
@@ -155,36 +159,6 @@ function sqlprofile(db::SQLite.DB;
 end
 
 sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)
-
-function getfunctionsfromfiles(
-                biobakerypath="/lovelace/echo/analysis/engaging";
-                foldermatch=r"output\/humann2", samples=:all,
-                kind="genefamilies_relab", stratified=false)
-    filepaths = String[]
-    for (root, dirs, files) in walkdir(biobakerypath)
-        samples == :all || filter!(f->stoolsample(f) in samples, files)
-        append!(filepaths, joinpath.(root, files))
-    end
-    samples = basename.(filepaths) .|> stoolsample
-
-    sdict = HashDictionary{String,Vector{String}}()
-    features = Set(String[])
-    @info "Collecting features"
-    @showprogress for fp in filepaths
-        df = CSV.read(fp)
-        filter!(row-> stratified ||
-                      !(occursin(r"\|g__\w+\.s__\w+$", row[1]) ||
-                        occursin(r"\|unclassified$", row[1])),
-                    df)
-        s = sampleid(stoolsample(basename(fp)))
-        insert!(sdict, s, df[!,1])
-        union!(features, df[!,1])
-    end
-
-    @info "Building profile"
-    
-    profile
-end
 
 function getallsamples(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata")
     db = SQLite.DB(sqlite_path)
