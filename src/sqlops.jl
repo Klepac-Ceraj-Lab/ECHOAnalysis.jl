@@ -27,6 +27,8 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
     taxlevels = sort(collect(keys(taxlevels)), lt=(x,y)-> taxlevels[x] < taxlevels[y])
     for (root, dirs, files) in walkdir(biobakery_path)
         occursin(foldermatch, root) || continue
+        batch = match(r"batch\d{3}", root)
+        isnothing(batch) ? continue : batch = batch.match
         filter!(f-> occursin(r"profile\.tsv", f), files)
         for file in files
             @info "Loading taxa for $file"
@@ -42,6 +44,7 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
 
                 filt[!, :kind] .= String(level)
                 filt[!, :sample] .= sampleid(sample)
+                filt[!, :batch] .= String(batch.match)
                 SQLite.load!(filt, db, "taxa", ifnotexists=true)
             end
         end
@@ -66,27 +69,34 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
     end
 
     @info "Loading $kind functions, stratified = $stratified"
+    filepaths = Tuple[]
     for (root, dirs, files) in walkdir(biobakery_path)
         occursin(foldermatch, root) || continue
+        batch = match(r"batch\d{3}", root)
+        isnothing(batch) ? continue : batch = batch.match
         filter!(f-> occursin(Regex(kind*".tsv"), f), files)
+        append!(filepaths, [(batch, joinpath(root, f)) for f in files])
+    end
 
-        for file in files
-            @info "Loading functions for $file"
-            sample = stoolsample(file)
+    @info "Loading functions for files"
+    @showprogress for (batch, file) in filepaths
+        sample = stoolsample(basename(file))
 
-            (samples == :all || sample in samples) || continue
-            func = CSV.read(joinpath(root, file), copycols=true)
-            names!(func, [:function, :abundance])
-            func.stratified = map(row-> occursin(r"\|g__\w+\.s__\w+$", row[1]) ||
-                                        occursin(r"\|unclassified$", row[1]),
-                                        eachrow(func))
+        (samples == :all || sample in samples) || continue
+        func = CSV.read(file, copycols=true)
+        names!(func, [:function, :abundance])
+        func.stratified = map(row-> occursin(r"\|g__\w+\.s__\w+$", row[1]) ||
+                                    occursin(r"\|unclassified$", row[1]),
+                                    eachrow(func))
 
-            stratified || filter!(row-> !row.stratified, func)
+        stratified || filter!(row-> !row.stratified, func)
 
-            func[!, :kind] .= kind
-            func[!, :sample] .= sampleid(sample)
-            SQLite.load!(func, db, kind, ifnotexists=true)
-        end
+        b = match(r"batch\d{3}", file)
+        b == nothing ? batch = "unknown" : batch = b.match
+        func[!, :kind] .= kind
+        func[!, :sample] .= sampleid(sample)
+        func[!, :batch] .= batch
+        SQLite.load!(func, db, kind, ifnotexists=true)
     end
 
     @info "Creating sample index"

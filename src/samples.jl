@@ -91,9 +91,14 @@ end
 stoolsample(sid::Union{AbstractString,Symbol}) = stoolsample(String(sid))
 
 sampletype(s::StoolSample) = s.type
+sampletype(s::AbstractString) = sampletype(stoolsample(s))
 
 iskid(s::StoolSample) = occursin(r"^C\d+", s.id)
+iskid(s::AbstractString) = iskid(stoolsample(s))
+
 ismom(s::StoolSample) = occursin(r"^M\d+", s.id)
+ismom(s::AbstractString) = ismom(stoolsample(s))
+
 
 
 """
