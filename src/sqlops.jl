@@ -18,40 +18,47 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
     if "taxa" in DataFrame(SQLite.tables(db)).name
         !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
         @warn "removing table taxa"
-        SQLite.dropindex!(db, "taxa_samples_idx")
-        SQLite.dropindex!(db, "taxa_taxon_idx")
+        SQLite.dropindex!(db, "taxa_samples_idx", ifexists=true)
+        SQLite.dropindex!(db, "taxa_taxon_idx", ifexists=true)
+        SQLite.dropindex!(db, "taxa_batch_idx", ifexists=true)
         SQLite.drop!(db, "taxa")
     end
 
     taxlevels = BiobakeryUtils.taxlevels
     taxlevels = sort(collect(keys(taxlevels)), lt=(x,y)-> taxlevels[x] < taxlevels[y])
+    filepaths = Tuple[]
+    @info "Filtering files"
     for (root, dirs, files) in walkdir(biobakery_path)
         occursin(foldermatch, root) || continue
         batch = match(r"batch\d{3}", root)
-        isnothing(batch) ? continue : batch = batch.match
+        batch = isnothing(batch) ? "unknown" : String(batch.match)
         filter!(f-> occursin(r"profile\.tsv", f), files)
-        for file in files
-            @info "Loading taxa for $file"
-            sample = stoolsample(file)
-            tax = CSV.read(joinpath(root, file), copycols=true)
-            names!(tax, [:taxon, :abundance])
+        append!(filepaths, [(batch, joinpath(root, f)) for f in files])
+    end
 
-            for level in taxlevels
-                filt = taxfilter(tax, level)
+    @info "Loading into database"
+    @showprogress for (batch, file) in filepaths
+        sample = stoolsample(basename(file))
+        tax = CSV.read(file, copycols=true)
+        names!(tax, [:taxon, :abundance])
 
-                total_abundance = sum(filt.abundance)
-                filt.abundance ./= total_abundance
+        for level in taxlevels
+            filt = taxfilter(tax, level)
 
-                filt[!, :kind] .= String(level)
-                filt[!, :sample] .= sampleid(sample)
-                filt[!, :batch] .= String(batch.match)
-                SQLite.load!(filt, db, "taxa", ifnotexists=true)
-            end
+            total_abundance = sum(filt.abundance)
+            filt.abundance ./= total_abundance
+
+            filt[!, :kind] .= String(level)
+            filt[!, :sample] .= sampleid(sample)
+            filt[!, :batch] .= batch
+            SQLite.load!(filt, db, "taxa", ifnotexists=true)
         end
     end
+
     @info "Creating sample index"
     SQLite.createindex!(db, "taxa", "taxa_samples_idx", "sample", unique=false)
     SQLite.createindex!(db, "taxa", "taxa_taxon_idx", "taxon", unique=false)
+    SQLite.createindex!(db, "taxa", "taxa_batch_idx", "batch", unique=false)
     @info "Done!"
 end
 
@@ -63,6 +70,7 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
         @warn "removing table $kind"
         SQLite.dropindex!(db, "$(kind)_samples_idx", ifexists=true)
         SQLite.dropindex!(db, "$(kind)_function_idx", ifexists=true)
+        SQLite.dropindex!(db, "$(kind)_batch_idx", ifexists=true)
         SQLite.drop!(db, kind)
         SQLite.drop!(db, "distinct_functions")
         SQLite.drop!(db, "distinct_samples")
@@ -73,7 +81,7 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
     for (root, dirs, files) in walkdir(biobakery_path)
         occursin(foldermatch, root) || continue
         batch = match(r"batch\d{3}", root)
-        isnothing(batch) ? continue : batch = batch.match
+        batch = isnothing(batch) ? "unknown" : String(batch.match)
         filter!(f-> occursin(Regex(kind*".tsv"), f), files)
         append!(filepaths, [(batch, joinpath(root, f)) for f in files])
     end
@@ -91,8 +99,6 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
 
         stratified || filter!(row-> !row.stratified, func)
 
-        b = match(r"batch\d{3}", file)
-        b == nothing ? batch = "unknown" : batch = b.match
         func[!, :kind] .= kind
         func[!, :sample] .= sampleid(sample)
         func[!, :batch] .= batch
