@@ -296,6 +296,7 @@ function main(args)
         if any(x-> x==2.5, subtable.timepoint)
             @warn "Removing timepoint 2.5"
             filter!(r-> r.timepoint != 2.5, subtable)
+            # convert column to Int
             subtable.timepoint = [t for t in subtable.timepoint]
         end
 

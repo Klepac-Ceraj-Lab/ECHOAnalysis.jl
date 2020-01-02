@@ -306,11 +306,13 @@ function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
     timepoint_metadata = Set()
 
     nsamples = nrow(df)
-    metadata = union(metadata, longdf.metadatum)
+    metadata = intersect(metadata, longdf.metadatum)
     for md in metadata
         v = view(longdf, longdf.metadatum .== md, :)
         if length(unique(v.parent_table)) != 1
             v.metadatum .= map(row-> join([row.metadatum, row.parent_table], "___"), eachrow(v))
+
+            # add new metadatum names and remove old one
             metadata = union(metadata, v.metadatum)
             pop!(metadata, md)
         end
