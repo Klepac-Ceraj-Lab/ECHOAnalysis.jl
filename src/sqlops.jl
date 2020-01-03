@@ -171,7 +171,8 @@ function sqlprofile(db::SQLite.DB;
             profile[row, col] = value
         end
     end
-    return ComMatrix(profile, features, sampleids)
+    cm = ComMatrix(profile, features, sampleids)
+    return view(cm, species=vec(sum(occurrences(cm), dims=2) .!= 0.))
 end
 
 sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)
