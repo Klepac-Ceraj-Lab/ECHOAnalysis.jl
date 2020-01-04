@@ -1,2 +1,4 @@
 [deps]
+SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Microbiome = "3bd8f0ae-a0f2-5238-a5af-e1b399a4940c"

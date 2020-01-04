@@ -1,3 +1,8 @@
+using Pkg
+Pkg.activate(normpath(joinpath(@__DIR__, "..")))
+push!(LOAD_PATH, @__DIR__)
+@info "Scrubbing metadata"
+
 using ArgParse
 using Logging
 using LoggingExtras
@@ -6,6 +11,7 @@ using CSV
 using XLSX
 using DataFrames
 using Dates
+using SQLite
 
 
 function parse_commandline()
@@ -39,6 +45,9 @@ function parse_commandline()
         "--output", "-o"
             help = "Output for scrubbed file (defaults to overwriting input)"
             arg_type = String
+        "--force", "-f"
+            help = "Allows overwriting of existing file. Reqired if no output path given"
+            action=:store_true
         "--samples", "-s"
             help = "Path to sample metadata to be included (optional)"
             default = nothing
@@ -230,6 +239,9 @@ function main(args)
     setup_logs!(loglevel, args["log"], dryrun = args["dry-run"])
 
     inputpath = expanduser(args["input"]) |> abspath
+    args["output"] === nothing ? outputpath = inputpath : outputpath = abspath(expanduser(args["output"]))
+    (isfile(outputpath) && !args["force"]) && error("Output file already exists, used --force to overwrite")
+
     @info "Reading file from $inputpath"
 
     meta = loadtable(inputpath, args["delim"], args["sheet"])
@@ -284,15 +296,16 @@ function main(args)
         if any(x-> x==2.5, subtable.timepoint)
             @warn "Removing timepoint 2.5"
             filter!(r-> r.timepoint != 2.5, subtable)
+            # convert column to Int
             subtable.timepoint = [t for t in subtable.timepoint]
         end
 
         tables = vcat(tables, subtable)
     end
 
-    for i in eachindex(tables.value)
-        isa(tables[i,:value], AbstractString) || continue
-        s = tables[i,:value]
+    @info "Fixing weird strings"
+    for (i, s) in enumerate(tables.value)
+        isa(s, AbstractString) || continue
         s = replace(s, r"\n"=>"___")
         s = replace(s, r"\""=>"'")
         s = replace(s, r","=>";")
@@ -300,11 +313,19 @@ function main(args)
     end
 
     tables = unique(tables)
-    args["output"] === nothing ? outputpath = inputpath : outputpath = abspath(expanduser(args["output"]))
 
     @info "Writing scrubbed file to $outputpath"
     if !args["dry-run"]
-        CSV.write(outputpath, tables, delim=args["delim"])
+        if endswith(outputpath, "sqlite")
+            SQLite.DB(outputpath)
+            SQLite.drop!(db, "metadata", ifexists=true)
+            SQLite.load!(tables, db, "metadata")
+            SQLite.dropindex!(db, "metadata_subjects_idx", ifexists=true)
+            SQLite.createindex!(db, "metadata", "metadata_subjects_idx", "subject", unique=false)
+            SQLite.createindex!(db, "metadata", "metadata_metadatum_idx", "metadatum", unique=false)
+        else
+            CSV.write(outputpath, tables, delim=args["delim"])
+        end
     else
         @info "Just kidding! this is a dry run"
     end

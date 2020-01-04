@@ -1,57 +1,47 @@
 module ECHOAnalysis
 
 export
-    # Metadata handling
-    resolve_sampleID,
+    ## Samples, Timepoints, and Metdata
+    AbstractTimepoint,
+    sampleid,
+    subject,
+    timepoint,
+    Timepoint,
+    StoolSample,
+    stoolsample,
+    isstoolsample,
+    iskid,
+    ismom,
+    sampletype,
     resolve_letter_timepoint,
-    uniquesamples,
+    uniquetimepoints,
+    uniquesubjects,
     breastfeeding,
-    formulafeeding,
     samplelessthan,
-    firstkids,
     numberify,
-    getmetadatum,
-    getmetadata,
-    metacolor,
-    getfocusmetadata,
+    widemetadata,
 
-    #File Handling
-    add_batch_info,
-    merge_tables,
-    samples_from_file,
+    ## Database Operations
+    sampletable,
+    getlongmetadata,
+    add_taxonomic_profiles,
+    add_functional_profiles,
+    sqlprofile,
+    getallsamples,
+    getmgxmetadata
 
-    # Startup Functions
-    datatoml,
-    color1,
-    color2,
-    color3,
-    color4,
-    load_taxonomic_profiles,
-    first_kids_tax_profiles,
-    load_functional_profiles,
-    load_metadata,
-    notebookpaths!,
-
-    # Notebook handling
-    randrows,
-
-    # functional profiles
-    load_functional
-
+using SQLite
 using DataFrames
-using RecipesBase
-using MultivariateStats
 using CSV
 using Colors
-using ColorBrewer
-using Pkg.TOML
 using Microbiome
+using BiobakeryUtils
+using Dictionaries
+using SparseArrays
+using ProgressMeter
 
+include("samples.jl")
 include("metadata_handling.jl")
-include("notebook_handling.jl")
-include("file_handling.jl")
-include("pcoa_recipe.jl")
-include("startup.jl")
-include_dependency("../data/data.toml")
+include("sqlops.jl")
 
 end  # module ECHOAnalysis

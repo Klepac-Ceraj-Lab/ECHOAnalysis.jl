@@ -4,6 +4,7 @@ makedocs(
     sitename="ECHO RESONANCE Microbiome Paper 1",
     pages=[
     "Getting Started" => "index.md",
+    "Timepoints and Samples" => "samples.md",
     "Dealing with Metadata" => "metadata_handling.md",
         ],
     format = Documenter.HTML(
