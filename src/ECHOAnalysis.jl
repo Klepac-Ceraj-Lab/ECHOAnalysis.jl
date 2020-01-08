@@ -13,6 +13,7 @@ export
     iskid,
     ismom,
     sampletype,
+    replicateid,
     resolve_letter_timepoint,
     uniquetimepoints,
     uniquesubjects,

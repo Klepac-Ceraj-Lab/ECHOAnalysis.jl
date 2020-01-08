@@ -177,14 +177,14 @@ end
 
 sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)
 
-function getallsamples(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata")
+function getallsamples(sqlite_path="/babbage/echo/sqldatabases/metadata.sqlite", table="allmetadata")
     db = SQLite.DB(sqlite_path)
     samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
     filter!(s-> !occursin(r"^[CM]\d+_\d+M$", s), samples)
     return stoolsample.(samples)
 end
 
-function getmgxmetadata(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata"; samples=:all)
+function getmgxmetadata(sqlite_path="/babbage/echo/sqldatabases/metadata.sqlite", table="allmetadata"; samples=:all)
     db = SQLite.DB(sqlite_path)
     if samples == :all
         samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]

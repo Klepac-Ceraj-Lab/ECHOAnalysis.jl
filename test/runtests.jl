@@ -1,6 +1,7 @@
 using Test, ECHOAnalysis, SQLite, Microbiome
 
-sid_strings = ["C0001_1F_1A_S1",
+sid_strings = ["C0001_1F_2A",
+               "C0001_1F_1A_S1",
                "C0001_1F_1A",
                "C0002_2F_1A_S2",
                "C0002_1F_1A_S3",
@@ -19,6 +20,7 @@ sid_symbols = Symbol.(sid_strings)
     @test sampleid(sids[2]) == sid_strings[2]
     @test subject(first(sids)) == 1
     @test timepoint(first(sids)) == 1
+    @test replicateid(first(sids)) == "1A"
 
     @test iskid(first(sids))
     @test ismom(last(sids))
@@ -41,7 +43,9 @@ sid_symbols = Symbol.(sid_strings)
     @test sids_letter[1] == sid_letter
     @test ismissing(sids_letter[3])
 
-    @test sortperm(sids) == [1,2,4,3,5,6]
+    @test sortperm(sids) == [2,3,1,5,4,6,7]
+
+    @test stoolsample("C0001_1F_1A") < stoolsample("C0001_1F_2A")
 end
 
 

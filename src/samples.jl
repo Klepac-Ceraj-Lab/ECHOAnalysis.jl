@@ -39,12 +39,14 @@ Represents a given stool sample
 - id -- `String`: the unique sample identifier
 - subject -- `Int`: the subject ID
 - timepoint -- `Int`: The timepoint. For some metadata, this will be 0
+- replicate -- `String`: replicate / aliquot ID (eg `"2B"`)
 - type -- `String`: "omnigene" or "ethanol"
 """
 struct StoolSample <: AbstractTimepoint
     id::String
     subject::Int
     timepoint::Int
+    replicate::String
     type::String
 end
 
@@ -76,6 +78,7 @@ function stoolsample(sid::String)
         subject = parse(Int, m.captures[3])
         timepoint = parse(Int, m.captures[4])
         type = String(m.captures[5])
+        replicate = String(m.captures[6])
         if type == "E"
             type = "ethanol"
         elseif type == "F"
@@ -84,7 +87,7 @@ function stoolsample(sid::String)
             throw(ArgumentError("unknown type of FecalSample: $type"))
         end
 
-        return StoolSample(sample, subject, timepoint, type)
+        return StoolSample(sample, subject, timepoint, replicate, type)
     end
 end
 
@@ -92,6 +95,8 @@ stoolsample(sid::Union{AbstractString,Symbol}) = stoolsample(String(sid))
 
 sampletype(s::StoolSample) = s.type
 sampletype(s::AbstractString) = sampletype(stoolsample(s))
+replicateid(s::StoolSample) = s.replicate
+replicateid(s::AbstractString) = replicateid(stoolsample(s))
 
 iskid(s::StoolSample) = occursin(r"^C\d+", s.id)
 iskid(s::AbstractString) = iskid(stoolsample(s))
@@ -99,7 +104,21 @@ iskid(s::AbstractString) = iskid(stoolsample(s))
 ismom(s::StoolSample) = occursin(r"^M\d+", s.id)
 ismom(s::AbstractString) = ismom(stoolsample(s))
 
-
+function Base.isless(x::StoolSample, y::StoolSample)
+    if subject(x) < subject(y)
+        return true
+    elseif subject(x) == subject(y)
+        if timepoint(x) < timepoint(y)
+            return true
+        elseif timepoint(x) == timepoint(y)
+            return replicateid(x) < replicateid(y)
+        else
+            return false
+        end
+    else
+        return false
+    end
+end
 
 """
     resolve_letter_timepoint(sid::AbstractString)
@@ -113,9 +132,7 @@ function resolve_letter_timepoint(sid::AbstractString)
     m = match(r"^(\d+)([a-zA-Z])?$", sid)
     isnothing(m) && throw(ErrorException("Subject ID has unexpected format: $sid"))
     if isnothing(m.captures[2])
-        return (sample = sid,
-                subject=parse(Int, sid),
-                timepoint=1)
+        return Timepoint(string(sid),parse(Int, sid), 1)
     else
         tp = findfirst(lowercase(m.captures[2]), "abcdefghijklmnopqrstuvwxyz")[1]
         return Timepoint(lowercase(sid), parse(Int, m.captures[1]), tp)
