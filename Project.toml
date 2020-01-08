@@ -16,5 +16,4 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 Microbiome = "0.5"
-SpatialEcology = "0.7"
 DataFrames = "0.19, 0.20"
