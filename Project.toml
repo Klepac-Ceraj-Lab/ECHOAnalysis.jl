@@ -13,3 +13,8 @@ Microbiome = "3bd8f0ae-a0f2-5238-a5af-e1b399a4940c"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[compat]
+Microbiome = "0.5"
+SpatialEcology = "0.7"
+DataFrames = "0.19, 0.20"
