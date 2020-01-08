@@ -10,17 +10,17 @@ sid_strings = ["C0001_1F_2A",
 sid_symbols = Symbol.(sid_strings)
 
 @testset "Samples and Timepoints" begin
-    @test stoolsample(sid_strings[1]) == StoolSample("C0001_1F_1A", 1, 1, "omnigene")
-    @test stoolsample(sid_strings[1]) == stoolsample(sid_strings[2])
+    @test stoolsample(sid_strings[1]) == StoolSample("C0001_1F_2A", 1, 1, "2A", "omnigene")
+    @test stoolsample(sid_strings[2]) == stoolsample(sid_strings[3])
     @test stoolsample(sid_symbols[1]) == stoolsample(sid_strings[1])
     @test stoolsample.(sid_strings) == stoolsample.(sid_symbols)
 
     sids = stoolsample.(sid_strings)
 
-    @test sampleid(sids[2]) == sid_strings[2]
+    @test sampleid(sids[3]) == sid_strings[3]
     @test subject(first(sids)) == 1
     @test timepoint(first(sids)) == 1
-    @test replicateid(first(sids)) == "1A"
+    @test replicateid(first(sids)) == "2A"
 
     @test iskid(first(sids))
     @test ismom(last(sids))
@@ -67,39 +67,40 @@ end
 end
 
 @testset "SQL operations" begin
+    look4samples = ["C0175_2F_1A","C0192_4F_1A"]
     datapath = "data"
     taxdb = SQLite.DB()
-    funcdb = SQLite.DB()
     add_taxonomic_profiles(taxdb, datapath, foldermatch="taxprofiles")
     @test "taxa" in SQLite.tables(taxdb).name
     @test SQLite.columns(taxdb, "taxa").name == ["taxon", "abundance", "kind", "sample", "batch"]
-    @test collect(x.sample for x in SQLite.Query(taxdb, "SELECT DISTINCT sample FROM taxa")) ==  ["C0175_2F_1A","C0192_4F_1A"]
+    @test collect(x.sample for x in SQLite.Query(taxdb, "SELECT DISTINCT sample FROM taxa")) == look4samples
 
     @test_throws ErrorException add_taxonomic_profiles(taxdb, datapath, foldermatch="taxprofiles")
     # @test_logs (:warn, "removing table taxa") add_taxonomic_profiles(db, datapath, foldermatch="taxprofiles", replace=true)
 
+    funcdb = SQLite.DB()
     add_functional_profiles(funcdb, datapath, kind="genefamilies_relab", foldermatch="funcprofiles")
     @test "genefamilies_relab" in SQLite.tables(funcdb).name
     @test SQLite.columns(funcdb, "genefamilies_relab").name == ["function", "abundance", "stratified", "kind", "sample", "batch"]
-    @test collect(x.sample for x in SQLite.Query(funcdb, "SELECT DISTINCT sample FROM genefamilies_relab")) ==  ["C0175_2F_1A","C0192_4F_1A"]
+    @test collect(x.sample for x in SQLite.Query(funcdb, "SELECT DISTINCT sample FROM genefamilies_relab")) ==  look4samples
 
     @test_throws ErrorException add_functional_profiles(funcdb, datapath, kind="genefamilies_relab", foldermatch="funcprofiles")
     # @test_logs (:warn, "removing table genefamilies_relab") add_functional_profiles(db, datapath, kind="genefamilies_relab", foldermatch="funcprofiles", replace=true)
 
     taxa = sqlprofile(taxdb, kind="species")
     @test size(taxa) == (74, 2)
-    @test all(col-> col ≈ 1., sum(occurrences(taxa), dims=1))
+    @test all(x-> x≈1., sampletotals(taxa))
 
-    @test all(!any(ismissing, col) for col in eachcol(occurrences(taxa)))
+    @test all(!ismissing, occurrences(taxa))
 
     func = sqlprofile(funcdb, tablename="genefamilies_relab", kind="genefamilies_relab")
     @test size(func) == (26, 2)
-    @test all(!any(ismissing, col) for col in eachcol(occurrences(func)))
+    @test all(!ismissing, occurrences(func))
 
     taxa2 = sqlprofile(taxdb, kind="species") do s
-        sampleid(s) == "C0175_2F_1A"
+        sampleid(s) == look4samples[1]
     end
     @test size(taxa2, 2) == 1
-    @test !any(==(0), occurrences(taxa2))
+    @test !any(==(0.), occurrences(taxa2))
     @test !any(ismissing, occurrences(taxa2))
 end
