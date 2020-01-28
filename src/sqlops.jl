@@ -166,7 +166,8 @@ function sqlprofile(db::SQLite.DB;
     @info "Building profile"
     @showprogress 1 "Getting samples" for s in sampleids
         col = sidx[s]
-        for (feature, value) in SQLite.Query(db, "SELECT $(cols[1]), abundance FROM $tablename WHERE kind='$kind' AND sample='$s'")
+        for r in SQLite.Query(db, "SELECT $(cols[1]), abundance FROM $tablename WHERE kind='$kind' AND sample='$s'")
+            (feature, value) = (r[1], r[2])
             row = fidx[feature]
             profile[row, col] = value
         end
