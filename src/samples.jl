@@ -11,8 +11,25 @@ Required fields:
 """
 abstract type AbstractTimepoint end
 
+"""
+    sampleid(s::AbstractTimepoint)
+
+Get the `id` field from an `AbstractTimepoint`.
+"""
 sampleid(s::AbstractTimepoint)  = s.id
+
+"""
+    subject(s::AbstractTimepoint)
+
+Get the `subject` field from an `AbstractTimepoint`.
+"""
 subject(s::AbstractTimepoint)   = s.subject
+
+"""
+    timepoint(s::AbstractTimepoint)
+
+Get the `timepoint` field from an `AbstractTimepoint`.
+"""
 timepoint(s::AbstractTimepoint) = s.timepoint
 
 function Base.isless(x::AbstractTimepoint, y::AbstractTimepoint)
@@ -50,13 +67,19 @@ struct StoolSample <: AbstractTimepoint
     type::String
 end
 
+"""
+    isstoolsample(sid::Union{AbstractString, AbstractTimepoint, StoolSample})
+
+Returns `true` if sid is a `StoolSample`,
+or if an `AbstractTimepoint`'s `id` field or `AbstractString`
+conforms to the expected form of an ECHO RESONANCE stool sample.
+"""
 isstoolsample(::StoolSample) = true
 isstoolsample(sid::AbstractTimepoint) = occursin(r"^(([CM])(\d+)[_\-](\d+)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sampleid(sid))
 isstoolsample(sid::AbstractString) = occursin(r"^(([CM])(\d+)[_\-](\d+)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sid)
 
 """
     stoolsample(sid::Union{AbstractString,Symbol})
-    stoolsample(sids::Vector{<:Union{AbstractString,Symbol}})
 
 Parse a sample ID and create a `StoolSample`.
 
@@ -69,38 +92,62 @@ Example: For the sample `C0040_3F_1A`:
 - Samples may also end with `_S\\d+` (well #s from sequencing) which are ignored
 """
 function stoolsample(sid::String)
+    isstoolsample(sid) || throw(ArgumentError("Input '$sid' doesn't match stool sample"))
     m = match(r"^(([CM])(\d+)[_\-](\d+)([FEO])[_\-](\d[A-Z]))(_S\d{1,2})?.?+", sid)
 
-    if m == nothing
-        throw(ArgumentError("Input '$sid' doesn't match stool sample"))
+    sample = replace(String(m.captures[1]), "-"=>"_")
+    subject = parse(Int, m.captures[3])
+    timepoint = parse(Int, m.captures[4])
+    type = String(m.captures[5])
+    replicate = String(m.captures[6])
+    if type == "E"
+        type = "ethanol"
+    elseif type == "F"
+        type = "omnigene"
     else
-        sample = replace(String(m.captures[1]), "-"=>"_")
-        subject = parse(Int, m.captures[3])
-        timepoint = parse(Int, m.captures[4])
-        type = String(m.captures[5])
-        replicate = String(m.captures[6])
-        if type == "E"
-            type = "ethanol"
-        elseif type == "F"
-            type = "omnigene"
-        else
-            throw(ArgumentError("unknown type of FecalSample: $type"))
-        end
-
-        return StoolSample(sample, subject, timepoint, replicate, type)
+        throw(ArgumentError("unknown type of FecalSample: $type"))
     end
+
+    return StoolSample(sample, subject, timepoint, replicate, type)
 end
 
 stoolsample(sid::Union{AbstractString,Symbol}) = stoolsample(String(sid))
 
+"""
+    sampletype(s::Union{AbstractString, StoolSample})
+
+Get the `type` field from a `StoolSample`
+(or a `String` that can be converted to `StoolSample`).
+"""
 sampletype(s::StoolSample) = s.type
 sampletype(s::AbstractString) = sampletype(stoolsample(s))
+
+"""
+    replicateid(s::Union{AbstractString, StoolSample})
+
+Get the `replicate` field from a `StoolSample`
+(or a `String` that can be converted to `StoolSample`).
+"""
 replicateid(s::StoolSample) = s.replicate
 replicateid(s::AbstractString) = replicateid(stoolsample(s))
 
+"""
+    iskid(s::Union{AbstractString, StoolSample})
+
+Return `true` if `StoolSample`
+(or a `String` that can be converted to `StoolSample`)
+refers to a child sample, `false` otherwise.
+"""
 iskid(s::StoolSample) = occursin(r"^C\d+", s.id)
 iskid(s::AbstractString) = iskid(stoolsample(s))
 
+"""
+    ismom(s::Union{AbstractString, StoolSample})
+
+Return `true` if `StoolSample`
+(or a `String` that can be converted to `StoolSample`)
+refers to a maternal sample, `false` otherwise.
+"""
 ismom(s::StoolSample) = occursin(r"^M\d+", s.id)
 ismom(s::AbstractString) = ismom(stoolsample(s))
 
@@ -140,4 +187,3 @@ function resolve_letter_timepoint(sid::AbstractString)
 end
 
 resolve_letter_timepoint(sid::Missing) = missing
-resolve_letter_timepoint(sids::Vector{<:Union{AbstractString, Missing}}) = resolve_letter_timepoint.(sids)

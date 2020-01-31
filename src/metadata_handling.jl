@@ -1,27 +1,27 @@
 """
-    safeoccursin(s::String, thing)
+    safeoccursin(s::AbstractString, thing)
     safeoccursin(r::Regex, thing)
 
 Same as `Base.occursin`, except returns `missing`
 if the thing to be searched is `missing`
 rather than throwing an error.
 """
-safeoccursin(s::String, thing::Any) = occursin(s, thing)
+safeoccursin(s::AbstractString, thing::Any) = occursin(s, thing)
 safeoccursin(r::Regex, thing::Any) = occursin(r, thing)
-safeoccursin(::String, ::Missing) = missing
+safeoccursin(::AbstractString, ::Missing) = missing
 safeoccursin(::Regex, ::Missing) = missing
 
 """
-    safematch(s::String, thing)
+    safematch(s::AbstractString, thing)
     safematch(r::Regex, thing)
 
 Same as `Base.match`, except returns `nothing`
 if the thing to be searched is `missing`
 rather than throwing an error.
 """
-safematch(s::String, thing::Any) = match(s, thing)
+safematch(s::AbstractString, thing::Any) = match(s, thing)
 safematch(r::Regex, thing::Any) = match(r, thing)
-safematch(::String, ::Missing) = nothing
+safematch(::AbstractString, ::Missing) = nothing
 safematch(::Regex, ::Missing) = nothing
 
 """
@@ -37,18 +37,17 @@ Possible return values are
 - `missing`: not enough information
 """
 function breastfeeding(row::DataFrameRow)
-    # not yet working
-    bf = any([
-        safeoccursin(r"[Bb]reast", row[:milkFeedingMethods]),
-        safeoccursin(r"[Yy]es", row[:exclusivelyNursed]),
-        all(map(x->safeoccursin(r"[Nn]o", x), row[[:exclusiveFormulaFed, :exclusivelyNursed]])),
-        row[:typicalNumberOfFeedsFromBreast] > 0,
-        row[:typicalNumberOfEpressedMilkFeeds] > 0,
-        row[:lengthExclusivelyNursedMonths] > 0,
-        row[:noLongerFeedBreastmilkAge] > 0
-        ])
-    # return !ismissing(bf) && bf
-    return missing
+    bf = row.breastFedPercent
+    bf isa AbstractString && (bf = parse(Float64, bf))
+    if ismissing(bf)
+        return missing
+    elseif bf >=80
+        return :breastfed
+    elseif bf < 0.5 #
+        return :formulafed
+    else
+        return :mixed
+    end
 end
 
 """
@@ -56,13 +55,13 @@ end
     numberify(v::AbstractArray)
 
 Try to convert something into a number or array of numbers using the heuristics:
-- if x is already a number or is `missing`, return x
-- if v is already an array of numbers, return v
-- if x is a `String`:
-    - if x contains a `.` or `e`, parse as a `Float64`
+- if `x` is already a number or is `missing`, return `x`
+- if `x` is a `String`:
+    - if `x` contains a `.` or `e`, parse as a `Float64`
     - Otherwise parse as an Int
+- if `x` is anything other than a `String` or a `Number`, return `missing`
+- if `v` is already an array of numbers (and `missing`), return `v`
 - if numberified vector contains any `Float`s, return a vector of `missing` and `Float64`
-- if x is anything other than a String or a number, return `missing`
 """
 function numberify(x)
     ismissing(x) && return missing
@@ -124,73 +123,6 @@ function getmetadatum(df, metadatum, subject, timepoint=0; default=missing, type
     end
 end
 
-
-const metadata_focus_headers = String[
-    # fecal sample info
-    "Mgx_batch",
-    "DOM",
-    "RAInitials_Extract",
-    # basic data
-    "childGender",
-    "milkFeedingMethods",
-    "APOE",
-    "birthType",
-    "exclusivelyNursed",
-    "exclusiveFormulaFed",
-    "formulaTypicalType",
-    "breastFedPercent",
-    "mother_HHS",
-    "motherHHS_Occu",
-    "motherHHS_Edu",
-    "assessmentDate",
-    # calculated
-    "ageLabel",
-    "cogAssessment",
-    "cogScore",
-    # numeric
-    "correctedAgeDays",
-    "amountFormulaPerFeed",
-    "lengthExclusivelyNursedMonths",
-    "typicalNumberOfEpressedMilkFeeds",
-    "typicalNumberOfFeedsFromBreast",
-    "noLongerFeedBreastmilkAge",
-    "ageStartSolidFoodMonths",
-    "childHeight",
-    "childWeight",
-    ## From brain data
-    "subcortical",
-    "neocortical",
-    "cerebellar",
-    "limbic",
-    "hires_total",
-    "white_matter_volume",
-    "grey_matter_volume",
-    "csf_volume",
-    ## Cognitive assessments
-    ### Mullen (0-3 years 11 months)
-    "mullen_VerbalComposite",
-    "mullen_NonVerbalComposite",
-    "mullen_EarlyLearningComposite", # average of other two
-    ### Bayley's (1-25 months)
-    "adaptiveBehaviorComposite",
-    "languageComposite",
-    "socialEmotionalComposite",
-    "motorComposite",
-    ### WISC (6-16 years)
-    "FRI_CompositeScore",
-    "PSI_Composite",
-    "VCI_CompositeScore",
-    "VSI_CompositeScore",
-    "WMI_Composite",
-    "FSIQ_Composite", # average
-    ### WPPSI-IV (4-5 years 11 months)
-    "fluidReasoningComposite",
-    "verbalComprehensionComposite",
-    "visualSpatialComposite",
-    "workingMemoryComposite",
-    "fullScaleComposite", # average
-    ]
-
 # Use value types for special cases. See
 #   https://docs.julialang.org/en/v1/manual/types/#%22Value-types%22-1
 #   https://discourse.julialang.org/t/special-case-handling-alternatives-to-if-else/21608/4
@@ -200,6 +132,7 @@ end
 MDColumn(s::String) = MDColumn{Symbol(s)}()
 MDColumn(s::Symbol) = MDColumn{s}()
 
+# generic fall-back, return column as-is
 customprocess(col, ::MDColumn) = col
 
 # Make numeric
@@ -284,12 +217,12 @@ and each metadatum a single column.
 Timepoint-specific metadata
 (specifically, metadata that comes from a parent table that has a `timepoint` field)
 is only associated with samples from that timepoint,
-while others (eg. childGender)
+while others (eg. `childGender`)
 are associated with every sample for a given subject.
 
-Optional:
-    - Pass vector of Parent Tables to include
-    - Pass vector of metadatum fields to include
+Optional key word args:
+    - Pass vector of Parent Tables (`parents`) to include
+    - Pass vector of metadatum fields (`metadata`) to include
 """
 function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
                         metadata::Set=Set(unique(longdf.metadatum)),
@@ -309,6 +242,8 @@ function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
 
     nsamples = nrow(df)
     metadata = intersect(metadata, longdf.metadatum)
+
+    # Go through metadata and build columns for each one
     for md in metadata
         v = view(longdf, longdf.metadatum .== md, :)
         if length(unique(v.parent_table)) != 1
@@ -330,7 +265,9 @@ function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
         tp = row[:timepoint]
         md = String(row[:metadatum])
         val = row[:value]
-        if !any(ismissing, [sub, tp, md]) && md in metadata && sub in df.subject && tp in subtps[sub]
+        # TODO: currently if there are multiple rows with the same metadata,
+        # earlier values get overridden.
+        if !any(ismissing, [sub, tp, md]) && md in metadata && sub in ss && tp in subtps[sub]
             if tp == 0
                 rows = submap[sub]
             else
@@ -354,10 +291,6 @@ widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwarg
 
 
 """
-    uniquetimepoints(samples::AbstractVector{<:AbstractTimepoint};
-                        samplefilter=x->true,
-                        sortfirst=true,
-                        takefirst=true)
     uniquetimepoints(samples::AbstractVector{<:StoolSample};
                         skipethanol=true,
                         samplefilter=x->true,
@@ -375,8 +308,15 @@ Given the following array of 4 samples:
 s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
 ```
 
-The second item will be excluded, since it's a duplicate of the first.
-If a single sample for each subject is desired, use [`uniquesubjects`]@ref
+The first three samples are from the same `subject`,
+the first two of which are from the same timepoint (they're replicates).
+
+By default, this function excludes duplicate subject-timepoints,
+but keeps multiple timepoints for each individual subject.
+If a single timepoint from each subject is desired,
+use `takefirst=true`.
+In this later case, leave `sortfirst=true` (the default)
+to be sure to take the earliest timepoint for each subject.
 
 **Other parameters**
 
@@ -412,59 +352,4 @@ end
 function uniquetimepoints(samples::AbstractVector{<:AbstractString}; kwargs...)
     ss = stoolsample.(samples)
     return uniquetimepoints(ss; kwargs...)
-end
-
-"""
-    uniquesubjects(samples::AbstractVector{<:AbstractTimepoint};
-                                samplefilter=x->true, sortfirst=true)
-    uniquesubjects(samples::AbstractVector{<:StoolSample};
-                        skipethanol=true, samplefilter=x->true, sortfirst=true)
-
-Returns a single sample per subject
-from a vector of [`AbstractTimepoint`]@ref.
-
-**Example:**
-
-Given the following array of 4 samples:
-
-```@example uniquesubjects
-s = stoolsample(["C0001_1F_1A", "C0001_1F_2A", "C0001_2F_1A", "C0002_1F_1A"])
-```
-
-The second and third samples will be excluded,
-since they are both from the same subject as the first sample.
-If a single sample for each subject/timepoint pair is desired, use [`uniquetimepoints`]@ref
-
-**Other parameters**
-
-- `skipethanol=true`: exlude samples that match the pattern `_\\dE_`,
-    that is ethanol (as opposed to genotek) samples.
-- `samplefilter=x->true`: a function to select samples to include.
-  By default, all samples are included. Use `samplefilter=iskid`
-  to include only child samples for example.
-- `sortfirst=true`: if `true`, sorts the vector (to pick the earliest timepoint
-  of each subject)
-"""
-function uniquesubjects(samples::AbstractVector{<:StoolSample};
-                           skipethanol=true, samplefilter=x->true, sortfirst=true)
-    seen = Int[]
-    uniquesamples = StoolSample[]
-    sortfirst && (samples = sort(samples))
-
-    map(samples) do s
-        !samplefilter(s) && return nothing
-        skipethanol && sampletype(s) == "ethanol" && return nothing
-
-        sub = subject(s)
-        if !in(sub, seen)
-            push!(seen, sub)
-            push!(uniquesamples, s)
-        end
-    end
-    return uniquesamples
-end
-
-function uniquesubjects(samples::AbstractVector{<:AbstractString}; kwargs...)
-    ss = stoolsample.(samples)
-    return uniquesubjects(ss; kwargs...)
 end
