@@ -1,7 +1,7 @@
 name = "ECHOAnalysis"
 uuid = "39b5b81a-5017-403f-bb48-824a42db2b1c"
 authors = ["kescobo <kbonham@wellesley.edu>"]
-version = "0.0.1"
+version = "0.0.2"
 
 [deps]
 BiobakeryUtils = "fa5322f5-bd84-5069-834a-abf3230fb8f8"
@@ -13,3 +13,7 @@ Microbiome = "3bd8f0ae-a0f2-5238-a5af-e1b399a4940c"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[compat]
+Microbiome = "0.5, 0.6"
+DataFrames = "0.19, 0.20"

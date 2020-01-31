@@ -138,6 +138,7 @@ const metadata_focus_headers = String[
     "exclusivelyNursed",
     "exclusiveFormulaFed",
     "formulaTypicalType",
+    "breastFedPercent",
     "mother_HHS",
     "motherHHS_Occu",
     "motherHHS_Edu",
@@ -209,6 +210,7 @@ customprocess(col, ::MDColumn{:typicalNumberOfEpressedMilkFeeds})   = numberify(
 customprocess(col, ::MDColumn{:typicalNumberOfFeedsFromBreast})     = numberify(col)
 customprocess(col, ::MDColumn{:noLongerFeedBreastmilkAge})          = numberify(col)
 customprocess(col, ::MDColumn{:ageStartSolidFoodMonths})            = numberify(col)
+customprocess(col, ::MDColumn{:breastFedPercent})                   = numberify(col)
 customprocess(col, ::MDColumn{:childHeight})                        = numberify(col)
 function customprocess(col, ::MDColumn{:Mgx_batch})
     ms = (safematch.(r"[Bb]atch (\d+)", b) for b in col)

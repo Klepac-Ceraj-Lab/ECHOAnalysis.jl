@@ -2,3 +2,6 @@
 Rplots.pdf
 scratch*
 build/
+test/Manifest.toml
+docs/Manifest.toml
+notes/*

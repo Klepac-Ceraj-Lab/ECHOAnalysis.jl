@@ -166,7 +166,8 @@ function sqlprofile(db::SQLite.DB;
     @info "Building profile"
     @showprogress 1 "Getting samples" for s in sampleids
         col = sidx[s]
-        for (feature, value) in SQLite.Query(db, "SELECT $(cols[1]), abundance FROM $tablename WHERE kind='$kind' AND sample='$s'")
+        for r in SQLite.Query(db, "SELECT $(cols[1]), abundance FROM $tablename WHERE kind='$kind' AND sample='$s'")
+            (feature, value) = (r[1], r[2])
             row = fidx[feature]
             profile[row, col] = value
         end
@@ -177,14 +178,14 @@ end
 
 sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter=samplefilter, kwargs...)
 
-function getallsamples(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata")
+function getallsamples(sqlite_path="/babbage/echo/sqldatabases/metadata.sqlite", table="allmetadata")
     db = SQLite.DB(sqlite_path)
     samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
     filter!(s-> !occursin(r"^[CM]\d+_\d+M$", s), samples)
     return stoolsample.(samples)
 end
 
-function getmgxmetadata(sqlite_path="/lovelace/echo/sqldatabases/metadata.sqlite", table="allmetadata"; samples=:all)
+function getmgxmetadata(sqlite_path="/babbage/echo/sqldatabases/metadata.sqlite", table="allmetadata"; samples=:all)
     db = SQLite.DB(sqlite_path)
     if samples == :all
         samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
