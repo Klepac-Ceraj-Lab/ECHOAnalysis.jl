@@ -16,7 +16,6 @@ export
     replicateid,
     resolve_letter_timepoint,
     uniquetimepoints,
-    uniquesubjects,
     breastfeeding,
     samplelessthan,
     numberify,

@@ -15,7 +15,7 @@ function sampletable(rawfastqs::AbstractVector{<:AbstractString})
 end
 
 """
-    add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, foldermatch=r"metaphlan2\/main")
+    add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, foldermatch=r"metaphlan2/main")
 
 Add taxonomic profiles to an SQLite database.
 """
@@ -71,7 +71,7 @@ end
 """
     add_functional_profiles(db::SQLite.DB, biobakery_path;
         kind="genefamiles_relab", stratified=false, replace=false,
-        foldermatch=r"output\/humann2", samples=:all)
+        foldermatch=r"output/humann2", samples=:all)
 
 Add functional profiles to an SQLite database.
 Expects `kind` to come just before `.tsv` in filenames, eg

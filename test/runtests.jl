@@ -33,7 +33,7 @@ sid_symbols = Symbol.(sid_strings)
     @test all(x-> x isa StoolSample, sids)
 
     sid_letter = resolve_letter_timepoint("42a")
-    sids_letter = resolve_letter_timepoint(["42a", "43b", missing])
+    sids_letter = resolve_letter_timepoint.(["42a", "43b", missing])
 
     @test sid_letter == Timepoint("42a", 42, 1)
     @test resolve_letter_timepoint("42z") == Timepoint("42z", 42, 26)
@@ -52,9 +52,9 @@ end
 @testset "Metadata handling" begin
     sids = stoolsample.(sid_strings)
     @test length(uniquetimepoints(sids)) == 3
-    @test length(uniquesubjects(sids)) == 2
+    @test length(uniquetimepoints(sids, takefirst=true)) == 2
     @test length(uniquetimepoints(sids, skipethanol=false)) == 5
-    @test length(uniquesubjects(sids, skipethanol=false)) == 4
+    @test length(uniquetimepoints(sids, takefirst=true, skipethanol=false)) == 4
 
     @test timepoint(uniquetimepoints(sids)[2]) == 1
     @test timepoint(uniquetimepoints(sids, sortfirst=false)[2]) == 2
