@@ -23,9 +23,7 @@ version = "0.5.8"
 
 [[BiobakeryUtils]]
 deps = ["CSV", "DataFrames", "Microbiome", "RCall", "Statistics"]
-git-tree-sha1 = "ca40cad27516a3b8e535ccfd568e9339a5234d94"
-repo-rev = "master"
-repo-url = "https://github.com/BioJulia/BiobakeryUtils.jl.git"
+git-tree-sha1 = "8abe4fc35d4abc48248673e19edc9a3b23a12893"
 uuid = "fa5322f5-bd84-5069-834a-abf3230fb8f8"
 version = "0.2.0"
 
@@ -37,15 +35,15 @@ version = "0.5.21"
 
 [[CategoricalArrays]]
 deps = ["Compat", "DataAPI", "Future", "JSON", "Missings", "Printf", "Reexport", "Statistics", "Unicode"]
-git-tree-sha1 = "7c4419347d724a057b5a550078f8ff4cdfdeedf6"
+git-tree-sha1 = "23d7324164c89638c18f6d7f90d972fa9c4fa9fb"
 uuid = "324d7699-5711-5eae-9e2f-1d82baa6b597"
-version = "0.7.6"
+version = "0.7.7"
 
 [[ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
-git-tree-sha1 = "b41d0f666d46ba128c6a0fc632d6e33fbfc03604"
+git-tree-sha1 = "b9de8dc6106e09c79f3f776c27c62360d30e5eb8"
 uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
-version = "0.9.0"
+version = "0.9.1"
 
 [[Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "InteractiveUtils", "Printf", "Reexport"]
@@ -84,9 +82,9 @@ version = "0.5.0"
 
 [[DataStructures]]
 deps = ["InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "f784254f428fb8fd7ac15982e5862a38a44523d3"
+git-tree-sha1 = "b7720de347734f4716d1815b00ce5664ed6bbfd4"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.17.7"
+version = "0.17.9"
 
 [[DataValueInterfaces]]
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
@@ -124,9 +122,9 @@ uuid = "48062228-2e41-5def-b9a4-89aafe57970f"
 version = "0.7.0"
 
 [[FixedPointNumbers]]
-git-tree-sha1 = "bd1386f890e172ef38e1c735cda58cbf004a7c9a"
+git-tree-sha1 = "4aaea64dd0c30ad79037084f8ca2b94348e65eaa"
 uuid = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
-version = "0.7.0"
+version = "0.7.1"
 
 [[Future]]
 deps = ["Random"]
@@ -199,9 +197,9 @@ version = "0.7.0"
 
 [[OpenBLAS_jll]]
 deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "cb0671dfcf4afbad1d3631079c58275b46a572b8"
+git-tree-sha1 = "e2551d7c25d52f35b76d86a50917a3ba8988f519"
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
-version = "0.3.7+2"
+version = "0.3.7+5"
 
 [[OrderedCollections]]
 deps = ["Random", "Serialization", "Test"]
