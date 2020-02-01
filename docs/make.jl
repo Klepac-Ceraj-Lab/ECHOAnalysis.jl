@@ -6,6 +6,7 @@ makedocs(
     "Getting Started" => "index.md",
     "Timepoints and Samples" => "samples.md",
     "Dealing with Metadata" => "metadata_handling.md",
+    "SQLite operations" => "sqlops.md",
         ],
     format = Documenter.HTML(
             prettyurls = get(ENV, "CI", nothing) == "true"

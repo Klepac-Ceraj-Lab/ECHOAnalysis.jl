@@ -14,6 +14,11 @@ function sampletable(rawfastqs::AbstractVector{<:AbstractString})
     return df
 end
 
+"""
+    add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, foldermatch=r"metaphlan2/main")
+
+Add taxonomic profiles to an SQLite database.
+"""
 function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, foldermatch=r"metaphlan2\/main")
     if "taxa" in DataFrame(SQLite.tables(db)).name
         !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
@@ -62,9 +67,19 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
     @info "Done!"
 end
 
-function add_functional_profiles(db::SQLite.DB, biobakery_path;
+
+"""
+    add_functional_profiles(db::SQLite.DB, biobakery_path;
         kind="genefamiles_relab", stratified=false, replace=false,
-        foldermatch=r"output\/humann2", samples=:all)
+        foldermatch=r"output/humann2", samples=:all)
+
+Add functional profiles to an SQLite database.
+Expects `kind` to come just before `.tsv` in filenames, eg
+`C0001_1E_1A_genefamilies_relab.tsv` should have `kind="genefamilies_relab"`.
+"""
+function add_functional_profiles(db::SQLite.DB, biobakery_path;
+            kind="genefamiles_relab", stratified=false, replace=false,
+            foldermatch=r"output\/humann2", samples=:all)
     if kind in DataFrame(SQLite.tables(db)).name
         !replace && error("$kind already present in this database. Use `replace=true` to replace it")
         @warn "removing table $kind"
