@@ -70,9 +70,10 @@ function setup_logs!(loglevel, logpath; dryrun=false)
         global_logger(glog)
     else
         logpath = abspath(expanduser(logpath))
-        global_logger(DemuxLogger(
-            MinLevelLogger(FileLogger(logpath), loglevel),
-            glog, include_current_global=false))
+        global_logger(
+            TeeLogger(
+                MinLevelLogger(FileLogger(logpath), loglevel),
+                glog))
     end
 end
 
@@ -249,7 +250,6 @@ function main(args)
     @info "Reading file from $inputpath"
 
     meta = loadtable(inputpath, args["delim"], args["sheet"])
-
     parents = map(n->splitheader(n)[1], names(meta)) |> unique
 
     @info "Processing parent tables" parents
@@ -317,10 +317,11 @@ function main(args)
     end
 
     tables = unique(tables)
+
     if !isnothing(args["metadata"])
-        keepers = Set(readlines(args["metadata"]))
-        @info "Removing all metadata not found in $(args["metadata"]). Keeping:" keepers
-        filter!(row-> row.metadatum in keepers, tables)
+        keepers = Set(eachline(args["metadata"]))
+        @info "Only keeping subset of metadata" keepers
+        filter!(row-> string(row.metadatum) in keepers, tables)
     end
 
     @info "Writing scrubbed file to $outputpath"
@@ -348,16 +349,19 @@ end
 #
 # ## Testing
 #
-# args = Dict(
-#             "input" => "~/Desktop/echo_stuff/everything2.xlsx",
-#             "output" => "~/Desktop/scrubbed.csv",
-#             "verbose" => true,
-#             "log" => "/Users/ksb/Desktop/scrub.log",
-#             "debug" => false,
-#             "quiet"=> false,
-#             "delim"=>",",
-#             "dry-run"=>false,
-#             "sheet"=>"Sheet1"
+# t = let args = Dict(
+#             "input"    => "data/metadata/filemakerall.xlsx",
+#             "output"   => "data/metadata/filemakerdb-restricted.csv",
+#             "verbose"  => true,
+#             "log"      => "data/metadata/filemaker-restricted.log",
+#             "debug"    => false,
+#             "quiet"    => false,
+#             "delim"    => ",",
+#             "dry-run"  =>false,
+#             "sheet"    =>"Sheet1",
+#             "metadata" => "data/metadata/keep_metadata.txt",
+#             "force"    => true
 #             )
 #
-# main(args)
+#   main(args)
+# end
