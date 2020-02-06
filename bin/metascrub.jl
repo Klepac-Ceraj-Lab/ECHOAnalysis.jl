@@ -49,9 +49,13 @@ function parse_commandline()
             help = "Allows overwriting of existing file. Reqired if no output path given"
             action=:store_true
         "--samples", "-s"
-            help = "Path to sample metadata to be included (optional)"
+            help = "Path to samples to be included (optional). One line per sampleID."
             default = nothing
-            arg_type = String
+            arg_type = Union{Nothing, String}
+        "--metadata", "-m"
+            help = "Path to metada to be included (optional). One line per metadatum."
+            default = nothing
+            arg_type = Union{Nothing, String}
         "input"
             help = "Table to be scrubbed. By default, this will be overwritten if a CSV file"
             required = true
@@ -294,7 +298,7 @@ function main(args)
 
         # One subject has a timepoint recorded as 2.5 for somet reason...
         if any(x-> x==2.5, subtable.timepoint)
-            @warn "Removing timepoint 2.5"
+            @warn "Removing timepoint 2.5 in table $p"
             filter!(r-> r.timepoint != 2.5, subtable)
             # convert column to Int
             subtable.timepoint = [t for t in subtable.timepoint]
@@ -313,6 +317,11 @@ function main(args)
     end
 
     tables = unique(tables)
+    if !isnothing(args["metadata"])
+        keepers = Set(readlines(args["metadata"]))
+        @info "Removing all metadata not found in $(args["metadata"]). Keeping:" keepers
+        filter!(row-> row.metadatum in keepers, tables)
+    end
 
     @info "Writing scrubbed file to $outputpath"
     if !args["dry-run"]
