@@ -20,7 +20,7 @@ end
 Add taxonomic profiles to an SQLite database.
 """
 function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, foldermatch=r"metaphlan2\/main")
-    if "taxa" in DataFrame(SQLite.tables(db)).name
+    if "taxa" in SQLite.tables(db).name
         !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
         @warn "removing table taxa"
         SQLite.dropindex!(db, "taxa_samples_idx", ifexists=true)
@@ -80,7 +80,7 @@ Expects `kind` to come just before `.tsv` in filenames, eg
 function add_functional_profiles(db::SQLite.DB, biobakery_path;
             kind="genefamiles_relab", stratified=false, replace=false,
             foldermatch=r"output\/humann2", samples=:all)
-    if kind in DataFrame(SQLite.tables(db)).name
+    if kind in SQLite.tables(db).name
         !replace && error("$kind already present in this database. Use `replace=true` to replace it")
         @warn "removing table $kind"
         SQLite.dropindex!(db, "$(kind)_samples_idx", ifexists=true)
