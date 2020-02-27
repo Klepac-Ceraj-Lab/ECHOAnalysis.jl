@@ -87,8 +87,8 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
         SQLite.dropindex!(db, "$(kind)_function_idx", ifexists=true)
         SQLite.dropindex!(db, "$(kind)_batch_idx", ifexists=true)
         SQLite.drop!(db, kind)
-        SQLite.drop!(db, "distinct_functions")
-        SQLite.drop!(db, "distinct_samples")
+        SQLite.drop!(db, "distinct_functions", ifexists=true)
+        SQLite.drop!(db, "distinct_samples", ifexists=true)
     end
 
     @info "Loading $kind functions, stratified = $stratified"
@@ -125,9 +125,9 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
     @info "Creating feature index"
     SQLite.createindex!(db, kind, "$(kind)_function_idx", "function", unique=false)
     @info "Making distinct feature/sample tables"
-    SQLite.Query(db, "SELECT DISTINCT function FROM $kind") |>
+    DBInterface.execute(db, "SELECT DISTINCT function FROM $kind") |>
         SQLite.load!(db, "distinct_functions")
-    SQLite.Query(db, "SELECT DISTINCT sample FROM $kind") |>
+    DBInterface.execute(db, "SELECT DISTINCT sample FROM $kind") |>
         SQLite.load!(db, "distinct_samples")
 
     @info "Done!"
@@ -135,7 +135,7 @@ end
 
 
 function getlongmetadata(db::SQLite.DB, tablename="metadata")
-    SQLite.Query(db, "SELECT * FROM '$tablename'") |> DataFrame
+    DBInterface.execute(db, "SELECT * FROM '$tablename'") |> DataFrame
 end
 
 
@@ -154,7 +154,7 @@ function sqlprofile(db::SQLite.DB;
                     tablename="taxa", kind="species",
                     stratified=false, samplefilter=x->true)
     @info "Starting"
-    samples = let query = SQLite.Query(db, "SELECT DISTINCT sample FROM '$tablename'")
+    samples = let query = DBInterface.execute(db, "SELECT DISTINCT sample FROM '$tablename'")
         [stoolsample(s[:sample]) for s in query]
     end
 
@@ -171,9 +171,9 @@ function sqlprofile(db::SQLite.DB;
 
     @info "Finding relevant features"
     if "distinct_functions" in SQLite.tables(db)[!,1]
-        features = [x[1] for x in SQLite.Query(db, "SELECT DISTINCT $(cols[1]) FROM distinct_functions")]
+        features = [x[1] for x in DBInterface.execute(db, "SELECT DISTINCT $(cols[1]) FROM distinct_functions")]
     else
-        features = [x[1] for x in SQLite.Query(db, query)]
+        features = [x[1] for x in DBInterface.execute(db, query)]
     end
     fidx = dictionary(k=>i for (i,k) in enumerate(features))
 
@@ -181,7 +181,7 @@ function sqlprofile(db::SQLite.DB;
     @info "Building profile"
     @showprogress 1 "Getting samples" for s in sampleids
         col = sidx[s]
-        for r in SQLite.Query(db, "SELECT $(cols[1]), abundance FROM $tablename WHERE kind='$kind' AND sample='$s'")
+        for r in DBInterface.execute(db, "SELECT $(cols[1]), abundance FROM $tablename WHERE kind='$kind' AND sample='$s'")
             (feature, value) = (r[1], r[2])
             row = fidx[feature]
             profile[row, col] = value
@@ -195,7 +195,7 @@ sqlprofile(samplefilter, db::SQLite.DB; kwargs...) = sqlprofile(db; samplefilter
 
 function getallsamples(sqlite_path="/babbage/echo/sqldatabases/metadata.sqlite", table="allmetadata")
     db = SQLite.DB(sqlite_path)
-    samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
+    samples = DBInterface.execute(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
     filter!(s-> !occursin(r"^[CM]\d+_\d+M$", s), samples)
     return stoolsample.(samples)
 end
@@ -203,7 +203,7 @@ end
 function getmgxmetadata(sqlite_path="/babbage/echo/sqldatabases/metadata.sqlite", table="allmetadata"; samples=:all)
     db = SQLite.DB(sqlite_path)
     if samples == :all
-        samples = SQLite.Query(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
+        samples = DBInterface.execute(db, "SELECT DISTINCT sample FROM $table") |> v-> [r.sample for r in v]
         filter!(s-> !occursin(r"^[CM]\d+_\d+M$", s), samples)
     end
 
