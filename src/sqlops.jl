@@ -155,7 +155,7 @@ function sqlprofile(db::SQLite.DB;
                     stratified=false, samplefilter=x->true)
     @info "Starting"
     samples = let query = DBInterface.execute(db, "SELECT DISTINCT sample FROM '$tablename'")
-        [stoolsample(s[:sample]) for s in query]
+        [stoolsample(s.sample) for s in query]
     end
 
     filter!(samplefilter, samples)
@@ -164,13 +164,13 @@ function sqlprofile(db::SQLite.DB;
     sidx = dictionary(k=>i for (i,k) in enumerate(sampleids))
 
     @info "Creating table for $kind"
-    cols = SQLite.columns(db, tablename)[!, :name]
+    cols = SQLite.columns(db, tablename).name
 
     query = "SELECT DISTINCT $(cols[1]) FROM '$tablename' WHERE kind='$kind'" # AND sample IN ($(SQLite.esc_id(sampleid.(samples))))"
     stratified && (query *= " AND stratified=true")
 
     @info "Finding relevant features"
-    if "distinct_functions" in SQLite.tables(db)[!,1]
+    if "distinct_functions" in SQLite.tables(db).name
         features = [x[1] for x in DBInterface.execute(db, "SELECT DISTINCT $(cols[1]) FROM distinct_functions")]
     else
         features = [x[1] for x in DBInterface.execute(db, query)]

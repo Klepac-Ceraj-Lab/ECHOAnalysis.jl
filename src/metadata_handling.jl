@@ -283,7 +283,7 @@ function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
 end
 
 function widemetadata(db::SQLite.DB, tablename, samples; kwargs...)
-    df = SQLite.Query(db, "SELECT * FROM $tablename") |> DataFrame
+    df = DBInterface.execute(db, "SELECT * FROM $tablename") |> DataFrame
     widemetadata(df, samples; kwargs...)
 end
 
