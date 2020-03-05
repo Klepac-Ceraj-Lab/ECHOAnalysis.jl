@@ -39,9 +39,11 @@ using BiobakeryUtils
 using Dictionaries
 using SparseArrays
 using ProgressMeter
+using Feather
 
 include("samples.jl")
 include("metadata_handling.jl")
 include("sqlops.jl")
+include("featherops.jl")
 
 end  # module ECHOAnalysis
