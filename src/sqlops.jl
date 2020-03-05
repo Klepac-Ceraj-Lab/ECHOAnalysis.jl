@@ -80,7 +80,7 @@ Expects `kind` to come just before `.tsv` in filenames, eg
 function add_functional_profiles(db::SQLite.DB, biobakery_path;
             kind="genefamiles_relab", stratified=false, replace=false,
             foldermatch=r"output\/humann2", samples=:all)
-    if kind in SQLite.tables(db).name
+    if haskey(SQLite.tables(db), :name) && kind in SQLite.tables(db).name
         !replace && error("$kind already present in this database. Use `replace=true` to replace it")
         @warn "removing table $kind"
         SQLite.dropindex!(db, "$(kind)_samples_idx", ifexists=true)
@@ -170,7 +170,7 @@ function sqlprofile(db::SQLite.DB;
     stratified && (query *= " AND stratified=true")
 
     @info "Finding relevant features"
-    if "distinct_functions" in SQLite.tables(db).name
+    if haskey(SQLite.tables(db), :name) && "distinct_functions" in SQLite.tables(db).name
         features = [x[1] for x in DBInterface.execute(db, "SELECT DISTINCT $(cols[1]) FROM distinct_functions")]
     else
         features = [x[1] for x in DBInterface.execute(db, query)]
