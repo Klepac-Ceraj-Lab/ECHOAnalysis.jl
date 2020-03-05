@@ -20,7 +20,7 @@ end
 Add taxonomic profiles to an SQLite database.
 """
 function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, foldermatch=r"metaphlan2\/main")
-    if "taxa" in SQLite.tables(db).name
+    if haskey(SQLite.tables(db), :name) && "taxa" in SQLite.tables(db).name
         !replace && error("Taxa already present in this database. Use `replace=true` to replace it")
         @warn "removing table taxa"
         SQLite.dropindex!(db, "taxa_samples_idx", ifexists=true)
@@ -45,7 +45,7 @@ function add_taxonomic_profiles(db::SQLite.DB, biobakery_path; replace=false, fo
     @showprogress for (batch, file) in filepaths
         sample = stoolsample(basename(file))
         tax = CSV.read(file, copycols=true)
-        names!(tax, [:taxon, :abundance])
+        rename!(tax, [:taxon, :abundance])
 
         for level in taxlevels
             filt = taxfilter(tax, level)
