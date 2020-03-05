@@ -107,7 +107,7 @@ function add_functional_profiles(db::SQLite.DB, biobakery_path;
 
         (samples == :all || sample in samples) || continue
         func = CSV.read(file, copycols=true)
-        names!(func, [:function, :abundance])
+        rename!(func, [:function, :abundance])
         func.stratified = map(row-> occursin(r"\|g__\w+\.s__\w+$", row[1]) ||
                                     occursin(r"\|unclassified$", row[1]),
                                     eachrow(func))
