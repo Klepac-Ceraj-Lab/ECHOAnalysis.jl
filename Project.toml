@@ -1,7 +1,7 @@
 name = "ECHOAnalysis"
 uuid = "39b5b81a-5017-403f-bb48-824a42db2b1c"
 authors = ["kescobo <kbonham@wellesley.edu>"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 BiobakeryUtils = "fa5322f5-bd84-5069-834a-abf3230fb8f8"
