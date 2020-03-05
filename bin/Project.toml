@@ -2,4 +2,5 @@
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 LoggingExtras = "e6f89c97-d47a-5376-807f-9c37f3926c36"
+SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"

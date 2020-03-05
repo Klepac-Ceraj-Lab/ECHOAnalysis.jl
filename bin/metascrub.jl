@@ -49,9 +49,13 @@ function parse_commandline()
             help = "Allows overwriting of existing file. Reqired if no output path given"
             action=:store_true
         "--samples", "-s"
-            help = "Path to sample metadata to be included (optional)"
+            help = "Path to samples to be included (optional). One line per sampleID."
             default = nothing
-            arg_type = String
+            arg_type = Union{Nothing, String}
+        "--metadata", "-m"
+            help = "Path to metada to be included (optional). One line per metadatum."
+            default = nothing
+            arg_type = Union{Nothing, String}
         "input"
             help = "Table to be scrubbed. By default, this will be overwritten if a CSV file"
             required = true
@@ -66,9 +70,10 @@ function setup_logs!(loglevel, logpath; dryrun=false)
         global_logger(glog)
     else
         logpath = abspath(expanduser(logpath))
-        global_logger(DemuxLogger(
-            MinLevelLogger(FileLogger(logpath), loglevel),
-            glog, include_current_global=false))
+        global_logger(
+            TeeLogger(
+                MinLevelLogger(FileLogger(logpath), loglevel),
+                glog))
     end
 end
 
@@ -245,7 +250,6 @@ function main(args)
     @info "Reading file from $inputpath"
 
     meta = loadtable(inputpath, args["delim"], args["sheet"])
-
     parents = map(n->splitheader(n)[1], names(meta)) |> unique
 
     @info "Processing parent tables" parents
@@ -294,7 +298,7 @@ function main(args)
 
         # One subject has a timepoint recorded as 2.5 for somet reason...
         if any(x-> x==2.5, subtable.timepoint)
-            @warn "Removing timepoint 2.5"
+            @warn "Removing timepoint 2.5 in table $p"
             filter!(r-> r.timepoint != 2.5, subtable)
             # convert column to Int
             subtable.timepoint = [t for t in subtable.timepoint]
@@ -313,6 +317,12 @@ function main(args)
     end
 
     tables = unique(tables)
+
+    if !isnothing(args["metadata"])
+        keepers = Set(eachline(args["metadata"]))
+        @info "Only keeping subset of metadata" keepers
+        filter!(row-> string(row.metadatum) in keepers, tables)
+    end
 
     @info "Writing scrubbed file to $outputpath"
     if !args["dry-run"]
@@ -339,16 +349,19 @@ end
 #
 # ## Testing
 #
-# args = Dict(
-#             "input" => "~/Desktop/echo_stuff/everything2.xlsx",
-#             "output" => "~/Desktop/scrubbed.csv",
-#             "verbose" => true,
-#             "log" => "/Users/ksb/Desktop/scrub.log",
-#             "debug" => false,
-#             "quiet"=> false,
-#             "delim"=>",",
-#             "dry-run"=>false,
-#             "sheet"=>"Sheet1"
+# t = let args = Dict(
+#             "input"    => "data/metadata/filemakerall.xlsx",
+#             "output"   => "data/metadata/filemakerdb-restricted.csv",
+#             "verbose"  => true,
+#             "log"      => "data/metadata/filemaker-restricted.log",
+#             "debug"    => false,
+#             "quiet"    => false,
+#             "delim"    => ",",
+#             "dry-run"  =>false,
+#             "sheet"    =>"Sheet1",
+#             "metadata" => "data/metadata/keep_metadata.txt",
+#             "force"    => true
 #             )
 #
-# main(args)
+#   main(args)
+# end
