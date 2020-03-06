@@ -28,7 +28,10 @@ export
     add_functional_profiles,
     sqlprofile,
     getallsamples,
-    getmgxmetadata
+    getmgxmetadata,
+
+    ## Feather Operations
+    featherall
 
 using SQLite
 using DataFrames
