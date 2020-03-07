@@ -19,7 +19,6 @@ function featherall(source, dest; foldermatch="", filematch="tsv", overwrite=fal
         outfile = joinpath(dest, first(splitext(basename(f))) * ".feather")
         Feather.write(outfile, CSV.File(f))
     end
-    end
 end
 
 function sparsefeather(datadir::String, filter::Union{Regex,String})

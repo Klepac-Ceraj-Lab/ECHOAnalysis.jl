@@ -9,7 +9,7 @@ sid_strings = ["C0001_1F_2A",
                "M0004_1E_1A_S5"]
 sid_symbols = Symbol.(sid_strings)
 
-# include("test_samples.jl")
-# include("test_metadata_handling.jl")
-# include("test_sqlops.jl")
+include("test_samples.jl")
+include("test_metadata_handling.jl")
+include("test_sqlops.jl")
 include("test_featherops.jl")
