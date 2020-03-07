@@ -8,14 +8,17 @@
 
 """
 function featherall(source, dest; foldermatch="", filematch="tsv", overwrite=false, skipexisting=true)
+    allfiles = String[]
     for (root, dirs, files) in walkdir(source)
         occursin(foldermatch, root) || continue
         filter!(f-> occursin(filematch, f), files)
-        for f in files
-            infile = joinpath(root, f)
-            outfile = joinpath(dest, first(splitext(basename(f))) * ".feather")
-            Feather.write(outfile, CSV.File(infile))
-        end
+        append!(allfiles, joinpath.(root, files))
+    end
+
+    @showprogress for f in allfiles
+        outfile = joinpath(dest, first(splitext(basename(f))) * ".feather")
+        Feather.write(outfile, CSV.File(f))
+    end
     end
 end
 
