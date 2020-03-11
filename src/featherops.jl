@@ -17,6 +17,15 @@ function featherall(source, dest; foldermatch="", filematch="tsv", overwrite=fal
 
     @showprogress for f in allfiles
         outfile = joinpath(dest, first(splitext(basename(f))) * ".feather")
+        if isfile(outfile)
+            skipexisting && continue
+            if overwrite
+                @warn "overwriting $outfile"
+                rm(outfile)
+            else
+                error("$outfile already exists! Use `overwrite=true` to replace it")
+            end
+        end 
         Feather.write(outfile, CSV.File(f))
     end
 end
