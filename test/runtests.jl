@@ -11,4 +11,4 @@ sid_symbols = Symbol.(sid_strings)
 
 include("test_samples.jl")
 include("test_metadata_handling.jl")
-include("test_sqlops.jl")
+# include("test_sqlops.jl")

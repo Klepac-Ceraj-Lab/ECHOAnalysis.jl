@@ -19,18 +19,17 @@ export
     breastfeeding,
     samplelessthan,
     numberify,
-    widemetadata,
+    widemetadata
 
-    ## Database Operations
-    sampletable,
-    getlongmetadata,
-    add_taxonomic_profiles,
-    add_functional_profiles,
-    sqlprofile,
-    getallsamples,
-    getmgxmetadata
+    # ## Database Operations
+    # sampletable,
+    # getlongmetadata,
+    # add_taxonomic_profiles,
+    # add_functional_profiles,
+    # sqlprofile,
+    # getallsamples,
+    # getmgxmetadata
 
-using SQLite
 using DataFrames
 using CSV
 using Colors
@@ -42,6 +41,6 @@ using ProgressMeter
 
 include("samples.jl")
 include("metadata_handling.jl")
-include("sqlops.jl")
+# include("sqlops.jl")
 
 end  # module ECHOAnalysis
