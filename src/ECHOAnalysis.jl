@@ -19,7 +19,12 @@ export
     breastfeeding,
     samplelessthan,
     numberify,
-    widemetadata
+    widemetadata,
+
+    ## Profiles
+
+    taxonomic_profiles,
+    functional_profiles
 
     # ## Database Operations
     # sampletable,
@@ -41,6 +46,7 @@ using ProgressMeter
 
 include("samples.jl")
 include("metadata_handling.jl")
+include("profiles.jl")
 # include("sqlops.jl")
 
 end  # module ECHOAnalysis

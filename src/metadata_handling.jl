@@ -208,7 +208,6 @@ end
                         metadata::Set=Set(unique(longdf.metadatum)),
                         parents::Set=Set(unique(longdf.parent_table)))
     widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...)
-    widemetadata(db::SQLite.DB, tablename, samples; kwargs...)
 
 Convert data in a long-form metadata table into wide-form,
 where each sample is given a single row
@@ -282,10 +281,6 @@ function widemetadata(longdf::AbstractDataFrame, samples::Vector{<:StoolSample};
     return df
 end
 
-function widemetadata(db::SQLite.DB, tablename, samples; kwargs...)
-    df = DBInterface.execute(db, "SELECT * FROM $tablename") |> DataFrame
-    widemetadata(df, samples; kwargs...)
-end
 
 widemetadata(longdf::AbstractDataFrame, samples::Vector{<:AbstractString}; kwargs...) = widemetadata(longdf, stoolsample.(samples); kwargs...)
 
@@ -352,4 +347,43 @@ end
 function uniquetimepoints(samples::AbstractVector{<:AbstractString}; kwargs...)
     ss = stoolsample.(samples)
     return uniquetimepoints(ss; kwargs...)
+end
+
+function airtable_request(method, cred, path; query_kwargs...)
+    query = ["api_key"=>cred]
+    for (key, value) in query_kwargs
+        isempty(value) && continue
+        push!(query, string(key) => string(value))
+    end
+    uri = HTTP.URI(host="api.airtable.com", scheme="https", path=path, query=query)
+    resp = HTTP.request(method, uri)
+    return JSON3.read(String(resp.body))
+end
+
+"""
+    airtable_metadata(key=ENV["AIRTABLE_KEY"])
+
+Get fecal sample metadata table from airtable.
+
+The API `key` comes from https://airtable.com/account.
+
+"""
+function airtable_metadata(key=ENV["AIRTABLE_KEY"])
+    records = []
+    req = airtable_request("GET", key, "/v0/appyRaPsZ5RsY4A1h/Master"; view="Everything", filterByFormula="NOT({Mgx_batch}='')")
+    append!(records, req.records)
+    while haskey(req, :offset) && length(records) < 2200
+        @info "Making another request"
+        req = airtable_request("GET", key, "/v0/appyRaPsZ5RsY4A1h/Master"; view="Everything", filterByFormula="NOT({Mgx_batch}='')", offset=req.offset)
+        append!(records, req.records)
+        sleep(0.250)
+    end
+    vcat(map(records) do record
+        f = record.fields
+        DataFrame(sample    = f.SampleID,
+                  subject   = parse(Int, f.SubjectID),
+                  timepoint = parse(Int, f.TimePoint),
+                  batch     = :Mgx_batch in keys(f) ? parse(Int, match(r"Batch (\d+)", f.Mgx_batch).captures[1]) : missing
+                  )
+    end...)
 end
