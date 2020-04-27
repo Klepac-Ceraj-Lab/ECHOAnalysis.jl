@@ -21,16 +21,21 @@ export
     numberify,
     widemetadata,
 
-    ## Database Operations
-    sampletable,
-    getlongmetadata,
-    add_taxonomic_profiles,
-    add_functional_profiles,
-    sqlprofile,
-    getallsamples,
-    getmgxmetadata
+    ## Profiles
 
-using SQLite
+    taxonomic_profiles,
+    functional_profiles,
+    widen2comm
+
+    # ## Database Operations
+    # sampletable,
+    # getlongmetadata,
+    # add_taxonomic_profiles,
+    # add_functional_profiles,
+    # sqlprofile,
+    # getallsamples,
+    # getmgxmetadata
+
 using DataFrames
 using CSV
 using Colors
@@ -42,6 +47,7 @@ using ProgressMeter
 
 include("samples.jl")
 include("metadata_handling.jl")
-include("sqlops.jl")
+include("profiles.jl")
+# include("sqlops.jl")
 
 end  # module ECHOAnalysis
