@@ -16,23 +16,21 @@ end
 
 const taxlevels = BiobakeryUtils.taxlevels
 
-function widen2comm(df::DataFrame; samplecol=:sample, featurecol=:taxon, abundcol=:abundance)
-    @info "getting unique samples"
-    samples = unique(df[!, samplecol])
-    nsamples = length(samples)
+function widen2comm(df::DataFrame, features, samples; abundcol=:abundance)
+    @info "building feature dict"
+    nf = length(features)
+    featuredict = HashDictionary(features, 1:nf)
+
+    @info "building sample dict"
+    ns = length(samples)
     sampledict = HashDictionary(samples, 1:nsamples)
-
-    @info "getting unique features"
-    features = unique(df[!, featurecol])
-    nfeatures = length(features)
-    featuredict = HashDictionary(features, 1:nfeatures)
-
-    mat = spzeros(nfeatures, nsamples)
+    idx = DataFrame(
+        (sample  = sampledict[row[samplecol]],
+        feature = featuredict[row[featurecol]])
+        for row in eachrow(df))
+   )
     @info "filling matrix"
-    for row in eachrow(df)
-        mat[featuredict[row[featurecol]], sampledict[row[samplecol]]] = row[abundcol]
-    end
-    ComMatrix(mat, features, samples)
+    ComMatrix(sparse(idx.feature, idx.sample, df[!,abundcol]), features, samples)
 end
 
 function taxonomic_profiles(taxprofile_path="/babbage/echo/profiles/taxonomic", taxlevel=:species;
@@ -42,12 +40,17 @@ function taxonomic_profiles(taxprofile_path="/babbage/echo/profiles/taxonomic", 
     filter!(filefilter, filepaths)
     df = DataFrame(sample=String[], taxon=String[], abundance=Float64[])
 
+    features = Set(String[])
+    samples  = Set(String[])
+
     @showprogress for file in filepaths
         sample = stoolsample(basename(file))
+        push!(samples, sampleid(sample))
         tax = CSV.read(file, copycols=true)
         rename!(tax, [:taxon, :abundance])
 
         taxfilter!(tax, taxlevel)
+        union!(features, tax.taxon)
 
         tax.abundance ./= 100
         tax[!, :sample] .= sampleid(sample)
@@ -64,16 +67,20 @@ function functional_profiles(funcprofile_path="/babbage/echo/profiles/functional
     filter!(filefilter, filepaths)
     df = DataFrame(sample=String[], func=String[], abundance=Float64[])
 
+    features = Set(String[])
+    samples  = Set(String[])
+
     @showprogress for file in filepaths
         sample = stoolsample(basename(file))
+        push!(samples, sampleid(sample))
         func = CSV.File(file) |> DataFrame
         rename!(func, [:func, :abundance])
 
         stratified || filter!(row->!occursin("|g__", row.func) && !occursin("|unclassified", row.func), func)
         func[!, :sample] .= sampleid(sample)
+        union!(features, func.func)
         append!(df, select(func, [:sample, :func, :abundance]))
     end
-    @info "Widening"
 
-    return df # widen2comm(df, featurecol=:func)
+    return df, features, samples # widen2comm(df, featurecol=:func)
 end
