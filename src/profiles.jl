@@ -16,19 +16,19 @@ end
 
 const taxlevels = BiobakeryUtils.taxlevels
 
-function widen2comm(df::DataFrame, features, samples; abundcol=:abundance)
+function widen2comm(df::DataFrame, features, samples; featurecol=:taxon, samplecol=:sample, abundcol=:abundance)
     @info "building feature dict"
     nf = length(features)
     featuredict = HashDictionary(features, 1:nf)
 
     @info "building sample dict"
     ns = length(samples)
-    sampledict = HashDictionary(samples, 1:nsamples)
+    sampledict = HashDictionary(samples, 1:ns   )
+
     idx = DataFrame(
         (sample  = sampledict[row[samplecol]],
         feature = featuredict[row[featurecol]])
         for row in eachrow(df))
-   )
     @info "filling matrix"
     ComMatrix(sparse(idx.feature, idx.sample, df[!,abundcol]), features, samples)
 end
@@ -57,7 +57,7 @@ function taxonomic_profiles(taxprofile_path="/babbage/echo/profiles/taxonomic", 
         append!(df, select(tax, [:sample, :taxon, :abundance]))
     end
 
-    return df # widen2comm(df)
+    return df, features, samples
 end
 
 function functional_profiles(funcprofile_path="/babbage/echo/profiles/functional"; kind="ko_names_relab",

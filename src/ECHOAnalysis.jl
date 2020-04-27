@@ -24,7 +24,8 @@ export
     ## Profiles
 
     taxonomic_profiles,
-    functional_profiles
+    functional_profiles,
+    widen2comm
 
     # ## Database Operations
     # sampletable,

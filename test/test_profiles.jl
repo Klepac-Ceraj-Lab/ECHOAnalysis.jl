@@ -2,21 +2,24 @@
     look4samples = ["C0175_2F_1A","C0192_4F_1A"]
     datapath = "data"
 
-    taxa = taxonomic_profiles(joinpath(datapath, "taxprofiles"))
-    @test size(taxa) == (74, 2)
-    @test all(x-> x≈1., sampletotals(taxa))
+    longtax, taxfeatures, taxsamples = taxonomic_profiles(joinpath(datapath, "taxprofiles"))
+    @test length(taxfeatures) == 74
+    @test length(taxsamples) == 2
+    @test Set(longtax.taxon) == taxfeatures
+    @test Set(longtax.sample) == taxsamples
 
+    taxa = widen2comm(longtax, taxfeatures, taxsamples)
+    @test size(taxa) == (74, 2)
+    @test_broken all(x-> x≈1., sampletotals(taxa))
     @test all(!ismissing, occurrences(taxa))
 
-    func = functional_profiles(joinpath(datapath, "funcprofiles"), kind="genefamilies_relab")
+    longfunc, funcfeatures, funcsamples = functional_profiles(joinpath(datapath, "funcprofiles"), kind="genefamilies_relab")
+    @test length(funcfeatures) == 26
+    @test length(funcsamples) == 2
+    @test Set(longfunc.func) == funcfeatures
+    @test Set(longfunc.sample) == funcsamples
+
+    func = widen2comm(longfunc, funcfeatures, funcsamples, featurecol=:func)
     @test size(func) == (26, 2)
     @test all(!ismissing, occurrences(func))
-
-    taxa2 = sqlprofile(taxdb, kind="species") do s
-        sampleid(s) == look4samples[1]
-    end
-
-    @test size(taxa2, 2) == 1
-    @test !any(==(0.), occurrences(taxa2))
-    @test !any(ismissing, occurrences(taxa2))
 end
