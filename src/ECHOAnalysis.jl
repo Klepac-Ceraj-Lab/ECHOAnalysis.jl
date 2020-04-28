@@ -20,6 +20,7 @@ export
     samplelessthan,
     numberify,
     widemetadata,
+    airtable_metadata,
 
     ## Profiles
 
@@ -44,6 +45,8 @@ using BiobakeryUtils
 using Dictionaries
 using SparseArrays
 using ProgressMeter
+using HTTP
+using JSON3
 
 include("samples.jl")
 include("metadata_handling.jl")
