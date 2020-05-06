@@ -16,10 +16,7 @@ export
     replicateid,
     resolve_letter_timepoint,
     uniquetimepoints,
-    breastfeeding,
     samplelessthan,
-    numberify,
-    widemetadata,
     airtable_metadata,
 
     ## Profiles
