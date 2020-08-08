@@ -19,11 +19,11 @@ const taxlevels = BiobakeryUtils.taxlevels
 function widen2comm(df::DataFrame, features, samples; featurecol=:taxon, samplecol=:sample, abundcol=:abundance)
     @info "building feature dict"
     nf = length(features)
-    featuredict = HashDictionary(features, 1:nf)
+    featuredict = Dictionary(features, 1:nf)
 
     @info "building sample dict"
     ns = length(samples)
-    sampledict = HashDictionary(samples, 1:ns   )
+    sampledict = Dictionary(samples, 1:ns   )
 
     idx = DataFrame(
         (sample  = sampledict[row[samplecol]],
@@ -46,9 +46,9 @@ function taxonomic_profiles(taxprofile_path="/babbage/echo/profiles/taxonomic", 
     @showprogress for file in filepaths
         sample = stoolsample(basename(file))
         push!(samples, sampleid(sample))
-        tax = CSV.read(file, copycols=true)
-        rename!(tax, [:taxon, :abundance])
-
+        tax = CSV.File(file, header=[:taxon, :taxid, :abundance, :additional_species],
+                        skipto=5) |> DataFrame
+        select!(tax, [:taxon, :abundance])
         taxfilter!(tax, taxlevel)
         union!(features, tax.taxon)
 
