@@ -23,8 +23,9 @@ function widen2comm(df::DataFrame, features, samples; featurecol=:taxon, samplec
 
     @info "building sample dict"
     ns = length(samples)
-    sampledict = Dictionary(samples, 1:ns   )
+    sampledict = Dictionary(samples, 1:ns)
 
+    @info "getting indices"
     idx = DataFrame(
         (sample  = sampledict[row[samplecol]],
         feature = featuredict[row[featurecol]])
@@ -43,7 +44,7 @@ function taxonomic_profiles(taxprofile_path="/babbage/echo/profiles/taxonomic", 
     features = Set(String[])
     samples  = Set(String[])
 
-    @showprogress for file in filepaths
+    @showprogress "Loading files" for file in filepaths
         sample = stoolsample(basename(file))
         push!(samples, sampleid(sample))
         tax = CSV.File(file, header=[:taxon, :taxid, :abundance, :additional_species],
@@ -61,23 +62,24 @@ function taxonomic_profiles(taxprofile_path="/babbage/echo/profiles/taxonomic", 
 end
 
 function functional_profiles(funcprofile_path="/babbage/echo/profiles/functional"; kind="ko_names_relab",
-                            filefilter=f->isstoolsample(basename(f)) && occursin(kind, f), stratified=false)
+                            filefilter=f->isstoolsample(basename(f)), stratified=false)
     filepaths = readdir(funcprofile_path, join=true)
     @info "Filtering files"
-    filter!(filefilter, filepaths)
+
+    filter!(f-> occursin(kind, f) && filefilter(f), filepaths)
     df = DataFrame(sample=String[], func=String[], abundance=Float64[])
 
     features = Set(String[])
     samples  = Set(String[])
 
-    @showprogress for file in filepaths
+    @showprogress "Loading files" for file in filepaths
         sample = stoolsample(basename(file))
         push!(samples, sampleid(sample))
         func = CSV.File(file) |> DataFrame
         rename!(func, [:func, :abundance])
 
         stratified || filter!(row->!occursin("|g__", row.func) && !occursin("|unclassified", row.func), func)
-        func[!, :sample] .= sampleid(sample)
+        func[!,:sample] .= sampleid(sample)
         union!(features, func.func)
         append!(df, select(func, [:sample, :func, :abundance]))
     end
