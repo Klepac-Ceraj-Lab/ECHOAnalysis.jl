@@ -14,7 +14,7 @@ function sampletable(rawfastqs::AbstractVector{<:AbstractString})
     return df
 end
 
-const taxlevels = BiobakeryUtils.taxlevels
+const taxonlevels = BiobakeryUtils.taxonlevels
 
 function widen2comm(df::DataFrame, features, samples; featurecol=:taxon, samplecol=:sample, abundcol=:abundance)
     @info "building feature dict"
@@ -85,4 +85,31 @@ function functional_profiles(funcprofile_path="/babbage/echo/profiles/functional
     end
 
     return df, features, samples # widen2comm(df, featurecol=:func)
+end
+
+
+"""
+    arrowconvert_taxonomic(filepaths, outpath)
+
+"""
+function arrowconvert_taxonomic(filepaths, outpath)  
+    
+end
+
+function load_metaphlan_profile(file)
+    sample = stoolsample(basename(file))
+    sampledf = CSV.File(file, header=[:taxon, :taxid, :abundance, :additional_species],
+                    datarow=5) |> DataFrame
+    
+    sampledf[!, :sample] .= sampleid(sample)
+    sampledf.abundance ./= 100
+
+    sampledf[!, :taxonlevel] .= :unidentified
+    for rn in 1:nrow(sampledf)
+        taxon, taxonlevel = last(parsetaxa(sampledf[rn, :taxon], throw=false))
+        sampledf[rn, :taxon] = taxon
+        sampledf[rn, :taxonlevel] = taxonlevel
+    end
+
+    select(sampledf, [:sample, :taxon, :taxonlevel, :taxid, :abundance])
 end
