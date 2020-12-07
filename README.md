@@ -21,12 +21,8 @@ and supports the analysis of Microbiome data.
 The easiest way to use it is to install it in your active project
 using julia's `Pkg` package manager.
 
-This package depends on packages in the [BioJulia][3] registry,
-which you can also add using the `Pkg` REPL
-(this only needs to be done once).
 
 [2]: https://julialang.org/
-[3]: https://biojulia.net/getting-started/
 
 ```
 $ cd ~/my_project
@@ -37,15 +33,13 @@ Starting Julia...
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
   | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.2.0 (2019-08-20)
+  | | |_| | | | (_| |  |  Version 1.5.0 (2020-08-01)
  _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 
 julia> ] # this activates the pkg REPL prompt
 
-(v1.3) pkg> registry add https://github.com/BioJulia/BioJuliaRegistry.git
-
-(v1.3) pkg> activate .
+(v1.5) pkg> activate .
 Activating new environment at `~/my_project/Project.toml`
 
 (my_project) pkg> add https://github.com/Klepac-Ceraj-Lab/echo_analysis

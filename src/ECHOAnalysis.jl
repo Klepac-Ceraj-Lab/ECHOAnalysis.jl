@@ -35,6 +35,7 @@ using SparseArrays
 using ProgressMeter
 using HTTP
 using JSON3
+using Arrow
 
 include("samples.jl")
 include("metadata_handling.jl")

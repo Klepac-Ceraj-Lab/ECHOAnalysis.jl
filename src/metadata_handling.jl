@@ -82,7 +82,7 @@ The API `key` comes from https://airtable.com/account.
 """
 function airtable_metadata(key=ENV["AIRTABLE_KEY"])
     records = []
-    req = airtable_request("GET", key, "/v0/appyRaPsZ5RsY4A1h/Master"; view="Everything", filterByFormula="NOT({Mgx_batch}='')")
+    req = airtable_request("GET", key, "/v0/appyRaPsZ5RsY4A1h/Master"; view="ALL_NO_EDIT", filterByFormula="NOT({Mgx_batch}='')")
     append!(records, req.records)
     while haskey(req, :offset) && length(records) < 2200
         @info "Making another request"
@@ -95,7 +95,8 @@ function airtable_metadata(key=ENV["AIRTABLE_KEY"])
         DataFrame(sample    = f.SampleID,
                   subject   = parse(Int, f.SubjectID),
                   timepoint = parse(Int, f.TimePoint),
-                  batch     = :Mgx_batch in keys(f) ? parse(Int, match(r"Batch (\d+)", f.Mgx_batch).captures[1]) : missing
+                  batch     = :Mgx_batch in keys(f) ? parse(Int, match(r"Batch (\d+)", f.Mgx_batch).captures[1]) : missing,
+                  batch_16S = "16S_batch" in keys(f) ? parse(Int, match(r"Batch (\d+)", f["16S_batch"]).captures[1]) : missing
                   )
     end...)
 end
