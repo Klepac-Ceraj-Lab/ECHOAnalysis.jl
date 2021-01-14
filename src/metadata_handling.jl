@@ -80,13 +80,13 @@ Get fecal sample metadata table from airtable.
 
 The API `key` comes from https://airtable.com/account.
 """
-function airtable_metadata(key=ENV["AIRTABLE_KEY"])
+function airtable_metadata(key=Airtable.Credential())
     records = []
-    req = airtable_request("GET", key, "/v0/appyRaPsZ5RsY4A1h/Master"; view="ALL_NO_EDIT", filterByFormula="NOT({Mgx_batch}='')")
+    req = Airtable.get(key, "/v0/appyRaPsZ5RsY4A1h", "Master"; view="ALL_NO_EDIT", filterByFormula="NOT({Mgx_batch}='')")
     append!(records, req.records)
     while haskey(req, :offset) && length(records) < 2200
         @info "Making another request"
-        req = airtable_request("GET", key, "/v0/appyRaPsZ5RsY4A1h/Master"; view="Everything", filterByFormula="NOT({Mgx_batch}='')", offset=req.offset)
+        req = Airtable.get(key, "/v0/appyRaPsZ5RsY4A1h/", "Master"; view="ALL_NO_EDIT", filterByFormula="NOT({Mgx_batch}='')", offset=req.offset)
         append!(records, req.records)
         sleep(0.250)
     end

@@ -14,7 +14,7 @@ function sampletable(rawfastqs::AbstractVector{<:AbstractString})
     return df
 end
 
-const taxlevels = BiobakeryUtils.taxlevels
+const taxlevels = BiobakeryUtils.taxonlevels
 
 function widen2comm(df::DataFrame, features, samples; featurecol=:taxon, samplecol=:sample, abundcol=:abundance)
     @info "building feature dict"
